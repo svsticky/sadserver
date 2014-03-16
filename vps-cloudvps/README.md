@@ -1,5 +1,5 @@
-CloudVPS VPS
-============
+`purple`
+========
 
 Deze VPS heeft als doel het draaien van de diverse websites van Sticky. Hij staat op dit moment onder direct beheer van het bestuur, maar het plan is om dit over te gaan hevelen naar de CommIT.
 

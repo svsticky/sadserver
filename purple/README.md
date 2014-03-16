@@ -5,10 +5,15 @@ Deze VPS moet de diverse websites van Sticky gaan draaien, maar is op dit moment
 
 Controle over de VPS kan via SSH en via een controlepaneel van CloudVPS. Op dit moment kunnen de admins alleen iets doen, je kan hen benaderen met je verzoek.
 
-OS
---
+System specifications
+---------------------
 
- - Debian 7
+| Wat            | Toelichting |
+| -------------- | ----------: |
+| OS             | Debian 7    |
+| Disk space     | 20GB        |
+| RAM            | 1024MB      |
+| Transfer/month | 1TB         |
 
 IP addresses
 ----------

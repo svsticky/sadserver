@@ -1,5 +1,5 @@
-Firewall rules for purple
-=========================
+Firewall rules for `purple`
+===========================
 
 Purple gebruikt geen `ufw` of andere wrapper, maar plain-old `iptables`. De configuratie wordt ingeladen door `/etc/network/if-pre-up.d/firewall`, wat een `iptables-restore` uitvoert om `/etc/iptables.firewall.rules` in te lezen.
 

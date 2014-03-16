@@ -11,4 +11,4 @@ Elke server/VPS/stuk techniek krijgt een directory in het repository. Zo kan iem
 Credits en hulp
 ---------------
 
-Voor hulp en vragen kan je contact opnemen met Laurens Duijvesteijn (Secretaris van het 7e bestuur van Sticky) op `l.duijvesteijn@gmail.com`.
+Voor hulp en vragen kan je contact opnemen met Laurens Duijvesteijn (Secretaris van het 8e bestuur van Sticky) op `l.duijvesteijn@gmail.com`.

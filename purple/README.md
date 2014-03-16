@@ -1,7 +1,14 @@
 `purple`
 ========
 
-Deze VPS heeft als doel het draaien van de diverse websites van Sticky. Hij staat op dit moment onder direct beheer van het bestuur, maar het plan is om dit over te gaan hevelen naar de CommIT.
+Deze VPS moet de diverse websites van Sticky gaan draaien, maar is op dit moment nog in aanbouw. Hij staat onder direct beheer van het bestuur, maar dit moet binnenkort worden overgeheveld aan de CommIT. 
+
+Controle over de VPS kan via SSH en via een controlepaneel van CloudVPS. Op dit moment kunnen de admins alleen iets doen, je kan hen benaderen met je verzoek.
+
+OS
+--
+
+ - Debian 7
 
 IP addresses
 ----------
@@ -11,8 +18,8 @@ IP addresses
 Admins
 ------
 
- - Laurens Duijvesteijn
- - Tako Marks
+ - Laurens Duijvesteijn (`secretaris@stickyutrecht.nl` / `l.duijvesteijn@gmail.com`)
+ - Tako Marks (`onderwijs@stickyutrecht.nl`)
 
 Daemons
 -------
@@ -23,8 +30,3 @@ Production services
 -------------------
 
 None as of yet!
-
-VPS control
------------
-
-CloudVPS biedt een administratiepaneel aan. Hier kan op dit moment alleen het bestuur bij. Mail het bestuur als je een verzoek hebt.

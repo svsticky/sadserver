@@ -3,19 +3,10 @@
 
 Deze VPS heeft als doel het draaien van de diverse websites van Sticky. Hij staat op dit moment onder direct beheer van het bestuur, maar het plan is om dit over te gaan hevelen naar de CommIT.
 
-SSH details
------------
+IP addresses
+----------
 
-### Hostnames
-
- - `purple.stickyutrecht.nl`
- - `vps40506.public.cloudvps.com`
-
-### Available users
-
- - `admin` (has sudo)
-
-Root login staat uit, net zoals password login. Je hebt keys nodig.
+ - `89.31.97.186`
 
 Admins
 ------

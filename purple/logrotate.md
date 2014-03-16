@@ -6,7 +6,7 @@ Logrotatatie is het splitsen van logfiles in kleine stukken, en het uiteindelijk
 Configuration files
 -------------------
 
-`/etc/logrotate.conf` specificeert de generieke opties voor de rotatie van logfiles. Het bestand leest ook alle bestanden uit `/etc/logrotate.d` uit, waar applicaties hun eigen logfiles in kunnen specificeren. De inhoud is standaard voor Debian 7.
+`/etc/logrotate.conf` specificeert de generieke opties voor de rotatie van logfiles. Het bestand leest ook alle bestanden uit `/etc/logrotate.d` uit, waar applicaties hun eigen logfiles in kunnen specificeren. De inhoud is standaard voor Debian 7, behalve dat de `compress` directive aan staat.
 
 Invocation
 ----------

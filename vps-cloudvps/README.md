@@ -3,11 +3,17 @@ CloudVPS VPS
 
 Deze VPS heeft als doel het draaien van de diverse websites van Sticky. Hij staat op dit moment onder direct beheer van het bestuur, maar het plan is om dit over te gaan hevelen naar de CommIT.
 
-Hostname
---------
+SSH details
+-----------
 
-**Hostname:** `purple.stickyutrecht.nl`
-**Available users:** `admin` (has sudo)
+### Hostnames
+
+ - `purple.stickyutrecht.nl`
+ - `vps40506.public.cloudvps.com`
+
+### Available users
+
+ - `admin` (has sudo)
 
 Root login staat uit, net zoals password login. Je hebt keys nodig.
 
@@ -20,8 +26,6 @@ Admins
 Daemons
 -------
 
- - Nginx
- - MariaDB
  - SSH
 
 Production services

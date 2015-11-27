@@ -1,14 +1,16 @@
-Server Documentatie
-===================
+# IT Crowd workspace
 
-Hier vind je documentatie van alle techniek die we bij Sticky hebben. Het staat in een git repository om version history te kunnen garanderen, een mooie bonus is dat credits ook automatisch worden meegenomen.
+Dit git repository is de workspace van de mensen die de server(s) van Sticky
+beheren. Het bevat documentatie, scripts, plannen en andere relevante zaken.
 
-Organisatie van dit repository
-------------------------------
+## Directory layout
 
-Elke server/VPS/stuk techniek krijgt een directory in het repository. Zo kan iemand snel de documentatie vinden van het apparaat waar hij/zij naar zoekt. Elke directory heeft files die aansluiten op het onderwerp wat je zoekt. Ook is er voor elke directory een README.md bestand wat het doel van de server uit dient te leggen.
+ - `scripts/` bevat one-off python/bash/ruby scripts voor diverse taken.
+ - `words/` bevat plannen en documentatie betreft de serverarchitectuur.
+ - `purple/` bevat legacy documentatie van de VPS geschreven ten tijde van het
+   8e bestuur (het laatst geupdate door Martijn Casteel in oktober 2014).
 
-Credits en hulp
----------------
+## Contact en hulp
 
-Voor hulp en vragen kan je contact opnemen met Martijn Casteel (Penningmeester van het 9e bestuur van Sticky) op `martijn.casteel@gmail.com` of Laurens Duijvesteijn (Secretaris van het 8e bestuur van Sticky) op `l.duijvesteijn@gmail.com`.
+Voor hulp/vragen kun je contact opnemen met de serverbeheercommissie (op het
+moment van schrijven "The IT Crowd") via `server@stickyutrecht.nl`.

@@ -13,6 +13,6 @@ Op de volgende manier kan de beperkte gebruiker aangemaakt worden:
 ```sh
 # adduser --home=/var/www/<USERNAME> --disabled-password <USERNAME>
 # adduser <USERNAME> privileged
-# chown root:testuser /var/www/<USERNAME>/
+# chown root:<USERNAME> /var/www/<USERNAME>/
 ```
 Inloggen is alleen mogelijk met een SSH-key, dus vergeet de keys van de bevoegde personen niet toe te voegen aan `<HOMEDIR>/.ssh/authorized_keys`.

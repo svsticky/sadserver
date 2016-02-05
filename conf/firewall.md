@@ -1,9 +1,9 @@
-Firewall rules for `purple`
+Firewallregels voor `skyblue`
 ===========================
 
-Purple gebruikt geen `ufw` of andere wrapper, maar plain-old `iptables`. De configuratie wordt ingeladen door `/etc/network/if-pre-up.d/firewall`, wat een `iptables-restore` uitvoert om `/etc/iptables.firewall.rules` in te lezen.
+Skyblue gebruikt geen `ufw` of andere wrapper, maar plain-old `iptables`. De configuratie wordt ingeladen door `/etc/network/if-pre-up.d/firewall`, wat een `iptables-restore` uitvoert om `/etc/iptables.firewall.rules` in te lezen.
 
-Het bestand `/etc/iptables.firewall.rules` bevat de firewall regels die de purple hanteert. Het bestand ziet er als volgt uit:
+Het bestand `/etc/iptables.firewall.rules` bevat de firewall regels die skyblue hanteert. Het bestand ziet er als volgt uit:
 
 ```
 *filter

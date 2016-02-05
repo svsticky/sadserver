@@ -1,4 +1,4 @@
-Logrotate op `purple`
+Logrotate op `skyblue`
 =====================
 
 Logrotatatie is het splitsen van logfiles in kleine stukken, en het uiteindelijke weggooien van oude logfiles, aangezien deze aanzienlijk veel schijfruimte in kunnen nemen.
@@ -6,7 +6,7 @@ Logrotatatie is het splitsen van logfiles in kleine stukken, en het uiteindelijk
 Configuration files
 -------------------
 
-`/etc/logrotate.conf` specificeert de generieke opties voor de rotatie van logfiles. Het bestand leest ook alle bestanden uit `/etc/logrotate.d` uit, waar applicaties hun eigen logfiles in kunnen specificeren. De inhoud is standaard voor Debian 7, behalve dat de `compress` directive aan staat.
+`/etc/logrotate.conf` specificeert de generieke opties voor de rotatie van logfiles. Het bestand leest ook alle bestanden uit `/etc/logrotate.d` uit, waar applicaties hun eigen logfiles in kunnen specificeren. De inhoud is standaard, behalve dat de `compress` directive aan staat.
 
 Invocation
 ----------

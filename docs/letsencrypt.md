@@ -6,7 +6,7 @@ Op het moment zijn alle sites die gehost worden op de server voorzien van een SS
 
 Sticky gebruikt de standaard [Let's Encrypt ACME client](https://github.com/letsencrypt/letsencrypt). De enige dependency hiervoor is Python 2.6-2.7. De handigste manier om de client aan te roepen is via de bijgeleverde wrapper `letsencrypt-auto`. Dit moet als root, omdat er een tijdelijke webserver wordt opgezet tijdens de authenticatie voor het domein.
 
-De client staat momenteel geïnstalleerd in `/usr/local/src/letsencrypt/`, met haar configuratie in `/etc/letsencrypt/`. In de laatstgenoemde map bevindt zich ook het script (*[renew-certs.sh](../conf/renew-certs.md)*) dat wekelijks door cron wordt aangeroepen, om te checken of er certificaten vernieuwd moeten worden.
+De client staat momenteel geïnstalleerd in `/opt/letsencrypt/`, met haar configuratie in `/etc/letsencrypt/`. In de laatstgenoemde map bevindt zich ook het script (*[renew-certs.sh](../conf/renew-certs.md)*) dat wekelijks door cron wordt aangeroepen, om te checken of er certificaten vernieuwd moeten worden.
 
 ## Certificaat installeren voor nieuwe site
 

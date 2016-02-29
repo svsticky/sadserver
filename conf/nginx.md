@@ -13,12 +13,12 @@ server {
         listen 80;
 
         server_name example.svsticky.nl;
-		return 301 https://example.svsticky.nl$request_uri;
+	return 301 https://example.svsticky.nl$request_uri;
 }
 
 server {
-		listen 443 ssl;
-		server_name example.svsticky.nl;
+	listen 443 ssl;
+	server_name example.svsticky.nl;
 
         root /var/www/example.svsticky.nl;
         index index.php index.html index.htm;
@@ -53,36 +53,35 @@ server {
 }
 
 server {
-        listen 443 ssl;
-        server_name example.tld www.example.tld example.svsticky.nl;
+	listen 443 ssl;
+	server_name example.tld www.example.tld example.svsticky.nl;
 
-        ssl_certificate /etc/letsencrypt/live/example.tld/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/example.tld/privkey.pem;
+	ssl_certificate /etc/letsencrypt/live/example.tld/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/example.tld/privkey.pem;
 
         # HSTS
-		add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+	add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
 	
-        root /var/www/example.committee/example.tld;
-        index index.php index.html index.htm;
+	root /var/www/example.committee/example.tld;
+	index index.php index.html index.htm;
 
-        if (!-e $request_filename) {
-            rewrite ^/(.+)$ /index.php?url=$1 last;
-            break;
-        }
+	location / {
+		try_files $uri $uri/ /index.php?q=$uri&$args;
+	}
 
-        include includes/php-parameters;
+	include includes/php-parameters;
 
-        location ~* \.(css|js)$ {
-                expires 24h;
-                add_header Pragma public;
-                add_header Cache-Control "public, must-revalidate, proxy-revalidate";
-        }
+	location ~* \.(css|js)$ {
+		expires 24h;
+		add_header Pragma public;
+		add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+	}
 
-        location ~* \.(gif|jpe?g|png)$ {
-                expires 168h;
-                add_header Pragma public;
-                add_header Cache-Control "public, must-revalidate, proxy-revalidate";
-        }
+	location ~* \.(gif|jpe?g|png)$ {
+ 		expires 168h;
+		add_header Pragma public;
+		add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+	}
 
 }
 ```

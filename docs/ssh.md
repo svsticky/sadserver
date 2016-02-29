@@ -4,7 +4,7 @@ Root login staat uit, net zoals password login. Je hebt keys nodig.
 
 ## Hostnames
 
- - `skyblue.stickyutrecht.nl`
+ - `skyblue.svsticky.nl`
  - `vps40506.public.cloudvps.com`
 
 ## Beschikbare gebruikers
@@ -24,6 +24,7 @@ Alle bovengenoemde gebruikers hebben sudo-rechten. Indien er nieuwe leden plaats
  - commit
  - dgdarc
  - indievelopment
+ - sodi
  - stichting
  - studiereis
  - symposium
@@ -40,7 +41,6 @@ In `/etc/ssh/sshd_config` staat geconfigureerd dat gebruikers die deel uitmaken 
 Op de volgende manier kan de beperkte gebruiker aangemaakt worden:
 
 ```
-sh
 # adduser --home=/var/www/<USERNAME> --disabled-password <USERNAME>
 # adduser <USERNAME> privileged
 # chown root:<USERNAME> /var/www/<USERNAME>/

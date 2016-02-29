@@ -1,7 +1,7 @@
 `skyblue`
 ========
 
-Deze VPS draait meerdere websites en heeft alles overgenomen van de oude server in de kelder sinds de zomer van 2014. De IT Crowd heeft de server in beheer, maar ook de CommIT heeft beperkt toegang tot sommige sites. Daarnaast heeft de CommIT een team op GitHub waarbij ze meerdere projecten kunnen aanpassen. Hierna kan de IT Crowd de laatste dingen testen en op de server pullen. Controle over de VPS kan via SSH en via een controlepaneel van CloudVPS.
+Deze VPS draait meerdere websites en heeft alles overgenomen van de oude server in de kelder sinds de zomer van 2014. De IT Crowd heeft de server in beheer, maar ook de CommIT heeft beperkt toegang tot sommige sites. Daarnaast heeft de CommIT een team op GitHub waarbij ze meerdere projecten kunnen aanpassen. Hierna kan de IT Crowd de laatste dingen testen en op de server deployen. Controle over de VPS kan via SSH en via een controlepaneel van CloudVPS.
 
 System specifications
 ---------------------
@@ -21,11 +21,7 @@ IP-adres
 SSL-certificaten
 ---------------
 
-TransIP beheert onze domeinnamen en beheert momenteel ook het wildcard-certificaat voor `*.stickyutrecht.nl`. Deze moet jaarlijks tegen betaling verlengd worden, en het nieuwe certificaat kan eenvoudig in gebruik genomen worden door een paar nieuwe bestanden te kopiëren nadat er een certificate signing request is uitgevoerd. 
-
-Daarnaast worden de overige domeinnamen in beheer (zie onder) voorzien van SSL-certificaten van Let's Encrypt. Deze certificaten zijn gratis, maar wel maar 90 dagen geldig. Hierbij zijn geen wildcard-certificaten te krijgen. Er draait elke 2 maanden een cronjob op de server die al deze certificaten verlengt.
-
-In de toekomst zal waarschijnlijk ook het wildcard-certificaat voor `*.stickyutrecht.nl` vervangen worden door één of meerdere certificaten uitgegeven door Let's Encrypt.
+Voor informatie over de voorziening van SSL-certificaten, kijk [hier](../docs/letsencrypt.md).
 
 Admins
 ------
@@ -46,21 +42,21 @@ Daemons
 Production services
 -------------------
 
- - `www.stickyutrecht.nl`
- - `digidecs.stickyutrecht.nl`
+ - `svsticky.nl`
+ - `digidecs.svsticky.nl`
 
 
- - `studiereis.stickyutrecht.nl`
- - `wintersport.stickyutrecht.nl`
+ - `studiereis.svsticky.nl`
+ - `wintersport.svsticky.nl`
 
 
- - `koala.stickyutrecht.nl`
- - `betalingen.stickyutrecht.nl`
- - `phpmyadmin.stickyutrecht.nl`
+ - `koala.svsticky.nl`
+ - `betalingen.svsticky.nl`
+ - `phpmyadmin.svsticky.nl`
 
 
- - `infozuil.stickyutrecht.nl`
- - `radio.stickyutrecht.nl`
+ - `infozuil.svsticky.nl`
+ - `radio.svsticky.nl`
 
 
  - `darksideof.it`

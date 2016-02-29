@@ -4,23 +4,23 @@ Skyblue draait op dit moment nginx versie 1.6.3.
 
 ## Templates voor configuratie van sites
 
-Er draaien verschillende sites op de server. Om consistentie aan te houden in de verschillende subdomeinen van `stickyutrecht.nl` en andere sites, zijn hieronder templates geplaatst die op dit moment gebruikt moeten kunnen worden voor de meeste sites. 
+Er draaien verschillende sites op de server. Om consistentie aan te houden in de verschillende subdomeinen van `svsticky.nl` en andere sites, zijn hieronder templates geplaatst die op dit moment gebruikt moeten kunnen worden voor de meeste sites. 
 
-### Template voor configuratie `example.stickyutrecht.nl`
+### Template voor configuratie `example.svsticky.nl`
 
 ```
 server {
         listen 80;
 
-        server_name example.stickyutrecht.nl example.svsticky.nl example.stickii.nl;
-	return 301 https://example.stickyutrecht.nl;
+        server_name example.svsticky.nl;
+		return 301 https://example.svsticky.nl$request_uri;
 }
 
 server {
-	listen 443 ssl;
-	server_name example.stickyutrecht.nl;
+		listen 443 ssl;
+		server_name example.svsticky.nl;
 
-        root /var/www/example.stickyutrecht.nl;
+        root /var/www/example.svsticky.nl;
         index index.php index.html index.htm;
 
         location / {
@@ -48,21 +48,21 @@ server {
 server {
         listen 80;
 
-        server_name example.tld *.example.tld example.stickyutrecht.nl;
+        server_name example.tld www.example.tld example.svsticky.nl;
         return 301 https://$server_name$request_uri;
 }
 
 server {
         listen 443 ssl;
-        server_name example.tld www.example.tld example.stickyutrecht.nl;
+        server_name example.tld www.example.tld example.svsticky.nl;
 
         ssl_certificate /etc/letsencrypt/live/example.tld/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/example.tld/privkey.pem;
 
         # HSTS
-	add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+		add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
 	
-        root /var/www/indievelopment/example.tld;
+        root /var/www/example.committee/example.tld;
         index index.php index.html index.htm;
 
         if (!-e $request_filename) {
@@ -70,13 +70,7 @@ server {
             break;
         }
 
-        location ~ \.php$ {
-                try_files $uri =404;
-                fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                fastcgi_pass unix:/tmp/php5-fpm.sock;
-                fastcgi_index index.php;
-                include fastcgi_params;
-        }
+        include includes/php-parameters;
 
         location ~* \.(css|js)$ {
                 expires 24h;

@@ -1,6 +1,6 @@
 # Let's Encrypt
 
-Op het moment zijn alle sites die gehost worden op de server voorzien van een SSL-certificaat, afgezien van `infozuil.stickyutrecht.nl` (wegens legacy incompatibilities). Alle sites die draaien als subdomein van `stickyutrecht.nl` maken momenteel nog gebruik van het wildcard-certificaat (`*.stickyutrecht.nl`) van *TransIP*, dat nog geldig is tot 6 september 2016. Alle overige sites maken gebruik van SSL-certificaten van *Let's Encrypt*. Binnenkort zal ook het wildcard-certificaat van TransIP worden vervangen door certificaten van Let's Encrypt, omdat deze gratis zijn en automatisch vernieuwd kunnen worden, in tegenstelling tot het certificaat van TransIP.
+Op het moment zijn alle sites die gehost worden op de server voorzien van een SSL-certificaat, afgezien van `infozuil.svsticky.nl` (wegens legacy incompatibilities). Ook is er nog een certificaat aanwezig van *TransIP*, dat nog geldig is tot 6 september 2016. Deze is echter niet meer in gebruik, omdat alle sites maken gebruik van SSL-certificaten van *Let's Encrypt*. Deze certificaten hebben de voorkeur, omdat deze gratis zijn en automatisch vernieuwd kunnen worden, in tegenstelling tot het certificaat van TransIP. De certificaten uitgegeven door Let's Encrypt zijn echter wel maar 90 dagen geldig en er zijn geen wildcard-certificaten te krijgen. Om geldige certificaten te blijven gebruiken, wordt er wekelijks door middel van een cronjob gecontroleerd of er certificaten vernieuwd moeten worden.
 
 ## Client
 
@@ -17,13 +17,13 @@ De wrapper wordt aangeroepen met de volgende parameters:
 * `--webroot-path /var/www/example.tld` De bijbehorende webroot.
 * `--keep-until-expiring` Dit geeft aan dat er pas een nieuw certificaat moet worden gegenereerd als er geen bestaand certificaat is dat nog 'nieuw' (<30 dagen oud) is.
 * `--agree-tos` Hiermee gaan we akkoord met de licentievoorwaarden van Let's Encrypt.
-* `--email itcrowd@stickyutrecht.nl` Het e-mailadres dat in het certificaat komt te staan.
+* `--email itcrowd@svsticky.nl` Het e-mailadres dat in het certificaat komt te staan.
 
-* `--domains example.tld,www.example.tld,example.stickyutrecht.nl` De domeinen waar het certificaat geldig voor moet zijn, met een voorbeeld. Wildcards zijn niet mogelijk.
+* `--domains example.tld,www.example.tld,example.svsticky.nl` De domeinen waar het certificaat geldig voor moet zijn, met een voorbeeld. Wildcards zijn niet mogelijk.
 
 Dit ziet er dan dus zo uit in het script:
 
-`/usr/local/src/letsencrypt/letsencrypt-auto certonly -a webroot --keep-until-expiring --agree-tos --email itcrowd@stickyutrecht.nl --webroot-path /var/www/example.tld --domains example.tld,www.example.tld,example.stickyutrecht.nl`
+`/usr/local/src/letsencrypt/letsencrypt-auto certonly -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/example.tld --domains example.tld,www.example.tld,example.svsticky.nl`
 
 Het certificaat wordt vervolgens, als alles goed gaat, gegenereerd en opgeslagen in `/etc/letsencrypt/live/example.tld/`. Nginx heeft de versie van het certificaat nodig met het intermediate certificate in de chain, dat is `fullchain.pem`, en uiteraard de private key, in `privkey.pem`. Aan de configuratie in nginx van de betreffende site moeten vervolgens dan ook de volgende regels worden toegevoegd:
 
@@ -32,6 +32,6 @@ Het certificaat wordt vervolgens, als alles goed gaat, gegenereerd en opgeslagen
 
 Ook is nu mogelijk, en aan te raden, om de site te voorzien van [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security) (HTTP Strict Transport Security). Dit kan door onderstaande directive nog toe te voegen:
 
-	add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+	add_header Strict-Transport-Security "max-age=31536000; includeSubdomains";
 
 Vergeet na het toevoegen de webserver niet opnieuw op te starten, waarna het nieuwe certificaat geserveerd zal worden.

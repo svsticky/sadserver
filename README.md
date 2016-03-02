@@ -4,8 +4,8 @@ Deze git repository is de plek met alle documentatie over de huidige (productie)
 
 ## Directory layout
 
- - `docs/` bevat documentatie en tutorials betreffende de serverarchitectuur.
  - `conf/` bevat configuratiebestanden (en evt. een toelichting) van services, zoals die nu gebruikt worden op de server.
+ - `tutorials/` bevat tutorials voor het uitvoeren van acties, die met enige regelmaat moeten worden gedaan.
 
 ## Contact en hulp
 

@@ -13,13 +13,19 @@ System specifications
 | RAM            | 1024MB              |
 | Transfer/month | 1TB                 |
 
+Hostnames
+---------
+
+ - `skyblue.svsticky.nl`
+ - `vps40506.public.cloudvps.com`
+
 IP-adres
-----------
+--------
 
  - `89.31.97.186`
 
 SSL-certificaten
----------------
+----------------
 
 Voor informatie over de voorziening van SSL-certificaten, kijk [hier](../docs/letsencrypt.md).
 
@@ -45,22 +51,16 @@ Production services
  - `svsticky.nl`
  - `digidecs.svsticky.nl`
 
-
- - `studiereis.svsticky.nl`
- - `wintersport.svsticky.nl`
-
-
  - `koala.svsticky.nl`
  - `betalingen.svsticky.nl`
- - `phpmyadmin.svsticky.nl`
-
-
- - `infozuil.svsticky.nl`
- - `radio.svsticky.nl`
-
 
  - `darksideof.it`
  - `dgdarc.nl`
  - `indievelopment.nl`
+ - `infozuil.svsticky.nl`
+ - `phpmyadmin.svsticky.nl`
+ - `radio.svsticky.nl`
  - `sodi.nl`
  - `stichtingsticky.nl`
+ - `studiereis.svsticky.nl`
+ - `wintersport.svsticky.nl`

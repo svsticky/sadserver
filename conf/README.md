@@ -57,7 +57,6 @@ Production services
  - `darksideof.it`
  - `dgdarc.nl`
  - `indievelopment.nl`
- - `infozuil.svsticky.nl`
  - `phpmyadmin.svsticky.nl`
  - `radio.svsticky.nl`
  - `sodi.nl`

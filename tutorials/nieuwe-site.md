@@ -12,4 +12,6 @@ Indien een commissie een website nodig heeft, is dit een stappenplan wat in de h
    1. Pak één van de [templates](../conf/nginx.md) en zet de hostname(s) op de goede plekken.
    2. Sla de configuratie op in `/etc/nginx/sites-available`.
    3. Indien de configuratie gedeployed kan worden: `# ln -s /etc/nginx/sites-available/example.svsticky.nl /etc/nginx/sites-enabled/example.svsticky.nl`.
-4. Start nginx opnieuw op om de wijziging door te voeren: `# nginx -s reload`. 
+4. Laat nginx gebruik maken van de nieuwe configuratie.
+   1. Laat de nieuwe configuratie checken qua syntax door nginx: `# nginx -t`. 
+   2. Indien de configuratie ok is, start nginx dan opnieuw op om de wijziging door te voeren: `# nginx -s reload`. 

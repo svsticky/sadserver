@@ -10,3 +10,7 @@
 
 [ansible_controllers]
 #<VM host IP>
+
+
+[skyblue]
+178.62.204.238

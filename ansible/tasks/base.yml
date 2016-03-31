@@ -101,6 +101,14 @@
   tags: user
 
 #
+# Tell users that the system is managed by Ansible on login
+#
+
+- name: Set message of the day
+  template: src=etc_motd.j2 dest=/etc/motd
+  tags: motd
+
+#
 # Disable root account
 #
 

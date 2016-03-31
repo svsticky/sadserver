@@ -8,9 +8,5 @@
 # View the list here:
 # https://github.com/debops/debops-playbooks/blob/master/playbooks/common.yml
 
-# Your host is not Debian-based so you will not be able to leverage
-# the above features on your current operating system. You can however
-# use Vagrant or something else to setup a VM and install DebOps there.
-
 [ansible_controllers]
 #<VM host IP>

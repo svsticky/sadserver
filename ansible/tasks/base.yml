@@ -1,0 +1,151 @@
+---
+#
+# Configure system repositories
+#
+
+- name: Configure core repositories
+  template: src=etc_apt_sources.list.j2 dest=/etc/apt/sources.list
+  tags: packages
+
+- name: Disable download of translation files
+  copy: src=etc_apt_apt.conf.d_99translations dest=/etc/apt/apt.conf.d/99translations
+  tags: packages
+
+- name: Update APT cache
+  apt: cache_valid_time=28800 update_cache=yes
+  tags: packages
+
+#
+# Install updates
+#
+
+- name: Install latest updates
+  apt: upgrade=safe
+  tags: packages
+
+#
+# Enable automatic updates
+#
+
+- name: Install unattended-upgrades
+  apt: pkg="{{ item }}" state=present
+  with_items:
+    - unattended-upgrades
+    - update-notifier-common
+  tags: packages
+
+- name: Configure unattended-upgrades
+  copy: src=etc_apt_apt.conf.d_20auto-upgrades dest=/etc/apt/apt.conf.d/20auto-upgrades
+  tags: packages
+
+- name: Configure unattended-upgrades sources
+  template: src=etc_apt_apt.conf.d_50unattended-upgrades.j2 dest=/etc/apt/apt.conf.d/50unattended-upgrades
+  tags: packages
+
+#
+# Install common utilities
+#
+
+- name: Install essential utilities
+  apt: pkg="{{ item }}" state=installed
+  with_items:
+    - apt-transport-https
+    - curl
+    - etckeeper
+    - htop
+    - ncdu
+    - openssh-server
+    - software-properties-common
+    - telnet
+    - update-manager-core
+    - wget
+  tags: packages
+
+#
+# NTP
+#
+
+- name: Install NTP daemon
+  apt: pkg=ntp state=present
+  tags: ntp
+
+- name: Start NTP daemon
+  service: name=ntp state=started
+  tags: ntp
+
+#
+# Create admin user with sudo access
+#
+
+- name: Create admin group
+  group: name="{{ base_admin_user }}" state=present
+  tags: user
+
+- name: Create admin user
+  user:
+    name: "{{ base_admin_user }}"
+    group: "{{ base_admin_user }}"
+    groups: sudo
+    password: "{{ base_admin_pass }}"
+    shell: /bin/bash
+    state: present
+  tags: user
+
+- name: Add SSH keys to admin user
+  authorized_key:
+    user: "{{ base_admin_user }}"
+    key: "{{ item }}"
+    exclusive: yes
+    state: present
+  with_file: files/admin-ssh-keys
+  tags: user
+
+#
+# Disable root account
+#
+
+- name: Disable root account
+  user: name=root password=* state=present
+  tags: user
+
+#
+# Tighten up SSH
+#
+
+- name: Disable SSH login for root user
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: ^PermitRootLogin
+    line: "PermitRootLogin no"
+    state: present
+  notify: reload ssh
+  tags: ssh
+
+- name: Disable password-based authentication for SSH
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: ^PasswordAuthentication
+    line: "PasswordAuthentication no"
+    state: present
+  notify: reload ssh
+  tags: ssh
+
+#
+# Firewall
+#
+
+- name: Install ufw
+  apt: pkg=ufw state=present
+  tags: firewall
+
+- name: Disable logging
+  ufw: logging=off
+  tags: firewall
+
+- name: Allow SSH traffic
+  ufw: rule=allow port=ssh proto=tcp
+  tags: firewall
+
+- name: Enable ufw
+  ufw: policy=deny state=enabled
+  tags: firewall

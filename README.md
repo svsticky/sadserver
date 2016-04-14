@@ -1,6 +1,6 @@
 # Skyblue workspace
 
-> This server configuration will soon be outdated, but maintained at the moment because the server is still in use. _No guarantee that the configuration is not already outdated._ For the new server look at the [development](https://github.com/svsticky/skyblue) branch.
+> Deze branch met serverconfiguratie zal binnenkort achterhaald zijn, maar wordt momenteel nog bijgehouden omdat de server nog steeds in productie draait. Documentatie over de nieuwe server, waarbij _configuration management_ wordt gebruikt, is te vinden in de [development](../tree/development)-branch.
 
 Deze git repository is de plek met alle documentatie over de huidige (productie)server van Sticky, `skyblue`. Het bevat documentatie, scripts, en andere relevante zaken die nodig kunnen zijn om de server te beheren of opnieuw in te richten.
 
@@ -12,4 +12,4 @@ Deze git repository is de plek met alle documentatie over de huidige (productie)
 ## Contact en hulp
 
 Voor hulp/vragen kun je contact opnemen met de serverbeheercommissie (op het
-moment van schrijven de "IT Crowd") via `server@stickyutrecht.nl`.
+moment van schrijven de "IT Crowd") via `server@svsticky.nl`.

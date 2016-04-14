@@ -16,4 +16,5 @@ Hieronder is een overzicht te zien van alle websites op `skyblue` met  hun (pote
 | `stichtingsticky.nl`      | *-*                               | *-*                   |
 | `svsticky.nl`             | `sticky_wp`                       | `sticky_wp`           |
 | `studytrip.svsticky.nl`   | `studytrip`                       | `studytrip`           |
+| `totalwar.svsticky.nl`    | *-*                               | *-*                   |
 | `wintersport.svsticky.nl` | *-*                               | *-*                   |

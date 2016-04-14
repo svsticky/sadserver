@@ -19,6 +19,7 @@ Alle bovengenoemde gebruikers hebben sudo-rechten. Indien er nieuwe leden plaats
  - commit
  - dgdarc
  - indievelopment
+ - lustrum
  - sodi
  - stichting
  - studiereis

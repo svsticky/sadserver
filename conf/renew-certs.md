@@ -1,11 +1,11 @@
 # renew-certs.sh
 
 Het script dat in de crontab staat van `root` en wekelijks wordt gedraaid op het moment.
-	
+
 	#/bin/bash
 
 	/opt/letsencrypt/letsencrypt-auto certonly --non-interactive -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/svsticky.nl --domains svsticky.nl,www.svsticky.nl,stickyutrecht.nl,www.stickyutrecht.nl
-	/opt/letsencrypt/letsencrypt-auto certonly --non-interactive -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/koala.svsticky.nl --domains koala.svsticky.nl,koala.stickyutrecht.nl,intro.svsticky.nl,intro.stickyutrecht.nl
+	/opt/letsencrypt/letsencrypt-auto certonly --non-interactive -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/koala.svsticky.nl/public --domains koala.svsticky.nl,koala.stickyutrecht.nl,intro.svsticky.nl,intro.stickyutrecht.nl
 	/opt/letsencrypt/letsencrypt-auto certonly --non-interactive -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/betalingen.svsticky.nl --domains betalingen.svsticky.nl
 	/opt/letsencrypt/letsencrypt-auto certonly --non-interactive -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/dgdarc/dgdarc.nl --domains dgdarc.nl,www.dgdarc.nl,dgdarc.com,www.dgdarc.com,dgdarc.svsticky.nl,dgdarc.stickyutrecht.nl
 	/opt/letsencrypt/letsencrypt-auto certonly --non-interactive -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/digidecs.svsticky.nl --domains digidecs.svsticky.nl,digidecs.stickyutrecht.nl

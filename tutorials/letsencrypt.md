@@ -13,6 +13,7 @@ De client staat momenteel geïnstalleerd in `/opt/letsencrypt/`, met haar config
 De wrapper wordt aangeroepen met de volgende parameters:
 
 * `certonly` We gebruiken geen plugin om de webserverconfiguratie aan te passen, dus er moet alleen een certificaat gegenereerd worden.
+* `--non-interactive` Dit zorgt ervoor dat de client geen vragen stelt tijdens het uitvoeren, zodat het script niet blijft hangen als het als cronjob uitgevoerd wordt.
 * `-a webroot` We gebruiken de webroot als authenticatiemethode voor het domein waar we een site voor aan willen vragen. Dit betekent dat er tijdelijk een aantal bestanden in onderstaande webroot worden geplaatst en opgevraagd.
 * `--webroot-path /var/www/example.tld` De bijbehorende webroot.
 * `--keep-until-expiring` Dit geeft aan dat er pas een nieuw certificaat moet worden gegenereerd als er geen bestaand certificaat is dat nog 'nieuw' (<30 dagen oud) is.
@@ -23,7 +24,7 @@ De wrapper wordt aangeroepen met de volgende parameters:
 
 Dit ziet er dan dus zo uit in het script:
 
-`/usr/local/src/letsencrypt/letsencrypt-auto certonly -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/example.tld --domains example.tld,www.example.tld,example.svsticky.nl`
+`/opt/letsencrypt/letsencrypt-auto certonly --non-interactive -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/example.tld --domains example.tld,www.example.tld,example.svsticky.nl`
 
 Het certificaat wordt vervolgens, als alles goed gaat, gegenereerd en opgeslagen in `/etc/letsencrypt/live/example.tld/`. Nginx heeft de versie van het certificaat nodig met het intermediate certificate in de chain, dat is `fullchain.pem`, en uiteraard de private key, in `privkey.pem`. Aan de configuratie in nginx van de betreffende site moeten vervolgens dan ook de volgende regels worden toegevoegd:
 

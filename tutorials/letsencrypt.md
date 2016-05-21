@@ -25,7 +25,7 @@ De wrapper wordt aangeroepen met de volgende parameters:
 
 Dit ziet er dan dus zo uit in het script:
 
-`/opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade -a webroot --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --webroot-path /var/www/example.tld --domains example.tld,www.example.tld,example.svsticky.nl`
+`/opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl -a webroot --webroot-path /var/www/example.tld --domains example.tld,www.example.tld,example.svsticky.nl`
 
 Het certificaat wordt vervolgens, als alles goed gaat, gegenereerd en opgeslagen in `/etc/letsencrypt/live/example.tld/`. Nginx heeft de versie van het certificaat nodig met het intermediate certificate in de chain, dat is `fullchain.pem`, en uiteraard de private key, in `privkey.pem`. Aan de configuratie in nginx van de betreffende site moeten vervolgens dan ook de volgende regels worden toegevoegd:
 

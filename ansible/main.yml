@@ -12,8 +12,9 @@
     - include: handlers/nginx.yml
 
   vars:
-    security_upgrades: True
-    all_upgrades: False
+    unattended_upgrades:
+      security: True
+      all: False
 
     admin_users:
       laurens:

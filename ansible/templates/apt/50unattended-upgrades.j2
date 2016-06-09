@@ -1,10 +1,10 @@
 // {{ ansible_managed }}
 Unattended-Upgrade::Allowed-Origins {
-	{% if security_upgrades %}
+	{% if unattended_upgrades.security %}
 	"${distro_id} ${distro_codename}-security";
 	{% endif %}
 
-	{% if all_upgrades %}
+	{% if unattended_upgrades.all %}
 	"${distro_id} stable";
 	"${distro_id} ${distro_codename}-updates";
 	{% endif %}

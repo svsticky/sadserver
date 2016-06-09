@@ -1,0 +1,11 @@
+---
+- name: "install unattended-upgrades and list-changes"
+  apt:
+    pkg: unattended-upgrades
+    state: present
+
+- debug:
+    msg: "Security updates {{ security_upgrades }}"
+
+- debug:
+    msg: "All updates {{ all_upgrades }}"

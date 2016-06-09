@@ -3,6 +3,7 @@
   user: root
 
   tasks:
+    - include: tasks/auth.yml
     - include: tasks/users.yml admins={{ admin_users }}
 
   vars:

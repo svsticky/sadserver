@@ -1,9 +1,4 @@
 ---
-- name: "create wheel group"
-  group:
-    name=sudo
-    state=present
-
 - name: "create admin users"
   user:
     name="{{ item.key }}"

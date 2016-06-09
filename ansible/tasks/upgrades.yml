@@ -1,11 +1,10 @@
 ---
-- name: "install unattended-upgrades and list-changes"
+- name: "install unattended-upgrades"
   apt:
     pkg: unattended-upgrades
     state: present
 
-- debug:
-    msg: "Security updates {{ security_upgrades }}"
-
-- debug:
-    msg: "All updates {{ all_upgrades }}"
+- name: "configure unattended-upgrades"
+  template:
+    src: templates/apt/50unattended-upgrades.j2
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades

@@ -1,2 +1,2 @@
 [development]
-146.185.175.169
+146.185.175.169 ansible_python_interpreter=/usr/bin/python2.7

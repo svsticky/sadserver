@@ -2,6 +2,7 @@ ansible/secret
 secret
 .encfs.secret
 ansible.cfg
+*.retry
 
 #-- python
 *.py[co]

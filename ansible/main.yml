@@ -5,6 +5,10 @@
   tasks:
     - include: tasks/auth.yml
     - include: tasks/users.yml admins={{ admin_users }}
+    - include: tasks/nginx.yml
+
+  handlers:
+    - include: handlers/nginx.yml
 
   vars:
     admin_users:

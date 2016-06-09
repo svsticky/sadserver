@@ -1,0 +1,40 @@
+---
+
+# TODO: voor een VHOSt
+# * hostnames
+# * certificaat (op basis van hostname)
+# * webroot op basis van hostname + (mogelijk user) (moet nog gecheckt worden)
+# * php ja of nee.
+
+- name: "install nginx"
+  apt:
+    name: nginx
+    state: present
+
+- name: "start and enable nginx"
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+
+# TODO: nginx.conf
+# TODO: Make this template based
+
+- name: "create static site example webroot"
+  file:
+    path: /var/www/static.svsticky.nl
+    state: directory
+
+- name: "create static site example nginx config"
+  template:
+    src: templates/nginx/static.conf
+    dest: /etc/nginx/sites-available/static.conf
+
+- name: "enable static site example nginx config"
+  file:
+    src: /etc/nginx/sites-available/static.conf
+    dest: /etc/nginx/sites-enabled/static.conf
+    state: link
+  notify: reload nginx
+

@@ -1,0 +1,18 @@
+---
+- name: "create wheel group"
+  group:
+    name=sudo
+    state=present
+
+- name: "create admin users"
+  user:
+    name="{{ item.key }}"
+    shell=/bin/bash
+    group=sudo
+  with_dict: "{{ admins }}"
+
+- name: "add ssh keys for admin users"
+  authorized_key:
+    user="{{ item.key }}"
+    key="https://github.com/{{ item.value.github }}.keys"
+  with_dict: "{{ admins }}"

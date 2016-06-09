@@ -1,0 +1,19 @@
+---
+- hosts: development
+  user: root
+
+  tasks:
+    - include: tasks/users.yml admins={{ admin_users }}
+
+  vars:
+    admin_users:
+      laurens:
+        github: duijf
+      tom:
+        github: tomwassenberg
+      arian:
+        github: arianvp
+      martijn:
+        github: martijncasteel
+
+...

@@ -1,16 +1,4 @@
-# This is an Ansible inventory file in INI format. You can define a list of
-# hosts and groups to be managed by this particular inventory.
+#[skyblue]
+#178.62.204.238
 
-# Hosts listed under [ansible_controllers] will have common DebOps plays
-# ran against them. It will include services such as iptables, DNS, Postfix,
-# sshd configuration and more.
-#
-# View the list here:
-# https://github.com/debops/debops-playbooks/blob/master/playbooks/common.yml
-
-[ansible_controllers]
-#<VM host IP>
-
-
-[skyblue]
-178.62.204.238
+[digital-ocean]

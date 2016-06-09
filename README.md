@@ -3,10 +3,20 @@
 </p>
 
 # Server workspace
-This git repository holds the configuration of the Sticky server (name can be changed). It holds an [ansible](https://docs.ansible.com/ansible/intro_getting_started.html) configuration to automatically set-up a new server if required. 
+
+This repository contains Ansible playbooks and relevant documentation for the
+IT infrastructure at Study Association Sticky.
+
+For help and questions, contact the relevant committee -- at the time of
+writing, this is the [IT Crowd](mailto:helloit@svsticky.nl).
+
+Godspeed!
+
+## Running everything
+
+```
+$ cd ansible
+$ ansible-playbook -i hosts main.yml
+```
 
 
-
-
-Voor hulp/vragen kun je contact opnemen met de serverbeheercommissie (op het
-moment van schrijven de "IT Crowd") via [helloit@svsticky.nl](mailto:helloit@svsticky.nl).

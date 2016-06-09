@@ -1,6 +1,0 @@
----
-- hosts: all
-  sudo: yes
-  roles:
-    - role: base
-      base_admin_pass: ""

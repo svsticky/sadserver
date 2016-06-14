@@ -2,14 +2,18 @@
 - hosts: development
   user: root
 
+  handlers:
+    - name: "restart nginx"
+      service: name=nginx state=restarted
+
+    - name: "reload nginx"
+      service: name=nginx state=reloaded
+
   tasks:
     - include: tasks/auth.yml
     - include: tasks/users.yml admins={{ admin_users }}
     - include: tasks/upgrades.yml
     - include: tasks/nginx.yml
-
-  handlers:
-    - include: handlers/nginx.yml
 
   vars:
     unattended_upgrades:

@@ -31,7 +31,7 @@
 
 - name: "disable default nginx website"
   file:
-    src: /etc/nginx/sites-enabled/default
+    path: /etc/nginx/sites-enabled/default
     state: absent
     follow: yes
 

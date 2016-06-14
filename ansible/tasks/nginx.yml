@@ -18,9 +18,9 @@
     enabled: yes
 
 
-# TODO: Make this template based
 - name: "create dhparams"
   command: openssl dhparam -out /etc/nginx/dhparam.pem 4096
+  args:
     creates: /etc/nginx/dhparam.pem
 
 - name: "create nginx.conf"
@@ -30,6 +30,7 @@
   notify: reload nginx
 
 
+# TODO: Make this template based
 - name: "create static site example webroot"
   file:
     path: /var/www/static.svsticky.nl

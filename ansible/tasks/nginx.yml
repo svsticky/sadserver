@@ -29,11 +29,16 @@
     dest: /etc/nginx/nginx.conf
   notify: reload nginx
 
+- name: "disable default nginx website"
+  file:
+    src: /etc/nginx/sites-enabled/default
+    state: absent
+    follow: yes
 
 # TODO: Make this template based
 - name: "create static site example webroot"
   file:
-    path: /var/www/static.svsticky.nl
+    path: /var/www/dev.static.svsticky.nl
     state: directory
 
 - name: "create static site example nginx config"

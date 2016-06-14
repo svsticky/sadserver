@@ -18,8 +18,17 @@
     enabled: yes
 
 
-# TODO: nginx.conf
 # TODO: Make this template based
+- name: "create dhparams"
+  command: openssl dhparam -out /etc/nginx/dhparam.pem 4096
+    creates: /etc/nginx/dhparam.pem
+
+- name: "create nginx.conf"
+  template:
+    src: templates/nginx/nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify: reload nginx
+
 
 - name: "create static site example webroot"
   file:

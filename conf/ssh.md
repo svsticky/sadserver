@@ -6,11 +6,14 @@ Root login staat uit, net zoals password login. Je hebt keys nodig.
 
 ### Administrators
 
- - admin (wordt gebruikt door het bestuurslid in de IT Crowd)
- - arian
- - laurens
- - martijn
- - tom
+- _admin (wordt momenteel gebruikt door Bas de Kan en na de bestuurswissel in september uitgefaseerd)_
+- arian
+- laurens
+- _maarten (wordt binnenkort aangemaakt, na wederzijdse ondertekening van contract)_
+- _martijn (wordt binnenkort verwijderd)_
+- tom
+- xXX_Th0M4D_xXXxNoScopEZ42OBLAZER
+- yorick
 
 Alle bovengenoemde gebruikers hebben sudo-rechten. Indien er nieuwe leden plaatsnemen in de IT Crowd en een gebruiker op de server tot hun beschikking krijgen, krijgen zij mogelijk niet direct sudo-rechten. Aan een procedure hiervoor wordt op dit moment gewerkt.
 

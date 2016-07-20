@@ -6,5 +6,7 @@
 
 - name: "configure unattended-upgrades"
   template:
-    src: templates/apt/50unattended-upgrades.j2
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    src: "{{ item }}.j2"
+    dest: "/{{ item | regex_replace('_', '/') }}"
+  with_items:
+    - etc_apt_apt.conf.d_50unattended-upgrades

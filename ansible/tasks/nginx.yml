@@ -17,16 +17,22 @@
     state: started
     enabled: yes
 
+- name: "copy dhparams"
+  copy:
+    src: "files/{{ item }}"
+    dest: "/{{ item | regex_replace('_', '/') }}"
+    owner: root
+    group: root
+  with_items:
+    - etc_nginx_dhparams.pem
 
-- name: "create dhparams"
-  command: openssl dhparam -out /etc/nginx/dhparam.pem 4096
-  args:
-    creates: /etc/nginx/dhparam.pem
-
-- name: "create nginx.conf"
+- name: "copy nginx configuration"
   template:
-    src: templates/nginx/nginx.conf
-    dest: /etc/nginx/nginx.conf
+    src: "{{ item }}.j2"
+    dest: "/{{ item | regex_replace('_', '/') }}"
+  with_items:
+    - etc_nginx_nginx.conf
+    - etc_nginx_sites-available_static.conf
   notify: reload nginx
 
 - name: "disable default nginx website"
@@ -41,11 +47,6 @@
   file:
     path: /var/www/dev.static.svsticky.nl
     state: directory
-
-- name: "create static site example nginx config"
-  template:
-    src: templates/nginx/static.conf
-    dest: /etc/nginx/sites-available/static.conf
 
 - name: "enable static site example nginx config"
   file:

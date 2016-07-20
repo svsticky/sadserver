@@ -20,19 +20,19 @@
 - name: "copy dhparams"
   copy:
     src: "files/{{ item }}"
-    dest: "/{{ item | regex_replace('_', '/') }}"
+    dest: "/{{ item }}"
     owner: root
     group: root
   with_items:
-    - etc_nginx_dhparams.pem
+    - etc/nginx/dhparams.pem
 
 - name: "copy nginx configuration"
   template:
     src: "{{ item }}.j2"
-    dest: "/{{ item | regex_replace('_', '/') }}"
+    dest: "/{{ item }}"
   with_items:
-    - etc_nginx_nginx.conf
-    - etc_nginx_sites-available_static.conf
+    - etc/nginx/nginx.conf
+    - etc/nginx/sites-available/static.conf
   notify: reload nginx
 
 - name: "disable default nginx website"

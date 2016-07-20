@@ -58,4 +58,11 @@
           filter: sshd
           logpath: /var/log/auth.log
 
+    websites:
+      studytrip:
+        user: laurens
+        hostnames:
+          - studytrip.dev.svsticky.nl
+          - studiereis.dev.svsticky.nl
+
 ...

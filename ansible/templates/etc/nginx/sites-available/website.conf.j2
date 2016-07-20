@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+server {
+  listen 80;
+  listen [::]:80;
+
+  server_name
+  {% for hostname in item.value.hostnames %}
+    {{ hostname }}
+  {% endfor %};
+
+  root /var/www/{{item.value.user}}/{{item.value.hostnames[0]}};
+  index index.html index.htm;
+}

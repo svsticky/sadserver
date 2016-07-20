@@ -1,0 +1,23 @@
+---
+- name: "firewall rules"
+  ufw:
+    rule: allow
+    direction: in
+    port: "{{ item }}"
+  with_items:
+    - 22
+    - 80
+    - 443
+
+- name: "allow outgoing traffic"
+  ufw:
+    state: enabled
+    policy: allow
+    direction: outgoing
+
+- name: "block all other incoming traffic"
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+

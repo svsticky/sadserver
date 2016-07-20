@@ -24,6 +24,7 @@
     - include: tasks/upgrades.yml
     - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
+    - include: tasks/firewall.yml
 
   vars:
     unattended_upgrades:

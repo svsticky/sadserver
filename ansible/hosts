@@ -1,2 +1,2 @@
 [development]
-146.185.134.30 ansible_python_interpreter=/usr/bin/python2.7
+dev.svsticky.nl ansible_python_interpreter=/usr/bin/python2.7

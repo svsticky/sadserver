@@ -13,10 +13,16 @@
         name: nginx
         state: reloaded
 
+    - name: "restart fail2ban"
+      service:
+        name: fail2ban
+        state: restarted
+
   tasks:
     - include: tasks/auth.yml
     - include: tasks/users.yml admins={{ admin_users }}
     - include: tasks/upgrades.yml
+    - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
 
   vars:
@@ -35,5 +41,21 @@
         github: spasticVerbalizer
       yorick:
         github: yorici
+
+    fail2ban:
+      loglevel: 3
+      ignoreip: 127.0.0.1/8
+      bantime: 600
+      maxretry: 3
+
+      destemail: root@localhost
+      mta: sendmail
+      banaction: iptables-multiport
+
+      services:
+        - name: sshd
+          port: ssh
+          filter: sshd
+          logpath: /var/log/auth.log
 
 ...

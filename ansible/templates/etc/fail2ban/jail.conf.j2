@@ -1,0 +1,40 @@
+# {{ ansible_managed }}
+
+[DEFAULT]
+
+ignoreip = {{ fail2ban.ignoreip }}
+bantime  = {{ fail2ban.bantime }}
+maxretry = {{ fail2ban.maxretry }}
+
+backend  = auto
+
+destemail = {{ fail2ban.destemail }}
+banaction = {{ fail2ban.banaction }}
+mta = {{ fail2ban.mta }}
+protocol = tcp
+chain = INPUT
+
+action_ = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+
+action = %(action_)s
+
+{% for service in fail2ban.services %}
+[{{ service.name }}]
+
+enabled = {{ service.enabled|default("true") }}
+port = {{ service.port }}
+filter = {{ service.filter }}
+logpath = {{ service.logpath }}
+{% if service.maxretry is defined %}
+maxretry = {{ service.maxretry }}
+{% endif %}
+{% if service.protocol is defined %}
+protocol = {{ service.protocol }}
+{% endif %}
+{% if service.action is defined %}
+action = %({{ service.action }})s
+{% endif %}
+{% if service.banaction is defined %}
+banaction = {{ service.banaction }}
+{% endif %}
+{% endfor %}

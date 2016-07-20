@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+[Definition]
+
+loglevel = {{ fail2ban.loglevel }}
+logtarget = /var/log/fail2ban.log
+socket = /var/run/fail2ban/fail2ban.sock
+pidfile = /var/run/fail2ban/fail2ban.pid

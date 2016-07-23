@@ -47,7 +47,7 @@ server {
 ```
 server {
 	listen 80;
-	server_name example.tld *.example.tld;
+	server_name example.tld *.example.tld example.svsticky.nl;
 
 	return 301 https://example.tld$request_uri;
 }

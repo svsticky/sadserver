@@ -12,6 +12,7 @@ Hieronder is een overzicht te zien van alle websites op `skyblue` met  hun (pote
 | `koala.svsticky.nl`       | `koala`                           | `koala`               |
 | `phpmyadmin.svsticky.nl`  | `phpmyadmin`                      | `phpmyadmin`          |
 | `radio.svsticky.nl`       | *-*                               | *-*                   |
+| `redesign.svsticky.nl`    | `sticky_wp_redesign`              | `sticky_wp_redesi`    |
 | `sodi.nl`                 | `sodi`                            | `sodi`                |
 | `stichtingsticky.nl`      | *-*                               | *-*                   |
 | `svsticky.nl`             | `sticky_wp`                       | `sticky_wp`           |

@@ -2,7 +2,7 @@
 
 Indien een commissie een website nodig heeft, is dit een stappenplan wat in de huidige situatie gevolgd zou moeten worden.
 
-1. Maak een beperkte gebruiker aan (zie [hier](ssh.md)).
+1. Maak een beperkte gebruiker aan (zie [hier](nieuwe-gebruiker.md)).
 2. Maak een webroot aan voor de site.
    1. `# mkdir /var/www/<USERNAME>/example.svsticky.nl/`
    2. `# chown <USERNAME>:www-data /var/www/<USERNAME>/example.svsticky.nl/`

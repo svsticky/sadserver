@@ -1,0 +1,83 @@
+---
+ - hosts: all
+
+   tasks:
+
+     # Privileged:
+   - block:
+
+     - name: update package lists, install ruby build-dependencies not covered in build-dep
+       apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+       with_items:
+         - build-essential
+         - libssl-dev
+         - libreadline-dev
+         - zlib1g-dev
+         - imagemagick
+
+     - name: install ruby build-dependencies
+       apt:
+         name: ruby2.3
+         state: build-dep
+         # NOTE: Due to a bug in ansible, this step will always report as 'changed'. The full list
+         # of dependencies could be added to the first step as items, but that's ugly and might break.
+         # (`apt-cache showsrc ruby2.3 | grep ^Build-Depends`)
+
+     - name: create user 'koala'
+       user:
+         name: koala
+         state: present
+         system: yes
+         shell: /bin/bash
+
+     become: yes
+
+   # As user 'koala':
+   - block:
+     - name: install rbenv for user 'koala'
+       git:
+         repo: https://github.com/rbenv/rbenv.git
+         dest: ~/.rbenv
+
+     - name: install rbenv plugins
+       git:
+         repo: '{{item.url}}'
+         dest: ~/.rbenv/plugins/{{item.name}}
+       with_items:
+         - { name: 'ruby-build', url: 'https://github.com/rbenv/ruby-build.git' }
+         - { name: 'rbenv-vars', url: 'https://github.com/rbenv/rbenv-vars.git' }
+         # NOTE: This will install the latest development versions, should we pin a tag/commit/release?
+
+     - name: copy .bash_profile for user 'koala'
+       copy:
+         src: "files/koala_bash_profile"
+         dest: "/home/koala/.bash_profile"
+         owner: koala
+         group: koala
+
+     - name: compile and install ruby 2.3.0 for user 'koala'
+       environment:
+         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+       shell: eval "$(rbenv init - )"; rbenv install 2.3.0
+       args:
+         executable: /bin/bash
+         creates: /home/koala/.rbenv/versions/2.3.0
+         # NOTE: This takes a while when compiling, and a package ruby2.3 exists, should we use that?
+
+     become: yes
+     become_user: koala
+
+
+# TODO:
+#  - Should (part of) this setup be included in the koala project's Vagrantfile?
+#  - Clone koala source to appropriate location
+#     Home or /var/www?
+#     - Generate secrets or read them from somewhere?
+#  - Install nginx (skyblue playbook does this already, but is not virtualboxable)
+#  - Set up database (mariadb)
+#     Autogenerate credentials with password lookup, hardcode with vault lookup, or?
+#  - Set up unicorn
+#     -> Convert to systemd service?
+#  - Set up cronjobs
+#     Perhaps systemd timers are useful, manually startable etc.
+#  - Create koala's db

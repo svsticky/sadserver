@@ -1,0 +1,7 @@
+---
+ - hosts: default
+   become: yes
+   gather_facts: no
+   tasks:
+     - name: install ansible prerequisites
+       script: scripts/ansible_bootstrap.sh creates=/etc/.ansible_ready

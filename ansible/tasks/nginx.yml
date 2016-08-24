@@ -50,7 +50,7 @@
     group: sudo
     mode: 0755
     state: directory
-  with_dict: "{{ websites }}" 
+  with_dict: "{{ websites }}"
 
 
 - name: "copy website nginx configuraitons"

@@ -1,6 +1,9 @@
 ---
 - hosts: development
-  user: root
+  user: ansible
+  become_user: root
+  become_method: sudo
+  become: true
 
   handlers:
     - name: "restart nginx"

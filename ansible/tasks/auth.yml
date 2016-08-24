@@ -1,14 +1,4 @@
 ---
-- name: "install sudo"
-  apt:
-    name: sudo
-    state: present
-
-- name: "create sudo group"
-  group:
-    name: sudo
-    state: present
-
 # TODO install pam_ssh_agent_auth instead of
 # setting NOPASSWD.
 - name: "enable NOPASSWD for sudo group"

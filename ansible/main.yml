@@ -20,7 +20,7 @@
 
   tasks:
     - include: tasks/auth.yml
-    - include: tasks/users.yml admins={{ admin_users }}
+    - include: tasks/users.yml
     - include: tasks/upgrades.yml
     - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
@@ -31,7 +31,7 @@
       security: True
       all: False
 
-    admin_users:
+    admins:
       laurens:
         github: duijf
       tom:

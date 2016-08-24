@@ -17,7 +17,7 @@
     state: started
     enabled: yes
 
-- name: "copy dhparams"
+- name: "copy dhparams and default configuration"
   copy:
     src: "files/{{ item }}"
     dest: "/{{ item }}"
@@ -25,6 +25,15 @@
     group: root
   with_items:
     - etc/nginx/dhparams.pem
+    - etc/nginx/sites-available/default
+
+# TODO: change ownership to something more proper
+- name: "create acme-challenges directory"
+  file:
+    path: /var/www/acme-challenges
+    state: directory
+    owner: www-data
+    group: www-data
 
 - name: "copy nginx configuration"
   template:
@@ -32,13 +41,6 @@
     dest: "/{{ item }}"
   with_items:
     - etc/nginx/nginx.conf
-  notify: reload nginx
-
-- name: "disable default nginx website"
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-    follow: yes
   notify: reload nginx
 
 # TODO: Make this template based

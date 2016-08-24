@@ -30,6 +30,36 @@
          system: yes
          shell: /bin/bash
 
+     - name: install mariadb via apt
+       apt:
+         name: "{{item}}"
+         state: present
+       with_items:
+         - mysql-server
+         - python-mysqldb
+
+           # Systemd module is not yet released...
+     #- systemd:
+         #name: mysql
+         #enabled: yes
+         #masked: no
+     #- name: start database
+       #systemd:
+         #name: mysql
+         #state: started
+         #enabled: yes
+         #daemon_reload: yes
+
+     #- name: generate root password
+       #mysql_user:
+           #name: root
+           #password: "{{ lookup('password', 'credentials/mysql/root') }}"
+
+     #- name: install /root/.my.cnf
+       #template:
+           #src: files/.my.cnf
+           #dest: ~/.my.cnf
+
      become: yes
 
    # As user 'koala':

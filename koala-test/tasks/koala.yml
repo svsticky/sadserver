@@ -83,11 +83,10 @@
   - name: ensure ruby is installed, compile if necessary
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init - )"; rbenv install 2.3.0
+    shell: eval "$(rbenv init - )"; rbenv install {{ koala_ruby_version }}
     args:
       executable: /bin/bash
-      creates: /home/koala/.rbenv/versions/2.3.0
-      # NOTE: This takes a while when compiling, and a package ruby2.3 exists, should we use that?
+      creates: /home/koala/.rbenv/versions/{{ koala_ruby_version }}
 
   - name: ensure bundler is installed
     environment:
@@ -96,7 +95,7 @@
     args:
       executable: /bin/bash
       chdir: /var/www/koala.svsticky.nl
-      creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/bundler-1.12.5
+      creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/{{ koala_ruby_version }}/gems/bundler-1.12.5
 
   - name: ensure koala has a ssh directory
     file:
@@ -130,6 +129,8 @@
     shell: eval "$(rbenv init - )"; bundle install
     args:
       chdir: /var/www/koala.svsticky.nl
+    register: koala_gem_result
+    changed_when: koala_gem_result.stdout.find("Installing") != -1
 
   become: yes
   become_user: koala
@@ -142,13 +143,13 @@
       mode: 0755
       owner: koala
       group: koala
-    notify:
-      - systemctl daemon-reload
 
   - name: ensure webrick service file is present in development
     copy:
       src: files/webrick.service
       dest: /etc/systemd/system/webrick.service
+    notify:
+      - systemctl daemon-reload
 
   - name: ensure webrick service is enabled and running in development
     service:
@@ -158,3 +159,26 @@
   when: koala_environment == 'development'
   tags:
     - doehet
+
+- block:
+  - name: ensure unicorn script is present in production
+    template:
+      src: templates/koala-unicorn.sh
+      dest: /home/koala/unicorn.sh
+      mode: 0755
+      owner: koala
+      group: koala
+
+  - name: ensure unicorn service file is present in production
+    copy:
+      src: files/unicorn.service
+      dest: /etc/systemd/system/unicorn.service
+    notify:
+      - systemctl daemon-reload
+
+  - name: ensure unicorn service is enabled and running in production
+    service:
+      name: unicorn
+      enabled: yes
+      state: started
+  when: koala_environment == 'production'

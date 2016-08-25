@@ -3,6 +3,7 @@
    vars:
        koala_environment: development
        koala_version: development
+       koala_ruby_version: 2.3.0
 
    tasks:
 
@@ -21,9 +22,6 @@
        command: systemctl daemon-reload
        become: yes
 
-   # As user 'koala':
-   #- block:
-
      ##- name: rake routes
        ##environment:
          ##PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
@@ -37,10 +35,6 @@
        ##shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} db:setup
        ##args:
          ##chdir: /var/www/koala.svsticky.nl
-
-     #become: yes
-     #become_user: koala
-
 
 # TODO:
 #  - Should (part of) this setup be included in the koala project's Vagrantfile?

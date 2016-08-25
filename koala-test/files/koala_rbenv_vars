@@ -1,7 +1,7 @@
 # Database credentials
 DATABASE_USER=koala
 DATABASE_PASSWORD={{ lookup('password', 'credentials/mysql/koala chars=hexdigits length=64') }}
-DATABASE_SOCKET=/var/run/mysqld/mysql.sock
+DATABASE_SOCKET=/var/run/mysqld/mysqld.sock
 
 # Secrets
 RAILS_SECRET={{ lookup('password', 'credentials/koala/rails_secret chars=hexdigits length=128') }}
@@ -18,3 +18,4 @@ AWS_SECRET=
 
 # Other
 IDEAL_PLATFORM=
+RAILS_ENV={{ koala_environment }}

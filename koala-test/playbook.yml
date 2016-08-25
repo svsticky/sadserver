@@ -1,5 +1,8 @@
 ---
  - hosts: all
+   vars:
+       koala_environment: development
+       koala_version: development
 
    tasks:
 
@@ -18,6 +21,7 @@
        apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
        with_items:
          - build-essential
+         - nodejs
          - libssl-dev
          - libreadline-dev
          - zlib1g-dev
@@ -44,6 +48,13 @@
          state: present
          system: yes
          shell: /bin/bash
+
+     - name: allow user koala to use the forwarded agent
+       file:
+           path: "{{ ansible_env.SSH_AUTH_SOCK }}"
+           state: file
+           owner: koala
+           group: koala
 
      - name: ensure mysql-server is absent
        apt:
@@ -86,43 +97,44 @@
        tags:
          - database
 
-     - name: create 'koala' database
-       mysql_db:
-         name: koala
-       tags:
-         - database
+     #- name: create 'koala' database
+       #mysql_db:
+         #name: koala
+       #tags:
+         #- database
 
      - name: create 'koala' db user
        mysql_user:
          name: koala
          password: "{{ lookup('password', 'credentials/mysql/koala length=64 chars=hexdigits') }}"
          host: localhost
-         priv: koala.*:ALL
+         priv: koala.*:ALL/koala-development.*:ALL
        tags:
          - database
-
-     - name: collect github key
-       shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-       args:
-         creates: ~/.ssh/known_hosts
-
-     - name: clone koala master to /var/www/koala.svsticky.nl
-       git:
-         repo: 'git@github.com:svsticky/constipated-koala.git'
-         dest: /var/www/koala.svsticky.nl
 
      - name: create /var/www/koala.svsticky.nl
        file:
          path: /var/www/koala.svsticky.nl
          state: directory
          owner: koala
-         group: www-data
+         group: koala
          recurse: yes
+
+     - name: collect github key
+       shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+       args:
+         creates: ~/.ssh/known_hosts
+
+     - name: clone koala to /var/www/koala.svsticky.nl
+       git:
+         repo: 'git@github.com:svsticky/constipated-koala.git'
+         dest: /var/www/koala.svsticky.nl
+         version: "{{ koala_version }}"
 
      - name: drop .rbenv-vars
        template:
          src: files/koala_rbenv_vars
-         dest: /var/www/koala.svsticky.nl/.rbenv_vars
+         dest: /var/www/koala.svsticky.nl/.rbenv-vars
          owner: koala
          group: koala
          mode: 0700
@@ -163,7 +175,9 @@
          # NOTE: This takes a while when compiling, and a package ruby2.3 exists, should we use that?
 
      - name: install bundler
-       shell: gem install bundler
+       environment:
+         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+       shell: eval "$(rbenv init -)"; gem install bundler
        args:
          executable: /bin/bash
          chdir: /var/www/koala.svsticky.nl
@@ -181,6 +195,20 @@
        environment:
          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
        shell: eval "$(rbenv init - )"; bundle install
+       args:
+         chdir: /var/www/koala.svsticky.nl
+
+     - name: rake routes
+       environment:
+         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+       shell: eval "$(rbenv init - )"; bundle exec rake routes
+       args:
+         chdir: /var/www/koala.svsticky.nl
+
+     - name: ensure database exists
+       environment:
+         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+       shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} db:setup
        args:
          chdir: /var/www/koala.svsticky.nl
 

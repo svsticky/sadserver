@@ -151,6 +151,8 @@
     notify:
       - systemctl daemon-reload
 
+  - meta: flush_handlers
+
   - name: ensure webrick service is enabled and running in development
     service:
       name: webrick
@@ -175,6 +177,8 @@
       dest: /etc/systemd/system/unicorn.service
     notify:
       - systemctl daemon-reload
+
+  - meta: flush_handlers
 
   - name: ensure unicorn service is enabled and running in production
     service:

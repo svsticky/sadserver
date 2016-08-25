@@ -1,6 +1,7 @@
 [Unit]
 Description=Run koala production service
 Requires=mysql.service
+Conflicts=webrick.service
 After=network.target
 
 [Service]

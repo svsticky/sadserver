@@ -39,10 +39,6 @@
 # TODO:
 #  - Should (part of) this setup be included in the koala project's Vagrantfile?
 #  - Install nginx (skyblue playbook does this already, but is not virtualboxable)
-#  - Set up database (mariadb)
-#     Autogenerate credentials with password lookup, hardcode with vault lookup, or?
-#  - Set up unicorn
-#     -> Convert to systemd service?
 #  - Set up cronjobs
 #     Perhaps systemd timers are useful, manually startable etc.
 #  - Create koala's db

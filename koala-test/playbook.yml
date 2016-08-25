@@ -9,218 +9,41 @@
      # Privileged tasks:
    - block:
 
-     - name: ensure sudo allows agent forwarding
-       copy:
-         src: files/sudoers_env
-         dest: /etc/sudoers.d/agent_forwarding
-         mode: 0440
-         owner: root
-         group: root
+     - include: tasks/auth.yml
+     - include: tasks/database.yml
 
-     - name: update package lists, install ruby build-dependencies not covered in build-dep
-       apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
-       with_items:
-         - build-essential
-         - nodejs
-         - libssl-dev
-         - libreadline-dev
-         - zlib1g-dev
-         - imagemagick
-         - libmariadb-client-lgpl-dev-compat
-       tags:
-         - packages
-         - ruby
-
-     - name: install ruby build-dependencies
-       apt:
-         name: ruby2.3
-         state: build-dep
-       tags:
-         - packages
-         - ruby
-         # NOTE: Due to a bug in ansible, this step will always report as 'changed'. The full list
-         # of dependencies could be added to the first step as items, but that's ugly and might break.
-         # (`apt-cache showsrc ruby2.3 | grep ^Build-Depends`)
-
-     - name: create user 'koala'
-       user:
-         name: koala
-         state: present
-         system: yes
-         shell: /bin/bash
-
-     - name: allow user koala to use the forwarded agent
-       file:
-           path: "{{ ansible_env.SSH_AUTH_SOCK }}"
-           state: file
-           owner: koala
-           group: koala
-
-     - name: ensure mysql-server is absent
-       apt:
-         name: mysql-server
-         state: absent
-       tags:
-         - database
-         - packages
-
-     - name: install mariadb via apt
-       apt:
-         name: "{{item}}"
-         state: present
-       with_items:
-         - mariadb-server
-         - python-mysqldb
-       tags:
-         - database
-         - packages
-
-     - name: enable and start db service
-       service:
-         name: mysql
-         enabled: yes
-         state: started
-       tags:
-         - database
-
-     - name: generate root password
-       mysql_user:
-           name: root
-           password: "{{ lookup('password', 'credentials/mysql/root length=64 chars=hexdigits') }}"
-       tags:
-         - database
-
-     - name: install /root/.my.cnf
-       template:
-           src: files/.my.cnf
-           dest: ~/.my.cnf
-       tags:
-         - database
-
-     #- name: create 'koala' database
-       #mysql_db:
-         #name: koala
-       #tags:
-         #- database
-
-     - name: create 'koala' db user
-       mysql_user:
-         name: koala
-         password: "{{ lookup('password', 'credentials/mysql/koala length=64 chars=hexdigits') }}"
-         host: localhost
-         priv: koala.*:ALL/koala-development.*:ALL
-       tags:
-         - database
-
-     - name: create /var/www/koala.svsticky.nl
-       file:
-         path: /var/www/koala.svsticky.nl
-         state: directory
-         owner: koala
-         group: koala
-         recurse: yes
-
-     - name: collect github key
-       shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-       args:
-         creates: ~/.ssh/known_hosts
-
-     - name: clone koala to /var/www/koala.svsticky.nl
-       git:
-         repo: 'git@github.com:svsticky/constipated-koala.git'
-         dest: /var/www/koala.svsticky.nl
-         version: "{{ koala_version }}"
-
-     - name: drop .rbenv-vars
-       template:
-         src: files/koala_rbenv_vars
-         dest: /var/www/koala.svsticky.nl/.rbenv-vars
-         owner: koala
-         group: koala
-         mode: 0700
-
+     - include: tasks/koala.yml
 
      become: yes
+
+   handlers:
+     - name: systemctl daemon-reload
+       command: systemctl daemon-reload
+       become: yes
 
    # As user 'koala':
-   - block:
-     - name: install rbenv for user 'koala'
-       git:
-         repo: https://github.com/rbenv/rbenv.git
-         dest: ~/.rbenv
+   #- block:
 
-     - name: install rbenv plugins
-       git:
-         repo: '{{item.url}}'
-         dest: ~/.rbenv/plugins/{{item.name}}
-       with_items:
-         - { name: 'ruby-build', url: 'https://github.com/rbenv/ruby-build.git' }
-         - { name: 'rbenv-vars', url: 'https://github.com/rbenv/rbenv-vars.git' }
-         # NOTE: This will install the latest development versions, should we pin a tag/commit/release?
+     ##- name: rake routes
+       ##environment:
+         ##PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+       ##shell: eval "$(rbenv init - )"; bundle exec rake routes
+       ##args:
+         ##chdir: /var/www/koala.svsticky.nl
 
-     - name: copy .bash_profile for user 'koala'
-       copy:
-         src: "files/koala_bash_profile"
-         dest: "/home/koala/.bash_profile"
-         owner: koala
-         group: koala
+     ##- name: ensure database exists
+       ##environment:
+         ##PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+       ##shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} db:setup
+       ##args:
+         ##chdir: /var/www/koala.svsticky.nl
 
-     - name: compile and install ruby 2.3.0 for user 'koala'
-       environment:
-         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       shell: eval "$(rbenv init - )"; rbenv install 2.3.0
-       args:
-         executable: /bin/bash
-         creates: /home/koala/.rbenv/versions/2.3.0
-         # NOTE: This takes a while when compiling, and a package ruby2.3 exists, should we use that?
-
-     - name: install bundler
-       environment:
-         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       shell: eval "$(rbenv init -)"; gem install bundler
-       args:
-         executable: /bin/bash
-         chdir: /var/www/koala.svsticky.nl
-         creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/bundler-1.12.5
-
-     - name: rbenv rehash
-       environment:
-         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       shell: eval "$(rbenv init - )"; rbenv rehash
-       args:
-         executable: /bin/bash
-         chdir: /var/www/koala.svsticky.nl
-
-     - name: install dependencies
-       environment:
-         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       shell: eval "$(rbenv init - )"; bundle install
-       args:
-         chdir: /var/www/koala.svsticky.nl
-
-     - name: rake routes
-       environment:
-         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       shell: eval "$(rbenv init - )"; bundle exec rake routes
-       args:
-         chdir: /var/www/koala.svsticky.nl
-
-     - name: ensure database exists
-       environment:
-         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} db:setup
-       args:
-         chdir: /var/www/koala.svsticky.nl
-
-     become: yes
-     become_user: koala
+     #become: yes
+     #become_user: koala
 
 
 # TODO:
 #  - Should (part of) this setup be included in the koala project's Vagrantfile?
-#  - Clone koala source to appropriate location
-#     Home or /var/www?
-#     - Generate secrets or read them from somewhere?
 #  - Install nginx (skyblue playbook does this already, but is not virtualboxable)
 #  - Set up database (mariadb)
 #     Autogenerate credentials with password lookup, hardcode with vault lookup, or?

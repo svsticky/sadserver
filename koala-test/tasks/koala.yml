@@ -1,0 +1,160 @@
+---
+# Contains all koala-specific tasks
+- name: ensure koala system user exists
+  user:
+    name: koala
+    state: present
+    system: yes
+    shell: /bin/bash
+
+- name: ensure koala database user exists
+  mysql_user:
+    name: koala
+    password: "{{ lookup('password', 'credentials/mysql/koala length=64 chars=hexdigits') }}"
+    host: localhost
+    priv: koala.*:ALL/koala-development.*:ALL
+
+- name: ensure clone location exists and is owned by koala
+  file:
+    path: /var/www/koala.svsticky.nl
+    state: directory
+    owner: koala
+    group: koala
+    recurse: yes
+
+- name: ensure ruby compilation dependencies are installed
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - autoconf
+    - bison
+    - build-essential
+    - libssl-dev
+    - libyaml-dev
+    - libreadline-dev
+    - libncurses5-dev
+    - libffi-dev
+    - libgdbm3
+    - libgdbm-dev
+    - nodejs
+    - zlib1g-dev
+    - imagemagick
+    - libmariadb-client-lgpl-dev-compat
+  tags:
+    - packages
+
+- name: ensure user koala is allowed to use ssh forwarding
+  file:
+    path: "{{ ansible_env.SSH_AUTH_SOCK | dirname}}"
+    state: directory
+    owner: koala
+    group: koala
+    mode: 0700
+    recurse: true
+  changed_when: false
+  tags:
+    - bepis
+
+
+# As koala:
+- block:
+  - name: ensure rbenv is installed
+    git:
+      repo: https://github.com/rbenv/rbenv.git
+      dest: ~/.rbenv
+
+  - name: ensure rbenv plugins are installed
+    git:
+      repo: '{{item.url}}'
+      dest: ~/.rbenv/plugins/{{item.name}}
+    with_items:
+      - { name: 'ruby-build', url: 'https://github.com/rbenv/ruby-build.git' }
+      - { name: 'rbenv-vars', url: 'https://github.com/rbenv/rbenv-vars.git' }
+      # NOTE: This will install the latest development versions, should we pin a tag/commit/release?
+
+  - name: ensure .bash_profile is present
+    copy:
+      src: "files/koala_bash_profile"
+      dest: "/home/koala/.bash_profile"
+      owner: koala
+      group: koala
+
+  - name: ensure ruby is installed, compile if necessary
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: eval "$(rbenv init - )"; rbenv install 2.3.0
+    args:
+      executable: /bin/bash
+      creates: /home/koala/.rbenv/versions/2.3.0
+      # NOTE: This takes a while when compiling, and a package ruby2.3 exists, should we use that?
+
+  - name: ensure bundler is installed
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: eval "$(rbenv init -)"; gem install bundler
+    args:
+      executable: /bin/bash
+      chdir: /var/www/koala.svsticky.nl
+      creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/2.3.0/gems/bundler-1.12.5
+
+  - name: ensure koala has a ssh directory
+    file:
+      path: ~/.ssh
+      state: directory
+
+  - name: ensure github's ssh key is known
+    shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+    args:
+      creates: ~/.ssh/known_hosts
+
+  - name: clone koala to /var/www/koala.svsticky.nl
+    git:
+      repo: 'git@github.com:svsticky/constipated-koala.git'
+      dest: /var/www/koala.svsticky.nl
+      version: "{{ koala_version }}"
+    tags:
+      - bepis
+
+  - name: ensure .rbenv-vars is present
+    template:
+      src: templates/koala-.rbenv-vars
+      dest: /var/www/koala.svsticky.nl/.rbenv-vars
+      owner: koala
+      group: koala
+      mode: 0700
+
+  - name: ensure gem dependencies are installed
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: eval "$(rbenv init - )"; bundle install
+    args:
+      chdir: /var/www/koala.svsticky.nl
+
+  become: yes
+  become_user: koala
+
+- block:
+  - name: ensure webrick script is present in development
+    copy:
+      src: files/webrick.sh
+      dest: /home/koala/webrick.sh
+      mode: 0755
+      owner: koala
+      group: koala
+    notify:
+      - systemctl daemon-reload
+
+  - name: ensure webrick service file is present in development
+    copy:
+      src: files/webrick.service
+      dest: /etc/systemd/system/webrick.service
+
+  - name: ensure webrick service is enabled and running in development
+    service:
+      name: webrick
+      enabled: yes
+      state: started
+  when: koala_environment == 'development'
+  tags:
+    - doehet

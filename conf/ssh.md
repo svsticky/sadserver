@@ -10,7 +10,7 @@ Root login staat uit, net zoals password login. Je hebt keys nodig.
 - arian
 - laurens
 - maarten
-- _martijn (wordt binnenkort verwijderd)_
+- _martijn (afgesloten)_
 - tom
 - yorick
 

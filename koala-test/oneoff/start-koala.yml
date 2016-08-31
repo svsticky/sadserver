@@ -1,0 +1,32 @@
+---
+- hosts: all
+  vars_files:
+      - ../environment.yml
+
+  tasks:
+    - name: ensure mariadb is enabled and running
+      service:
+        name: mysql
+        enabled: yes
+        state: started
+      become: yes
+
+    - block:
+      - name: ensure unicorn service is enabled and running
+        service:
+          name: unicorn
+          enabled: yes
+          state: started
+
+      when: koala_environment == 'production'
+      become: yes
+
+    - block:
+      - name: ensure webrick service is enabled and running
+        service:
+          name: webrick
+          enabled: yes
+          state: started
+
+      when: koala_environment == 'development'
+      become: yes

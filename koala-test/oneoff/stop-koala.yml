@@ -1,0 +1,23 @@
+---
+- hosts: all
+  vars_files:
+      - ../environment.yml
+
+  tasks:
+    - block:
+      - name: ensure unicorn service is not running
+        service:
+          name: unicorn
+          state: stopped
+
+      when: koala_environment == 'production'
+      become: yes
+
+    - block:
+      - name: ensure webrick service is not running
+        service:
+          name: webrick
+          state: stopped
+
+      when: koala_environment == 'development'
+      become: yes

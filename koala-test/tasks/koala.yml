@@ -151,16 +151,7 @@
     notify:
       - systemctl daemon-reload
 
-  - meta: flush_handlers
-
-  - name: ensure webrick service is enabled and running in development
-    service:
-      name: webrick
-      enabled: yes
-      state: started
   when: koala_environment == 'development'
-  tags:
-    - doehet
 
 - block:
   - name: ensure unicorn script is present in production
@@ -178,11 +169,4 @@
     notify:
       - systemctl daemon-reload
 
-  - meta: flush_handlers
-
-  - name: ensure unicorn service is enabled and running in production
-    service:
-      name: unicorn
-      enabled: yes
-      state: started
   when: koala_environment == 'production'

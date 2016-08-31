@@ -91,7 +91,7 @@
   - name: ensure bundler is installed
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init -)"; gem install bundler
+    shell: eval "$(rbenv init -)"; rbenv shell {{ koala_ruby_version }}; gem install bundler
     args:
       executable: /bin/bash
       chdir: /var/www/koala.svsticky.nl

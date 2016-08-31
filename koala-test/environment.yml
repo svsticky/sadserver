@@ -1,0 +1,4 @@
+---
+koala_environment: development      # 'development' or 'production'
+koala_version: development          # Git reference to clone
+koala_ruby_version: 2.3.0           # Used when rbenv is not yet available

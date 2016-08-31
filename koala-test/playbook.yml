@@ -1,9 +1,7 @@
 ---
  - hosts: all
-   vars:
-       koala_environment: development
-       koala_version: development
-       koala_ruby_version: 2.3.0
+   vars_files:
+       - environment.yml
 
    tasks:
 
@@ -22,23 +20,8 @@
        command: systemctl daemon-reload
        become: yes
 
-     ##- name: rake routes
-       ##environment:
-         ##PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       ##shell: eval "$(rbenv init - )"; bundle exec rake routes
-       ##args:
-         ##chdir: /var/www/koala.svsticky.nl
-
-     ##- name: ensure database exists
-       ##environment:
-         ##PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-       ##shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} db:setup
-       ##args:
-         ##chdir: /var/www/koala.svsticky.nl
-
 # TODO:
 #  - Should (part of) this setup be included in the koala project's Vagrantfile?
 #  - Install nginx (skyblue playbook does this already, but is not virtualboxable)
 #  - Set up cronjobs
 #     Perhaps systemd timers are useful, manually startable etc.
-#  - Create koala's db

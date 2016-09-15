@@ -41,6 +41,8 @@
     - zlib1g-dev
     - imagemagick
     - libmariadb-client-lgpl-dev-compat
+    - acl
+    - git
   tags:
     - packages
 

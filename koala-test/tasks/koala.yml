@@ -153,7 +153,7 @@
     notify:
       - systemctl daemon-reload
 
-  when: koala_environment == 'development'
+  when: koala_server_method == 'development'
 
 - block:
   - name: ensure unicorn script is present in production
@@ -171,4 +171,4 @@
     notify:
       - systemctl daemon-reload
 
-  when: koala_environment == 'production'
+  when: koala_server_method == 'production'

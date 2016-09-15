@@ -12,13 +12,19 @@
       become: yes
 
     - block:
+      - name: ensure nginx is enabled and running
+        service:
+          name: nginx
+          enabled: yes
+          state: started
+
       - name: ensure unicorn service is enabled and running
         service:
           name: unicorn
           enabled: yes
           state: started
 
-      when: koala_environment == 'production'
+      when: koala_server_method == 'production'
       become: yes
 
     - block:
@@ -28,5 +34,5 @@
           enabled: yes
           state: started
 
-      when: koala_environment == 'development'
+      when: koala_server_method == 'development'
       become: yes

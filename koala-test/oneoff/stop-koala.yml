@@ -10,7 +10,7 @@
           name: unicorn
           state: stopped
 
-      when: koala_environment == 'production'
+      when: koala_server_method == 'production'
       become: yes
 
     - block:
@@ -19,5 +19,5 @@
           name: webrick
           state: stopped
 
-      when: koala_environment == 'development'
+      when: koala_server_method == 'development'
       become: yes

@@ -33,8 +33,8 @@ echo "==> Bootstrapping host '${1}'"
 
 echo "==> Installing Python 2.7"
 ssh -T $SSH_SPEC > /dev/null << EOC
-apt-get update
-apt-get install -y --no-install-recommends python2.7
+DEBIAN_FRONTEND=noninteractive apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python2.7
 EOC
 
 echo "==> Creating ansible user"

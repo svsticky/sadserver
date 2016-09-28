@@ -9,7 +9,12 @@
 - name: "install nginx"
   apt:
     name: nginx
-    state: present
+    state: latest
+
+- name: "install php-fpm"
+  apt:
+    name: php7-fpm
+    state: latest
 
 - name: "start and enable nginx"
   service:

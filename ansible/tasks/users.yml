@@ -3,7 +3,7 @@
   user:
     name: "{{ item.key }}"
     shell: /bin/bash
-    group: sudo
+    groups: sudo,adm
   with_dict: "{{ admins }}"
 
 - name: "add ssh keys for admin users"
@@ -11,3 +11,4 @@
     user: "{{ item.key }}"
     key: "https://github.com/{{ item.value.github }}.keys"
   with_dict: "{{ admins }}"
+

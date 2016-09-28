@@ -62,6 +62,9 @@
           filter: sshd
           logpath: /var/log/auth.log
 
+    # the upload limit for php-fpm and nginx in megabytes
+    upload_limit: 15
+
     websites:
       studytrip:
         user: laurens

@@ -28,6 +28,10 @@ http {
 
   charset UTF-8;
 
+  ##
+  # Request settings
+  ##
+  client_max_body_size {{ upload_limit }}m;
 
   ##
   # SSL Settings

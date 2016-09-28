@@ -117,20 +117,6 @@
     tags:
       - bepis
 
-  - name: ensure tmp directory exists
-    environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init - )"; rake tmp:create
-    args:
-      chdir: /var/www/koala.svsticky.nl
-
-  - name: ensure log directory exists
-    file:
-      dest: /var/www/koala.svsticky.nl
-      state: directory
-      owner: koala
-      group: koala
-
   - name: ensure .rbenv-vars is present
     template:
       src: templates/koala-.rbenv-vars
@@ -147,6 +133,20 @@
       chdir: /var/www/koala.svsticky.nl
     register: koala_gem_result
     changed_when: koala_gem_result.stdout.find("Installing") != -1
+
+  - name: ensure tmp directory exists
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: eval "$(rbenv init - )"; rake tmp:create
+    args:
+      chdir: /var/www/koala.svsticky.nl
+
+  - name: ensure log directory exists
+    file:
+      dest: /var/www/koala.svsticky.nl/log
+      state: directory
+      owner: koala
+      group: koala
 
   become: yes
   become_user: koala

@@ -9,6 +9,8 @@
 ## to the playbook itself.
 ##
 
+set -e
+
 display_error() {
   echo >&2 $1
 }

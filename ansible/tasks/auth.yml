@@ -8,3 +8,14 @@
     state: present
     create: yes
     validate: "visudo -cf %s"
+
+- name: "copy deploy keys"
+  copy:
+    src: "files/{{ item }}"
+    dest: "/{{ item }}"
+    owner: ansible
+    group: ansible
+    mode: 0600
+  with_items:
+    - home/ansible/.ssh/deploy_ed25519
+    - home/ansible/.ssh/deploy_ed25519.pub

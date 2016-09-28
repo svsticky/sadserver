@@ -1,7 +1,7 @@
 ---
 koala_environment: production       # 'development' or 'production'
 koala_server_method: production     # development: webrick, production: unicorn+nginx
-koala_version: master               # Git reference to clone
+koala_version: ansible_test         # Git reference to clone
 koala_ruby_version: 2.3.0           # Used when rbenv is not yet available
 
 canonical_hostname: dev.svsticky.nl

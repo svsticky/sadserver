@@ -12,11 +12,11 @@
       become: yes
 
     - block:
-      - name: ensure nginx is enabled and running
-        service:
-          name: nginx
-          enabled: yes
-          state: started
+      #- name: ensure nginx is enabled and running
+        #service:
+          #name: nginx
+          #enabled: yes
+          #state: started
 
       - name: ensure unicorn service is enabled and running
         service:

@@ -153,6 +153,21 @@
     notify:
       - systemctl daemon-reload
 
+  - name: place koala's nginx configuration
+    template:
+      src: templates/nginx-koala.svsticky.nl
+      dest: /etc/nginx/sites-available/koala.svsticky.nl
+      owner: root
+      group: root
+
+  - name: enable koala's nginx config
+    file:
+      src: /etc/nginx/sites-available/koala.svsticky.nl
+      dest: /etc/nginx/sites-enabled/koala.svsticky.nl
+      state: link
+      owner: root
+      group: root
+
   when: koala_server_method == 'development'
 
 - block:

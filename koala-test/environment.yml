@@ -4,6 +4,6 @@ koala_server_method: production     # development: webrick, production: unicorn+
 koala_version: master               # Git reference to clone
 koala_ruby_version: 2.3.0           # Used when rbenv is not yet available
 
-canonical_hostname: rails.dev
+canonical_hostname: dev.svsticky.nl
 ssl_certificate: /etc/letsencrypt/live/koala.svsticky.nl/fullchain.pem
 ssl_certificate_key: /etc/letsencrypt/live/koala.svsticky.nl/privkey.pem

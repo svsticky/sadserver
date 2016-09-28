@@ -10,7 +10,7 @@
 
      - include: tasks/auth.yml
      - include: tasks/database.yml
-     - include: tasks/nginx.yml
+     #- include: tasks/nginx.yml
      - include: tasks/koala.yml
 
      become: yes

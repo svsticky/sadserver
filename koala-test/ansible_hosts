@@ -1,0 +1,1 @@
+default	ansible_ssh_host=dev.svsticky.nl ansible_ssh_user='ansible'

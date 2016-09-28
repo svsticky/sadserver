@@ -16,7 +16,7 @@
     name: php-fpm
     state: latest
 
-- name: "copy default configuration":
+- name: "copy default configuration"
   template:
     src: "{{ item }}.j2"
     dest: "//{{ item }}"

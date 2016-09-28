@@ -13,8 +13,15 @@
 
 - name: "install php-fpm"
   apt:
-    name: php7-fpm
+    name: php-fpm
     state: latest
+
+- name: "copy default configuration":
+  template:
+    src: "{{ item }}.j2"
+    dest: "//{{ item }}"
+  with_items:
+    - etc/php/7.0/fpm/php.conf
 
 - name: "start and enable nginx"
   service:

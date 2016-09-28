@@ -16,13 +16,6 @@
     name: php-fpm
     state: latest
 
-- name: "copy default configuration"
-  template:
-    src: "{{ item }}.j2"
-    dest: "//{{ item }}"
-  with_items:
-    - etc/php/7.0/fpm/php.conf
-
 - name: "start and enable nginx"
   service:
     name: nginx
@@ -47,12 +40,13 @@
     owner: www-data
     group: www-data
 
-- name: "copy nginx configuration"
+- name: "copy configuration files"
   template:
     src: "{{ item }}.j2"
     dest: "/{{ item }}"
   with_items:
     - etc/nginx/nginx.conf
+    - etc/php/7.0/fpm/php.ini
   notify: reload nginx
 
 # TODO: Make this template based

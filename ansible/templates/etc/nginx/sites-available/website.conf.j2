@@ -1,12 +1,16 @@
 # {{ ansible_managed }}
 server {
-  listen 80;
-  listen [::]:80;
+  listen 443 ssl;
+  listen [::]:443 ssl;
 
   server_name
   {% for hostname in item.value.hostnames %}
     {{ hostname }}
   {% endfor %};
+
+  # These will be self-signed certs until the letsencrypt handshake finishes
+  ssl_certificate      /etc/letsencrypt/live/{{item.value.hostnames[0]}}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem;
 
   root /var/www/{{item.value.user}}/{{item.value.hostnames[0]}};
   index index.html index.htm index.php;

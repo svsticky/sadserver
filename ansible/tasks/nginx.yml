@@ -16,11 +16,44 @@
     name: php-fpm
     state: latest
 
-- name: "start and enable nginx"
-  service:
-    name: nginx
-    state: started
-    enabled: yes
+- name: "copy configuration files"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+  with_items:
+    - etc/nginx/nginx.conf
+    - etc/php/7.0/fpm/php.ini
+  notify: reload nginx
+
+- name: "install openssl"
+  apt:
+    name: openssl
+    state: latest
+
+
+- name: "create directory for self-signed certs"
+  file:
+    path: "/etc/letsencrypt/live/{{item.value.hostnames[0]}}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  with_dict: "{{ websites }}"
+
+- name: "create self-signed certs for all websites"
+  command: >
+    openssl req -x509 \
+                -newkey rsa:4096 \
+                -keyout /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem \
+                -out /etc/letsencrypt/live/{{item.value.hostnames[0]}}/fullchain.pem \
+                -days 10 \
+                -nodes \
+                -subj '/C=US/ST=Oregon/L=Portland/O=Sticky/OU=Org/CN=*'
+  args:
+    creates: /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem
+  with_dict: "{{ websites }}"
+
+
 
 - name: "copy dhparams and default configuration"
   copy:
@@ -32,22 +65,19 @@
     - etc/nginx/dhparams.pem
     - etc/nginx/sites-available/default
 
+- name: "start and enable nginx"
+  service:
+    name: nginx
+    enabled: yes
+
 # TODO: change ownership to something more proper
 - name: "create acme-challenges directory"
   file:
     path: /var/www/acme-challenges
     state: directory
-    owner: www-data
+    owner: certbot
     group: www-data
 
-- name: "copy configuration files"
-  template:
-    src: "{{ item }}.j2"
-    dest: "/{{ item }}"
-  with_items:
-    - etc/nginx/nginx.conf
-    - etc/php/7.0/fpm/php.ini
-  notify: reload nginx
 
 # TODO: Make this template based
 
@@ -55,7 +85,7 @@
   file:
     path: "/var/www/{{item.value.user}}/{{item.value.hostnames[0]}}"
     owner: "{{item.value.user}}"
-    group: sudo
+    group: www-data
     mode: 0755
     state: directory
   with_dict: "{{ websites }}"

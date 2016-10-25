@@ -1,6 +1,8 @@
 #!/bin/sh
 
 ##
+## USAGE: ./bootstrap.sh <HOSTNAME | IP>
+##
 ## This bootstrap script sets up a vanilla Ubuntu 16.04 image, so that it can
 ## run our ansible playbooks.
 ##

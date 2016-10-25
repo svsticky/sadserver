@@ -49,6 +49,7 @@
                 -days 10 \
                 -nodes \
                 -subj '/C=US/ST=Oregon/L=Portland/O=Sticky/OU=Org/CN=*'
+  creates: /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem
   with_dict: "{{ websites }}"
 
 

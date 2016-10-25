@@ -75,7 +75,7 @@
   file:
     path: /var/www/acme-challenges
     state: directory
-    owner: www-data
+    owner: certbot
     group: www-data
 
 

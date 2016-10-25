@@ -49,7 +49,8 @@
                 -days 10 \
                 -nodes \
                 -subj '/C=US/ST=Oregon/L=Portland/O=Sticky/OU=Org/CN=*'
-  creates: /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem
+  args:
+    creates: /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem
   with_dict: "{{ websites }}"
 
 
@@ -84,7 +85,7 @@
   file:
     path: "/var/www/{{item.value.user}}/{{item.value.hostnames[0]}}"
     owner: "{{item.value.user}}"
-    group: sudo
+    group: www-data
     mode: 0755
     state: directory
   with_dict: "{{ websites }}"

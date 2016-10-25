@@ -27,6 +27,7 @@
     - include: tasks/upgrades.yml
     - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
+    - include: tasks/letsencrypt.yml
     - include: tasks/firewall.yml
     - include: tasks/studystatus.yml
 

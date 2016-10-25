@@ -1,0 +1,29 @@
+#!/bin/bash
+
+##
+## {{ ansible_managed }}
+##
+## This script requests certificates for the various websites we have. It only
+## needs to run once; renewals can be organised with the `certbot renew`
+## command. This script IS idempotent, however, so it can be run mutliple times
+## with Ansible.
+##
+
+set -e
+set -o pipefail
+
+{% for website in websites %}
+letsencrypt certonly \
+  --non-interactive \
+  --agree-tos \
+  --email itcrowd@svsticky.nl \
+  --keep-until-expiring \
+  --expand \
+  --webroot \
+  --webroot-path /var/www/acme-challenges \
+  --domain {{ website.main_hostname }} \
+  {% for hostname in website.alternative_hostnames %}
+  --domain {{ hostname }} \
+  {% endfor %}
+
+{% endfor %}

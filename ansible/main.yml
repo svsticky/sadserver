@@ -78,4 +78,9 @@
           - ditkanook.dev.svsticky.nl
           - rukbunker.dev.svsticky.nl
 
+    # koala configuration
+    koala_environment: production   # 'development' or 'production'
+    koala_server_method: production # webrick or unicorn
+    koala_version: ansible_test     # Git reference to clone
+    koala_ruby_version: 2.3.0       # Used when rbenv is not yet available
 ...

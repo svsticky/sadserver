@@ -28,6 +28,8 @@
     - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
     - include: tasks/firewall.yml
+    - include: tasks/database.yml
+    - include: tasks/koala.yml
     - include: tasks/studystatus.yml
 
   vars:

@@ -1,20 +1,12 @@
 ---
-
-# TODO: voor een VHOSt
-# * hostnames
-# * certificaat (op basis van hostname)
-# * webroot op basis van hostname + (mogelijk user) (moet nog gecheckt worden)
-# * php ja of nee.
-
-- name: "install nginx"
+- name: "install nginx, php-fpm and openssl"
   apt:
-    name: nginx
+    name: "{{ item }}"
     state: latest
-
-- name: "install php-fpm"
-  apt:
-    name: php-fpm
-    state: latest
+  with_items:
+    - nginx
+    - php-fpm
+    - openssl
 
 - name: "copy configuration files"
   template:
@@ -25,35 +17,28 @@
     - etc/php/7.0/fpm/php.ini
   notify: reload nginx
 
-- name: "install openssl"
-  apt:
-    name: openssl
-    state: latest
-
-
 - name: "create directory for self-signed certs"
   file:
-    path: "/etc/letsencrypt/live/{{item.value.hostnames[0]}}"
+    path: "/etc/letsencrypt/live/{{ item.main_hostname }}"
     owner: root
     group: root
     mode: 0755
     state: directory
-  with_dict: "{{ websites }}"
+  with_items: "{{ websites }}"
 
 - name: "create self-signed certs for all websites"
   command: >
-    openssl req -x509 \
-                -newkey rsa:4096 \
-                -keyout /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem \
-                -out /etc/letsencrypt/live/{{item.value.hostnames[0]}}/fullchain.pem \
-                -days 10 \
-                -nodes \
-                -subj '/C=US/ST=Oregon/L=Portland/O=Sticky/OU=Org/CN=*'
+    openssl req \
+      -x509 \
+      -newkey rsa:4096 \
+      -keyout /etc/letsencrypt/live/{{ item.main_hostname }}/privkey.pem \
+      -out /etc/letsencrypt/live/{{ item.main_hostname }}/fullchain.pem \
+      -days 10 \
+      -nodes \
+      -subj '/C=US/ST=Oregon/L=Portland/O=Sticky/OU=Org/CN=*'
   args:
-    creates: /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem
-  with_dict: "{{ websites }}"
-
-
+    creates: "/etc/letsencrypt/live/{{ item.main_hostname }}/privkey.pem"
+  with_items: "{{ websites }}"
 
 - name: "copy dhparams and default configuration"
   copy:
@@ -70,39 +55,25 @@
     name: nginx
     enabled: yes
 
-# TODO: change ownership to something more proper
-- name: "create acme-challenges directory"
-  file:
-    path: /var/www/acme-challenges
-    state: directory
-    owner: certbot
-    group: www-data
-
-
-# TODO: Make this template based
-
 - name: "create website directories"
   file:
-    path: "/var/www/{{item.value.user}}/{{item.value.hostnames[0]}}"
-    owner: "{{item.value.user}}"
+    path: "/var/www/{{ item.user }}/{{ item.main_hostname }}"
+    owner: "{{ item.user }}"
     group: www-data
     mode: 0755
     state: directory
-  with_dict: "{{ websites }}"
-
+  with_items: "{{ websites }}"
 
 - name: "copy website nginx configuraitons"
   template:
     src: "etc/nginx/sites-available/website.conf.j2"
-    dest: "/etc/nginx/sites-available/{{item.value.hostnames[0]}}.conf"
-  with_dict: "{{ websites }}"
-
+    dest: "/etc/nginx/sites-available/{{ item.main_hostname }}.conf"
+  with_items: "{{ websites }}"
 
 - name: "enable website nginx configurations"
   file:
-    src: "/etc/nginx/sites-available/{{item.value.hostnames[0]}}.conf"
-    dest: "/etc/nginx/sites-enabled/{{item.value.hostnames[0]}}.conf"
+    src: "/etc/nginx/sites-available/{{ item.main_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ item.main_hostname }}.conf"
     state: link
-  with_dict: "{{ websites }}"
+  with_items: "{{ websites }}"
   notify: reload nginx
-

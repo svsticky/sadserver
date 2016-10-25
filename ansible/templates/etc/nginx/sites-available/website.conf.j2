@@ -3,16 +3,16 @@ server {
   listen 443 ssl;
   listen [::]:443 ssl;
 
-  server_name
-  {% for hostname in item.value.hostnames %}
+  server_name {{ item.main_hostname }}
+  {% for hostname in item.alternative_hostnames %}
     {{ hostname }}
   {% endfor %};
 
   # These will be self-signed certs until the letsencrypt handshake finishes
-  ssl_certificate      /etc/letsencrypt/live/{{item.value.hostnames[0]}}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/{{item.value.hostnames[0]}}/privkey.pem;
+  ssl_certificate      /etc/letsencrypt/live/{{ item.main_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{ item.main_hostname }}/privkey.pem;
 
-  root /var/www/{{item.value.user}}/{{item.value.hostnames[0]}};
+  root /var/www/{{ item.user }}/{{ item.main_hostname }};
   index index.html index.htm index.php;
 
 
@@ -21,7 +21,6 @@ server {
     fastcgi_split_path_info ^(.+\.php)(/+)$;
     fastcgi_pass unix:/tmp/php5-fpm.sock;
     fastcgi_index index.php;
-    
 
     fastcgi_param   QUERY_STRING            $query_string;
     fastcgi_param   REQUEST_METHOD          $request_method;
@@ -49,6 +48,5 @@ server {
 
     # PHP only, required if PHP was built with --enable-force-cgi-redirect
     fastcgi_param   REDIRECT_STATUS         200;
-
   }
 }

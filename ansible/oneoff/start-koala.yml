@@ -24,7 +24,7 @@
           enabled: yes
           state: started
 
-      when: koala_server_method == 'production'
+      when: koala_server == 'unicorn'
       become: yes
 
     - block:
@@ -34,5 +34,5 @@
           enabled: yes
           state: started
 
-      when: koala_server_method == 'development'
+      when: koala_server == 'webrick'
       become: yes

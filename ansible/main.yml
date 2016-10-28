@@ -68,6 +68,8 @@
     # the upload limit for php-fpm and nginx in megabytes
     upload_limit: 15
 
+    canonical_hostname: dev.svsticky.nl
+
     websites:
       - main_hostname: studytrip.dev.svsticky.nl
         user: laurens
@@ -81,8 +83,8 @@
           - rukbunker.dev.svsticky.nl
 
     # koala configuration
-    koala_environment: production   # 'development' or 'production'
-    koala_server_method: production # webrick or unicorn
-    koala_version: ansible_test     # Git reference to clone
-    koala_ruby_version: 2.3.0       # Used when rbenv is not yet available
+    koala_environment: production
+    koala_server: unicorn # or webrick
+    koala_git_ref: ansible_test
+    koala_ruby_version: 2.3.0
 ...

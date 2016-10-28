@@ -134,7 +134,7 @@
     git:
       repo: 'git@github.com:svsticky/constipated-koala.git'
       dest: /var/www/koala.svsticky.nl
-      version: "{{ koala_version }}"
+      version: "{{ koala_git_ref }}"
     tags:
       - koala
 
@@ -196,22 +196,8 @@
     notify:
       - systemctl daemon-reload
 
-  - name: place koala's nginx configuration
-    template:
-      src: templates/etc/nginx/sites-available/koala.svsticky.nl
-      dest: /etc/nginx/sites-available/koala.svsticky.nl
-      owner: root
-      group: root
 
-  - name: enable koala's nginx config
-    file:
-      src: /etc/nginx/sites-available/koala.svsticky.nl
-      dest: /etc/nginx/sites-enabled/koala.svsticky.nl
-      state: link
-      owner: root
-      group: root
-
-  when: koala_server_method == 'development'
+  when: koala_server == 'webrick'
   tags:
     - koala
 
@@ -231,6 +217,21 @@
     notify:
       - systemctl daemon-reload
 
-  when: koala_server_method == 'production'
+  - name: place koala's nginx configuration
+    template:
+      src: templates/etc/nginx/sites-available/koala.svsticky.nl
+      dest: /etc/nginx/sites-available/koala.svsticky.nl
+      owner: root
+      group: root
+
+  - name: enable koala's nginx config
+    file:
+      src: /etc/nginx/sites-available/koala.svsticky.nl
+      dest: /etc/nginx/sites-enabled/koala.svsticky.nl
+      state: link
+      owner: root
+      group: root
+
+  when: koala_server == 'unicorn'
   tags:
     - koala

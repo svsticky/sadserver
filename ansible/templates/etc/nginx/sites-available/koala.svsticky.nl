@@ -18,7 +18,8 @@ server {
 
 server {
 	listen 443 ssl;
-	server_name koala.stickyutrecht.nl;
+	server_name ~^(?<subdomain>koala|intro)\..*$;
+	# Note: this will not redirect svsticky.nl, see server_name docs on priority.
 
 	ssl_certificate {{ ssl_certificate }};
 	ssl_certificate_key {{ ssl_certificate_key }};
@@ -26,20 +27,7 @@ server {
 	# HSTS
 	add_header Strict-Transport-Security 'max-age=31536000';
 
-	return 301 https://koala.{{ canonical_hostname }}$request_uri;
-}
-
-server {
-	listen 443 ssl;
-	server_name intro.stickyutrecht.nl;
-
-	ssl_certificate {{ ssl_certificate }};
-	ssl_certificate_key {{ ssl_certificate_key }};
-
-	# HSTS
-	add_header Strict-Transport-Security 'max-age=31536000';
-
-	return 301 https://intro.{{ canonical_hostname }}$request_uri;
+	return 301 https://$subdomain.{{ canonical_hostname }}$request_uri;
 }
 
 server {

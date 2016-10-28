@@ -15,7 +15,7 @@
           that:
             - "admin_to_remove != ''"
 
-      - name: remove admin
+      - name: "remove admin"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} "admin:delete[{{ admin_to_remove}}]"

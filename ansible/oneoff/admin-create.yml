@@ -5,17 +5,17 @@
       - ../environment.yml
 
   vars_prompt:
-      - name: new_admins_username
+      - name: "new_admins_username"
         default: "admin@localhost"
         prompt: "Please enter the new admin user's email."
         private: no
 
-      - name: new_admins_password
+      - name: "new_admins_password"
         default: "sticky123"
         prompt: "Please enter the new admin user's password."
         private: yes
 
-      - name: password_confirm
+      - name: "password_confirm"
         prompt: "Enter the password again for confirmation."
         private: yes
 
@@ -24,7 +24,7 @@
           that:
             - "new_admins_password == password_confirm"
 
-      - name: create admin
+      - name: "create admin"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} "admin:create[{{ new_admins_username }}, {{ new_admins_password }}]"

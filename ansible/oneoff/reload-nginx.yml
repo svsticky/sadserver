@@ -1,7 +1,7 @@
 ---
 - hosts: all
   tasks:
-  - name: reload nginx config
+  - name: "reload nginx config"
     service:
       name: nginx
       state: reloaded

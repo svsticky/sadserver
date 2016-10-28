@@ -5,7 +5,7 @@
 
   tasks:
     - block:
-      - name: ensure unicorn service is not running
+      - name: "ensure unicorn service is not running"
         service:
           name: unicorn
           state: stopped
@@ -14,7 +14,7 @@
       become: yes
 
     - block:
-      - name: ensure webrick service is not running
+      - name: "ensure webrick service is not running"
         service:
           name: webrick
           state: stopped

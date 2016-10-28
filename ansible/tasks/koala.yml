@@ -1,7 +1,7 @@
 ---
 # Contains all koala-specific tasks
 - block:
-  - name: ensure koala system user exists
+  - name: "ensure koala system user exists"
     user:
       name: koala
       state: present
@@ -11,7 +11,7 @@
       - ruby
       - koala
 
-  - name: ensure koala database user exists
+  - name: "ensure koala database user exists"
     mysql_user:
       name: koala
       password: "{{ lookup('password', 'credentials/mysql/koala length=64 chars=hexdigits') }}"
@@ -21,7 +21,7 @@
       - database
       - koala
 
-  - name: ensure clone location exists and is owned by koala
+  - name: "ensure clone location exists and is owned by koala"
     file:
       path: /var/www/koala.svsticky.nl
       state: directory
@@ -31,7 +31,7 @@
     tags:
       - koala
 
-  - name: ensure ruby compilation dependencies are installed
+  - name: "ensure ruby compilation dependencies are installed"
     apt:
       name: "{{item}}"
       state: present
@@ -62,7 +62,7 @@
 
 # As koala:
 - block:
-  - name: ensure rbenv is installed
+  - name: "ensure rbenv is installed"
     git:
       repo: https://github.com/rbenv/rbenv.git
       dest: ~/.rbenv
@@ -70,7 +70,7 @@
       - ruby
       - koala
 
-  - name: ensure rbenv plugins are installed
+  - name: "ensure rbenv plugins are installed"
     git:
       repo: '{{item.url}}'
       dest: ~/.rbenv/plugins/{{item.name}}
@@ -83,7 +83,7 @@
       - ruby
       - koala
 
-  - name: ensure .bash_profile is present
+  - name: "ensure .bash_profile is present"
     copy:
       src: templates/home/koala/.bash_profile
       dest: "/home/koala/.bash_profile"
@@ -93,7 +93,7 @@
       - koala
       - ruby
 
-  - name: ensure ruby is installed, compile if necessary
+  - name: "ensure ruby is installed, compile if necessary"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell: eval "$(rbenv init - )"; rbenv install {{ koala_ruby_version }}
@@ -104,7 +104,7 @@
       - ruby
       - koala
 
-  - name: ensure bundler is installed
+  - name: "ensure bundler is installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell: eval "$(rbenv init -)"; rbenv shell {{ koala_ruby_version }}; gem install bundler
@@ -116,21 +116,21 @@
       - ruby
       - koala
 
-  - name: ensure koala has a ssh directory
+  - name: "ensure koala has a ssh directory"
     file:
       path: ~/.ssh
       state: directory
     tags:
       - koala
 
-  - name: ensure github's ssh key is known
+  - name: "ensure github's ssh key is known"
     shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
     args:
       creates: ~/.ssh/known_hosts
 
     # TODO: Deploy deploy key
 
-  - name: clone koala to /var/www/koala.svsticky.nl
+  - name: "clone koala to /var/www/koala.svsticky.nl"
     git:
       repo: 'git@github.com:svsticky/constipated-koala.git'
       dest: /var/www/koala.svsticky.nl
@@ -138,7 +138,7 @@
     tags:
       - koala
 
-  - name: ensure .rbenv-vars is present
+  - name: "ensure .rbenv-vars is present"
     template:
       src: templates/var/www/koala.svsticky.nl/.rbenv-vars
       dest: /var/www/koala.svsticky.nl/.rbenv-vars
@@ -148,7 +148,7 @@
     tags:
       - koala
 
-  - name: ensure gem dependencies are installed
+  - name: "ensure gem dependencies are installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell: eval "$(rbenv init - )"; bundle install
@@ -159,7 +159,7 @@
     tags:
       - koala
 
-  - name: ensure tmp directories exist
+  - name: "ensure tmp directories exist"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell: eval "$(rbenv init - )"; rake tmp:create
@@ -168,7 +168,7 @@
     tags:
       - koala
 
-  - name: ensure log directory exists
+  - name: "ensure log directory exists"
     file:
       dest: /var/www/koala.svsticky.nl/log
       state: directory
@@ -182,7 +182,7 @@
   become_user: koala
 
 - block:
-  - name: ensure webrick script is present in development
+  - name: "ensure webrick script is present in development"
     copy:
       src: templates/home/koala/webrick.sh
       dest: /home/koala/webrick.sh
@@ -190,7 +190,7 @@
       owner: koala
       group: koala
 
-  - name: ensure webrick service file is present in development
+  - name: "ensure webrick service file is present in development"
     copy:
       src: templates/etc/systemd/system/webrick.service
       dest: /etc/systemd/system/webrick.service
@@ -203,7 +203,7 @@
     - koala
 
 - block:
-  - name: ensure unicorn script is present in production
+  - name: "ensure unicorn script is present in production"
     template:
       src: templates/home/koala/unicorn.sh
       dest: /home/koala/unicorn.sh
@@ -211,21 +211,21 @@
       owner: koala
       group: koala
 
-  - name: ensure unicorn service file is present in production
+  - name: "ensure unicorn service file is present in production"
     copy:
       src: templates/etc/systemd/system/unicorn.service
       dest: /etc/systemd/system/unicorn.service
     notify:
       - systemctl daemon-reload
 
-  - name: place koala's nginx configuration
+  - name: "place koala's nginx configuration"
     template:
       src: templates/etc/nginx/sites-available/koala.svsticky.nl
       dest: /etc/nginx/sites-available/koala.svsticky.nl
       owner: root
       group: root
 
-  - name: enable koala's nginx config
+  - name: "enable koala's nginx config"
     file:
       src: /etc/nginx/sites-available/koala.svsticky.nl
       dest: /etc/nginx/sites-enabled/koala.svsticky.nl

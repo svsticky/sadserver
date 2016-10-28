@@ -4,7 +4,7 @@
       - ../environment.yml
 
   tasks:
-    - name: ensure mariadb is enabled and running
+    - name: "ensure mariadb is enabled and running"
       service:
         name: mysql
         enabled: yes
@@ -12,13 +12,13 @@
       become: yes
 
     - block:
-      #- name: ensure nginx is enabled and running
+      #- name: "ensure nginx is enabled and running"
         #service:
           #name: nginx
           #enabled: yes
           #state: started
 
-      - name: ensure unicorn service is enabled and running
+      - name: "ensure unicorn service is enabled and running"
         service:
           name: unicorn
           enabled: yes
@@ -28,7 +28,7 @@
       become: yes
 
     - block:
-      - name: ensure webrick service is enabled and running
+      - name: "ensure webrick service is enabled and running"
         service:
           name: webrick
           enabled: yes

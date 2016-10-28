@@ -10,7 +10,7 @@
         private: no
 
   tasks:
-      - name: custom rake task
+      - name: "custom rake task"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} {{ rake_task }}

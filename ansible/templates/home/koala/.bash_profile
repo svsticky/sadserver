@@ -1,4 +1,4 @@
 # bash_profile for user 'koala'
-# This file is managed by Ansible, manual changes may disappear.
+# {{ ansible_managed }}
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"

@@ -1,6 +1,6 @@
 # Let's Encrypt
 
-Op het moment zijn alle sites die gehost worden op de server voorzien van een SSL-certificaat. Ook is er nog een certificaat aanwezig van *TransIP*, dat nog geldig is tot 6 september 2016. Deze is echter niet meer in gebruik, omdat alle sites maken gebruik van SSL-certificaten van *Let's Encrypt*. Deze certificaten hebben de voorkeur, omdat deze gratis zijn en automatisch vernieuwd kunnen worden, in tegenstelling tot het certificaat van TransIP. De certificaten uitgegeven door Let's Encrypt zijn echter wel maar 90 dagen geldig en er zijn geen wildcard-certificaten te krijgen. Om geldige certificaten te blijven gebruiken, wordt er wekelijks door middel van een cronjob gecontroleerd of er certificaten vernieuwd moeten worden.
+Op het moment zijn alle sites die gehost worden op de server voorzien van SSL-certificaten van *Let's Encrypt*. Deze certificaten zijn gratis en kunnen automatisch vernieuwd worden, in tegenstelling tot het vorige certificaat van TransIP. De certificaten uitgegeven door Let's Encrypt zijn echter wel maar 90 dagen geldig en er zijn geen wildcard-certificaten te krijgen. Om geldige certificaten te blijven gebruiken, wordt er wekelijks door middel van een cronjob gecontroleerd of er certificaten vernieuwd moeten worden.
 
 ## Client
 

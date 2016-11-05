@@ -6,12 +6,12 @@ Deze VPS draait meerdere websites en heeft alles overgenomen van de oude server 
 System specifications
 ---------------------
 
-| Wat            | Toelichting         |
-| -------------- | ------------------: |
-| OS             | Ubuntu 14.04.3 LTS  |
-| Disk space     | 20GB                |
-| RAM            | 1024MB              |
-| Transfer/month | 1TB                 |
+| Wat               | Toelichting         |
+| ----------------- | ------------------: |
+| OS                | Ubuntu 14.04.3 LTS  |
+| Schijfruimte      | 20GB                |
+| RAM               | 1024MB              |
+| Dataverkeer/maand | 1TB                 |
 
 Hostnames
 ---------
@@ -27,15 +27,16 @@ IP-adres
 SSL-certificaten
 ----------------
 
-Voor informatie over de voorziening van SSL-certificaten, kijk [hier](../docs/letsencrypt.md).
+Voor informatie over de voorziening van SSL-certificaten, kijk [hier](../tutorials/letsencrypt.md).
 
 Admins
 ------
 
  - Arian van Putten (`aeroboy94@gmail.com`)
  - Laurens Duijvesteijn (`l.duijvesteijn@gmail.com`)
- - Martijn Casteel (`martijn.casteel@gmail.com`)
+ - Maarten van den Berg (`maartenberg1@gmail.com`)
  - Tom Wassenberg (`itcrowd@tomwassenberg.nl`)
+ - Yorick van Zweeden (`penningmeester@svsticky.nl`)
 
 Daemons
 -------
@@ -51,7 +52,7 @@ Production services
  - `svsticky.nl`
  - `digidecs.svsticky.nl`
 
- - `koala.svsticky.nl`
+ - `koala.svsticky.nl` (+ `intro.svsticky.nl`)
  - `betalingen.svsticky.nl`
 
  - `darksideof.it`

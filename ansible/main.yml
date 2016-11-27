@@ -46,7 +46,7 @@
       maarten:
         github: spasticVerbalizer
       yorick:
-        github: yorici
+        github: yorickvanzweeden
 
     fail2ban:
       loglevel: 3

@@ -41,9 +41,7 @@ EOC
 
 echo "==> Creating ansible user"
 ssh -T $SSH_SPEC > /dev/null << EOC
-useradd -d /home/ansible -s /bin/bash ansible -G sudo
-mkdir /home/ansible
-chown ansible:ansible /home/ansible
+useradd -m -d /home/ansible -s /bin/bash ansible -G sudo
 echo "ansible:${PASSWORD}" | chpasswd
 EOC
 

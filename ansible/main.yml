@@ -21,6 +21,10 @@
         name: fail2ban
         state: restarted
 
+    - name: "systemctl daemon-reload"
+      command: systemctl daemon-reload
+      become: yes
+
   tasks:
     - include: tasks/auth.yml
     - include: tasks/users.yml

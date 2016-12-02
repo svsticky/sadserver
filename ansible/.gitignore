@@ -1,1 +1,4 @@
 *.retry
+*.log
+
+credentials

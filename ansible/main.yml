@@ -85,8 +85,14 @@
           - anno-1636.dev.svsticky.nl
           - ditkanook.dev.svsticky.nl
           - rukbunker.dev.svsticky.nl
+      - main_hostname: koala.dev.svsticky.nl
+        user: koala
+        alternative_hostnames:
+          - intro.dev.svsticky.nl
 
     # koala configuration
+    ssl_certificate: /etc/letsencrypt/live/koala.dev.svsticky.nl/fullchain.pem
+    ssl_certificate_key: /etc/letsencrypt/live/koala.dev.svsticky.nl/privkey.pem
     koala_environment: production
     koala_server: unicorn # or webrick
     koala_git_ref: ansible_test

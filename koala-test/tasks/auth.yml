@@ -1,9 +1,0 @@
----
-# Contains application-agnostic authentication settings
-- name: ensure sudo allows agent forwarding
-  copy:
-    src: files/sudoers_env
-    dest: /etc/sudoers.d/agent_forwarding
-    mode: 0440
-    owner: root
-    group: root

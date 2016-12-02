@@ -3,6 +3,8 @@
   user: ansible
   become_user: root
   become_method: sudo
+  vars_files:
+    - environment.yml
   become: true
 
   handlers:
@@ -36,6 +38,7 @@
     - include: tasks/koala.yml
     - include: tasks/studystatus.yml
 
+<<<<<<< HEAD
   vars:
     unattended_upgrades:
       security: True
@@ -97,4 +100,6 @@
     koala_server: unicorn # or webrick
     koala_git_ref: ansible_test
     koala_ruby_version: 2.3.0
+=======
+>>>>>>> Move variables to environment.yml
 ...

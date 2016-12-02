@@ -83,10 +83,10 @@
       - ruby
       - koala
 
-  - name: "ensure .bash_profile is present"
+  - name: "ensure .bashrc is present"
     copy:
-      src: templates/home/koala/.bash_profile
-      dest: "/home/koala/.bash_profile"
+      src: templates/home/koala/.bashrc
+      dest: "/home/koala/.bashrc"
       owner: koala
       group: koala
     tags:

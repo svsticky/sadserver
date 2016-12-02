@@ -4,14 +4,14 @@ upstream app {
 
 server {
 	listen 80;
-	server_name koala.svsticky.nl koala.stickyutrecht.nl koala.{{ canonical_hostname }};
+	server_name koala.stickyutrecht.nl koala.{{ canonical_hostname }};
 
 	return 301 https://koala.{{ canonical_hostname }}$request_uri;
 }
 
 server {
 	listen 80;
-	server_name intro.svsticky.nl intro.stickyutrecht.nl intro.{{ canonical_hostname }};
+	server_name intro.stickyutrecht.nl intro.{{ canonical_hostname }};
 
 	return 301 https://intro.{{ canonical_hostname }}$request_uri;
 }
@@ -34,8 +34,8 @@ server {
 	listen 443 ssl;
 	server_name koala.{{ canonical_hostname }} intro.{{ canonical_hostname }};
 
-        ssl_certificate {{ ssl_certificate }};
-        ssl_certificate_key {{ ssl_certificate_key }};
+	ssl_certificate {{ ssl_certificate }};
+	ssl_certificate_key {{ ssl_certificate_key }};
 
 	# HSTS is already enforced in rails
 

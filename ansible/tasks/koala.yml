@@ -128,7 +128,16 @@
     args:
       creates: ~/.ssh/known_hosts
 
-    # TODO: Deploy deploy key
+  - name: "copy deploy keys for user koala"
+    copy:
+      src: "files/{{ item }}"
+      dest: "/{{ item }}"
+      owner: koala
+      group: koala
+      mode: 0600
+    with_items:
+      - home/ansible/.ssh/deploy_ed25519
+      - home/ansible/.ssh/deploy_ed25519.pub
 
   - name: "clone koala to /var/www/koala.svsticky.nl"
     git:
@@ -232,6 +241,7 @@
       state: link
       owner: root
       group: root
+    notify: reload nginx
 
   when: koala_server == 'unicorn'
   tags:

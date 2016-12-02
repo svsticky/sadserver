@@ -27,3 +27,4 @@
   template:
     src: "ssl-request.sh.j2"
     dest: "/ssl-request.sh"
+    mode: 0755

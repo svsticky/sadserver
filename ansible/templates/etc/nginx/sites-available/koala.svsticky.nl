@@ -3,20 +3,6 @@ upstream app {
 }
 
 server {
-	listen 80;
-	server_name koala.stickyutrecht.nl koala.{{ canonical_hostname }};
-
-	return 301 https://koala.{{ canonical_hostname }};
-}
-
-server {
-	listen 80;
-	server_name intro.stickyutrecht.nl intro.{{ canonical_hostname }};
-
-	return 301 https://intro.{{ canonical_hostname }};
-}
-
-server {
 	listen 443 ssl;
 	server_name ~^(?<subdomain>koala|intro)\..*$;
 	# Note: this will not redirect svsticky.nl, see server_name docs on priority.

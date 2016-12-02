@@ -3,7 +3,7 @@
 - name: "install pip, virtualenv and libxml"
   apt:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - python-pip
     - virtualenv

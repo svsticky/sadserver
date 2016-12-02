@@ -2,8 +2,7 @@
 - name: "install fail2ban"
   apt:
     pkg: fail2ban
-    state: latest
-    update_cache: true
+    state: present
   notify:
     - restart fail2ban
 

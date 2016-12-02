@@ -2,7 +2,7 @@
 - name: "install letsencrypt"
   apt:
     name: letsencrypt
-    state: latest
+    state: present
 
 - name: "create certbot user"
   user:

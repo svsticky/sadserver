@@ -1,6 +1,7 @@
 [Unit]
 Description=Run koala development server
 Requires=mysql.service
+Provides=koala.service
 After=network.target
 
 [Service]

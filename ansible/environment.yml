@@ -43,6 +43,7 @@ websites:
       - studiereis.dev.svsticky.nl
   - main_hostname: koala.dev.svsticky.nl
     user: koala
+    no_folder: true
     alternative_hostnames:
       - intro.dev.svsticky.nl
 

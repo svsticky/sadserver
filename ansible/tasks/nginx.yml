@@ -97,12 +97,14 @@
     mode: 0755
     state: directory
   with_items: "{{ websites }}"
+  when: item.no_folder is undefined
 
 - name: "copy website nginx configuration"
   template:
     src: "etc/nginx/sites-available/website.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.main_hostname }}.conf"
   with_items: "{{ websites }}"
+  when: item.no_folder is undefined
 
 - name: "enable website nginx configurations"
   file:
@@ -117,3 +119,5 @@
     name: nginx
     enabled: yes
     state: reloaded
+  when: item.no_folder is undefined
+  notify: reload nginx

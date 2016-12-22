@@ -46,33 +46,47 @@
     enabled: yes
     state: reloaded
 
-- name: "install letsencrypt"
-  apt:
-    name: letsencrypt
-    state: present
+- name: "add certbot apt repository"
+  apt_repository:
+    repo: 'ppa:certbot/certbot'
 
-- name: "create certbot user"
-  user:
+- name: "install certbot"
+  apt:
     name: certbot
-    comment: "LetsEncrypt certificate fetcher"
-    system: yes
-    createhome: no
-    shell: /bin/nologin
+    state: latest
 
 - name: "create acme-challenges directory"
   file:
     path: /var/www/acme-challenges
     state: directory
-    owner: certbot
-    group: www-data
+    owner: root
+    group: root
     # The 2xxx octal means the group setuid bit is set, meaning
     # all files that get created in this directory will have
     # the group `www-data`
     mode: 2750
 
+- name: "copy LetsEncrypt renewal timer"
+  copy:
+    src: "files/{{ item }}"
+    dest: "/{{ item }}"
+    owner: root
+    group: root
+  with_items:
+    - etc/systemd/system/certbot-renewal.timer
+    - etc/systemd/system/certbot-renewal.service
+  notify: systemctl daemon-reload
+
+- name: "start and enable LetsEncrypt renewal timer"
+  service:
+    name: certbot-renewal.timer
+    enabled: yes
+    state: started
+
+
 - name: "request certificates"
   command: >
-    letsencrypt certonly \
+    certbot certonly \
       --non-interactive \
       --agree-tos \
       --email "itcrowd@svsticky.nl" \

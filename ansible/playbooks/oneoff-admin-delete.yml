@@ -2,7 +2,7 @@
 - hosts: all
 
   vars_files:
-      - ../environment.yml
+      - ../vars.yml
 
   vars_prompt:
       - name: admin_to_remove

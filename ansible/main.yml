@@ -4,7 +4,7 @@
   become_user: root
   become_method: sudo
   vars_files:
-    - environment.yml
+    - vars.yml
   become: true
 
   handlers:

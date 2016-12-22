@@ -63,5 +63,7 @@ by executing:
 It will attempt to run the main playbook under the ansible user we've just
 created. The user ansible has the password ${PASSWORD}
 
-Don't forget to add this to the IT Crowd password manager.
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@ ADD THE PASSWORD ABOVE TO THE IT-CROWD PASSWORD MANAGER @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 EOM

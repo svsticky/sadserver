@@ -1,0 +1,16 @@
+# "Dat je je plek maar weet, jij kutproleet!"
+# -- Anoniem, 2016 C.E.
+root = true
+
+# In the beginning, there was newlines.
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+# We don't use whitespace-significant stuff
+trim_trailing_whitespace = true
+
+[*.yml]
+indent_style = space
+indent_size = 2

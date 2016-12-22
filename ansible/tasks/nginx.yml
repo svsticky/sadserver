@@ -15,30 +15,6 @@
   with_items:
     - etc/nginx/nginx.conf
     - etc/php/7.0/fpm/php.ini
-  notify: reload nginx
-
-- name: "create directory for self-signed certs"
-  file:
-    path: "/etc/letsencrypt/live/{{ item.main_hostname }}"
-    owner: root
-    group: root
-    mode: 0755
-    state: directory
-  with_items: "{{ websites }}"
-
-- name: "create self-signed certs for all websites"
-  command: >
-    openssl req \
-      -x509 \
-      -newkey rsa:4096 \
-      -keyout /etc/letsencrypt/live/{{ item.main_hostname }}/privkey.pem \
-      -out /etc/letsencrypt/live/{{ item.main_hostname }}/fullchain.pem \
-      -days 10 \
-      -nodes \
-      -subj '/C=US/ST=Oregon/L=Portland/O=Sticky/OU=Org/CN=*'
-  args:
-    creates: "/etc/letsencrypt/live/{{ item.main_hostname }}/privkey.pem"
-  with_items: "{{ websites }}"
 
 - name: "copy dhparams and default configuration"
   copy:
@@ -50,10 +26,68 @@
     - etc/nginx/dhparams.pem
     - etc/nginx/sites-available/default
 
+- name: "enable default config"
+  file:
+    src: "/etc/nginx/sites-available/default"
+    dest: "/etc/nginx/sites-enabled/default"
+    state: link
+
 - name: "start and enable nginx"
   service:
     name: nginx
     enabled: yes
+    state: started
+
+# We need this, because LetsEncrypt is dependent
+# on default conf
+- name: "reload nginx"
+  service:
+    name: nginx
+    enabled: yes
+    state: reloaded
+
+- name: "install letsencrypt"
+  apt:
+    name: letsencrypt
+    state: present
+
+- name: "create certbot user"
+  user:
+    name: certbot
+    comment: "LetsEncrypt certificate fetcher"
+    system: yes
+    createhome: no
+    shell: /bin/nologin
+
+- name: "create acme-challenges directory"
+  file:
+    path: /var/www/acme-challenges
+    state: directory
+    owner: certbot
+    group: www-data
+    # The 2xxx octal means the group setuid bit is set, meaning
+    # all files that get created in this directory will have
+    # the group `www-data`
+    mode: 2750
+
+- name: "request certificates"
+  command: >
+    letsencrypt certonly \
+      --non-interactive \
+      --agree-tos \
+      --email "itcrowd@svsticky.nl" \
+      --keep-until-expiring \
+      --expand \
+      --webroot \
+      --webroot-path /var/www/acme-challenges \
+      --domain {{ item.main_hostname }} \
+      {% for hostname in item.alternative_hostnames %}
+      --domain {{ hostname }} \
+      {% endfor %}
+  with_items: "{{ websites }}"
+
+
+# TODO add renewals
 
 - name: "create website directories"
   file:
@@ -64,7 +98,7 @@
     state: directory
   with_items: "{{ websites }}"
 
-- name: "copy website nginx configuraitons"
+- name: "copy website nginx configuration"
   template:
     src: "etc/nginx/sites-available/website.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.main_hostname }}.conf"
@@ -76,4 +110,10 @@
     dest: "/etc/nginx/sites-enabled/{{ item.main_hostname }}.conf"
     state: link
   with_items: "{{ websites }}"
-  notify: reload nginx
+
+# lets reload nginx to be sure
+- name: "reload nginx"
+  service:
+    name: nginx
+    enabled: yes
+    state: reloaded

@@ -27,7 +27,6 @@
     - include: tasks/upgrades.yml
     - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
-    - include: tasks/letsencrypt.yml
     - include: tasks/firewall.yml
     - include: tasks/studystatus.yml
 
@@ -72,5 +71,11 @@
         user: laurens
         alternative_hostnames:
           - studiereis.dev.svsticky.nl
+      - main_hostname: feutentrui.dev.svsticky.nl
+        user: arian
+        alternative_hostnames:
+          - anno-1636.dev.svsticky.nl
+          - ditkanook.dev.svsticky.nl
+          - rukbunker.dev.svsticky.nl
 
 ...

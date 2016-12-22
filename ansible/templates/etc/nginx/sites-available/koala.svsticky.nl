@@ -3,7 +3,8 @@ upstream app {
 }
 
 server {
-	listen 443 ssl;
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
 	server_name ~^(?<subdomain>koala|intro)\..*$;
 	# Note: this will not redirect svsticky.nl, see server_name docs on priority.
 
@@ -17,7 +18,8 @@ server {
 }
 
 server {
-	listen 443 ssl;
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
 	server_name koala.{{ canonical_hostname }} intro.{{ canonical_hostname }};
 
 	ssl_certificate {{ ssl_certificate }};

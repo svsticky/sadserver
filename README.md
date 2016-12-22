@@ -27,9 +27,9 @@ configuring a Linux system.
 
 The ansible directory contains three important files:
 
- - `ansible/bootstrap.sh` -- an `sh` script that can be used to bootstrap a
-   vanilla Ubuntu 16.04 system so that it's ready to run our main playbook. Run
-   with your favourite shell.
+ - `ansible/scripts/bootstrap-new-host.sh` -- an `sh` script that can be used
+   to bootstrap a vanilla Ubuntu 16.04 system so that it's ready to run our
+   main playbook. Run with your favourite shell.
  - `hosts` -- an [Ansible inventory file][inventory] file which contains a
    specification of all of our hosts.
  - `ansible/main.yml` -- the main playbook. It can be run with the command

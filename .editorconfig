@@ -1,0 +1,32 @@
+# "Dat je je plek maar weet, jij kutproleet!"
+# -- Anoniem, 2016 C.E.
+root = true
+
+# In the beginning, there was newlines.
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+max_line_length = 79
+
+indent_style = off
+indent_size = off
+indent_char = off
+
+# We don't use whitespace-significant stuff
+trim_trailing_whitespace = true
+
+[*.yml]
+indent_style = space
+indent_size = 2
+
+# IGNORES
+[{*_token,*_secret,php.ini.j2,*.swp,deploy_ed25519*}]
+max_line_length = off
+indent_style = off
+indent_size = off
+indent_char = off
+trim_trailing_whitespace = off
+charset = off
+insert_final_newline = off
+end_of_line = off

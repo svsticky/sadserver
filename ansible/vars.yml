@@ -1,0 +1,62 @@
+---
+unattended_upgrades:
+  security: True
+  all: False
+
+admins:
+  laurens:
+    github: duijf
+  tom:
+    github: tomwassenberg
+  arian:
+    github: arianvp
+  maarten:
+    github: spasticVerbalizer
+  yorick:
+    github: yorickvanzweeden
+
+fail2ban:
+  loglevel: 3
+  ignoreip: 127.0.0.1/8
+  bantime: 600
+  maxretry: 3
+
+  destemail: root@localhost
+  mta: sendmail
+  banaction: iptables-multiport
+
+  services:
+    - name: sshd
+      port: ssh
+      filter: sshd
+      logpath: /var/log/auth.log
+
+# the upload limit for php-fpm and nginx in megabytes
+upload_limit: 15
+
+canonical_hostname: dev.svsticky.nl
+
+websites:
+  - main_hostname: studytrip.dev.svsticky.nl
+    user: laurens
+    alternative_hostnames:
+      - studiereis.dev.svsticky.nl
+  - main_hostname: feutentrui.dev.svsticky.nl
+    user: arian
+    alternative_hostnames:
+      - anno-1636.dev.svsticky.nl
+      - ditkanook.dev.svsticky.nl
+      - rukbunker.dev.svsticky.nl
+  - main_hostname: koala.dev.svsticky.nl
+    user: koala
+    no_folder: true
+    alternative_hostnames:
+      - intro.dev.svsticky.nl
+
+# koala configuration
+ssl_certificate: /etc/letsencrypt/live/koala.dev.svsticky.nl/fullchain.pem
+ssl_certificate_key: /etc/letsencrypt/live/koala.dev.svsticky.nl/privkey.pem
+koala_environment: production
+koala_server: unicorn # or webrick
+koala_git_ref: ansible_test
+koala_ruby_version: 2.3.0

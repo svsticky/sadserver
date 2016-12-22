@@ -5,6 +5,8 @@
   apt:
     pkg: "{{ item }}"
     state: present
+    update_cache: yes
+    cache_valid_time: 100
   with_items:
     - aptitude
     - unattended-upgrades

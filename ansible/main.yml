@@ -3,6 +3,8 @@
   user: ansible
   become_user: root
   become_method: sudo
+  vars_files:
+    - vars.yml
   become: true
 
   handlers:
@@ -21,6 +23,10 @@
         name: fail2ban
         state: restarted
 
+    - name: "systemctl daemon-reload"
+      command: systemctl daemon-reload
+      become: yes
+
   tasks:
     - include: tasks/auth.yml
     - include: tasks/users.yml
@@ -28,54 +34,7 @@
     - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
     - include: tasks/firewall.yml
+    - include: tasks/database.yml
+    - include: tasks/koala.yml
     - include: tasks/studystatus.yml
-
-  vars:
-    unattended_upgrades:
-      security: True
-      all: False
-
-    admins:
-      laurens:
-        github: duijf
-      tom:
-        github: tomwassenberg
-      arian:
-        github: arianvp
-      maarten:
-        github: spasticVerbalizer
-      yorick:
-        github: yorickvanzweeden
-
-    fail2ban:
-      loglevel: 3
-      ignoreip: 127.0.0.1/8
-      bantime: 600
-      maxretry: 3
-
-      destemail: root@localhost
-      mta: sendmail
-      banaction: iptables-multiport
-
-      services:
-        - name: sshd
-          port: ssh
-          filter: sshd
-          logpath: /var/log/auth.log
-
-    # the upload limit for php-fpm and nginx in megabytes
-    upload_limit: 15
-
-    websites:
-      - main_hostname: studytrip.dev.svsticky.nl
-        user: laurens
-        alternative_hostnames:
-          - studiereis.dev.svsticky.nl
-      - main_hostname: feutentrui.dev.svsticky.nl
-        user: arian
-        alternative_hostnames:
-          - anno-1636.dev.svsticky.nl
-          - ditkanook.dev.svsticky.nl
-          - rukbunker.dev.svsticky.nl
-
 ...

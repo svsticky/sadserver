@@ -10,7 +10,7 @@ DEVISE_SECRET={{ lookup('password', 'credentials/koala/devise_secret chars=hexdi
 # API tokens
 MAILGUN_DOMAIN=
 MAILGUN_TOKEN=
-CHECKOUT_TOKEN={{ lookup('password', 'credentials/koala/checkout_token, chars=hexdigits length=128') }}
+CHECKOUT_TOKEN={{ lookup('password', 'credentials/koala/checkout_token chars=hexdigits length=128') }}
 
 # AWS credentials
 AWS_ACCESS=

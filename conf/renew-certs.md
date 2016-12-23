@@ -16,7 +16,7 @@ Het script dat in de crontab staat van `root` en wekelijks wordt gedraaid op het
 	# /opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --authenticator webroot --webroot-path /var/www/sodi/sodi.nl --domains sodi.nl,www.sodi.nl
 	# /opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --authenticator webroot --webroot-path /var/www/stichting/stichtingsticky.nl --domains stichtingsticky.nl,www.stichtingsticky.nl
 	# /opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --authenticator webroot --webroot-path /var/www/studiereis/studytrip.svsticky.nl/public_html --domains studytrip.svsticky.nl,studiereis.svsticky.nl,studytrip.stickyutrecht.nl,studiereis.stickyutrecht.nl
-	# /opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --authenticator webroot --webroot-path /var/www/symposium/darksideof.it --domains darksideof.it,www.darksideof.it
+	# /opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --authenticator webroot --webroot-path /var/www/symposium/darksideofit.svsticky.nl --domains darksideofit.svsticky.nl
 	# /opt/certbot/certbot-auto certonly --non-interactive --no-self-upgrade --keep-until-expiring --agree-tos --email itcrowd@svsticky.nl --authenticator webroot --webroot-path /var/www/wintersport/wintersport.svsticky.nl --domains wintersport.svsticky.nl,wintersport.stickyutrecht.nl
 
 	/opt/certbot/certbot-auto renew --post-hook "service nginx reload"

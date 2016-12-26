@@ -1,0 +1,37 @@
+---
+- name: "install netdata build dependencies"
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - zlib1g-dev
+    - uuid-dev
+    - libmnl-dev
+    - gcc
+    - make
+    - git
+    - autoconf
+    - autoconf-archive
+    - autogen
+    - automake
+    - pkg-config
+    - curl
+  tags:
+    - monitoring
+
+- name: "clone the netdata git repository"
+  git:
+    accept_hostkey: yes
+    repo: https://github.com/firehol/netdata.git
+    dest: /usr/local/src/netdata
+    update: yes
+  tags:
+    - monitoring
+
+- name: "build and install netdata"
+  command: /usr/local/src/netdata/netdata-installer.sh --dont-wait
+  args:
+    chdir: /usr/local/src/netdata
+    creates: /usr/sbin/netdata
+  tags:
+    - monitoring

@@ -60,7 +60,7 @@
     path: /var/www/acme-challenges
     state: directory
     owner: root
-    group: root
+    group: www-data
     # The 2xxx octal means the group setuid bit is set, meaning
     # all files that get created in this directory will have
     # the group `www-data`
@@ -111,14 +111,14 @@
     mode: 0755
     state: directory
   with_items: "{{ websites }}"
-  when: item.no_folder is undefined
+  when: item.custom_config is undefined
 
 - name: "copy website nginx configuration"
   template:
     src: "etc/nginx/sites-available/website.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.main_hostname }}.conf"
   with_items: "{{ websites }}"
-  when: item.no_folder is undefined
+  when: item.custom_config is undefined
 
 - name: "enable website nginx configurations"
   file:
@@ -126,6 +126,7 @@
     dest: "/etc/nginx/sites-enabled/{{ item.main_hostname }}.conf"
     state: link
   with_items: "{{ websites }}"
+  when: item.custom_config is undefined
 
 # lets reload nginx to be sure
 - name: "reload nginx"
@@ -133,5 +134,5 @@
     name: nginx
     enabled: yes
     state: reloaded
-  when: item.no_folder is undefined
+  when: item.custom_config is undefined
   notify: reload nginx

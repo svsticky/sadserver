@@ -54,6 +54,12 @@ websites:
     alternative_hostnames:
       - intro.dev.svsticky.nl
 
+  - main_hostname: metrics.dev.svsticky.nl
+    custom_config: true
+    alternative_hostnames:
+      - status.dev.svsticky.nl
+
+
 # koala configuration
 ssl_certificate: /etc/letsencrypt/live/koala.dev.svsticky.nl/fullchain.pem
 ssl_certificate_key: /etc/letsencrypt/live/koala.dev.svsticky.nl/privkey.pem

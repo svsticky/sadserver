@@ -87,6 +87,7 @@
 - name: "request certificates"
   command: >
     certbot certonly \
+      --staging \
       --non-interactive \
       --agree-tos \
       --email "itcrowd@svsticky.nl" \

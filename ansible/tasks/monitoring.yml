@@ -40,12 +40,12 @@
     - packages
 
 - name: "copy nginx files for metrics site"
-  copy:
-    src: "files/{{ item }}"
-    dest: "/{{ item }}"
+  template:
+    src: "templates/{{ item }}"
+    dest: "/{{ item }}.{{ canonical_hostname }}"
   with_items:
-    - etc/nginx/sites-available/metrics.dev.svsticky.nl
-    - etc/nginx/htpasswd.d/metrics.dev.svsticky.nl
+    - etc/nginx/sites-available/metrics
+    - etc/nginx/htpasswd.d/metrics
   tags:
     - monitoring
     - nginx
@@ -54,8 +54,8 @@
 
 - name: "enable nginx proxy config for metrics site"
   file:
-    src: "/etc/nginx/sites-available/metrics.dev.svsticky.nl"
-    dest: "/etc/nginx/sites-enabled/metrics.dev.svsticky.nl"
+    src: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}"
+    dest: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}"
     state: link
   tags:
     - monitoring

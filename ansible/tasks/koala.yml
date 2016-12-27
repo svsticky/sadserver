@@ -23,7 +23,7 @@
 
   - name: "ensure clone location exists and is owned by koala"
     file:
-      path: /var/www/koala.svsticky.nl
+      path: /var/www/koala.{{ canonical_hostname }}
       state: directory
       owner: koala
       group: koala
@@ -110,7 +110,7 @@
     shell: eval "$(rbenv init -)"; rbenv shell {{ koala_ruby_version }}; gem install bundler
     args:
       executable: /bin/bash
-      chdir: /var/www/koala.svsticky.nl
+      chdir: /var/www/koala.{{ canonical_hostname }}
       creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/{{ koala_ruby_version }}/gems/bundler-1.12.5
     tags:
       - ruby
@@ -139,18 +139,18 @@
       - { from: 'deploy_ed25519',     to: 'id_ed25519' }
       - { from: 'deploy_ed25519.pub', to: 'id_ed25519.pub' }
 
-  - name: "clone koala to /var/www/koala.svsticky.nl"
+  - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
     git:
       repo: 'git@github.com:svsticky/constipated-koala.git'
-      dest: /var/www/koala.svsticky.nl
+      dest: /var/www/koala.{{ canonical_hostname }}
       version: "{{ koala_git_ref }}"
     tags:
       - koala
 
   - name: "ensure .rbenv-vars is present"
     template:
-      src: templates/var/www/koala.svsticky.nl/.rbenv-vars
-      dest: /var/www/koala.svsticky.nl/.rbenv-vars
+      src: templates/var/www/koala/.rbenv-vars
+      dest: /var/www/koala.{{ canonical_hostname }}/.rbenv-vars
       owner: koala
       group: koala
       mode: 0700
@@ -162,7 +162,7 @@
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell: eval "$(rbenv init - )"; bundle install
     args:
-      chdir: /var/www/koala.svsticky.nl
+      chdir: /var/www/koala.{{ canonical_hostname }}
     register: koala_gem_result
     changed_when: koala_gem_result.stdout.find("Installing") != -1
     tags:
@@ -173,13 +173,13 @@
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell: eval "$(rbenv init - )"; rake tmp:create
     args:
-      chdir: /var/www/koala.svsticky.nl
+      chdir: /var/www/koala.{{ canonical_hostname }}
     tags:
       - koala
 
   - name: "ensure log directory exists"
     file:
-      dest: /var/www/koala.svsticky.nl/log
+      dest: /var/www/koala.{{ canonical_hostname }}/log
       state: directory
       owner: koala
       group: koala
@@ -229,15 +229,15 @@
 
   - name: "place koala's nginx configuration"
     template:
-      src: templates/etc/nginx/sites-available/koala.svsticky.nl
-      dest: /etc/nginx/sites-available/koala.svsticky.nl
+      src: templates/etc/nginx/sites-available/koala
+      dest: /etc/nginx/sites-available/koala.{{ canonical_hostname }}
       owner: root
       group: root
 
   - name: "enable koala's nginx config"
     file:
-      src: /etc/nginx/sites-available/koala.svsticky.nl
-      dest: /etc/nginx/sites-enabled/koala.svsticky.nl
+      src: /etc/nginx/sites-available/koala.{{ canonical_hostname }}
+      dest: /etc/nginx/sites-enabled/koala.{{ canonical_hostname }}
       state: link
       owner: root
       group: root

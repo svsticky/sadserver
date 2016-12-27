@@ -1,0 +1,20 @@
+upstream netdata {
+  server 127.0.0.1:19999;
+}
+
+server {
+  listen 443 ssl;
+  listen [::]:443 ssl;
+
+  server_name metrics.{{ canonical_hostname }};
+
+  ssl_certificate      /etc/letsencrypt/live/metrics.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/metrics.{{ canonical_hostname }}/privkey.pem;
+
+  location / {
+    auth_basic "Grafieken en meer";
+    auth_basic_user_file /etc/nginx/htpasswd.d/metrics.{{ canonical_hostname }};
+
+    proxy_pass http://netdata;
+  }
+}

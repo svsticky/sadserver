@@ -37,32 +37,32 @@ upload_limit: 15
 canonical_hostname: dev.svsticky.nl
 
 websites:
-  - main_hostname: studytrip.dev.svsticky.nl
+  - main_hostname: studytrip.{{ canonical_hostname }}
     user: laurens
     alternative_hostnames:
-      - studiereis.dev.svsticky.nl
+      - studiereis.{{ canonical_hostname }}
 
-  - main_hostname: feutentrui.dev.svsticky.nl
+  - main_hostname: feutentrui.{{ canonical_hostname }}
     user: arian
     alternative_hostnames:
-      - anno-1636.dev.svsticky.nl
-      - ditkanook.dev.svsticky.nl
-      - rukbunker.dev.svsticky.nl
+      - anno-1636.{{ canonical_hostname }}
+      - ditkanook.{{ canonical_hostname }}
+      - rukbunker.{{ canonical_hostname }}
 
-  - main_hostname: koala.dev.svsticky.nl
+  - main_hostname: koala.{{ canonical_hostname }}
     custom_config: true
     alternative_hostnames:
-      - intro.dev.svsticky.nl
+      - intro.{{ canonical_hostname }}
 
-  - main_hostname: metrics.dev.svsticky.nl
+  - main_hostname: metrics.{{ canonical_hostname }}
     custom_config: true
     alternative_hostnames:
-      - status.dev.svsticky.nl
+      - status.{{ canonical_hostname }}
 
 
 # koala configuration
-ssl_certificate: /etc/letsencrypt/live/koala.dev.svsticky.nl/fullchain.pem
-ssl_certificate_key: /etc/letsencrypt/live/koala.dev.svsticky.nl/privkey.pem
+ssl_certificate: /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem
+ssl_certificate_key: /etc/letsencrypt/live/koala.{{ canonical_hostname }}/privkey.pem
 koala_environment: production
 koala_server: unicorn # or webrick
 koala_git_ref: ansible_test

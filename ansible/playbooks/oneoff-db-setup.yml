@@ -18,7 +18,7 @@
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} db:setup
         args:
-          chdir: /var/www/koala.svsticky.nl
+          chdir: /var/www/koala.{{ canonical_hostname }}
           executable: /bin/bash
         register: result
         become: yes

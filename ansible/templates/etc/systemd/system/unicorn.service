@@ -6,10 +6,10 @@ After=network.target
 
 [Service]
 Type=forking
-PIDFile=/var/www/koala.svsticky.nl/tmp/pids/unicorn.pid
+PIDFile=/var/www/koala.{{ canonical_hostname }}/tmp/pids/unicorn.pid
 User=koala
 Group=koala
-WorkingDirectory=/var/www/koala.svsticky.nl
+WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
 ExecStart=/home/koala/unicorn.sh
 
 [Install]

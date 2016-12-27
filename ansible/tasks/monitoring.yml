@@ -1,0 +1,64 @@
+---
+- name: "install netdata build dependencies"
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - zlib1g-dev
+    - uuid-dev
+    - libmnl-dev
+    - gcc
+    - make
+    - git
+    - autoconf
+    - autoconf-archive
+    - autogen
+    - automake
+    - pkg-config
+    - curl
+  tags:
+    - monitoring
+    - packages
+
+- name: "clone the netdata git repository"
+  git:
+    accept_hostkey: yes
+    repo: https://github.com/firehol/netdata.git
+    dest: /usr/local/src/netdata
+    update: yes
+  tags:
+    - monitoring
+    - packages
+
+- name: "build and install netdata"
+  command: /usr/local/src/netdata/netdata-installer.sh --dont-wait
+  args:
+    chdir: /usr/local/src/netdata
+    creates: /usr/sbin/netdata
+  tags:
+    - monitoring
+    - packages
+
+- name: "copy nginx files for metrics site"
+  copy:
+    src: "files/{{ item }}"
+    dest: "/{{ item }}"
+  with_items:
+    - etc/nginx/sites-available/metrics.dev.svsticky.nl
+    - etc/nginx/htpasswd.d/metrics.dev.svsticky.nl
+  tags:
+    - monitoring
+    - nginx
+  notify:
+    - reload nginx
+
+- name: "enable nginx proxy config for metrics site"
+  file:
+    src: "/etc/nginx/sites-available/metrics.dev.svsticky.nl"
+    dest: "/etc/nginx/sites-enabled/metrics.dev.svsticky.nl"
+    state: link
+  tags:
+    - monitoring
+    - nginx
+  notify:
+    - reload nginx

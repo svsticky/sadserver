@@ -1,11 +1,11 @@
 ---
 - hosts: development
   user: ansible
+  become: yes
   become_user: root
   become_method: sudo
   vars_files:
     - vars.yml
-  become: true
 
   handlers:
     - name: "restart nginx"
@@ -37,4 +37,5 @@
     - include: tasks/database.yml
     - include: tasks/koala.yml
     - include: tasks/studystatus.yml
+    - include: tasks/monitoring.yml
 ...

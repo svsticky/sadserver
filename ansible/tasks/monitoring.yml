@@ -1,5 +1,5 @@
 ---
-- name: "install netdata build dependencies"
+- name: "install netdata build and plugin dependencies"
   apt:
     name: "{{ item }}"
     state: "present"
@@ -16,6 +16,7 @@
     - "automake"
     - "pkg-config"
     - "curl"
+    - "python-yaml"
   tags:
     - "monitoring"
     - "packages"

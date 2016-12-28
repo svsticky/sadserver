@@ -41,7 +41,7 @@
 
 - name: "copy nginx files for metrics site"
   template:
-    src: "templates/{{ item }}"
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}.{{ canonical_hostname }}"
   with_items:
     - etc/nginx/sites-available/metrics

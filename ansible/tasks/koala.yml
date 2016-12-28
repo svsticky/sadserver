@@ -201,7 +201,7 @@
 
   - name: "ensure webrick service file is present in development"
     copy:
-      src: templates/etc/systemd/system/webrick.service
+      src: templates/etc/systemd/system/webrick.service.j2
       dest: /etc/systemd/system/webrick.service
     notify:
       - systemctl daemon-reload
@@ -214,7 +214,7 @@
 - block:
   - name: "ensure unicorn script is present in production"
     template:
-      src: templates/home/koala/unicorn.sh
+      src: templates/home/koala/unicorn.sh.j2
       dest: /home/koala/unicorn.sh
       mode: 0755
       owner: koala
@@ -222,15 +222,15 @@
 
   - name: "ensure unicorn service file is present in production"
     template:
-      src: templates/etc/systemd/system/unicorn.service
+      src: templates/etc/systemd/system/unicorn.service.j2
       dest: /etc/systemd/system/unicorn.service
     notify:
       - systemctl daemon-reload
 
   - name: "place koala's nginx configuration"
     template:
-      src: templates/etc/nginx/sites-available/koala
-      dest: /etc/nginx/sites-available/koala.{{ canonical_hostname }}
+      src: templates/etc/nginx/sites-available/koala.j2
+      dest: /etc/nginx/sites-available/koala.{{ canonical_hostname }}.conf
       owner: root
       group: root
 

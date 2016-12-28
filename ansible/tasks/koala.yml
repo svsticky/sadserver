@@ -221,7 +221,7 @@
       group: koala
 
   - name: "ensure unicorn service file is present in production"
-    copy:
+    template:
       src: templates/etc/systemd/system/unicorn.service
       dest: /etc/systemd/system/unicorn.service
     notify:

@@ -1,9 +1,9 @@
 # Ansible Styleguide
 
-This is mostly a summary from from [this styleguide]
-[whitecloud/ansible-styleguide]. Don't hesistate to ask any questions if you
-don't get or disagree with something here. If you're confused about something
-because it is underspecified, please add an example after you figured it out.
+This is mostly a summary from [this styleguide][whitecloud/ansible-styleguide].
+Don't hesitate to ask any questions if you don't get or disagree with something
+here. If you're confused about something because it is underspecified, please
+add an example after you figured it out.
 
 ## Summary
 
@@ -18,7 +18,7 @@ because it is underspecified, please add an example after you figured it out.
  7. All templates should have the `.j2` file extension.
  8. Use `become` instead of `sudo`.
  9. Blank lines between two blocks and tasks.
- 10. `snake_case` for varables.
+ 10. `snake_case` for variables.
  11. If you define multiple variables with the same prefix, put them in a map.
 
 ## Examples

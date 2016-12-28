@@ -229,7 +229,7 @@
 
   - name: "place koala's nginx configuration"
     template:
-      src: templates/etc/nginx/sites-available/koala.svsticky.nl
+      src: templates/etc/nginx/sites-available/koala.svsticky.nl.j2
       dest: /etc/nginx/sites-available/koala.svsticky.nl
       owner: root
       group: root

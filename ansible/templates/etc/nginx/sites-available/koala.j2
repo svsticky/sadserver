@@ -6,7 +6,7 @@ server {
 	listen 443 ssl http2;
 	listen [::]:443 ssl http2;
 	server_name ~^(?<subdomain>koala|intro)\..*$;
-	# Note: this will not redirect svsticky.nl, see server_name docs on priority.
+	# Note: this will not redirect {{ canonical_hostname }}, see server_name docs on priority.
 
 	ssl_certificate {{ ssl_certificate }};
 	ssl_certificate_key {{ ssl_certificate_key }};
@@ -27,13 +27,13 @@ server {
 
 	# HSTS is already enforced in rails
 
-	root /var/www/koala.svsticky.nl/public;
+	root /var/www/koala.{{ canonical_hostname }}/public;
 
 	client_max_body_size 100M;
 	keepalive_timeout 10;
 
-	error_log /var/www/koala.svsticky.nl/log/nginx.log warn;
-	access_log /var/www/koala.svsticky.nl/log/access.log;
+	error_log /var/www/koala.{{ canonical_hostname }}/log/nginx.log warn;
+	access_log /var/www/koala.{{ canonical_hostname }}/log/access.log;
 
 	try_files $uri @app;
 
@@ -42,7 +42,7 @@ server {
 		add_header Access-Control-Allow-Headers 'Origin, Content-Type, Accept, Authorization';
 
 		# No wildcards allowed, allow all '*' or specific uri, can be multiple
-		add_header Access-Control-Allow-Origin 'https://radio.svsticky.nl';
+		add_header Access-Control-Allow-Origin 'https://radio.{{ canonical_hostname }}';
 	}
 
 	location @app {

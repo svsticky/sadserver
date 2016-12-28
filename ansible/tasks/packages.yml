@@ -1,14 +1,11 @@
 ---
-# `aptitude` is needed to perform upgrades with the Ansible apt
-# module, since it doesn't support running `apt-get upgrade`...
-- name: "install aptitude and unattended-upgrades"
+- name: "install common utilities"
   apt:
     pkg: "{{ item }}"
     state: present
-    update_cache: yes
-    cache_valid_time: 100
   with_items:
     - aptitude
+    - htop
     - unattended-upgrades
 
 - name: "update all packages"

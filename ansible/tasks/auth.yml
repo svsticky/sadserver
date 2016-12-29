@@ -18,7 +18,7 @@
     - home/ansible/.ssh/deploy_ed25519
     - home/ansible/.ssh/deploy_ed25519.pub
 
-- name: "disable root login over ssh"
+- name: "disable root login using password over ssh"
   lineinfile:
     dest: "/etc/ssh/sshd_config"
     regexp: "^PermitRootLogin "
@@ -33,6 +33,11 @@
     line: "PasswordAuthentication no"
     state: present
   notify: restart ssh
+
+- name: "remove public keys for root account"
+  file:
+    path: /root/.ssh/authorized_keys
+    state: absent
 
 - name: "add sftp jail for committee users"
   blockinfile:

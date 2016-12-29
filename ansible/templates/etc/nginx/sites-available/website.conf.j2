@@ -8,13 +8,13 @@ server {
     {{ hostname }}
   {% endfor %};
 
-  # These will be self-signed certs until the letsencrypt handshake finishes
   ssl_certificate      /etc/letsencrypt/live/{{ item.main_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/{{ item.main_hostname }}/privkey.pem;
 
   root /var/www/{{ item.user }}/{{ item.main_hostname }};
   index index.html index.htm index.php;
 
+  add_header Strict-Transport-Security "max-age=31536000";
 
   location ~ \.php$ {
     try_files %uri =404;

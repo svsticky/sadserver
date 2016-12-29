@@ -236,8 +236,8 @@
 
   - name: "enable koala's nginx config"
     file:
-      src: /etc/nginx/sites-available/koala.{{ canonical_hostname }}
-      dest: /etc/nginx/sites-enabled/koala.{{ canonical_hostname }}
+      src: /etc/nginx/sites-available/koala.{{ canonical_hostname }}.conf
+      dest: /etc/nginx/sites-enabled/koala.{{ canonical_hostname }}.conf
       state: link
       owner: root
       group: root

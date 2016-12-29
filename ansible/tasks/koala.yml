@@ -84,7 +84,7 @@
       - koala
 
   - name: "ensure .bashrc is present"
-    copy:
+    template:
       src: templates/home/koala/.bashrc
       dest: "/home/koala/.bashrc"
       owner: koala

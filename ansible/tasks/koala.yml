@@ -103,10 +103,10 @@
   - name: "ensure ruby is installed, compile if necessary"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init - )"; rbenv install {{ koala_ruby_version }}
+    shell: eval "$(rbenv init - )"; rbenv install {{ koala.ruby_version }}
     args:
       executable: /bin/bash
-      creates: /home/koala/.rbenv/versions/{{ koala_ruby_version }}
+      creates: /home/koala/.rbenv/versions/{{ koala.ruby_version }}
     tags:
       - ruby
       - koala
@@ -114,11 +114,11 @@
   - name: "ensure bundler is installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init -)"; rbenv shell {{ koala_ruby_version }}; gem install bundler
+    shell: eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem install bundler
     args:
       executable: /bin/bash
       chdir: /var/www/koala.{{ canonical_hostname }}
-      creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/{{ koala_ruby_version }}/gems/bundler-1.12.5
+      creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/{{ koala.ruby_version }}/gems/bundler-1.12.5
     tags:
       - ruby
       - koala
@@ -150,7 +150,7 @@
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: /var/www/koala.{{ canonical_hostname }}
-      version: "{{ koala_git_ref }}"
+      version: "{{ koala.git_ref }}"
     tags:
       - koala
 
@@ -206,7 +206,7 @@
       owner: koala
       group: koala
 
-  when: koala_server == "webrick"
+  when: koala.server == "webrick"
   tags:
     - koala
 
@@ -235,6 +235,6 @@
       group: root
     notify: reload nginx
 
-  when: koala_server == "unicorn"
+  when: koala.server == "unicorn"
   tags:
     - koala

@@ -18,4 +18,4 @@ AWS_SECRET=
 
 # Other
 IDEAL_PLATFORM=
-RAILS_ENV={{ koala_environment }}
+RAILS_ENV={{ koala.environment }}

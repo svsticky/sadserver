@@ -1,14 +1,14 @@
 [Unit]
-Description=Run koala {{ koala_environment }} service
+Description=Run koala {{ koala.environment }} service
 Requires=mysql.service
 After=network.target
 
 [Service]
-{% if koala_server == "unicorn" %}
+{% if koala.server == "unicorn" %}
 Type=forking
 PIDFile=/var/www/koala.{{ canonical_hostname }}/tmp/pids/unicorn.pid
 ExecStart=/home/koala/unicorn.sh
-{% elif koala_server == "webrick" %}
+{% elif koala.server == "webrick" %}
 Type=simple
 ExecStart=/home/koala/webrick.sh
 {% endif %}

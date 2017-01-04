@@ -79,11 +79,11 @@
 
   - name: "ensure rbenv plugins are installed"
     git:
-      repo: '{{item.url}}'
+      repo: "{{item.url}}"
       dest: ~/.rbenv/plugins/{{item.name}}
     with_items:
-      - { name: 'ruby-build', url: 'https://github.com/rbenv/ruby-build.git' }
-      - { name: 'rbenv-vars', url: 'https://github.com/rbenv/rbenv-vars.git' }
+      - { name: "ruby-build", url: "https://github.com/rbenv/ruby-build.git" }
+      - { name: "rbenv-vars", url: "https://github.com/rbenv/rbenv-vars.git" }
       # NOTE: This will install the latest development versions, should we pin
       # a tag/commit/release?
     tags:
@@ -143,12 +143,12 @@
       group: koala
       mode: 0600
     with_items:
-      - { from: 'deploy_ed25519',     to: 'id_ed25519' }
-      - { from: 'deploy_ed25519.pub', to: 'id_ed25519.pub' }
+      - { from: "deploy_ed25519",     to: "id_ed25519" }
+      - { from: "deploy_ed25519.pub", to: "id_ed25519.pub" }
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
     git:
-      repo: 'git@github.com:svsticky/constipated-koala.git'
+      repo: "git@github.com:svsticky/constipated-koala.git"
       dest: /var/www/koala.{{ canonical_hostname }}
       version: "{{ koala_git_ref }}"
     tags:

@@ -83,7 +83,6 @@
     enabled: yes
     state: started
 
-
 - name: "request certificates"
   command: >
     certbot certonly \
@@ -101,7 +100,6 @@
       {% endfor %}
   with_items: "{{ websites }}"
 
-
 # TODO add renewals
 
 - name: "create website directories"
@@ -113,6 +111,16 @@
     state: directory
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
+
+- name: "create nginx includes directory"
+  file:
+    dest: "/etc/nginx/includes"
+    state: directory
+
+- name: "copy security http headers"
+  template:
+    src: "etc/nginx/includes/security-headers.conf.j2"
+    dest: "/etc/nginx/includes/security-headers.conf"
 
 - name: "copy website nginx configuration"
   template:
@@ -131,7 +139,7 @@
 
 - name: "create htpasswd.d directory for basic auth files"
   file:
-    dest: /etc/nginx/htpasswd.d
+    dest: "/etc/nginx/htpasswd.d"
     owner: root
     group: root
     state: directory

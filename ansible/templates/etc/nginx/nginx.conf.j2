@@ -55,15 +55,10 @@ http {
   ssl_stapling on;
   ssl_stapling_verify on;
 
-
   ##
   # Other security settings
   ##
   server_tokens off;
-
-  add_header X-Frame-Options "SAMEORIGIN";
-  add_header X-XSS-Protection "1; mode=block";
-  add_header X-Content-Type-Options "nosniff";
 
   ##
   # Logging Settings

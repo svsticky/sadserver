@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 upstream netdata {
   server 127.0.0.1:19999;
 }
@@ -10,6 +11,8 @@ server {
 
   ssl_certificate      /etc/letsencrypt/live/metrics.{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/metrics.{{ canonical_hostname }}/privkey.pem;
+
+  include includes/security-headers.conf;
 
   location / {
     auth_basic "Grafieken en meer";

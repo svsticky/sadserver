@@ -11,8 +11,7 @@ server {
 	ssl_certificate {{ ssl_certificate }};
 	ssl_certificate_key {{ ssl_certificate_key }};
 
-	# HSTS
-	add_header Strict-Transport-Security 'max-age=31536000';
+	include includes/security-headers.conf;
 
 	return 301 https://$subdomain.{{ canonical_hostname }}$request_uri;
 }
@@ -25,7 +24,7 @@ server {
 	ssl_certificate {{ ssl_certificate }};
 	ssl_certificate_key {{ ssl_certificate_key }};
 
-	# HSTS is already enforced in rails
+	# Security headers already enforced in Rails
 
 	root /var/www/koala.{{ canonical_hostname }}/public;
 

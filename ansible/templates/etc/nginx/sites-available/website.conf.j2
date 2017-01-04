@@ -14,7 +14,7 @@ server {
   root /var/www/{{ item.user }}/{{ item.main_hostname }};
   index index.html index.htm index.php;
 
-  add_header Strict-Transport-Security "max-age=31536000";
+  include includes/security-headers.conf;
 
   location ~ \.php$ {
     try_files %uri =404;

@@ -20,6 +20,10 @@ server {
         root /var/www/acme-challenges;
     }
 
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
     location / {
         return 301 https://$host$request_uri;
     }

@@ -1,7 +1,7 @@
 ---
 # Contains application-agnostic database tasks
 - block:
-  - name: "ensure mariadb is installed and managable"
+  - name: "ensure mariadb is installed and manageable"
     apt:
         name: "{{item}}"
         state: present

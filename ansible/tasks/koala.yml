@@ -57,6 +57,13 @@
       - ruby
       - koala
 
+  - name: "ensure koala service file is present"
+    template:
+      src: templates/etc/systemd/system/koala.service.j2
+      dest: /etc/systemd/system/koala.service
+    notify:
+      - systemctl daemon-reload
+
   become: yes
 
 
@@ -199,15 +206,7 @@
       owner: koala
       group: koala
 
-  - name: "ensure webrick service file is present in development"
-    copy:
-      src: templates/etc/systemd/system/webrick.service.j2
-      dest: /etc/systemd/system/webrick.service
-    notify:
-      - systemctl daemon-reload
-
-
-  when: koala_server == 'webrick'
+  when: koala_server == "webrick"
   tags:
     - koala
 
@@ -219,13 +218,6 @@
       mode: 0755
       owner: koala
       group: koala
-
-  - name: "ensure unicorn service file is present in production"
-    template:
-      src: templates/etc/systemd/system/unicorn.service.j2
-      dest: /etc/systemd/system/unicorn.service
-    notify:
-      - systemctl daemon-reload
 
   - name: "place koala's nginx configuration"
     template:
@@ -243,6 +235,6 @@
       group: root
     notify: reload nginx
 
-  when: koala_server == 'unicorn'
+  when: koala_server == "unicorn"
   tags:
     - koala

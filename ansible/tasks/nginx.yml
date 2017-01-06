@@ -38,8 +38,8 @@
     enabled: yes
     state: started
 
-# We need this, because LetsEncrypt is dependent
-# on default conf
+# We need this, because LetsEncrypt depends
+# on the default conf
 - name: "reload nginx"
   service:
     name: nginx
@@ -100,8 +100,6 @@
       {% endfor %}
   with_items: "{{ websites }}"
 
-# TODO add renewals
-
 - name: "create website directories"
   file:
     path: "/var/www/{{ item.user }}/{{ item.main_hostname }}"
@@ -144,7 +142,7 @@
     group: root
     state: directory
 
-# lets reload nginx to be sure
+# let's reload nginx to be sure
 - name: "reload nginx"
   service:
     name: nginx

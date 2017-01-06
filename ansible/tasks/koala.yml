@@ -149,7 +149,7 @@
 
   - name: "ensure .rbenv-vars is present"
     template:
-      src: templates/var/www/koala/.rbenv-vars
+      src: templates/var/www/koala/.rbenv-vars.j2
       dest: /var/www/koala.{{ canonical_hostname }}/.rbenv-vars
       owner: koala
       group: koala
@@ -192,8 +192,8 @@
 
 - block:
   - name: "ensure webrick script is present in development"
-    copy:
-      src: templates/home/koala/webrick.sh
+    template:
+      src: templates/home/koala/webrick.sh.j2
       dest: /home/koala/webrick.sh
       mode: 0755
       owner: koala

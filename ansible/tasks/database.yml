@@ -28,7 +28,7 @@
 
   - name: "ensure /root/.my.cnf is present and correct"
     template:
-      src: templates/root/.my.cnf
+      src: templates/root/.my.cnf.j2
       dest: ~/.my.cnf
       mode: 700
 

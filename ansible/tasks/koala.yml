@@ -85,7 +85,7 @@
 
   - name: "ensure .bashrc is present"
     template:
-      src: templates/home/koala/.bashrc
+      src: "templates/home/koala/.bashrc.j2"
       dest: "/home/koala/.bashrc"
       owner: koala
       group: koala
@@ -129,8 +129,8 @@
       creates: ~/.ssh/known_hosts
 
   - name: "copy deploy keys for user koala"
-    copy:
-      src: "files/home/ansible/.ssh/{{ item.from }}"
+    template:
+      src: "templates/home/ansible/.ssh/{{ item.from }}.j2"
       dest: "/home/koala/.ssh/{{ item.to }}"
       owner: koala
       group: koala
@@ -200,7 +200,7 @@
       group: koala
 
   - name: "ensure webrick service file is present in development"
-    copy:
+    template:
       src: templates/etc/systemd/system/webrick.service.j2
       dest: /etc/systemd/system/webrick.service
     notify:

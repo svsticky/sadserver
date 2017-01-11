@@ -17,8 +17,8 @@
     - etc/php/7.0/fpm/php.ini
 
 - name: "copy dhparams and default configuration"
-  copy:
-    src: "files/{{ item }}"
+  template:
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
     owner: root
     group: root
@@ -67,8 +67,8 @@
     mode: 2750
 
 - name: "copy LetsEncrypt renewal timer"
-  copy:
-    src: "files/{{ item }}"
+  template:
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
     owner: root
     group: root

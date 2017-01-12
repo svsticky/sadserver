@@ -24,7 +24,7 @@
     regexp: "^PermitRootLogin "
     line: "PermitRootLogin no"
     state: present
-  notify: restart ssh
+  notify: "reboot server"
 
 - name: "disable password authentication over ssh"
   lineinfile:
@@ -32,7 +32,7 @@
     regexp: "^PasswordAuthentication "
     line: "PasswordAuthentication no"
     state: present
-  notify: restart ssh
+  notify: "reboot server"
 
 - name: "remove public keys for root account"
   file:

@@ -30,7 +30,23 @@
 
     - name: "systemctl daemon-reload"
       command: systemctl daemon-reload
-      become: yes
+
+    - name: "issue reboot command"
+      shell: sleep 2 && /sbin/reboot
+      async: 60
+      poll: 0
+      ignore_errors: true
+      listen: "reboot server"
+
+    - name: "wait for server to finish rebooting"
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        search_regex: "OpenSSH"
+        port: "22"
+        delay: "20"
+      connection: local
+      become: false
+      listen: "reboot server"
 
   tasks:
     - include: tasks/auth.yml

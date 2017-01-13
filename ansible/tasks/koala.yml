@@ -33,7 +33,7 @@
 
   - name: "ensure ruby compilation dependencies are installed"
     apt:
-      name: "{{item}}"
+      name: "{{ item }}"
       state: present
     with_items:
       - autoconf
@@ -72,8 +72,8 @@
 
   - name: "ensure rbenv plugins are installed"
     git:
-      repo: '{{item.url}}'
-      dest: ~/.rbenv/plugins/{{item.name}}
+      repo: '{{ item.url }}'
+      dest: ~/.rbenv/plugins/{{ item.name }}
     with_items:
       - { name: 'ruby-build', url: 'https://github.com/rbenv/ruby-build.git' }
       - { name: 'rbenv-vars', url: 'https://github.com/rbenv/rbenv-vars.git' }

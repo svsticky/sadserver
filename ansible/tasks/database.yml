@@ -3,7 +3,7 @@
 - block:
   - name: "ensure mariadb is installed and manageable"
     apt:
-        name: "{{item}}"
+        name: "{{ item }}"
         state: present
     with_items:
         - mariadb-server
@@ -33,7 +33,7 @@
       mode: 700
 
   - name: "ensure remote root and anonymous login is disallowed"
-    command: mysql -NBe "{{item}}"
+    command: mysql -NBe "{{ item }}"
     with_items:
       - "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
       - "DELETE FROM mysql.user WHERE User='';"
@@ -41,7 +41,9 @@
     changed_when: False
 
   - name: "ensure the 'test' database does not exist"
-    mysql_db: name=test state=absent
+    mysql_db:
+      name: test
+      state: absent
 
 # End of become block
   become: yes

@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Database backup to S3
+
+[Service]
+Type=oneshot
+User=ansible
+ExecStart=/home/ansible/.aws/db-backup.sh

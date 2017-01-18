@@ -59,4 +59,5 @@
     - include: tasks/koala.yml
     - include: tasks/studystatus.yml
     - include: tasks/monitoring.yml
+    - include: tasks/backups.yml
 ...

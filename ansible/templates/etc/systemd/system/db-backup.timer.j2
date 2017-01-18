@@ -1,0 +1,9 @@
+[Unit]
+Description=Nightly backup of all SQL databases
+
+[Timer]
+OnCalendar=Sat *-*-* 06:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -23,14 +23,14 @@
 
   - name: "generate and set database root password if not set"
     mysql_user:
-       name: root
-       password: "{{ lookup('password', 'credentials/mysql/root length=64 chars=hexdigits') }}"
+      name: root
+      password: "{{ lookup('password', 'credentials/mysql/root length=64 chars=hexdigits') }}"
 
   - name: "ensure /root/.my.cnf is present and correct"
     template:
       src: templates/root/.my.cnf
       dest: ~/.my.cnf
-      mode: 700
+      mode: 0700
 
   - name: "ensure remote root and anonymous login is disallowed"
     command: mysql -NBe "{{item}}"

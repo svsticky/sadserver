@@ -66,22 +66,26 @@
     # the group `www-data`
     mode: 2750
 
-- name: "copy LetsEncrypt renewal timer"
-  copy:
-    src: "files/{{ item }}"
+- name: "create folders for certbot renewal timer override"
+  file:
+    path: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    state: directory
+  with_items:
+    - certbot.service.d
+    - certbot.timer.d
+
+- name: "override parameters of certbot's renewal service+timer"
+  template:
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
     owner: root
     group: root
   with_items:
-    - etc/systemd/system/certbot-renewal.timer
-    - etc/systemd/system/certbot-renewal.service
+    - etc/systemd/system/certbot.service.d/override.conf
+    - etc/systemd/system/certbot.timer.d/override.conf
   notify: systemctl daemon-reload
-
-- name: "start and enable LetsEncrypt renewal timer"
-  service:
-    name: certbot-renewal.timer
-    enabled: yes
-    state: started
 
 - name: "request certificates"
   command: >

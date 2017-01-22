@@ -49,14 +49,14 @@
       listen: "reboot server"
 
   tasks:
-    - include: tasks/auth.yml
     - include: tasks/users.yml
+    - include: tasks/auth.yml
+    - include: tasks/locale.yml
     - include: tasks/packages.yml
     - include: tasks/fail2ban.yml
     - include: tasks/nginx.yml
     - include: tasks/firewall.yml
+    - include: tasks/monitoring.yml
     - include: tasks/database.yml
     - include: tasks/koala.yml
     - include: tasks/studystatus.yml
-    - include: tasks/monitoring.yml
-...

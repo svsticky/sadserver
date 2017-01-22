@@ -1,0 +1,5 @@
+---
+- name: "copy locale variables"
+  copy:
+    src: etc/default/locale
+    dest: /etc/default/locale

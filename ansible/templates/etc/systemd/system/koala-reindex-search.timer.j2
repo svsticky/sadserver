@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Reindex fuzzy search index annually for Constipated Koala
+
+[Timer]
+OnCalendar=*-09-17 01:00 UTC
+RandomizedDelaySec=10800
+Persistent=true
+
+[Install]
+WantedBy=timers.target

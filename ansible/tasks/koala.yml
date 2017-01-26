@@ -33,7 +33,7 @@
 
   - name: "ensure ruby compilation dependencies are installed"
     apt:
-      name: "{{item}}"
+      name: "{{ item }}"
       state: present
     with_items:
       - autoconf
@@ -72,8 +72,8 @@
 
   - name: "ensure rbenv plugins are installed"
     git:
-      repo: '{{item.url}}'
-      dest: ~/.rbenv/plugins/{{item.name}}
+      repo: '{{ item.url }}'
+      dest: ~/.rbenv/plugins/{{ item.name }}
     with_items:
       - { name: 'ruby-build', url: 'https://github.com/rbenv/ruby-build.git' }
       - { name: 'rbenv-vars', url: 'https://github.com/rbenv/rbenv-vars.git' }
@@ -83,12 +83,16 @@
       - ruby
       - koala
 
-  - name: "ensure .bashrc is present"
-    template:
-      src: templates/home/koala/.bashrc
+  - name: "ensure environment variables are set in .bashrc"
+    blockinfile:
       dest: "/home/koala/.bashrc"
+      insertafter: EOF
       owner: koala
       group: koala
+      create: yes
+      block: |
+        export PATH="$HOME/.rbenv/bin:$PATH"
+        eval "$(rbenv init -)"
     tags:
       - koala
       - ruby
@@ -129,8 +133,8 @@
       creates: ~/.ssh/known_hosts
 
   - name: "copy deploy keys for user koala"
-    copy:
-      src: "files/home/ansible/.ssh/{{ item.from }}"
+    template:
+      src: "templates/home/ansible/.ssh/{{ item.from }}.j2"
       dest: "/home/koala/.ssh/{{ item.to }}"
       owner: koala
       group: koala
@@ -149,7 +153,7 @@
 
   - name: "ensure .rbenv-vars is present"
     template:
-      src: templates/var/www/koala/.rbenv-vars
+      src: templates/var/www/koala/.rbenv-vars.j2
       dest: /var/www/koala.{{ canonical_hostname }}/.rbenv-vars
       owner: koala
       group: koala
@@ -192,15 +196,15 @@
 
 - block:
   - name: "ensure webrick script is present in development"
-    copy:
-      src: templates/home/koala/webrick.sh
+    template:
+      src: templates/home/koala/webrick.sh.j2
       dest: /home/koala/webrick.sh
       mode: 0755
       owner: koala
       group: koala
 
   - name: "ensure webrick service file is present in development"
-    copy:
+    template:
       src: templates/etc/systemd/system/webrick.service.j2
       dest: /etc/systemd/system/webrick.service
     notify:

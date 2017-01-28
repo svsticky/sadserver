@@ -4,6 +4,6 @@
 Description=Database backup to S3
 
 [Service]
-Type=oneshot
+Type=simple
 User=ansible
 ExecStart=/home/ansible/.aws/db-backup.sh

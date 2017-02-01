@@ -36,12 +36,6 @@ fail2ban:
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 15
 
-tls:
-  root_cert: isrgrootx1.pem
-  intermediate_cert: lets-encrypt-x3-cross-signed.pem
-  ocsp_tmp_dir: /tmp/ocsp-cert-chain
-  ocsp_bundle_path: /etc/ssl/certs/letsencrypt-ocsp-chain.pem
-
 websites:
   - main_hostname: studytrip.{{ canonical_hostname }}
     user: laurens

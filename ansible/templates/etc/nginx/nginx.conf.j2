@@ -53,7 +53,7 @@ http {
 
   ssl_stapling on;
   ssl_stapling_verify on;
-# ssl_trusted_certificate is added by playbook after certs have been issued
+  ssl_trusted_certificate /etc/ssl/certs/letsencrypt-ocsp-chain.pem;
 
   ##
   # Other security settings

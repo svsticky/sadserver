@@ -1,4 +1,5 @@
 // {{ ansible_managed }}
+
 Unattended-Upgrade::Allowed-Origins {
 	{% if unattended_upgrades.security %}
 	"${distro_id} ${distro_codename}-security";
@@ -14,4 +15,4 @@ Unattended-Upgrade::Package-Blacklist { };
 
 // TODO enable upgrade email notifcations. First need to
 // have email working.
-//Unattended-Upgrade::Mail "root@localhost";
+// Unattended-Upgrade::Mail "root@localhost";

@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 # Database credentials
 DATABASE_USER=koala
 DATABASE_PASSWORD={{ lookup('password', 'credentials/mysql/koala chars=hexdigits length=64') }}

@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+
+[Service]
+ExecStart=/usr/bin/certbot renew --quiet --agree-tos --post-hook="/bin/systemctl reload nginx.service"

@@ -10,10 +10,11 @@
 
 - name: "copy configuration files"
   template:
-    src: "{{ item }}.j2"
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
   with_items:
     - etc/nginx/nginx.conf
+    - etc/ssl/certs/letsencrypt-ocsp-chain.pem
     - etc/php/7.0/fpm/php.ini
 
 - name: "copy dhparams and default configuration"
@@ -104,40 +105,6 @@
       --domain {{ hostname }} \
       {% endfor %}
   with_items: "{{ websites }}"
-
-- name: "check if ocsp cert chain is present"
-  stat:
-    path: "{{ tls.ocsp_bundle_path }}"
-  register: ocsp_chain_file
-
-- block:
-  - name: "create temp directory for ocsp stapling certs"
-    file:
-      path: "{{ tls.ocsp_tmp_dir }}/"
-      state: directory
-
-  - name: "download certificate chain for ocsp stapling"
-    get_url:
-      url: "https://letsencrypt.org/certs/{{ item }}"
-      dest: "{{ tls.ocsp_tmp_dir }}/{{ item }}"
-    with_items:
-      - "{{ tls.root_cert }}"
-      - "{{ tls.intermediate_cert }}"
-
-  - name: "create certificate bundle for ocsp stapling"
-    assemble:
-      src: "{{ tls.ocsp_tmp_dir }}"
-      dest: "{{ tls.ocsp_bundle_path }}"
-
-  - name: "add OCSP cert chain to nginx config"
-    lineinfile:
-      dest: /etc/nginx/nginx.conf
-      regexp: "^# ssl_trusted_certificate"
-      line: "  ssl_trusted_certificate {{ tls.ocsp_bundle_path }};"
-      state: present
-    notify: reload nginx
-
-  when: ocsp_chain_file.stat.exists == False
 
 - name: "create website directories"
   file:

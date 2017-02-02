@@ -50,6 +50,7 @@
 
   tasks:
     - include: tasks/users.yml
+    - include: tasks/motd.yml
     - include: tasks/auth.yml
     - include: tasks/locale.yml
     - include: tasks/packages.yml

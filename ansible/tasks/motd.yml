@@ -1,0 +1,13 @@
+---
+- name: install plumbing
+  apt:
+    pkg: toilet
+    state: present
+
+- name: hook up plumbing
+  template:
+    src: "templates/etc/update-motd.d/01-skyblue-header.j2"
+    dest: "/etc/update-motd.d/01-skyblue-header"
+    owner: root
+    group: root
+    mode: 0755

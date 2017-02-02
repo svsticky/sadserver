@@ -41,6 +41,7 @@ http {
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
   ssl_prefer_server_ciphers on;
 
+  # Mozilla's "Modern" cipher suite
   ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
 
   ssl_dhparam /etc/nginx/dhparams.pem;
@@ -53,6 +54,7 @@ http {
 
   ssl_stapling on;
   ssl_stapling_verify on;
+  # CA bundle of ISRG Root X1 + Let’s Encrypt Authority X3 (IdenTrust cross-signed)
   ssl_trusted_certificate /etc/ssl/certs/letsencrypt-ocsp-chain.pem;
 
   ##

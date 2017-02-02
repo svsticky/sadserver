@@ -1,17 +1,52 @@
 ---
 canonical_hostname: dev.svsticky.nl
 
-admins:
-  laurens:
-    github: duijf
-  tom:
-    github: tomwassenberg
-  arian:
-    github: arianvp
-  maarten:
-    github: spasticVerbalizer
-  yorick:
-    github: yorickvanzweeden
+users:
+  - name: arian
+    groups: sudo,adm
+    shell: /bin/bash
+    state: present
+    keys:
+      - https://github.com/arianvp.keys
+  - name: laurens
+    groups: sudo,adm
+    shell: /bin/bash
+    state: present
+    keys:
+      - https://github.com/duijf.keys
+  - name: tom
+    groups: sudo,adm
+    shell: /bin/bash
+    state: present
+    keys:
+      - https://github.com/tomwassenberg.keys
+  - name: maarten
+    groups: sudo,adm
+    shell: /bin/bash
+    state: present
+    keys:
+      - https://github.com/spasticVerbalizer.keys
+  - name: yorick
+    groups: sudo,adm
+    shell: /bin/bash
+    state: present
+    keys:
+      - https://github.com/yorickvanzweeden.keys
+
+  - name: commit
+    groups: committee
+    shell: /bin/false
+    state: absent
+    keys:
+      - " {{ lookup('file', './keys/commit.keys') }} "
+
+  - name: commit2
+    groups: committee
+    shell: /bin/false
+    state: absent
+    keys:
+      - " {{ lookup('file', './keys/commit.keys') }} "
+      # - https://github.com/jelmerbroeksma.keys
 
 unattended_upgrades:
   security: True

@@ -47,8 +47,8 @@
     enabled: yes
     state: reloaded
 
-# We need this, because certbot is still
-# at 0.4.3 in the xenial repo
+# We need this, because certbot is still at
+# 0.4.x in the xenial repo as of 2017-02-06
 - name: "add certbot apt repository"
   apt_repository:
     repo: 'ppa:certbot/certbot'
@@ -71,7 +71,7 @@
     # the group `www-data`
     mode: 2750
 
-- name: "create folders for certbot renewal timer override"
+- name: "create folders for certbot renewal override"
   file:
     path: "/etc/systemd/system/{{ item }}"
     owner: root
@@ -101,13 +101,15 @@
       --non-interactive \
       --agree-tos \
       --email "itcrowd@svsticky.nl" \
-      # Makes sure cert only gets renewed when needed
+      # Makes sure cert only gets renewed when cert is
+      # actually close to expiring
       --keep-until-expiring \
-      # Enables adding more SAN's later on
+      # Enables adding more SAN's to the same cert
+      # lineage later on
       --expand \
       # Sets flag in cert for mandatory stapled OCSP response
       --must-staple \
-      # Domain validation method
+      # Sets domain validation method
       --webroot \
       --webroot-path /var/www/acme-challenges \
       # Adds main hostname of a website as CN and SAN,

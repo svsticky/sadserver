@@ -93,31 +93,28 @@
   notify: systemctl daemon-reload
 
 - name: "request certificates"
+  # --staging should be removed when deploying in production
+  # --non-interactive makes sure command never waits for user input
+  # --keep-until-expiring makes sure cert only gets renewed when cert is actually close to expiring
+  # --expand enables adding more SAN's to the same cert lineage later on
+  # --must-staple sets flag in cert for mandatory stapled OCSP response
+  # --webroot sets domain validation method
+  # --domain adds main hostname of a website as CN and SAN, and all alternative hostnames as SAN's
   command: >
-    certbot certonly \
-      # Remove when deploying in production
-      --staging \
-      # Makes sure command never waits for user input
-      --non-interactive \
-      --agree-tos \
-      --email "itcrowd@svsticky.nl" \
-      # Makes sure cert only gets renewed when cert is
-      # actually close to expiring
-      --keep-until-expiring \
-      # Enables adding more SAN's to the same cert
-      # lineage later on
-      --expand \
-      # Sets flag in cert for mandatory stapled OCSP response
-      --must-staple \
-      # Sets domain validation method
-      --webroot \
-      --webroot-path /var/www/acme-challenges \
-      # Adds main hostname of a website as CN and SAN,
-      # and all alternative hostnames as SAN's
-      --domain {{ item.main_hostname }} \
-      {% for hostname in item.alternative_hostnames %}
-      --domain {{ hostname }} \
-      {% endfor %}
+    certbot certonly
+    --staging
+    --non-interactive
+    --agree-tos
+    --email "itcrowd@svsticky.nl"
+    --keep-until-expiring
+    --expand
+    --must-staple
+    --webroot
+    --webroot-path /var/www/acme-challenges
+    --domain {{ item.main_hostname }}
+    {% for hostname in item.alternative_hostnames %}
+    --domain {{ hostname }}
+    {% endfor %}
   with_items: "{{ websites }}"
 
 - name: "create website directories"

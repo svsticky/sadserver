@@ -38,7 +38,9 @@ http {
   # SSL Settings
   ##
 
-  ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+  # Drop TLS <v1.2, since the cipher suite already breaks compatibility with
+  # browsers that don't support it (IE <11, Chrome <30, Fx <27, Safari <7)
+  ssl_protocols TLSv1.2;
   ssl_prefer_server_ciphers on;
 
   # Mozilla's "Modern" cipher suite

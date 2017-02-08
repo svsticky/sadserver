@@ -1,9 +1,10 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Database backup to S3
+Description=Backup of all MariaDB databases to AWS S3
 
 [Service]
 Type=simple
 User=ansible
+Group=ansible
 ExecStart=/home/ansible/.aws/db-backup.sh

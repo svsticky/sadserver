@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Backup of the contents of all websites to AWS S3
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/home/ansible/.aws/websites-backup.sh

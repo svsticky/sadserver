@@ -16,7 +16,7 @@
       - name: "create database"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala_environment }} db:setup
+        shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} db:setup
         args:
           chdir: /var/www/koala.{{ canonical_hostname }}
           executable: /bin/bash

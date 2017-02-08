@@ -57,6 +57,13 @@
       - ruby
       - koala
 
+  - name: "ensure koala service file is present"
+    template:
+      src: templates/etc/systemd/system/koala.service.j2
+      dest: /etc/systemd/system/koala.service
+    notify:
+      - systemctl daemon-reload
+
   become: yes
 
 
@@ -75,8 +82,8 @@
       repo: '{{ item.url }}'
       dest: ~/.rbenv/plugins/{{ item.name }}
     with_items:
-      - { name: 'ruby-build', url: 'https://github.com/rbenv/ruby-build.git' }
-      - { name: 'rbenv-vars', url: 'https://github.com/rbenv/rbenv-vars.git' }
+      - { name: "ruby-build", url: "https://github.com/rbenv/ruby-build.git" }
+      - { name: "rbenv-vars", url: "https://github.com/rbenv/rbenv-vars.git" }
       # NOTE: This will install the latest development versions, should we pin
       # a tag/commit/release?
     tags:
@@ -100,10 +107,10 @@
   - name: "ensure ruby is installed, compile if necessary"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init - )"; rbenv install {{ koala_ruby_version }}
+    shell: eval "$(rbenv init - )"; rbenv install {{ koala.ruby_version }}
     args:
       executable: /bin/bash
-      creates: /home/koala/.rbenv/versions/{{ koala_ruby_version }}
+      creates: /home/koala/.rbenv/versions/{{ koala.ruby_version }}
     tags:
       - ruby
       - koala
@@ -111,11 +118,11 @@
   - name: "ensure bundler is installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init -)"; rbenv shell {{ koala_ruby_version }}; gem install bundler
+    shell: eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem install bundler
     args:
       executable: /bin/bash
       chdir: /var/www/koala.{{ canonical_hostname }}
-      creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/{{ koala_ruby_version }}/gems/bundler-1.12.5
+      creates: /home/koala/.rbenv/versions/2.3.0/lib/ruby/gems/{{ koala.ruby_version }}/gems/bundler-1.12.5
     tags:
       - ruby
       - koala
@@ -140,14 +147,14 @@
       group: koala
       mode: 0600
     with_items:
-      - { from: 'deploy_ed25519',     to: 'id_ed25519' }
-      - { from: 'deploy_ed25519.pub', to: 'id_ed25519.pub' }
+      - { from: "deploy_ed25519",     to: "id_ed25519" }
+      - { from: "deploy_ed25519.pub", to: "id_ed25519.pub" }
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
     git:
-      repo: 'git@github.com:svsticky/constipated-koala.git'
+      repo: "git@github.com:svsticky/constipated-koala.git"
       dest: /var/www/koala.{{ canonical_hostname }}
-      version: "{{ koala_git_ref }}"
+      version: "{{ koala.git_ref }}"
     tags:
       - koala
 
@@ -187,7 +194,7 @@
       state: directory
       owner: koala
       group: koala
-      mode: 0774
+      mode: 0775
     tags:
       - koala
 
@@ -231,8 +238,7 @@
     notify:
       - systemctl daemon-reload
 
-
-  when: koala_server == 'webrick'
+  when: koala.server == "webrick"
   tags:
     - koala
 
@@ -244,13 +250,6 @@
       mode: 0755
       owner: koala
       group: koala
-
-  - name: "ensure unicorn service file is present in production"
-    template:
-      src: templates/etc/systemd/system/unicorn.service.j2
-      dest: /etc/systemd/system/unicorn.service
-    notify:
-      - systemctl daemon-reload
 
   - name: "place koala's nginx configuration"
     template:
@@ -268,6 +267,6 @@
       group: root
     notify: reload nginx
 
-  when: koala_server == 'unicorn'
+  when: koala.server == "unicorn"
   tags:
     - koala

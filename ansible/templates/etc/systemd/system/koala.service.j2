@@ -1,18 +1,23 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Run koala production service
+Description=Run koala {{ koala.environment }} service
 Requires=mysql.service
-Conflicts=webrick.service
 After=network.target
 
 [Service]
+{% if koala.server == "unicorn" %}
 Type=forking
 PIDFile=/var/www/koala.{{ canonical_hostname }}/tmp/pids/unicorn.pid
+ExecStart=/home/koala/unicorn.sh
+{% elif koala.server == "webrick" %}
+Type=simple
+ExecStart=/home/koala/webrick.sh
+{% endif %}
+
 User=koala
 Group=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
-ExecStart=/home/koala/unicorn.sh
 
 [Install]
 WantedBy=multi-user.target

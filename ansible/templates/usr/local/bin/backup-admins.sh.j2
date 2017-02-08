@@ -1,7 +1,6 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 FILE=admins-$(date +'%Y-%m-%d').tar.gz
 
 tar cvf - /home | gzip -9 > /tmp/$FILE && aws s3 cp /tmp/$FILE s3://sticky-automatic-backups/admins/ && rm /tmp/$FILE
-
-# {{ ansible_managed }}

@@ -190,7 +190,7 @@
       state: directory
       owner: koala
       group: koala
-      mode: 0774
+      mode: 0775
     tags:
       - koala
 

@@ -1,8 +1,12 @@
 #!/bin/bash
 # {{ ansible_managed }}
 
+set -e -o pipefail
+
 USER=root
 PASS={{ lookup('password', 'credentials/mysql/root') }}
 FILE=databases-$(date +'%Y-%m-%d').sql.gz
 
-mysqldump --user=$USER --password=$PASS --all-databases | gzip -9 > /tmp/$FILE && aws s3 cp /tmp/$FILE s3://sticky-automatic-backups/websites/databases/ && rm /tmp/$FILE
+mysqldump --user=$USER --password=$PASS --all-databases | gzip -9 > /tmp/$FILE
+aws s3 cp /tmp/$FILE s3://sticky-automatic-backups/websites/databases/
+rm /tmp/$FILE

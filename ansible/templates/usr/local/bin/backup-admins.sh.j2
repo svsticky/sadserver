@@ -1,6 +1,10 @@
 #!/bin/bash
 # {{ ansible_managed }}
 
+set -e -o pipefail
+
 FILE=admins-$(date +'%Y-%m-%d').tar.gz
 
-tar cvf - /home | gzip -9 > /tmp/$FILE && aws s3 cp /tmp/$FILE s3://sticky-automatic-backups/admins/ && rm /tmp/$FILE
+tar cvf - /home | gzip -9 > /tmp/$FILE
+aws s3 cp /tmp/$FILE s3://sticky-automatic-backups/admins/
+rm /tmp/$FILE

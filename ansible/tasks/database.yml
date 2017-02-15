@@ -9,7 +9,6 @@
         - mariadb-server
         - python-mysqldb
     tags:
-        - database
         - packages
 
   - name: "ensure database is enabled and running"
@@ -19,7 +18,6 @@
         state: started
     tags:
         - service
-        - database
 
   - name: "generate and set database root password if not set"
     mysql_user:

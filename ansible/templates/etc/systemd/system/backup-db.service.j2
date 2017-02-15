@@ -7,4 +7,5 @@ Description=Backup of all MariaDB databases to AWS S3
 Type=simple
 User=ansible
 Group=ansible
+WorkingDirectory=~
 ExecStart=/usr/local/bin/backup-db.sh

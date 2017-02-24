@@ -9,7 +9,6 @@
         - mariadb-server
         - python-mysqldb
     tags:
-        - database
         - packages
 
   - name: "ensure database is enabled and running"
@@ -19,12 +18,18 @@
         state: started
     tags:
         - service
-        - database
 
   - name: "generate and set database root password if not set"
     mysql_user:
        name: root
        password: "{{ lookup('password', 'credentials/mysql/root length=64 chars=hexdigits') }}"
+
+  - name: "disable any existing authentication plugin for root user"
+    command: mysql -NBe "{{ item }}"
+    with_items:
+      - "UPDATE mysql.user SET plugin='' WHERE User='root';"
+      - "FLUSH PRIVILEGES"
+    changed_when: False
 
   - name: "ensure /root/.my.cnf is present and correct"
     template:

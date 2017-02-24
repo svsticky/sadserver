@@ -46,6 +46,18 @@ users:
       - https://github.com/spasticVerbalizer.keys
       - https://github.com/yorickvanzweeden.keys
 
+  - name: studiereis
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
+
+  - name: wintersport
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
+
 unattended_upgrades:
   security: True
   all: False
@@ -72,6 +84,15 @@ upload_limit: 15
 websites:
   - main_hostname: radio.{{ canonical_hostname }}
     user: commit
+    alternative_hostnames: []
+
+  - main_hostname: studytrip.{{ canonical_hostname }}
+    user: studiereis
+    alternative_hostnames:
+      - studiereis.{{ canonical_hostname }}
+
+  - main_hostname: wintersport.{{ canonical_hostname }}
+    user: wintersport
     alternative_hostnames: []
 
   - main_hostname: koala.{{ canonical_hostname }}

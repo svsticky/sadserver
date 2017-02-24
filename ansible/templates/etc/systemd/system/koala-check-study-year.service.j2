@@ -6,5 +6,5 @@ Description=Check for creation of new study year for Constipated Koala
 [Service]
 Type=simple
 User=koala
-ExecStart=/home/koala/.rbenv/shims/bundle exec rake RAILS_ENV={{ koala_environment }} admin:start_year
+ExecStart=/home/koala/.rbenv/shims/bundle exec rake RAILS_ENV={{ koala.environment }} admin:start_year
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}

@@ -50,6 +50,25 @@
       name: test
       state: absent
 
+    # NOTE: mysql_db and mysql_user are preview modules, and may not be
+    # backward compatible.
+  - name: "create website databases"
+    mysql_db:
+      name: "{{ item.name }}"
+      state: present
+    with_items: "{{ websites }}"
+    when: item.database is defined and item.database == 'true'
+
+  - name: "create website database users"
+    mysql_user:
+      name: "{{ item.name }}"
+      password: "{{ lookup('password', 'credentials/mysql/{{ item.name }} length=64 chars=hexdigits') }}"
+      priv: "{{ item.name }}.*:ALL"
+      state: present
+    with_items: "{{ websites }}"
+    when: item.database is defined and item.database == 'true'
+
+
 # End of become block
   become: yes
   tags:

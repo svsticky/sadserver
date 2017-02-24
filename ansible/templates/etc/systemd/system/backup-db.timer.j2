@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Nightly backup of all MariaDB databases to AWS S3
+
+[Timer]
+OnCalendar=*-*-* 01:00:00
+RandomizedDelaySec=18000
+Persistent=true
+
+[Install]
+WantedBy=timers.target

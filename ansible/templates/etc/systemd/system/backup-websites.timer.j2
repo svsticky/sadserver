@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Weekly backup of the contents of all websites to AWS S3
+
+[Timer]
+OnCalendar=Sat *-*-* 01:00:00
+RandomizedDelaySec=18000
+Persistent=true
+
+[Install]
+WantedBy=timers.target

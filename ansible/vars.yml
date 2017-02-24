@@ -37,27 +37,27 @@ fail2ban:
 upload_limit: 15
 
 websites:
-  - main_hostname: studytrip.{{ canonical_hostname }}
+  - name: studytrip
     user: laurens
-    alternative_hostnames:
-      - studiereis.{{ canonical_hostname }}
+    alternative_names:
+      - studiereis
 
-  - main_hostname: feutentrui.{{ canonical_hostname }}
+  - name: feutentrui
     user: arian
-    alternative_hostnames:
-      - anno-1636.{{ canonical_hostname }}
-      - ditkanook.{{ canonical_hostname }}
-      - rukbunker.{{ canonical_hostname }}
+    alternative_names:
+      - anno-1636
+      - ditkanook
+      - rukbunker
 
-  - main_hostname: koala.{{ canonical_hostname }}
+  - name: koala
     custom_config: true
-    alternative_hostnames:
-      - intro.{{ canonical_hostname }}
+    alternative_names:
+      - intro
 
-  - main_hostname: metrics.{{ canonical_hostname }}
+  - name: metrics
     custom_config: true
-    alternative_hostnames:
-      - status.{{ canonical_hostname }}
+    alternative_names:
+      - status
 
 # koala configuration
 ssl_certificate: /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem

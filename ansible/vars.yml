@@ -39,6 +39,7 @@ upload_limit: 15
 websites:
   - name: studytrip
     user: laurens
+    database: true
     alternative_names:
       - studiereis
 

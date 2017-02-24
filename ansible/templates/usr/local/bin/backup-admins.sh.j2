@@ -3,10 +3,10 @@
 
 set -efu -o pipefail
 
-TMPDIR=~/admins-backup-tmp
-FILE=admins-$(date +'%Y-%m-%d').tar.gz
+TMPDIR="~/admins-backup-tmp"
+FILE="admins-$(date +'%Y-%m-%d').tar.gz"
 HASH=sha256 # Choose from md5/sha1/sha224/sha256/sha384/sha512
-S3PATH=s3://sticky-automatic-backups/admins
+S3PATH="s3://sticky-automatic-backups/admins"
 
 mkdir ${TMPDIR}
 tar cvf - /home | gzip -9 > ${TMPDIR}/${FILE}

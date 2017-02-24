@@ -3,10 +3,10 @@
 
 set -efu -o pipefail
 
-TMPDIR=~/websites-backup-tmp
-FILE=websites-$(date +'%Y-%m-%d').tar.gz
+TMPDIR="~/websites-backup-tmp"
+FILE="websites-$(date +'%Y-%m-%d').tar.gz"
 HASH=sha256 # Choose from md5/sha1/sha224/sha256/sha384/sha512
-S3PATH=s3://sticky-automatic-backups/websites
+S3PATH="s3://sticky-automatic-backups/websites"
 
 mkdir ${TMPDIR}
 tar cvf - /var/www | gzip -9 > ${TMPDIR}/${FILE}

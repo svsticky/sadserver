@@ -7,6 +7,8 @@
 - name: "create users"
   user:
     name: "{{ item.name }}"
+    home: "/var/www/{{ item.name}}"
+    move_home: yes # the docs for user_module sucks. Moves existing home dir
     groups: "{{ item.groups }}"
     shell: "{{ item.shell }}"
     state: "{{ item.state }}"
@@ -15,7 +17,7 @@
 
 - name: "fix permissions for chroot"
   file:
-    path: "/home/{{ item.name }}"
+    path: "/var/www/{{ item.name }}"
     owner: root
     state: directory
   when: "{{ item.groups == 'committee' and item.state == 'present' }}"

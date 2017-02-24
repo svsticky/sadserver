@@ -57,7 +57,7 @@
       name: "{{ item.name }}"
       state: present
     with_items: "{{ websites }}"
-    when: item.database is defined
+    when: item.database is defined and item.database == 'true'
 
   - name: "create website database users"
     mysql_user:
@@ -66,7 +66,7 @@
       priv: "{{ item.name }}.*:ALL"
       state: present
     with_items: "{{ websites }}"
-    when: item.database is defined
+    when: item.database is defined and item.database == 'true'
 
 
 # End of become block

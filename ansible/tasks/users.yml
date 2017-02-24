@@ -20,11 +20,18 @@
 - name: "create users"
   user:
     name: "{{ item.name }}"
-    home: "/var/www/{{ item.name}}"
-    move_home: yes # the docs for user_module sucks. Moves existing home dir
     groups: "{{ item.groups }}"
     shell: "{{ item.shell }}"
     state: "{{ item.state }}"
+  with_items:
+    - "{{ users }}"
+
+- name: "move committee users"
+  user:
+    name: "{{ item.name }}"
+    home: "/var/www/{{ item.name }}"
+    move_home: yes
+  when: "{{ item.groups == 'committee' and item.state == 'present' }}"
   with_items:
     - "{{ users }}"
 

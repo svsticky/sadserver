@@ -36,14 +36,7 @@ users:
   - name: commit
     groups: committee
     shell: /bin/false
-    state: absent
-    keys:
-      - " {{ lookup('file', './keys/commit.keys') }} "
-
-  - name: commit2
-    groups: committee
-    shell: /bin/false
-    state: absent
+    state: present
     keys:
       - " {{ lookup('file', './keys/commit.keys') }} "
       # - https://github.com/jelmerbroeksma.keys
@@ -72,6 +65,10 @@ fail2ban:
 upload_limit: 15
 
 websites:
+  - main_hostname: radio.{{ canonical_hostname }}
+    user: commit
+    alternative_hostnames: []
+
   - main_hostname: studytrip.{{ canonical_hostname }}
     user: laurens
     alternative_hostnames:

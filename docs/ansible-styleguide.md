@@ -15,7 +15,8 @@ add an example after you figured it out.
  5. Use one space after the colon in a key/value pair (e.g. `key: value`
     instead of `key : value`).
  6. Always use the map syntax for dictionaries.
- 7. All templates should have the `.j2` file extension.
+ 7. When files need to be transferred, use templates.
+ 7. All templates should have the `ansible_managed` header and the `.j2` file extension.
  8. Use `become` instead of `sudo`.
  9. Blank lines between two blocks and tasks.
  10. `snake_case` for variables.

@@ -5,19 +5,8 @@
 
   tasks:
     - block:
-      - name: "ensure unicorn service is not running"
+      - name: "ensure koala is not running"
         service:
-          name: unicorn
+          name: koala
           state: stopped
-
-      when: koala_server == 'unicorn'
-      become: yes
-
-    - block:
-      - name: "ensure webrick service is not running"
-        service:
-          name: webrick
-          state: stopped
-
-      when: koala_server == 'webrick'
       become: yes

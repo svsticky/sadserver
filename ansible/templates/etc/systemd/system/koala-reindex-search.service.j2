@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Reindex fuzzy search index for Constipated Koala
+
+[Service]
+Type=simple
+User=koala
+ExecStart=/home/koala/.rbenv/shims/bundle exec rake RAILS_ENV={{ koala.environment }} admin:reindex_members
+WorkingDirectory=/var/www/koala.{{ canonical_hostname }}

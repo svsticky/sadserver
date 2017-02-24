@@ -1,11 +1,12 @@
 # {{ ansible_managed }}
+
 upstream netdata {
   server 127.0.0.1:19999;
 }
 
 server {
-  listen 443 ssl;
-  listen [::]:443 ssl;
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
 
   server_name metrics.{{ canonical_hostname }};
 

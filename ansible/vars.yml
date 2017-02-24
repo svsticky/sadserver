@@ -1,7 +1,5 @@
 ---
-unattended_upgrades:
-  security: True
-  all: False
+canonical_hostname: dev.svsticky.nl
 
 admins:
   laurens:
@@ -14,6 +12,10 @@ admins:
     github: spasticVerbalizer
   yorick:
     github: yorickvanzweeden
+
+unattended_upgrades:
+  security: True
+  all: False
 
 fail2ban:
   loglevel: 3
@@ -34,36 +36,35 @@ fail2ban:
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 15
 
-canonical_hostname: dev.svsticky.nl
-
 websites:
-  - main_hostname: studytrip.{{ canonical_hostname }}
+  - name: studytrip
     user: laurens
-    alternative_hostnames:
-      - studiereis.{{ canonical_hostname }}
+    database: true
+    alternative_names:
+      - studiereis
 
-  - main_hostname: feutentrui.{{ canonical_hostname }}
+  - name: feutentrui
     user: arian
-    alternative_hostnames:
-      - anno-1636.{{ canonical_hostname }}
-      - ditkanook.{{ canonical_hostname }}
-      - rukbunker.{{ canonical_hostname }}
+    alternative_names:
+      - anno-1636
+      - ditkanook
+      - rukbunker
 
-  - main_hostname: koala.{{ canonical_hostname }}
+  - name: koala
     custom_config: true
-    alternative_hostnames:
-      - intro.{{ canonical_hostname }}
+    alternative_names:
+      - intro
 
-  - main_hostname: metrics.{{ canonical_hostname }}
+  - name: metrics
     custom_config: true
-    alternative_hostnames:
-      - status.{{ canonical_hostname }}
-
+    alternative_names:
+      - status
 
 # koala configuration
 ssl_certificate: /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem
 ssl_certificate_key: /etc/letsencrypt/live/koala.{{ canonical_hostname }}/privkey.pem
-koala_environment: production
-koala_server: unicorn # or webrick
-koala_git_ref: ansible_test
-koala_ruby_version: 2.3.0
+koala:
+  environment: production
+  server: unicorn # or webrick
+  git_ref: ansible_test # Should be master, when in production
+  ruby_version: 2.3.0

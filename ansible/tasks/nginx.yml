@@ -8,17 +8,18 @@
     - php-fpm
     - openssl
 
-- name: "copy configuration files"
+- name: "copy configuration files for nginx and php"
   template:
-    src: "{{ item }}.j2"
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
   with_items:
     - etc/nginx/nginx.conf
+    - etc/ssl/certs/letsencrypt-ocsp-chain.pem
     - etc/php/7.0/fpm/php.ini
 
-- name: "copy dhparams and default configuration"
-  copy:
-    src: "files/{{ item }}"
+- name: "copy dhparams and default nginx configuration"
+  template:
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
     owner: root
     group: root
@@ -26,7 +27,7 @@
     - etc/nginx/dhparams.pem
     - etc/nginx/sites-available/default
 
-- name: "enable default config"
+- name: "enable default nginx config"
   file:
     src: "/etc/nginx/sites-available/default"
     dest: "/etc/nginx/sites-enabled/default"
@@ -39,13 +40,15 @@
     state: started
 
 # We need this, because LetsEncrypt depends
-# on the default conf
+# on the default config
 - name: "reload nginx"
   service:
     name: nginx
     enabled: yes
     state: reloaded
 
+# We need this, because certbot is still at
+# 0.4.x in the xenial repo as of 2017-02-06
 - name: "add certbot apt repository"
   apt_repository:
     repo: 'ppa:certbot/certbot'
@@ -55,6 +58,8 @@
     name: certbot
     state: latest
 
+# This will be used by all websites that
+# need a certificate
 - name: "create acme-challenges directory"
   file:
     path: /var/www/acme-challenges
@@ -66,43 +71,55 @@
     # the group `www-data`
     mode: 2750
 
-- name: "copy LetsEncrypt renewal timer"
-  copy:
-    src: "files/{{ item }}"
+- name: "create folders for certbot renewal override"
+  file:
+    path: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    state: directory
+  with_items:
+    - certbot.service.d
+    - certbot.timer.d
+
+- name: "override parameters of certbot's renewal service+timer"
+  template:
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
     owner: root
     group: root
   with_items:
-    - etc/systemd/system/certbot-renewal.timer
-    - etc/systemd/system/certbot-renewal.service
+    - etc/systemd/system/certbot.service.d/override.conf
+    - etc/systemd/system/certbot.timer.d/override.conf
   notify: systemctl daemon-reload
 
-- name: "start and enable LetsEncrypt renewal timer"
-  service:
-    name: certbot-renewal.timer
-    enabled: yes
-    state: started
-
 - name: "request certificates"
+  # --staging should be removed when deploying in production
+  # --non-interactive makes sure command never waits for user input
+  # --keep-until-expiring makes sure cert only gets renewed when cert is actually close to expiring
+  # --expand enables adding more SAN's to the same cert lineage later on
+  # --must-staple sets flag in cert for mandatory stapled OCSP response
+  # --webroot sets domain validation method
+  # --domain adds main hostname of a website as CN and SAN, and all alternative hostnames as SAN's
   command: >
-    certbot certonly \
-      --staging \
-      --non-interactive \
-      --agree-tos \
-      --email "itcrowd@svsticky.nl" \
-      --keep-until-expiring \
-      --expand \
-      --webroot \
-      --webroot-path /var/www/acme-challenges \
-      --domain {{ item.main_hostname }} \
-      {% for hostname in item.alternative_hostnames %}
-      --domain {{ hostname }} \
-      {% endfor %}
+    certbot certonly
+    --staging
+    --non-interactive
+    --agree-tos
+    --email "itcrowd@svsticky.nl"
+    --keep-until-expiring
+    --expand
+    --must-staple
+    --webroot
+    --webroot-path /var/www/acme-challenges
+    --domain {{ item.name }}.{{ canonical_hostname }}
+    {% for hostname in item.alternative_names %}
+    --domain {{ hostname }}.{{ canonical_hostname }}
+    {% endfor %}
   with_items: "{{ websites }}"
 
 - name: "create website directories"
   file:
-    path: "/var/www/{{ item.user }}/{{ item.main_hostname }}"
+    path: "/var/www/{{ item.user }}/{{ item.name }}.{{ canonical_hostname }}"
     owner: "{{ item.user }}"
     group: www-data
     mode: 0755
@@ -120,20 +137,21 @@
     src: "etc/nginx/includes/security-headers.conf.j2"
     dest: "/etc/nginx/includes/security-headers.conf"
 
-- name: "copy website nginx configuration"
+- name: "copy nginx configurations for each website"
   template:
     src: "etc/nginx/sites-available/website.conf.j2"
-    dest: "/etc/nginx/sites-available/{{ item.main_hostname }}.conf"
+    dest: "/etc/nginx/sites-available/{{ item.name }}.{{ canonical_hostname }}.conf"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
 
-- name: "enable website nginx configurations"
+- name: "enable nginx website configurations"
   file:
-    src: "/etc/nginx/sites-available/{{ item.main_hostname }}.conf"
-    dest: "/etc/nginx/sites-enabled/{{ item.main_hostname }}.conf"
+    src: "/etc/nginx/sites-available/{{ item.name }}.{{ canonical_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ item.name }}.{{ canonical_hostname }}.conf"
     state: link
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
+  notify: reload nginx
 
 - name: "create htpasswd.d directory for basic auth files"
   file:
@@ -141,12 +159,3 @@
     owner: root
     group: root
     state: directory
-
-# let's reload nginx to be sure
-- name: "reload nginx"
-  service:
-    name: nginx
-    enabled: yes
-    state: reloaded
-  when: item.custom_config is undefined
-  notify: reload nginx

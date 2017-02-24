@@ -3,13 +3,12 @@
 - block:
   - name: "ensure mariadb is installed and manageable"
     apt:
-        name: "{{item}}"
+        name: "{{ item }}"
         state: present
     with_items:
         - mariadb-server
         - python-mysqldb
     tags:
-        - database
         - packages
 
   - name: "ensure database is enabled and running"
@@ -19,21 +18,27 @@
         state: started
     tags:
         - service
-        - database
 
   - name: "generate and set database root password if not set"
     mysql_user:
       name: root
       password: "{{ lookup('password', 'credentials/mysql/root length=64 chars=hexdigits') }}"
 
+  - name: "disable any existing authentication plugin for root user"
+    command: mysql -NBe "{{ item }}"
+    with_items:
+      - "UPDATE mysql.user SET plugin='' WHERE User='root';"
+      - "FLUSH PRIVILEGES"
+    changed_when: False
+
   - name: "ensure /root/.my.cnf is present and correct"
     template:
-      src: templates/root/.my.cnf
+      src: templates/root/.my.cnf.j2
       dest: ~/.my.cnf
       mode: 0700
 
   - name: "ensure remote root and anonymous login is disallowed"
-    command: mysql -NBe "{{item}}"
+    command: mysql -NBe "{{ item }}"
     with_items:
       - "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
       - "DELETE FROM mysql.user WHERE User='';"
@@ -41,7 +46,28 @@
     changed_when: False
 
   - name: "ensure the 'test' database does not exist"
-    mysql_db: name=test state=absent
+    mysql_db:
+      name: test
+      state: absent
+
+    # NOTE: mysql_db and mysql_user are preview modules, and may not be
+    # backward compatible.
+  - name: "create website databases"
+    mysql_db:
+      name: "{{ item.name }}"
+      state: present
+    with_items: "{{ websites }}"
+    when: item.database is defined and item.database == 'true'
+
+  - name: "create website database users"
+    mysql_user:
+      name: "{{ item.name }}"
+      password: "{{ lookup('password', 'credentials/mysql/{{ item.name }} length=64 chars=hexdigits') }}"
+      priv: "{{ item.name }}.*:ALL"
+      state: present
+    with_items: "{{ websites }}"
+    when: item.database is defined and item.database == 'true'
+
 
 # End of become block
   become: yes

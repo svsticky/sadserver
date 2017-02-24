@@ -1,0 +1,6 @@
+---
+- name: "copy locale variables"
+  template:
+    src: templates/{{ item }}.j2
+    dest: /{{ item }}
+  with_items: etc/default/locale

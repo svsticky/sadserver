@@ -1,23 +1,36 @@
 ---
-- name: "firewall rules"
+- name: "ensure ipv6 firewalling is enabled"
+  lineinfile:
+    dest: "/etc/default/ufw"
+    regexp: "^IPV6="
+    line: "IPV6=yes"
+    state: present
+
+- name: "allow incoming traffic on specified ports"
   ufw:
     rule: allow
-    direction: in
-    port: "{{ item }}"
+    to_port: "{{ item }}"
   with_items:
-    - 22
-    - 80
-    - 443
+    - ssh
+    - http
+    - https
 
 - name: "allow outgoing traffic"
   ufw:
-    state: enabled
     policy: allow
     direction: outgoing
+    state: enabled
 
 - name: "block all other incoming traffic"
   ufw:
-    state: enabled
     policy: deny
     direction: incoming
+    state: enabled
 
+# Should be deprecated when fail2ban 0.10 is released
+- name: "rate limit ipv6 traffic to ssh" 
+  ufw:
+    rule: limit
+    from_ip: ::/0
+    to_port: ssh
+    proto: tcp

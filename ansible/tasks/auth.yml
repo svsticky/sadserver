@@ -8,8 +8,8 @@
     validate: "visudo -cf %s"
 
 - name: "copy deploy keys"
-  copy:
-    src: "files/{{ item }}"
+  template:
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
     owner: ansible
     group: ansible

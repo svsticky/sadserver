@@ -1,6 +1,4 @@
-[Unit]
-Description=Let's Encrypt renewal
+# {{ ansible_managed }}
 
 [Service]
-Type=oneshot
 ExecStart=/usr/bin/certbot renew --quiet --agree-tos --post-hook="/bin/systemctl reload nginx.service"

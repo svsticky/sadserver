@@ -38,8 +38,13 @@ users:
     shell: /bin/false
     state: present
     keys:
-      - " {{ lookup('file', './keys/commit.keys') }} "
-      # - https://github.com/jelmerbroeksma.keys
+      - https://github.com/cfda.keys
+      - https://github.com/DatDutchDude.keys
+      - https://github.com/emielvanrijn.keys
+      - https://github.com/GlennStewart125.keys
+      - https://github.com/M8eld.keys
+      - https://github.com/spasticVerbalizer.keys
+      - https://github.com/yorickvanzweeden.keys
 
 unattended_upgrades:
   security: True
@@ -68,18 +73,6 @@ websites:
   - main_hostname: radio.{{ canonical_hostname }}
     user: commit
     alternative_hostnames: []
-
-  - main_hostname: studytrip.{{ canonical_hostname }}
-    user: laurens
-    alternative_hostnames:
-      - studiereis.{{ canonical_hostname }}
-
-  - main_hostname: feutentrui.{{ canonical_hostname }}
-    user: arian
-    alternative_hostnames:
-      - anno-1636.{{ canonical_hostname }}
-      - ditkanook.{{ canonical_hostname }}
-      - rukbunker.{{ canonical_hostname }}
 
   - main_hostname: koala.{{ canonical_hostname }}
     custom_config: true

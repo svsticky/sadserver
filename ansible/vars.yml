@@ -38,7 +38,7 @@ users:
     shell: /bin/false
     state: present
     keys:
-      - https://github.com/cfda.keys
+      - https://github.com/cdfa.keys
       - https://github.com/DatDutchDude.keys
       - https://github.com/emielvanrijn.keys
       - https://github.com/GlennStewart125.keys

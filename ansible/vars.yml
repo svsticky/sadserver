@@ -64,7 +64,10 @@ users:
     groups: committee
     shell: /bin/false
     state: present
-    keys: []
+    keys:
+      - https://github.com/emielvanrijn.keys
+      - https://github.com/rcdewit.keys
+      - https://github.com/yorickvanzweeden.keys
   - name: stichting
     groups: committee
     shell: /bin/false
@@ -74,12 +77,16 @@ users:
     groups: committee
     shell: /bin/false
     state: present
-    keys: []
+    keys:
+      - https://github.com/rcdewit.keys
+      - https://github.com/yorickvanzweeden.keys
   - name: symposium
     groups: committee
     shell: /bin/false
     state: present
-    keys: []
+    keys:
+      - https://github.com/DatDutchDude.keys
+      - https://github.com/emielvanrijn.keys
   - name: wintersport
     groups: committee
     shell: /bin/false

@@ -132,10 +132,13 @@
     dest: "/etc/nginx/includes"
     state: directory
 
-- name: "copy security http headers"
+- name: "copy nginx include files"
   template:
-    src: "etc/nginx/includes/security-headers.conf.j2"
-    dest: "/etc/nginx/includes/security-headers.conf"
+    src: "etc/nginx/includes/{{ item }}.j2"
+    dest: "/etc/nginx/includes/{{ item }}"
+  with_items:
+    - security-headers.conf
+    - php-parameters.conf
 
 - name: "copy nginx configurations for each website"
   template:

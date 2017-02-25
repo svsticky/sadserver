@@ -33,6 +33,11 @@ users:
     keys:
       - https://github.com/yorickvanzweeden.keys
 
+  - name: bestuur
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
   - name: commit
     groups: committee
     shell: /bin/false
@@ -45,13 +50,36 @@ users:
       - https://github.com/M8eld.keys
       - https://github.com/spasticVerbalizer.keys
       - https://github.com/yorickvanzweeden.keys
-
+  - name: dgdarc
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
+  - name: indievelopment
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
+  - name: sodi
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
+  - name: stichting
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
   - name: studiereis
     groups: committee
     shell: /bin/false
     state: present
     keys: []
-
+  - name: symposium
+    groups: committee
+    shell: /bin/false
+    state: present
+    keys: []
   - name: wintersport
     groups: committee
     shell: /bin/false

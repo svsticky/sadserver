@@ -68,5 +68,5 @@ ssl_certificate_key: /etc/letsencrypt/live/koala.{{ canonical_hostname }}/privke
 koala:
   environment: production
   server: unicorn # or webrick
-  git_ref: digital_enrollments # Should be master, when in production
+  git_ref: feature/digital-enrollments # Should be master, when in production
   ruby_version: 2.3.0

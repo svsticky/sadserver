@@ -62,4 +62,10 @@
       - backup-db.timer
       - backup-websites.timer
 
+  - name: "copy notify slack script"
+    template:
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+      mode: a+x
+    with_items: "usr/local/bin/notify-slack.sh"
   tags: backups

@@ -7,10 +7,10 @@
 # the environment and call this script.
 
 WEBHOOK_URL="https://hooks.slack.com/services/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"
-DISPLAY_NAME="Default name"
-ICON_EMOJI="poop"
-COLOR="danger"
-TITLE="Someone called the notification script without changing the defaults"
+DISPLAY_NAME="${DISPLAY_NAME:-Default name}"
+ICON_EMOJI="${ICON_EMOJI:-poop}"
+COLOR="${COLOR:-danger}"
+TITLE="${TITLE:-Someone called the notification script without changing the defaults}"
 
 read -r -d '' PAYLOAD << EOF
 {

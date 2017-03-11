@@ -2,10 +2,16 @@
 
 [Unit]
 Description=Backup of the contents of the admins' home directories to AWS S3
+OnFailure=backup-admins-fail.service
 
 [Service]
 Type=simple
 User=root
 Group=root
 WorkingDirectory=~
-ExecStart=/usr/local/bin/backup-admins.sh
+Environment="DISPLAY_NAME=Backup service"
+Environment="ICON_EMOJI=floppy_disk"
+Environment="COLOR=#00cc00"
+Environment="TITLE=Backup of admins' home directories successfully completed"
+ExecStartPre=/usr/local/bin/backup-admins.sh
+ExecStart=/usr/local/bin/notify-slack.sh

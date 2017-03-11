@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Failure notification of the backup of the admins' home directories
+
+[Service]
+Type=oneshot
+User=ansible
+Group=ansible
+Environment="DISPLAY_NAME=Backup service"
+Environment="ICON_EMOJI=exclamation"
+Environment="COLOR=#cc3300"
+Environment="TITLE=Backup of admins' home directories FAILED!"
+ExecStart=/usr/local/bin/notify-slack.sh

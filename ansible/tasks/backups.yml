@@ -45,6 +45,7 @@
     with_items:
       - backup-admins.service
       - backup-admins.timer
+      - backup-admins-fail.service
       - backup-db.service
       - backup-db.timer
       - backup-websites.service

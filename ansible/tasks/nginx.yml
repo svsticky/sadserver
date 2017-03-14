@@ -111,7 +111,7 @@
     --must-staple
     --webroot
     --webroot-path /var/www/acme-challenges
-    --domain {{ item.name }}.{{ item.suffix }}
+    --domain {{ item.name }}
     {% for hostname in item.alternative_names %}
     --domain {{ hostname }}
     {% endfor %}
@@ -119,7 +119,7 @@
 
 - name: "create website directories"
   file:
-    path: "/var/www/{{ item.user }}/{{ item.name }}.{{ item.suffix }}"
+    path: "/var/www/{{ item.user }}/{{ item.name }}"
     owner: "{{ item.user }}"
     group: www-data
     mode: 0755
@@ -143,14 +143,14 @@
 - name: "copy nginx configurations for each website"
   template:
     src: "etc/nginx/sites-available/website.conf.j2"
-    dest: "/etc/nginx/sites-available/{{ item.name }}.{{ item.suffix }}.conf"
+    dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
 
 - name: "enable nginx website configurations"
   file:
-    src: "/etc/nginx/sites-available/{{ item.name }}.{{ item.suffix }}.conf"
-    dest: "/etc/nginx/sites-enabled/{{ item.name }}.{{ item.suffix }}.conf"
+    src: "/etc/nginx/sites-available/{{ item.name }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
     state: link
   with_items: "{{ websites }}"
   when: item.custom_config is undefined

@@ -20,8 +20,7 @@
 - name: "create users"
   user:
     name: "{{ item.name }}"
-    groups: "{{ item.groups }}"
-    shell: "{{ item.shell }}"
+    groups: "{%if item.admin %}sudo,adm{% else %}committee{% endif %}"
     state: "{{ item.state }}"
   with_items:
     - "{{ users }}"
@@ -31,7 +30,7 @@
     name: "{{ item.name }}"
     home: "/var/www/{{ item.name }}"
     move_home: yes
-  when: "{{ item.groups == 'committee' and item.state == 'present' }}"
+  when: "{{ not item.admin and item.state == 'present' }}"
   with_items:
     - "{{ users }}"
 
@@ -40,7 +39,7 @@
     path: "/var/www/{{ item.name }}"
     owner: root
     state: directory
-  when: "{{ item.groups == 'committee' and item.state == 'present' }}"
+  when: "{{ not item.admin and item.state == 'present' }}"
   with_items:
     - "{{ users }}"
 
@@ -57,5 +56,9 @@
 - name: "add ssh keys of admin users to ansible user"
   authorized_key:
     user: "ansible"
-    key: "https://github.com/{{ item.value.github }}.keys"
-  with_dict: "{{ admins }}"
+    key: "{{ item.1 }}"
+    state: "{{ item.0.state }}"
+  when: "{{ item.0.admin }} and {{ item.0.state == 'present' }}"
+  with_subelements:
+    - "{{ users }}"
+    - keys

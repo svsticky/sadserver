@@ -61,3 +61,5 @@
       - backup-admins.timer
       - backup-db.timer
       - backup-websites.timer
+
+  tags: backups

@@ -39,15 +39,3 @@
     path: /root/.ssh/authorized_keys
     state: absent
 
-- name: "add sftp jail for committee users"
-  blockinfile:
-    dest: "/etc/ssh/sshd_config"
-    state: present
-    block: |
-      Subsystem committee internal-sftp
-
-      Match Group committee
-        ChrootDirectory %h
-        ForceCommand internal-sftp
-        AllowTcpForwarding no
-  notify: restart ssh

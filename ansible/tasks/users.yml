@@ -1,16 +1,58 @@
 ---
-- name: "create admin users"
-  user:
-    name: "{{ item.key }}"
-    shell: /bin/bash
-    groups: sudo,adm
-  with_dict: "{{ admins }}"
+- name: "create committee group"
+  group:
+    name: committee
+    state: present
 
-- name: "add ssh keys for admin users"
+- name: "add sftp jail for committee users"
+  blockinfile:
+    dest: "/etc/ssh/sshd_config"
+    state: present
+    block: |
+      Subsystem committee internal-sftp
+
+      Match Group committee
+        ChrootDirectory %h
+        ForceCommand internal-sftp
+        AllowTcpForwarding no
+  notify: restart ssh
+
+- name: "create users"
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    shell: "{{ item.shell }}"
+    state: "{{ item.state }}"
+  with_items:
+    - "{{ users }}"
+
+- name: "move committee users"
+  user:
+    name: "{{ item.name }}"
+    home: "/var/www/{{ item.name }}"
+    move_home: yes
+  when: "{{ item.groups == 'committee' and item.state == 'present' }}"
+  with_items:
+    - "{{ users }}"
+
+- name: "fix permissions for chroot"
+  file:
+    path: "/var/www/{{ item.name }}"
+    owner: root
+    state: directory
+  when: "{{ item.groups == 'committee' and item.state == 'present' }}"
+  with_items:
+    - "{{ users }}"
+
+- name: "set users keys"
   authorized_key:
-    user: "{{ item.key }}"
-    key: "https://github.com/{{ item.value.github }}.keys"
-  with_dict: "{{ admins }}"
+    user: "{{ item.0.name }}"
+    key: "{{ item.1 }}"
+    state: "{{ item.0.state }}"
+  when: "{{ item.0.state == 'present' }}"
+  with_subelements:
+    - "{{ users }}"
+    - keys
 
 - name: "add ssh keys of admin users to ansible user"
   authorized_key:

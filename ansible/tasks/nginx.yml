@@ -111,8 +111,8 @@
     --must-staple
     --webroot
     --webroot-path /var/www/acme-challenges
-    --domain {{ item.main_hostname }}
-    {% for hostname in item.alternative_hostnames %}
+    --domain {{ item.name }}
+    {% for hostname in item.alternative_names %}
     --domain {{ hostname }}
     {% endfor %}
   with_items: "{{ websites }}"

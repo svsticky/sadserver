@@ -117,27 +117,23 @@ fail2ban:
 upload_limit: 15
 
 websites:
-  - main_hostname: radio.{{ canonical_hostname }}
-    user: commit
-    alternative_hostnames: []
-
-  - main_hostname: studytrip.{{ canonical_hostname }}
+  - name: studytrip.{{ canonical_hostname }}
     user: studiereis
-    alternative_hostnames:
+    alternative_names:
       - studiereis.{{ canonical_hostname }}
 
-  - main_hostname: wintersport.{{ canonical_hostname }}
+  - name: wintersport.{{ canonical_hostname }}
     user: wintersport
-    alternative_hostnames: []
+    alternative_names: []
 
-  - main_hostname: koala.{{ canonical_hostname }}
+  - name: koala.{{ canonical_hostname }}
     custom_config: true
-    alternative_hostnames:
+    alternative_names:
       - intro.{{ canonical_hostname }}
 
-  - main_hostname: metrics.{{ canonical_hostname }}
+  - name: metrics.{{ canonical_hostname }}
     custom_config: true
-    alternative_hostnames:
+    alternative_names:
       - status.{{ canonical_hostname }}
 
 # koala configuration

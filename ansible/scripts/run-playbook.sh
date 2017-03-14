@@ -1,3 +1,3 @@
 #!/bin/bash
 set -e
-ansible-playbook -i hosts --ask-become-pass $@
+ANSIBLE_SSH_PIPELINING=true ansible-playbook -i hosts --ask-become-pass $@

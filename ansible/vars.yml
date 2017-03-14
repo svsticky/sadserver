@@ -189,6 +189,11 @@ websites:
     user: "wintersport"
     alternative_names: []
 
+  - name: phpmyadmin
+    custom_config: true
+    database: true
+    alternative_names: []
+
 koala:
   environment: "production"
   server: "unicorn" # or webrick

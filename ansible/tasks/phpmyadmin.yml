@@ -1,0 +1,29 @@
+---
+- block:
+   - name: "install phpmyadmin package"
+     apt:
+       name: "phpmyadmin"
+       state: latest
+
+   - name: "symlink phpmyadmin directory"
+     file:
+       src: /usr/share/phpmyadmin
+       dest: "/var/www/phpmyadmin.{{ canonical_hostname }}"
+       state: link
+       owner: root
+       group: www-data
+
+   - name: "place phpmyadmin nginx config"
+     template:
+       src: "templates/etc/nginx/sites-available/phpmyadmin.conf.j2"
+       dest: "/etc/nginx/sites-available/phpmyadmin.conf"
+       owner: "root"
+       group: "root"
+
+   - name: "symlink nginx config"
+     file:
+       src: "/etc/nginx/sites-available/phpmyadmin.conf"
+       dest: "/etc/nginx/sites-enabled/phpmyadmin.conf"
+       state: link
+
+  become: true

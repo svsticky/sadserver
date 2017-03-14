@@ -12,3 +12,8 @@
     key: "https://github.com/{{ item.value.github }}.keys"
   with_dict: "{{ admins }}"
 
+- name: "add ssh keys of admin users to ansible user"
+  authorized_key:
+    user: "ansible"
+    key: "https://github.com/{{ item.value.github }}.keys"
+  with_dict: "{{ admins }}"

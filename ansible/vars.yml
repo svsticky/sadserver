@@ -70,3 +70,8 @@ koala:
   server: unicorn # or webrick
   git_ref: feature/digital-enrollments # Should be master, when in production
   ruby_version: 2.3.0
+
+slacktee:
+  revision: 2dd488b93fa13d305d27c1c820641e600845710e
+  checksum: sha256:b59522b40de167e5c88ddf09f5d02560759902fc503e0bd3cea5c1fa45b780df
+  webhook_url: https://hooks.slack.com/services/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

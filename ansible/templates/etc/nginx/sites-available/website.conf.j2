@@ -4,15 +4,15 @@ server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
 
-  server_name {{ item.name }}.{{ canonical_hostname }}
+  server_name {{ item.name }}
   {% for hostname in item.alternative_names %}
-    {{ hostname }}.{{ canonical_hostname }}
+    {{ hostname }}
   {% endfor %};
 
-  ssl_certificate      /etc/letsencrypt/live/{{ item.name }}.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/{{ item.name }}.{{ canonical_hostname }}/privkey.pem;
+  ssl_certificate      /etc/letsencrypt/live/{{ item.name }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{ item.name }}/privkey.pem;
 
-  root /var/www/{{ item.user }}/{{ item.name }}.{{ canonical_hostname }};
+  root /var/www/{{ item.user }}/{{ item.name }};
   index index.html index.htm index.php;
 
   include includes/security-headers.conf;

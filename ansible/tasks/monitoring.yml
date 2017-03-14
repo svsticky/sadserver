@@ -41,11 +41,11 @@
 
 - name: "copy nginx files for metrics site"
   template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}.{{ canonical_hostname }}"
+    src: "templates/{{ item }}.svsticky.nl.conf.j2"
+    dest: "/{{ item }}.{{ canonical_hostname }}.conf"
   with_items:
-    - etc/nginx/sites-available/metrics
-    - etc/nginx/htpasswd.d/metrics
+    - "etc/nginx/sites-available/metrics"
+    - "etc/nginx/htpasswd.d/metrics"
   tags:
     - monitoring
     - nginx
@@ -54,8 +54,8 @@
 
 - name: "enable nginx proxy config for metrics site"
   file:
-    src: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}"
-    dest: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}"
+    src: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}.conf"
     state: link
   tags:
     - monitoring

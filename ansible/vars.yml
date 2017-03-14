@@ -37,30 +37,30 @@ fail2ban:
 upload_limit: 15
 
 websites:
-  - name: studytrip
-    user: laurens
+# Commented because of DNS, uncomment when in production
+#  - name: "dgdarc.nl"
+#    user: "dgdarc"
+#    database: true
+#    alternative_names:
+#      - "dgdarc.com"
+
+  - name: "koala.{{ canonical_hostname }}"
+    custom_config: true
+    alternative_names:
+      - "intro.{{ canonical_hostname }}"
+      - "leden.{{ canonical_hostname }}"
+      - "members.{{ canonical_hostname }}"
+
+  - name: "metrics.{{ canonical_hostname }}"
+    custom_config: true
+    alternative_names:
+      - "status.{{ canonical_hostname }}"
+
+  - name: "studytrip.{{ canonical_hostname }}"
+    user: "laurens"
     database: true
     alternative_names:
-      - studiereis
-
-  - name: feutentrui
-    user: arian
-    alternative_names:
-      - anno-1636
-      - ditkanook
-      - rukbunker
-
-  - name: koala
-    custom_config: true
-    alternative_names:
-      - intro
-      - leden
-      - members
-
-  - name: metrics
-    custom_config: true
-    alternative_names:
-      - status
+      - "studiereis.{{ canonical_hostname }}"
 
 # koala configuration
 ssl_certificate: /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem

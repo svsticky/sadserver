@@ -15,3 +15,4 @@ Environment="COLOR=#00cc00"
 Environment="TITLE=Backup of admins' home directories successfully completed"
 ExecStartPre=/usr/local/bin/backup-admins.sh
 ExecStart=/usr/local/bin/notify-slack.sh
+PrivateTmp=true

@@ -17,6 +17,14 @@
     - etc/ssl/certs/letsencrypt-ocsp-chain.pem
     - etc/php/7.0/fpm/php.ini
 
+- name: "ensure stock nginx configuration is not present"
+  file:
+    path: /etc/nginx/{{ item }}
+    state: absent
+  with_items:
+    - sites-available/default
+    - sites-enabled/default
+
 - name: "copy dhparams and default nginx configuration"
   template:
     src: "templates/{{ item }}.j2"

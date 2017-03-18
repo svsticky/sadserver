@@ -13,8 +13,8 @@ server {
 		intro.{{ canonical_hostname }}
 		members.{{ canonical_hostname }};
 
-	ssl_certificate {{ ssl_certificate }};
-	ssl_certificate_key {{ ssl_certificate_key }};
+	ssl_certificate /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/koala.{{ canonical_hostname }}/privkey.pem;
 
 	# Security headers already enforced in Rails
 

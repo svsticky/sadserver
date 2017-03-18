@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Failure notification of the backup of all websites
+
+[Service]
+Type=oneshot
+User=ansible
+Group=ansible
+ExecStart=/bin/sh -c "echo \"@it-crowd-commissie *Backup of all websites FAILED!* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Backup service' --icon ':exclamation:' --attachment 'danger'"

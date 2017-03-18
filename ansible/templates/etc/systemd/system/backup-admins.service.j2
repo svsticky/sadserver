@@ -8,11 +8,6 @@ OnFailure=backup-admins-fail.service
 Type=simple
 User=root
 Group=root
-WorkingDirectory=~
-Environment="DISPLAY_NAME=Backup service"
-Environment="ICON_EMOJI=floppy_disk"
-Environment="COLOR=#00cc00"
-Environment="TITLE=Backup of admins' home directories successfully completed"
-ExecStartPre=/usr/local/bin/backup-admins.sh
-ExecStart=/usr/local/bin/notify-slack.sh
 PrivateTmp=true
+ExecStartPre=/usr/local/bin/backup-admins.sh
+ExecStart=/bin/sh -c "echo \"*Backup of admins' home directories completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'"

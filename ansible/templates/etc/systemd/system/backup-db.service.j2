@@ -2,11 +2,12 @@
 
 [Unit]
 Description=Backup of all MariaDB databases to AWS S3
+OnFailure=backup-db-fail.service
 
 [Service]
 Type=simple
 User=ansible
 Group=ansible
-WorkingDirectory=~
-ExecStart=/usr/local/bin/backup-db.sh
 PrivateTmp=true
+ExecStartPre=/usr/local/bin/backup-db.sh
+ExecStart=/bin/sh -c "echo \"*Backup of MariaDB databases completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'"

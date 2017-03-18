@@ -2,11 +2,12 @@
 
 [Unit]
 Description=Backup of the contents of all websites to AWS S3
+OnFailure=backup-websites-fail.service
 
 [Service]
 Type=simple
 User=root
 Group=root
-WorkingDirectory=~
-ExecStart=/usr/local/bin/backup-websites.sh
 PrivateTmp=true
+ExecStartPre=/usr/local/bin/backup-websites.sh
+ExecStart=/bin/sh -c "echo \"*Backup of all websites completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'"

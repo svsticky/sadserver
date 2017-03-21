@@ -54,19 +54,19 @@
     # backward compatible.
   - name: "create website databases"
     mysql_db:
-      name: "{{ item.name }}"
+      name: "{{ item.database }}"
       state: present
     with_items: "{{ websites }}"
-    when: item.database is defined and item.database == true
+    when: item.database is defined
 
   - name: "create website database users"
     mysql_user:
-      name: "{{ item.name }}"
-      password: "{{ lookup('password', 'credentials/mysql/{{ item.name }} length=64 chars=hexdigits') }}"
-      priv: "{{ item.name }}.*:ALL"
+      name: "{{ item.database }}"
+      password: "{{ lookup('password', 'credentials/mysql/{{ item.database }} length=64 chars=hexdigits') }}"
+      priv: "{{ item.database }}.*:ALL"
       state: present
     with_items: "{{ websites }}"
-    when: item.database is defined and item.database == true
+    when: item.database is defined
 
 
 # End of become block

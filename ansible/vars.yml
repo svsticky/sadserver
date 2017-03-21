@@ -129,7 +129,7 @@ websites:
 
   - name: "studytrip.{{ canonical_hostname }}"
     user: "laurens"
-    database: true
+    database: "studytrip"
     alternative_names:
       - "studiereis.{{ canonical_hostname }}"
 

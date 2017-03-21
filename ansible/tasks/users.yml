@@ -4,6 +4,11 @@
     name: committee
     state: present
 
+- name: "create /var/www":
+  file:
+    path: "/var/www"
+    state: directory
+
 - name: "add sftp jail for committee users"
   blockinfile:
     dest: "/etc/ssh/sshd_config"

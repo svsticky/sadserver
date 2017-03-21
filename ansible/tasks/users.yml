@@ -4,7 +4,7 @@
     name: committee
     state: present
 
-- name: "create /var/www":
+- name: "create /var/www"
   file:
     path: "/var/www"
     state: directory

@@ -18,19 +18,15 @@
     - "home/ansible/.ssh/deploy_ed25519"
     - "home/ansible/.ssh/deploy_ed25519.pub"
 
-- name: "disable root login and password authentication over ssh"
-  lineinfile:
-    dest: "/etc/ssh/sshd_config"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: "present"
-  with_items:
-    - { regexp: "^PermitRootLogin ", line: "PermitRootLogin no" }
-    - { regexp: "^PasswordAuthentication ", line: "PasswordAuthentication no" }
-  notify: "reboot server"
-
 - name: "remove public keys for root account"
   file:
     path: "/root/.ssh/authorized_keys"
     state: "absent"
 
+- name: "copy hardened sshd configuration"
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/{{ item }}"
+  with_items:
+    - etc/ssh/sshd_config
+  notify: "reboot server"

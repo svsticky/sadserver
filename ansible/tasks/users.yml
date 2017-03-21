@@ -30,6 +30,17 @@
   with_items:
     - "{{ users }}"
 
+
+- name: "set shell for admins"
+  user:
+    name: "{{ item.name }}"
+    shell: "/bin/bash"
+    state: "{{ item.state }}"
+  when: "{{ item.admin }}"
+  with_items:
+    - "{{ users }}"
+  
+
 - name: "move committee users"
   user:
     name: "{{ item.name }}"

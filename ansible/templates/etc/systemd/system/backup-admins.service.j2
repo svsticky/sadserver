@@ -2,10 +2,12 @@
 
 [Unit]
 Description=Backup of the contents of the admins' home directories to AWS S3
+OnFailure=backup-fail@the\x20admins\x27\x20home\x20directories.service
 
 [Service]
 Type=simple
 User=root
 Group=root
-WorkingDirectory=~
-ExecStart=/usr/local/bin/backup-admins.sh
+PrivateTmp=true
+ExecStartPre=/usr/local/bin/backup-admins.sh
+ExecStart=/bin/sh -c "echo \"*Backup of admins' home directories completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'"

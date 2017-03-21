@@ -48,6 +48,7 @@
       - "backup-db.timer"
       - "backup-websites.service"
       - "backup-websites.timer"
+      - backup-fail@.service
     notify:
       - "systemctl daemon-reload"
 

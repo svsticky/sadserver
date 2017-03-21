@@ -2,6 +2,7 @@
 
 upstream netdata {
   server 127.0.0.1:19999;
+  server [::1]:19999;
 }
 
 server {
@@ -17,7 +18,7 @@ server {
 
   location / {
     auth_basic "Grafieken en meer";
-    auth_basic_user_file /etc/nginx/htpasswd.d/metrics.{{ canonical_hostname }};
+    auth_basic_user_file /etc/nginx/htpasswd.d/metrics.{{ canonical_hostname }}.conf;
 
     proxy_pass http://netdata;
   }

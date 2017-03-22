@@ -13,7 +13,7 @@ server {
   ssl_certificate_key  /etc/letsencrypt/live/{{ item.name }}/privkey.pem;
 
   root /var/www/{{ item.user }}/{{ item.name }};
-  index index.html index.htm index.php;
+  index index.php index.html index.htm;
 
   include includes/security-headers.conf;
   include includes/php-parameters.conf;

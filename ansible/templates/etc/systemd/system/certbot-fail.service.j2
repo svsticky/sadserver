@@ -1,0 +1,10 @@
+{{ ansible_managed }}
+
+[Unit]
+Description=Failure notification of the renewal check of certificates
+
+[Service]
+Type=oneshot
+User=ansible
+Group=ansible
+ExecStart=/bin/sh -c "echo \"@it-crowd-commissie *Renewal check of certificates FAILED!* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Certbot service' --icon ':exclamation:' --attachment 'danger'"

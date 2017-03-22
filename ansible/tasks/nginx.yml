@@ -55,6 +55,11 @@
     enabled: yes
     state: reloaded
 
+- name: "Delete default html directory"
+  file:
+    path: "/var/www/html"
+    state: absent
+
 # We need this, because certbot is still at
 # 0.4.x in the xenial repo as of 2017-02-06
 - name: "add certbot apt repository"

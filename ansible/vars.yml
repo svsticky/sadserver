@@ -12,16 +12,16 @@ users:
     state: present
     keys:
       - https://github.com/duijf.keys
-  - name: tom
-    admin: true
-    state: present
-    keys:
-      - https://github.com/tomwassenberg.keys
   - name: maarten
     admin: true
     state: present
     keys:
       - https://github.com/spasticVerbalizer.keys
+  - name: tom
+    admin: true
+    state: present
+    keys:
+      - https://github.com/tomwassenberg.keys
   - name: yorick
     admin: true
     state: present
@@ -62,7 +62,7 @@ users:
     admin: false
     state: present
     keys: []
-  - name: studiereis
+  - name: studytrip
     admin: false
     state: present
     keys:
@@ -78,11 +78,6 @@ users:
     admin: false
     state: present
     keys: []
-  - name: tom2
-    admin: false
-    state: present
-    keys: 
-      - https://github.com/arianvp.keys
 
 unattended_upgrades:
   security: True
@@ -108,12 +103,28 @@ fail2ban:
 upload_limit: 15
 
 websites:
-# Commented because of DNS, uncomment when in production
+# Domains that are commented are done so
+# because of DNS, uncomment when in production
+
 #  - name: "dgdarc.nl"
 #    user: "dgdarc"
 #    database: true
 #    alternative_names:
+#      - "www.dgdarc.nl"
 #      - "dgdarc.com"
+#      - "www.dgdarc.com"
+
+#  - name: "indievelopment.nl"
+#    user: "indievelopment"
+#    database: true
+#    alternative_names:
+#      - "www.indievelopment.nl"
+#      - "indiedevelopment.nl"
+#      - "www.indiedevelopment.nl"
+
+  - name: "digidecs.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names: []
 
   - name: "koala.{{ canonical_hostname }}"
     custom_config: true
@@ -127,11 +138,48 @@ websites:
     alternative_names:
       - "status.{{ canonical_hostname }}"
 
+  - name: "radio.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names: []
+
+#  - name: "savadaba.nl"
+#    custom_config: true
+#    alternative_names:
+#      - "www.savadaba.nl"
+
+#  - name: "sodi.nl"
+#    user: "sodi"
+#    database: "sodi"
+#    alternative_names:
+#      - "www.sodi.nl"
+
+#  - name: "stichtingsticky.nl"
+#    user: "stichting"
+#    alternative_names:
+#      - "www.stichtingsticky.nl"
+
   - name: "studytrip.{{ canonical_hostname }}"
-    user: "laurens"
+    user: "studytrip"
     database: "studytrip"
     alternative_names:
       - "studiereis.{{ canonical_hostname }}"
+
+  - name: "{{ canonical_hostname }}"
+    user: "bestuur"
+    database: "svsticky"
+    alternative_names:
+      - "www.{{ canonical_hostname }}"
+#      - "stickyutrecht.nl"
+#      - "www.stickyutrecht.nl"
+
+  - name: "symposium.{{ canonical_hostname }}"
+    user: "symposium"
+    database: "symposium"
+    alternative_names: []
+
+  - name: "wintersport.{{ canonical_hostname }}"
+    user: "wintersport"
+    alternative_names: []
 
 koala:
   environment: production

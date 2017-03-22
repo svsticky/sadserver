@@ -153,14 +153,20 @@
     - security-headers.conf
     - php-parameters.conf
 
-- name: "copy nginx configurations for each website"
+- name: "copy nginx configurations for regular websites"
   template:
     src: "etc/nginx/sites-available/website.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
 
-- name: "enable nginx website configurations"
+- name: "copy nginx configuration for savadaba.nl"
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/{{ item }}"
+  with_items: "etc/nginx/sites-available/savadaba.nl.conf"
+
+- name: "enable regular nginx configurations"
   file:
     src: "/etc/nginx/sites-available/{{ item.name }}.conf"
     dest: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
@@ -168,6 +174,14 @@
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
   notify: reload nginx
+
+# - name: "enable nginx configuration for savadaba.nl"
+#   file:
+#     src: "/etc/nginx/sites-available/{{ item }}"
+#     dest: "/etc/nginx/sites-enabled/{{ item }}"
+#     state: link
+#   with_items: "savadaba.nl.conf"
+#   notify: reload nginx
 
 - name: "create htpasswd.d directory for basic auth files"
   file:

@@ -8,4 +8,4 @@ Type=simple
 User=root
 Group=root
 PrivateTmp=true
-ExecStart=/bin/sh -c "grep $(date --date \"-1 day\" +'%F') /var/log/unattended-upgrades/unattended-upgrades.log | /usr/local/bin/slacktee --username 'Unattended upgrades' --icon ':arrows_clockwise:' --attachment '#46c4ff' --channel '@tom.wassenberg'"
+ExecStart=/bin/sh -c "grep $(date --date \"-1 day\" +'%F') /var/log/unattended-upgrades/unattended-upgrades.log | /usr/local/bin/slacktee --username 'Unattended upgrades' --icon ':arrows_clockwise:' --attachment '#46c4ff'"

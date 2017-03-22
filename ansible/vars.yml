@@ -167,6 +167,7 @@ websites:
   - name: "{{ canonical_hostname }}"
     user: "bestuur"
     database: "svsticky"
+    custom_config: true
     alternative_names:
       - "www.{{ canonical_hostname }}"
 #      - "stickyutrecht.nl"

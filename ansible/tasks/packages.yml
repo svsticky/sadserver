@@ -27,6 +27,10 @@
     dest: "/{{ item }}"
   with_items:
     - "etc/apt/apt.conf.d/50unattended-upgrades"
+    - etc/systemd/system/unattended-upgrades-output.service
+    - etc/systemd/system/unattended-upgrades-output.timer
+  notify:
+    - systemctl daemon-reload
 
 - name: "configure slacktee"
   template:
@@ -34,3 +38,9 @@
     dest: "/{{ item }}"
   with_items:
     - "etc/slacktee.conf"
+
+- name: "enable unattended-upgrades notification"
+  service:
+    name: "unattended-upgrades-output.timer"
+    enabled: yes
+    state: started

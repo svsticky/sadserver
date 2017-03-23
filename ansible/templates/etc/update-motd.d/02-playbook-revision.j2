@@ -1,0 +1,5 @@
+#!/bin/sh
+# {{ ansible_managed }}
+
+echo "The most recently deployed playbook revision"
+echo "is \"{{ playbook_revision | default('unknown') }}\"."

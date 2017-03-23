@@ -26,7 +26,8 @@ Godspeed!
 
 The code/scripts in this repository depends on the following software:
 
- - Ansible ~> 2.1
+ - Ansible ~> 2.2
+ - [slacktee](https://github.com/course-hero/slacktee) (no config necessary)
  - Any POSIX compatible shell
 
 ## Ansible playbook

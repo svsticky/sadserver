@@ -23,8 +23,8 @@
 
 - name: "configure unattended-upgrades and slacktee"
   template:
-    src: "{{ item }}.j2"
+    src: "{{ item }}"
     dest: "/{{ item }}"
   with_items:
-    - etc/apt/apt.conf.d/50unattended-upgrades
+    - etc/apt/apt.conf.d/50unattended-upgrades.j2
     - etc/slacktee.conf

@@ -106,21 +106,21 @@ websites:
 # Domains that are commented are done so
 # because of DNS, uncomment when in production
 
-#  - name: "dgdarc.nl"
-#    user: "dgdarc"
-#    database: true
-#    alternative_names:
-#      - "www.dgdarc.nl"
-#      - "dgdarc.com"
-#      - "www.dgdarc.com"
+# - name: "dgdarc.nl"
+#   user: "dgdarc"
+#   database: true
+#   alternative_names:
+#     - "www.dgdarc.nl"
+#     - "dgdarc.com"
+#     - "www.dgdarc.com"
 
-#  - name: "indievelopment.nl"
-#    user: "indievelopment"
-#    database: true
-#    alternative_names:
-#      - "www.indievelopment.nl"
-#      - "indiedevelopment.nl"
-#      - "www.indiedevelopment.nl"
+# - name: "indievelopment.nl"
+#   user: "indievelopment"
+#   database: true
+#   alternative_names:
+#     - "www.indievelopment.nl"
+#     - "indiedevelopment.nl"
+#     - "www.indiedevelopment.nl"
 
   - name: "digidecs.{{ canonical_hostname }}"
     user: "commit"
@@ -142,21 +142,21 @@ websites:
     user: "commit"
     alternative_names: []
 
-#  - name: "savadaba.nl"
-#    custom_config: true
-#    alternative_names:
-#      - "www.savadaba.nl"
+# - name: "savadaba.nl"
+#   custom_config: true
+#   alternative_names:
+#     - "www.savadaba.nl"
 
-#  - name: "sodi.nl"
-#    user: "sodi"
-#    database: "sodi"
-#    alternative_names:
-#      - "www.sodi.nl"
+# - name: "sodi.nl"
+#   user: "sodi"
+#   database: "sodi"
+#   alternative_names:
+#     - "www.sodi.nl"
 
-#  - name: "stichtingsticky.nl"
-#    user: "stichting"
-#    alternative_names:
-#      - "www.stichtingsticky.nl"
+# - name: "stichtingsticky.nl"
+#   user: "stichting"
+#   alternative_names:
+#     - "www.stichtingsticky.nl"
 
   - name: "studytrip.{{ canonical_hostname }}"
     user: "studytrip"
@@ -170,8 +170,10 @@ websites:
     custom_config: true
     alternative_names:
       - "www.{{ canonical_hostname }}"
-#      - "stickyutrecht.nl"
-#      - "www.stickyutrecht.nl"
+#     - "stickyutrecht.nl"
+#     - "www.stickyutrecht.nl"
+#     - "studieverenigingsticky.nl"
+#     - "www.studieverenigingsticky.nl"
 
   - name: "symposium.{{ canonical_hostname }}"
     user: "symposium"

@@ -27,4 +27,10 @@
     dest: "/{{ item }}"
   with_items:
     - etc/apt/apt.conf.d/50unattended-upgrades
+
+- name: "configure slacktee"
+  template:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+  with_items:
     - etc/slacktee.conf

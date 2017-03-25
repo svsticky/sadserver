@@ -27,6 +27,5 @@
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
-  with_items:
-    - etc/ssh/sshd_config
+  with_items: "etc/ssh/sshd_config"
   notify: "reboot server"

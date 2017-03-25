@@ -3,39 +3,34 @@
   lineinfile:
     dest: "/etc/sudoers.d/ansible"
     line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
-    state: present
-    create: yes
+    state: "present"
+    create: true
     validate: "visudo -cf %s"
 
 - name: "copy deploy keys"
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
-    owner: ansible
-    group: ansible
-    mode: 0600
+    owner: "ansible"
+    group: "ansible"
+    mode: "0600"
   with_items:
-    - home/ansible/.ssh/deploy_ed25519
-    - home/ansible/.ssh/deploy_ed25519.pub
+    - "home/ansible/.ssh/deploy_ed25519"
+    - "home/ansible/.ssh/deploy_ed25519.pub"
 
-- name: "disable root login using password over ssh"
+- name: "disable root login and password authentication over ssh"
   lineinfile:
     dest: "/etc/ssh/sshd_config"
-    regexp: "^PermitRootLogin "
-    line: "PermitRootLogin no"
-    state: present
-  notify: "reboot server"
-
-- name: "disable password authentication over ssh"
-  lineinfile:
-    dest: "/etc/ssh/sshd_config"
-    regexp: "^PasswordAuthentication "
-    line: "PasswordAuthentication no"
-    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: "present"
+  with_items:
+    - { regexp: "^PermitRootLogin ", line: "PermitRootLogin no" }
+    - { regexp: "^PasswordAuthentication ", line: "PasswordAuthentication no" }
   notify: "reboot server"
 
 - name: "remove public keys for root account"
   file:
-    path: /root/.ssh/authorized_keys
-    state: absent
+    path: "/root/.ssh/authorized_keys"
+    state: "absent"
 

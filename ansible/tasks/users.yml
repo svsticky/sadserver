@@ -1,18 +1,18 @@
 ---
 - name: "create committee group"
   group:
-    name: committee
-    state: present
+    name: "committee"
+    state: "present"
 
 - name: "create /var/www"
   file:
     path: "/var/www"
-    state: directory
+    state: "directory"
 
 - name: "add sftp jail for committee users"
   blockinfile:
     dest: "/etc/ssh/sshd_config"
-    state: present
+    state: "present"
     block: |
       Subsystem committee internal-sftp
 
@@ -20,7 +20,7 @@
         ChrootDirectory %h
         ForceCommand internal-sftp
         AllowTcpForwarding no
-  notify: restart ssh
+  notify: "restart ssh"
 
 - name: "create users"
   user:
@@ -45,16 +45,16 @@
   user:
     name: "{{ item.name }}"
     home: "/var/www/{{ item.name }}"
-    move_home: yes
+    move_home: true
   when: "{{ not item.admin and item.state == 'present' }}"
   with_items:
     - "{{ users }}"
 
-- name: "fix permissions for chroot"
+- name: "fix permissions for chroot of committee users"
   file:
     path: "/var/www/{{ item.name }}"
-    owner: root
-    state: directory
+    owner: "root"
+    state: "directory"
   when: "{{ not item.admin and item.state == 'present' }}"
   with_items:
     - "{{ users }}"
@@ -67,7 +67,7 @@
   when: "{{ item.0.state == 'present' }}"
   with_subelements:
     - "{{ users }}"
-    - keys
+    - "keys"
 
 - name: "add ssh keys of admin users to ansible user"
   authorized_key:
@@ -77,4 +77,4 @@
   when: "{{ item.0.admin }} and {{ item.0.state == 'present' }}"
   with_subelements:
     - "{{ users }}"
-    - keys
+    - "keys"

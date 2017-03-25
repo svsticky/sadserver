@@ -1,23 +1,23 @@
 ---
 - name: "install fail2ban"
   apt:
-    pkg: fail2ban
-    state: present
+    pkg: "fail2ban"
+    state: "present"
   notify:
-    - restart fail2ban
+    - "restart fail2ban"
 
 - name: "configure fail2ban"
   template:
-    src: "{{ item }}.j2"
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
   with_items:
-    - etc/fail2ban/fail2ban.conf
-    - etc/fail2ban/jail.conf
+    - "etc/fail2ban/fail2ban.conf"
+    - "etc/fail2ban/jail.conf"
   notify:
-    - restart fail2ban
+    - "restart fail2ban"
 
 - name: "start and enable fail2ban"
   service:
-    name: fail2ban
-    state: started
-    enabled: yes
+    name: "fail2ban"
+    state: "started"
+    enabled: true

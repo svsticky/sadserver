@@ -1,8 +1,9 @@
 ---
 - hosts: all
+
   tasks:
   - name: "reload nginx config"
     service:
-      name: nginx
-      state: reloaded
-    become: yes
+      name: "nginx"
+      state: "reloaded"
+    become: true

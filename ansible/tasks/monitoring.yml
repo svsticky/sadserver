@@ -2,42 +2,42 @@
 - name: "install netdata build dependencies"
   apt:
     name: "{{ item }}"
-    state: present
+    state: "present"
   with_items:
-    - zlib1g-dev
-    - uuid-dev
-    - libmnl-dev
-    - gcc
-    - make
-    - git
-    - autoconf
-    - autoconf-archive
-    - autogen
-    - automake
-    - pkg-config
-    - curl
+    - "zlib1g-dev"
+    - "uuid-dev"
+    - "libmnl-dev"
+    - "gcc"
+    - "make"
+    - "git"
+    - "autoconf"
+    - "autoconf-archive"
+    - "autogen"
+    - "automake"
+    - "pkg-config"
+    - "curl"
   tags:
-    - monitoring
-    - packages
+    - "monitoring"
+    - "packages"
 
 - name: "clone the netdata git repository"
   git:
-    accept_hostkey: yes
-    repo: https://github.com/firehol/netdata.git
-    dest: /usr/local/src/netdata
-    update: yes
+    accept_hostkey: true
+    repo: "https://github.com/firehol/netdata.git"
+    dest: "/usr/local/src/netdata"
+    update: true
   tags:
-    - monitoring
-    - packages
+    - "monitoring"
+    - "packages"
 
 - name: "build and install netdata"
-  command: /usr/local/src/netdata/netdata-installer.sh --dont-wait
+  command: "/usr/local/src/netdata/netdata-installer.sh --dont-wait"
   args:
-    chdir: /usr/local/src/netdata
-    creates: /usr/sbin/netdata
+    chdir: "/usr/local/src/netdata"
+    creates: "/usr/sbin/netdata"
   tags:
-    - monitoring
-    - packages
+    - "monitoring"
+    - "packages"
 
 - name: "copy nginx files for metrics site"
   template:
@@ -47,18 +47,18 @@
     - "etc/nginx/sites-available/metrics"
     - "etc/nginx/htpasswd.d/metrics"
   tags:
-    - monitoring
-    - nginx
+    - "monitoring"
+    - "nginx"
   notify:
-    - reload nginx
+    - "reload nginx"
 
 - name: "enable nginx proxy config for metrics site"
   file:
     src: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}.conf"
     dest: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}.conf"
-    state: link
+    state: "link"
   tags:
-    - monitoring
-    - nginx
+    - "monitoring"
+    - "nginx"
   notify:
-    - reload nginx
+    - "reload nginx"

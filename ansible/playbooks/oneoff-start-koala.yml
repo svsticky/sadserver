@@ -1,12 +1,13 @@
 ---
 - hosts: all
+
   vars_files:
       - ../vars.yml
 
   tasks:
     - name: "ensure koala is running"
       service:
-        name: koala
-        enabled: yes
-        state: started
-      become: yes
+        name: "koala"
+        enabled: true
+        state: "started"
+      become: true

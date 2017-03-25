@@ -2,13 +2,13 @@
 - hosts: all
 
   vars_files:
-      - ../vars.yml
+      - "../vars.yml"
 
   vars_prompt:
-      - name: admin_to_remove
+      - name: "admin_to_remove"
         default: ""
         prompt: "Please enter the username to remove: (Ctrl-C to cancel)"
-        private: no
+        private: false
 
   tasks:
       - assert:
@@ -18,12 +18,13 @@
       - name: "remove admin"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} "admin:delete[{{ admin_to_remove}}]"
+        shell: 'eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} "admin:delete[{{ admin_to_remove}}]"'
         args:
-          chdir: /var/www/koala.{{ canonical_hostname }}
-          executable: /bin/bash
-        register: result
-        become: yes
-        become_user: koala
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+          executable: "/bin/bash"
+        register: "result"
+        become: true
+        become_user: "koala"
 
-      - debug: var=result.stdout_lines
+      - debug:
+          var: "result.stdout_lines"

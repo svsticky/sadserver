@@ -2,21 +2,21 @@
 - name: "remove help text from motd"
   file:
     path: "/etc/update-motd.d/{{ item }}"
-    state: absent
+    state: "absent"
   with_items:
     - "10-help-text"
     - "51-cloudguest"
 
 - name: "install toilet"
   apt:
-    pkg: toilet
-    state: present
+    pkg: "toilet"
+    state: "present"
 
 - name: "copy motd templates"
   template:
     src: "templates/etc/update-motd.d/{{ item }}.j2"
     dest: "/etc/update-motd.d/{{ item }}"
-    mode: 0755
+    mode: "0755"
   with_items:
     - "01-skyblue-header"
     - "02-playbook-revision"

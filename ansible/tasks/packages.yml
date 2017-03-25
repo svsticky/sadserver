@@ -2,35 +2,35 @@
 - name: "install common utilities"
   apt:
     pkg: "{{ item }}"
-    state: present
+    state: "present"
   with_items:
-    - aptitude
-    - htop
-    - unattended-upgrades
+    - "aptitude"
+    - "htop"
+    - "unattended-upgrades"
 
 - name: "install slacktee"
   get_url:
     url: "https://raw.githubusercontent.com/course-hero/slacktee/{{ slacktee.revision }}/slacktee.sh"
-    dest: /usr/local/bin/slacktee
-    mode: 0755
+    dest: "/usr/local/bin/slacktee"
+    mode: "0755"
     checksum: "{{ slacktee.checksum }}"
 
 - name: "update all packages"
   apt:
-    upgrade: yes
-    update_cache: yes
+    upgrade: "yes"
+    update_cache: "yes"
     cache_valid_time: 100
 
 - name: "configure unattended-upgrades and slacktee"
   template:
-    src: "{{ item }}.j2"
+    src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
   with_items:
-    - etc/apt/apt.conf.d/50unattended-upgrades
+    - "etc/apt/apt.conf.d/50unattended-upgrades"
 
 - name: "configure slacktee"
   template:
-    src: "{{ item }}"
+    src: "templates/{{ item }}"
     dest: "/{{ item }}"
   with_items:
-    - etc/slacktee.conf
+    - "etc/slacktee.conf"

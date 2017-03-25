@@ -3,149 +3,145 @@
 - block:
   - name: "ensure koala system user exists"
     user:
-      name: koala
-      state: present
-      system: yes
-      shell: /bin/bash
+      name: "koala"
+      state: "present"
+      system: true
+      shell: "/bin/bash"
     tags:
-      - ruby
-      - koala
+      - "ruby"
+      - "koala"
 
   - name: "ensure koala database user exists"
     mysql_user:
-      name: koala
+      name: "koala"
       password: "{{ lookup('password', 'credentials/mysql/koala length=64 chars=hexdigits') }}"
-      host: localhost
-      priv: koala.*:ALL/koala-development.*:ALL
+      host: "localhost"
+      priv: "koala.*:ALL/koala-development.*:ALL"
     tags:
-      - database
-      - koala
+      - "database"
+      - "koala"
 
   - name: "ensure clone location exists and is owned by koala"
     file:
-      path: /var/www/koala.{{ canonical_hostname }}
-      state: directory
-      owner: koala
-      group: koala
-      recurse: yes
+      path: "/var/www/koala.{{ canonical_hostname }}"
+      state: "directory"
+      owner: "koala"
+      group: "koala"
+      recurse: true
     tags:
-      - koala
+      - "koala"
 
   - name: "ensure ruby compilation dependencies are installed"
     apt:
       name: "{{ item }}"
-      state: present
+      state: "present"
     with_items:
-      - autoconf
-      - bison
-      - build-essential
-      - libssl-dev
-      - libyaml-dev
-      - libreadline-dev
-      - libncurses5-dev
-      - libffi-dev
-      - libgdbm3
-      - libgdbm-dev
-      - nodejs
-      - zlib1g-dev
-      - imagemagick
-      - libmariadb-client-lgpl-dev-compat
-      - acl
-      - git
+      - "autoconf"
+      - "bison"
+      - "build-essential"
+      - "libssl-dev"
+      - "libyaml-dev"
+      - "libreadline-dev"
+      - "libncurses5-dev"
+      - "libffi-dev"
+      - "libgdbm3"
+      - "libgdbm-dev"
+      - "nodejs"
+      - "zlib1g-dev"
+      - "imagemagick"
+      - "libmariadb-client-lgpl-dev-compat"
+      - "acl"
+      - "git"
     tags:
-      - packages
-      - ruby
-      - koala
+      - "packages"
+      - "ruby"
+      - "koala"
 
   - name: "ensure koala service file is present"
     template:
-      src: templates/etc/systemd/system/koala.service.j2
-      dest: /etc/systemd/system/koala.service
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+    with_items: "etc/systemd/system/koala.service"
     notify:
-      - systemctl daemon-reload
+      - "systemctl daemon-reload"
 
-  become: yes
-
+  become: true
 
 # As koala:
 - block:
   - name: "ensure rbenv is installed"
     git:
-      repo: https://github.com/rbenv/rbenv.git
-      dest: ~/.rbenv
+      repo: "https://github.com/rbenv/rbenv.git"
+      dest: "~/.rbenv"
     tags:
-      - ruby
-      - koala
+      - "ruby"
+      - "koala"
 
   - name: "ensure rbenv plugins are installed"
     git:
-      repo: '{{ item.url }}'
-      dest: ~/.rbenv/plugins/{{ item.name }}
+      repo: "{{ item.url }}"
+      dest: "~/.rbenv/plugins/{{ item.name }}"
     with_items:
       - { name: "ruby-build", url: "https://github.com/rbenv/ruby-build.git" }
       - { name: "rbenv-vars", url: "https://github.com/rbenv/rbenv-vars.git" }
       # NOTE: This will install the latest development versions, should we pin
       # a tag/commit/release?
     tags:
-      - ruby
-      - koala
+      - "ruby"
+      - "koala"
 
   - name: "ensure environment variables are set in .bashrc"
     blockinfile:
       dest: "/home/koala/.bashrc"
-      insertafter: EOF
-      owner: koala
-      group: koala
-      create: yes
+      insertafter: "EOF"
+      create: true
       block: |
         export PATH="$HOME/.rbenv/bin:$PATH"
         eval "$(rbenv init -)"
     tags:
-      - koala
-      - ruby
+      - "koala"
+      - "ruby"
 
   - name: "ensure ruby is installed, compile if necessary"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init - )"; rbenv install {{ koala.ruby_version }}
+    shell: 'eval "$(rbenv init - )"; rbenv install {{ koala.ruby_version }}'
     args:
-      executable: /bin/bash
-      creates: /home/koala/.rbenv/versions/{{ koala.ruby_version }}
+      executable: "/bin/bash"
+      creates: "/home/koala/.rbenv/versions/{{ koala.ruby_version }}"
     tags:
-      - ruby
-      - koala
+      - "ruby"
+      - "koala"
 
   - name: "ensure bundler is installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem install bundler
+    shell: 'eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem install bundler'
     args:
-      executable: /bin/bash
-      chdir: /var/www/koala.{{ canonical_hostname }}
-      creates: /home/koala/.rbenv/versions/{{ koala.ruby_version }}/lib/ruby/gems/{{ koala.ruby_version }}/gems/bundler-*
+      executable: "/bin/bash"
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+      creates: "/home/koala/.rbenv/versions/{{ koala.ruby_version }}/lib/ruby/gems/{{ koala.ruby_version }}/gems/bundler-*"
     tags:
-      - ruby
-      - koala
+      - "ruby"
+      - "koala"
 
   - name: "ensure koala has a ssh directory"
     file:
-      path: ~/.ssh
-      state: directory
+      path: "~/.ssh"
+      state: "directory"
     tags:
-      - koala
+      - "koala"
 
   - name: "ensure github's ssh key is known"
-    shell: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+    shell: "ssh-keyscan -H github.com >> ~/.ssh/known_hosts"
     args:
-      creates: ~/.ssh/known_hosts
+      creates: "~/.ssh/known_hosts"
 
   - name: "copy deploy keys for user koala"
     template:
       src: "templates/home/ansible/.ssh/{{ item.from }}.j2"
       dest: "/home/koala/.ssh/{{ item.to }}"
-      owner: koala
-      group: koala
-      mode: 0600
+      mode: "0600"
     with_items:
       - { from: "deploy_ed25519",     to: "id_ed25519" }
       - { from: "deploy_ed25519.pub", to: "id_ed25519.pub" }
@@ -153,121 +149,117 @@
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
-      dest: /var/www/koala.{{ canonical_hostname }}
+      dest: "/var/www/koala.{{ canonical_hostname }}"
       version: "{{ koala.git_ref }}"
     tags:
-      - koala
+      - "koala"
 
   - name: "ensure .rbenv-vars is present"
     template:
-      src: templates/var/www/koala/.rbenv-vars.j2
-      dest: /var/www/koala.{{ canonical_hostname }}/.rbenv-vars
-      owner: koala
-      group: koala
-      mode: 0700
+      src: "templates/var/www/koala/.rbenv-vars.j2"
+      dest: "/var/www/koala.{{ canonical_hostname }}/.rbenv-vars"
+      mode: "0700"
     tags:
-      - koala
+      - "koala"
 
   - name: "ensure gem dependencies are installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init - )"; bundle install
+    shell: 'eval "$(rbenv init - )"; bundle install'
     args:
-      chdir: /var/www/koala.{{ canonical_hostname }}
-    register: koala_gem_result
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "koala_gem_result"
     changed_when: koala_gem_result.stdout.find("Installing") != -1
     tags:
-      - koala
+      - "koala"
 
   - name: "ensure tmp directories exist"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: eval "$(rbenv init - )"; rake tmp:create
+    shell: 'eval "$(rbenv init - )"; rake tmp:create'
     args:
-      chdir: /var/www/koala.{{ canonical_hostname }}
-      creates: /var/www/koala.{{ canonical_hostname }}/tmp
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+      creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
     tags:
-      - koala
+      - "koala"
 
   - name: "ensure log directory exists"
     file:
-      dest: /var/www/koala.{{ canonical_hostname }}/log
-      state: directory
-      owner: koala
-      group: koala
-      mode: 0775
+      dest: "/var/www/koala.{{ canonical_hostname }}/log"
+      state: "directory"
+      mode: "0775"
     tags:
-      - koala
+      - "koala"
 
-  become: yes
-  become_user: koala
+  become: true
+  become_user: "koala"
 
 - name: "ensure koala's recurring services+timers are present"
   template:
-    src: templates/etc/systemd/system/{{ item }}.j2
-    dest: /etc/systemd/system/{{ item }}
+    src: "templates/etc/systemd/system/{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
   with_items:
-    - koala-check-study-year.service
-    - koala-check-study-year.timer
-    - koala-reindex-search.service
-    - koala-reindex-search.timer
+    - "koala-check-study-year.service"
+    - "koala-check-study-year.timer"
+    - "koala-reindex-search.service"
+    - "koala-reindex-search.timer"
   notify:
-    - systemctl daemon-reload
+    - "systemctl daemon-reload"
 
 - name: "ensure koala's timers are started and enabled"
   service:
     name: "{{ item }}"
-    enabled: yes
-    state: started
+    enabled: true
+    state: "started"
   with_items:
-    - koala-check-study-year.timer
-    - koala-reindex-search.timer
+    - "koala-check-study-year.timer"
+    - "koala-reindex-search.timer"
 
 - block:
   - name: "ensure webrick script is present in development"
     template:
-      src: templates/home/koala/webrick.sh.j2
-      dest: /home/koala/webrick.sh
-      mode: 0755
-      owner: koala
-      group: koala
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+      mode: "0755"
+      owner: "koala"
+      group: "koala"
+    with_items: "home/koala/webrick.sh"
 
   - name: "ensure webrick service file is present in development"
     template:
-      src: templates/etc/systemd/system/webrick.service.j2
-      dest: /etc/systemd/system/webrick.service
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+    with_items: "etc/systemd/system/webrick.service"
     notify:
-      - systemctl daemon-reload
+      - "systemctl daemon-reload"
 
   when: koala.server == "webrick"
   tags:
-    - koala
+    - "koala"
 
 - block:
   - name: "ensure unicorn script is present in production"
     template:
-      src: templates/home/koala/unicorn.sh.j2
-      dest: /home/koala/unicorn.sh
-      mode: 0755
-      owner: koala
-      group: koala
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+      mode: "0755"
+      owner: "koala"
+      group: "koala"
+    with_items: "home/koala/unicorn.sh"
 
   - name: "place koala's nginx configuration"
     template:
-      src: templates/etc/nginx/sites-available/koala.j2
-      dest: /etc/nginx/sites-available/koala.{{ canonical_hostname }}.conf
-      owner: root
-      group: root
+      src: "templates/etc/nginx/sites-available/koala.j2"
+      dest: "/etc/nginx/sites-available/koala.{{ canonical_hostname }}.conf"
 
   - name: "enable koala's nginx config"
     file:
-      src: /etc/nginx/sites-available/koala.{{ canonical_hostname }}.conf
-      dest: /etc/nginx/sites-enabled/koala.{{ canonical_hostname }}.conf
-      state: link
-      owner: root
-      group: root
-    notify: reload nginx
+      src: "/etc/nginx/sites-available/{{ item }}"
+      dest: "/etc/nginx/sites-enabled/{{ item }}"
+      state: "link"
+    with_items: "koala.{{ canonical_hostname }}.conf"
+    notify: "reload nginx"
 
   when: koala.server == "unicorn"
   tags:
-    - koala
+    - "koala"

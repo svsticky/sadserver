@@ -2,7 +2,7 @@
 - hosts: all
 
   vars_files:
-      - ../vars.yml
+      - "../vars.yml"
   vars_prompt:
       - name: "confirm"
         default: 'ABORT'
@@ -16,12 +16,13 @@
       - name: "create database"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} db:setup
+        shell: 'eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} db:setup'
         args:
-          chdir: /var/www/koala.{{ canonical_hostname }}
-          executable: /bin/bash
-        register: result
-        become: yes
-        become_user: koala
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+          executable: "/bin/bash"
+        register: "result"
+        become: true
+        become_user: "koala"
 
-      - debug: var=result.stdout_lines
+      - debug:
+          var: "result.stdout_lines"

@@ -2,22 +2,22 @@
 - hosts: all
 
   vars_files:
-      - ../vars.yml
+      - "../vars.yml"
 
   vars_prompt:
       - name: "new_admins_username"
         default: "admin@localhost"
         prompt: "Please enter the new admin user's email."
-        private: no
+        private: false
 
       - name: "new_admins_password"
         default: "sticky123"
         prompt: "Please enter the new admin user's password."
-        private: yes
+        private: true
 
       - name: "password_confirm"
         prompt: "Enter the password again for confirmation."
-        private: yes
+        private: true
 
   tasks:
       - assert:
@@ -27,12 +27,13 @@
       - name: "create admin"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} "admin:create[{{ new_admins_username }}, {{ new_admins_password }}]"
+        shell: 'eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} "admin:create[{{ new_admins_username }}, {{ new_admins_password }}]"'
         args:
-          chdir: /var/www/koala.{{ canonical_hostname }}
-          executable: /bin/bash
-        register: result
-        become: yes
-        become_user: koala
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+          executable: "/bin/bash"
+        register: "result"
+        become: true
+        become_user: "koala"
 
-      - debug: var=result.stdout_lines
+      - debug:
+          var: "result.stdout_lines"

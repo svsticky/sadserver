@@ -63,4 +63,4 @@ koala_git_ref: ansible_test
 koala_ruby_version: 2.3.0
 ```
 
- [whitecloud/ansible-styleguide]: https://github.com/whitecloud/ansible-styleguide)`
+ [whitecloud/ansible-styleguide]: https://github.com/whitecloud/ansible-styleguide

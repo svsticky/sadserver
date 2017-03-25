@@ -1,103 +1,103 @@
 ---
-canonical_hostname: dev.svsticky.nl
+canonical_hostname: "dev.svsticky.nl"
 
 users:
-  - name: arian
+  - name: "arian"
     admin: true
-    state: present
+    state: "present"
     keys:
-      - https://github.com/arianvp.keys
-  - name: laurens
+      - "https://github.com/arianvp.keys"
+  - name: "laurens"
     admin: true
-    state: present
+    state: "present"
     keys:
-      - https://github.com/duijf.keys
-  - name: maarten
+      - "https://github.com/duijf.keys"
+  - name: "maarten"
     admin: true
-    state: present
+    state: "present"
     keys:
-      - https://github.com/spasticVerbalizer.keys
-  - name: tom
+      - "https://github.com/spasticVerbalizer.keys"
+  - name: "tom"
     admin: true
-    state: present
+    state: "present"
     keys:
-      - https://github.com/tomwassenberg.keys
-  - name: yorick
+      - "https://github.com/tomwassenberg.keys"
+  - name: "yorick"
     admin: true
-    state: present
+    state: "present"
     keys:
-      - https://github.com/yorickvanzweeden.keys
+      - "https://github.com/yorickvanzweeden.keys"
 
-  - name: bestuur
+  - name: "bestuur"
     admin: false
-    state: present
+    state: "present"
     keys: []
-  - name: commit
+  - name: "commit"
     admin: false
-    state: present
+    state: "present"
     keys:
-      - https://github.com/cdfa.keys
-      - https://github.com/DatDutchDude.keys
-      - https://github.com/emielvanrijn.keys
-      - https://github.com/GlennStewart125.keys
-      - https://github.com/M8eld.keys
-      - https://github.com/spasticVerbalizer.keys
-      - https://github.com/yorickvanzweeden.keys
-  - name: dgdarc
+      - "https://github.com/cdfa.keys"
+      - "https://github.com/DatDutchDude.keys"
+      - "https://github.com/emielvanrijn.keys"
+      - "https://github.com/GlennStewart125.keys"
+      - "https://github.com/M8eld.keys"
+      - "https://github.com/spasticVerbalizer.keys"
+      - "https://github.com/yorickvanzweeden.keys"
+  - name: "dgdarc"
     admin: false
-    state: present
+    state: "present"
     keys: []
-  - name: indievelopment
+  - name: "indievelopment"
     admin: false
-    state: present
+    state: "present"
     keys: []
-  - name: sodi
+  - name: "sodi"
     admin: false
-    state: present
+    state: "present"
     keys:
-      - https://github.com/emielvanrijn.keys
-      - https://github.com/rcdewit.keys
-      - https://github.com/yorickvanzweeden.keys
-  - name: stichting
+      - "https://github.com/emielvanrijn.keys"
+      - "https://github.com/rcdewit.keys"
+      - "https://github.com/yorickvanzweeden.keys"
+  - name: "stichting"
     admin: false
-    state: present
+    state: "present"
     keys: []
-  - name: studytrip
+  - name: "studytrip"
     admin: false
-    state: present
+    state: "present"
     keys:
-      - https://github.com/rcdewit.keys
-      - https://github.com/yorickvanzweeden.keys
-  - name: symposium
+      - "https://github.com/rcdewit.keys"
+      - "https://github.com/yorickvanzweeden.keys"
+  - name: "symposium"
     admin: false
-    state: present
+    state: "present"
     keys:
-      - https://github.com/DatDutchDude.keys
-      - https://github.com/emielvanrijn.keys
-  - name: wintersport
+      - "https://github.com/DatDutchDude.keys"
+      - "https://github.com/emielvanrijn.keys"
+  - name: "wintersport"
     admin: false
-    state: present
+    state: "present"
     keys: []
 
 unattended_upgrades:
-  security: True
-  all: False
+  security: true
+  all: false
 
 fail2ban:
   loglevel: 3
-  ignoreip: 127.0.0.1/8
+  ignoreip: "127.0.0.1/8"
   bantime: 600
   maxretry: 3
 
-  destemail: root@localhost
-  mta: sendmail
-  banaction: iptables-multiport
+  destemail: "root@localhost"
+  mta: "sendmail"
+  banaction: "iptables-multiport"
 
   services:
-    - name: sshd
-      port: ssh
-      filter: sshd
-      logpath: /var/log/auth.log
+    - name: "sshd"
+      port: "ssh"
+      filter: "sshd"
+      logpath: "/var/log/auth.log"
 
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 15
@@ -185,11 +185,11 @@ websites:
     alternative_names: []
 
 koala:
-  environment: production
-  server: unicorn # or webrick
-  git_ref: development # Should be master, when in production
-  ruby_version: 2.3.0
+  environment: "production"
+  server: "unicorn" # or webrick
+  git_ref: "development" # Should be master, when in production
+  ruby_version: "2.3.0"
 
 slacktee:
-  revision: 2dd488b93fa13d305d27c1c820641e600845710e
-  checksum: sha256:b59522b40de167e5c88ddf09f5d02560759902fc503e0bd3cea5c1fa45b780df
+  revision: "2dd488b93fa13d305d27c1c820641e600845710e"
+  checksum: "sha256:b59522b40de167e5c88ddf09f5d02560759902fc503e0bd3cea5c1fa45b780df"

@@ -3,32 +3,32 @@
 - name: "install pip, virtualenv and libxml"
   apt:
     name: "{{ item }}"
-    state: present
+    state: "present"
   with_items:
-    - python-pip
-    - virtualenv
-    - libxml++2.6-dev
-    - libxslt1-dev
+    - "python-pip"
+    - "virtualenv"
+    - "libxml++2.6-dev"
+    - "libxslt1-dev"
 
-- name: "ensure git directory exists"
-  file:
-    path: /home/ansible/git
-    state: directory
-  become: false
+- block:
+  - name: "ensure git directory exists"
+    file:
+      path: "/home/ansible/git"
+      state: "directory"
 
-- name: "clone the studystatus repo"
-  git:
-    repo: ssh://git@github.com/svsticky/studystatus.git
-    accept_hostkey: yes
-    dest: /home/ansible/git/studystatus
-    key_file: /home/ansible/.ssh/deploy_ed25519
+  - name: "clone the studystatus repo"
+    git:
+      repo: "ssh://git@github.com/svsticky/studystatus.git"
+      accept_hostkey: true
+      dest: "/home/ansible/git/studystatus"
+      key_file: "/home/ansible/.ssh/deploy_ed25519"
   become: false
 
 - name: "install studystatus dependencies"
   pip:
-    requirements: /home/ansible/git/studystatus/requirements.txt
+    requirements: "/home/ansible/git/studystatus/requirements.txt"
 
 - name: "install the studystatus package and wrapper"
   make:
-    chdir: /home/ansible/git/studystatus
-    target: install
+    chdir: "/home/ansible/git/studystatus"
+    target: "install"

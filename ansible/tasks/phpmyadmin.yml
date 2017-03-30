@@ -15,6 +15,7 @@
      git:
        repo: "https://github.com/phpmyadmin/phpmyadmin.git"
        dest: "/var/www/phpmyadmin"
+       depth: 1
        refspec: "STABLE"
 
    - name: "place phpmyadmin config.inc.php"

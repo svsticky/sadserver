@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Slack reminder sbout running studystatus
+
+[Service]
+Type=simple
+User=koala
+Group=koala
+ExecStart=/bin/sh -c "echo \"This is a weekly reminder to run *studystatus* (_playbooks/oneoff-run-studystatus.yml_).\" | /usr/local/bin/slacktee --plain-text --username 'Studystatus reminder' --icon ':memo:' --attachment '#46c4ff'"

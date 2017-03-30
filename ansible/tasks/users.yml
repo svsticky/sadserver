@@ -44,12 +44,22 @@
   with_items:
     - "{{ users }}"
 
-- name: "set users keys"
+- name: "set users' keys"
   authorized_key:
     user: "{{ item.0.name }}"
-    key: "{{ item.1 }}"
+    key: "{{ item.1.path }}"
     state: "{{ item.0.state }}"
-  when: item.0.state == 'present'
+  when: item.0.state == 'present' and item.1.state == 'present'
+  with_subelements:
+    - "{{ users }}"
+    - "keys"
+
+- name: "remove disabled keys from users"
+  authorized_key:
+    user: "{{ item.0.name }}"
+    key: "{{ item.1.path }}"
+    state: "absent"
+  when: item.0.state == 'present' and item.1.state == 'absent'
   with_subelements:
     - "{{ users }}"
     - "keys"
@@ -57,9 +67,19 @@
 - name: "add ssh keys of admin users to ansible user"
   authorized_key:
     user: "ansible"
-    key: "{{ item.1 }}"
+    key: "{{ item.1.path }}"
     state: "{{ item.0.state }}"
-  when: item.0.admin == true and item.0.state == 'present'
+  when: item.0.admin == true and item.0.state == 'present' and item.1.state == 'present'
+  with_subelements:
+    - "{{ users }}"
+    - "keys"
+
+- name: "remove disabled keys of admin users from ansible user"
+  authorized_key:
+    user: "ansible"
+    key: "{{ item.1.path }}"
+    state: "absent"
+  when: item.0.admin == true and item.0.state == 'present' and item.1.state == 'absent'
   with_subelements:
     - "{{ users }}"
     - "keys"

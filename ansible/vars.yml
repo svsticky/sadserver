@@ -6,47 +6,47 @@ users:
     admin: true
     state: "present"
     keys:
-      - "https://github.com/arianvp.keys"
+      - { path: "https://github.com/arianvp.keys", state: "present" }
   - name: "laurens"
     admin: true
     state: "present"
     keys:
-      - "https://github.com/duijf.keys"
+      - { path: "https://github.com/duijf.keys", state: "present" }
   - name: "maarten"
     admin: true
     state: "present"
     keys:
-      - "https://github.com/spasticVerbalizer.keys"
+      - { path: "https://github.com/spasticVerbalizer.keys", state: "present" }
   - name: "tom"
     admin: true
     state: "present"
     keys:
-      - "https://github.com/tomwassenberg.keys"
+      - { path: "https://github.com/tomwassenberg.keys", state: "present" }
   - name: "yorick"
     admin: true
     state: "present"
     keys:
-      - "https://github.com/yorickvanzweeden.keys"
+      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
 
   - name: "bestuur"
     admin: false
     state: "present"
     keys:
-      - "https://github.com/PabloEnriqueIglesias.keys"
-      - "https://github.com/Sithias.keys"
-      - "https://github.com/yorickvanzweeden.keys"
-      - "https://github.com/RobinSikkens.keys"
+      - { path: "https://github.com/PabloEnriqueIglesias.keys", state: "present" }
+      - { path: "https://github.com/Sithias.keys", state: "present" }
+      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
+      - { path: "https://github.com/RobinSikkens.keys", state: "present" }
   - name: "commit"
     admin: false
     state: "present"
     keys:
-      - "https://github.com/cdfa.keys"
-      - "https://github.com/DatDutchDude.keys"
-      - "https://github.com/emielvanrijn.keys"
-      - "https://github.com/GlennStewart125.keys"
-      - "https://github.com/M8eld.keys"
-      - "https://github.com/spasticVerbalizer.keys"
-      - "https://github.com/yorickvanzweeden.keys"
+      - { path: "https://github.com/cdfa.keys", state: "present" }
+      - { path: "https://github.com/DatDutchDude.keys", state: "present" }
+      - { path: "https://github.com/emielvanrijn.keys", state: "present" }
+      - { path: "https://github.com/GlennStewart125.keys", state: "present" }
+      - { path: "https://github.com/M8eld.keys", state: "present" }
+      - { path: "https://github.com/spasticVerbalizer.keys", state: "present" }
+      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
   - name: "dgdarc"
     admin: false
     state: "present"
@@ -55,15 +55,15 @@ users:
     admin: false
     state: "present"
     keys:
-      - "{{ lookup('file', 'credentials/ssh/indievelopment/geert.pub') }}"
-      - "{{ lookup('file', 'credentials/ssh/indievelopment/marc.pub') }}"
+      - { path: "{{ lookup('file', 'credentials/ssh/indievelopment/geert.pub') }}", state: "present" }
+      - { path: "{{ lookup('file', 'credentials/ssh/indievelopment/marc.pub') }}", state: "present" }
   - name: "sodi"
     admin: false
     state: "present"
     keys:
-      - "https://github.com/emielvanrijn.keys"
-      - "https://github.com/rcdewit.keys"
-      - "https://github.com/yorickvanzweeden.keys"
+      - { path: "https://github.com/emielvanrijn.keys", state: "present" }
+      - { path: "https://github.com/rcdewit.keys", state: "present" }
+      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
   - name: "stichting"
     admin: false
     state: "present"
@@ -72,14 +72,14 @@ users:
     admin: false
     state: "present"
     keys:
-      - "https://github.com/rcdewit.keys"
-      - "https://github.com/yorickvanzweeden.keys"
+      - { path: "https://github.com/rcdewit.keys", state: "present" }
+      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
   - name: "symposium"
     admin: false
     state: "present"
     keys:
-      - "https://github.com/DatDutchDude.keys"
-      - "https://github.com/emielvanrijn.keys"
+      - { path: "https://github.com/DatDutchDude.keys", state: "present" }
+      - { path: "https://github.com/emielvanrijn.keys", state: "present" }
   - name: "wintersport"
     admin: false
     state: "present"

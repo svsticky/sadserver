@@ -10,7 +10,7 @@ server {
   ssl_certificate_key  /etc/letsencrypt/live/phpmyadmin.{{ canonical_hostname }}/privkey.pem;
 
   root /var/www/phpmyadmin;
-  index index.html index.htm index.php;
+  index index.php index.html index.htm;
 
   include includes/security-headers.conf;
   include includes/php-parameters.conf;

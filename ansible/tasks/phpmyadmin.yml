@@ -1,47 +1,42 @@
 ---
-- block:
-   - name: "install phpmyadmin dependencies"
-     apt:
-       name: "{{ item }}"
-       state: present
-     with_items:
-       - "php7.0-zip"
-       - "php7.0-xml"
-       - "php7.0-mbstring"
-       - "php7.0-mysqli"
-       - "composer"
+- name: "install phpmyadmin dependencies"
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "php7.0-zip"
+    - "php7.0-xml"
+    - "php7.0-mbstring"
+    - "php7.0-mysqli"
+    - "composer"
 
-   - name: "clone phpmyadmin repository"
-     git:
-       repo: "https://github.com/phpmyadmin/phpmyadmin.git"
-       dest: "/var/www/phpmyadmin"
-       depth: 1
-       refspec: "STABLE"
+- name: "clone phpmyadmin repository"
+  git:
+    repo: "https://github.com/phpmyadmin/phpmyadmin.git"
+    dest: "/var/www/phpmyadmin"
+    depth: 1
+    refspec: "STABLE"
 
-   - name: "place phpmyadmin config.inc.php"
-     template:
-       src: "templates/var/www/phpmyadmin/config.inc.php.j2"
-       dest: "/var/www/phpmyadmin/config.inc.php"
-       owner: "root"
-       group: "root"
+- name: "place phpmyadmin config.inc.php"
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/{{ item }}"
+  with_items: "var/www/phpmyadmin/config.inc.php"
 
-   - name: "install phpmyadmin composer dependencies"
-     composer:
-       working_dir: "/var/www/phpmyadmin"
-       no_dev: true
-       command: "update"
+- name: "install phpmyadmin composer dependencies"
+  composer:
+    working_dir: "/var/www/phpmyadmin"
+    no_dev: true
+    command: "update"
 
-   - name: "place phpmyadmin nginx config"
-     template:
-       src: "templates/etc/nginx/sites-available/phpmyadmin.conf.j2"
-       dest: "/etc/nginx/sites-available/phpmyadmin.conf"
-       owner: "root"
-       group: "root"
+- name: "place phpmyadmin nginx config"
+  template:
+    src: "templates/etc/nginx/sites-available/phpmyadmin.conf.j2"
+    dest: "/etc/nginx/sites-available/phpmyadmin.conf"
 
-   - name: "symlink nginx config"
-     file:
-       src: "/etc/nginx/sites-available/phpmyadmin.conf"
-       dest: "/etc/nginx/sites-enabled/phpmyadmin.conf"
-       state: link
-
-  become: true
+- name: "symlink phpmyadmin nginx config"
+  file:
+    src: "/etc/nginx/sites-available/{{ item }}"
+    dest: "/etc/nginx/sites-enabled/{{ item }}"
+    state: link
+  with_items: "phpmyadmin.conf"

@@ -9,19 +9,6 @@
     path: "/var/www"
     state: "directory"
 
-- name: "add sftp jail for committee users"
-  blockinfile:
-    dest: "/etc/ssh/sshd_config"
-    state: "present"
-    block: |
-      Subsystem committee internal-sftp
-
-      Match Group committee
-        ChrootDirectory %h
-        ForceCommand internal-sftp
-        AllowTcpForwarding no
-  notify: "restart ssh"
-
 - name: "create users"
   user:
     name: "{{ item.name }}"
@@ -29,7 +16,6 @@
     state: "{{ item.state }}"
   with_items:
     - "{{ users }}"
-
 
 - name: "set shell for admins"
   user:
@@ -39,7 +25,6 @@
   when: "{{ item.admin }}"
   with_items:
     - "{{ users }}"
-  
 
 - name: "move committee users"
   user:

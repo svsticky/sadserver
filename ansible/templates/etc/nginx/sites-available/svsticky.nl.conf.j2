@@ -29,6 +29,10 @@ server {
   include includes/security-headers.conf;
   include includes/php-parameters.conf;
 
+  location ~* /.git/ {
+    deny all;
+  }
+
   # QR-Code naar http://stickyutrecht.nl/arduino staat op de Stickyduino's
   location = /arduino {
     return 301 http://herlaar.net/b3it/;

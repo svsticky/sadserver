@@ -62,4 +62,3 @@
     - include: "tasks/studystatus.yml"
     - include: "tasks/backups.yml"
     - include: "tasks/monitoring.yml"
-...

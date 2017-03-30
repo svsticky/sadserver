@@ -39,15 +39,10 @@
     dest: "/etc/nginx/sites-enabled/default.conf"
     state: "link"
 
-- name: "start and enable nginx"
-  service:
-    name: "nginx"
-    enabled: true
-    state: "started"
-
-# We need this, because LetsEncrypt depends
-# on the default config
-- name: "reload nginx"
+# This enables the nginx service, and reloads
+# or starts it if necessary. Let's Encrypt depends
+# on this.
+- name: "enable, start and reload/start nginx"
   service:
     name: "nginx"
     enabled: true
@@ -110,7 +105,9 @@
   # --domain adds main hostname of a website as CN and SAN, and all alternative hostnames as SAN's
   command: >
     certbot certonly
+    {% if staging_certificates and (item.real_certificate is not defined or item.real_certificate == false) %}
     --staging
+    {% endif %}
     --non-interactive
     --agree-tos
     --email "itcrowd@svsticky.nl"

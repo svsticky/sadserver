@@ -170,7 +170,7 @@ websites:
       - "studiereis.{{ canonical_hostname }}"
 
   - name: "{{ canonical_hostname }}"
-    user: "bestuur"
+    user: "commit"
     database: "svsticky"
     custom_config: true
     alternative_names:

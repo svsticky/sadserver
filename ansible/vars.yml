@@ -102,6 +102,10 @@ fail2ban:
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 15
 
+# Defines the default of requesting staging certificates, or not.
+# Can be disabled on a per-website basis by adding `real_certificate`
+staging_certificates: true
+
 websites:
 # Domains that are commented are done so
 # because of DNS, uncomment when in production
@@ -128,6 +132,7 @@ websites:
 
   - name: "koala.{{ canonical_hostname }}"
     custom_config: true
+    real_certificate: true
     alternative_names:
       - "intro.{{ canonical_hostname }}"
       - "leden.{{ canonical_hostname }}"

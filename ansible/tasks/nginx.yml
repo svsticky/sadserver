@@ -104,7 +104,9 @@
   # --domain adds main hostname of a website as CN and SAN, and all alternative hostnames as SAN's
   command: >
     certbot certonly
+    {% if staging_certificates and (item.real_certificate is not defined or item.real_certificate == false) %}
     --staging
+    {% endif %}
     --non-interactive
     --agree-tos
     --email "itcrowd@svsticky.nl"

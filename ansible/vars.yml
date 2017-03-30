@@ -189,9 +189,9 @@ websites:
     user: "wintersport"
     alternative_names: []
 
-  - name: phpmyadmin
+  - name: "phpmyadmin.{{ canonical_hostname }}"
     custom_config: true
-    database: true
+    database: "phpmyadmin"
     alternative_names: []
 
 koala:

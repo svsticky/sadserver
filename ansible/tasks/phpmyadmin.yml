@@ -1,17 +1,33 @@
 ---
 - block:
-   - name: "install phpmyadmin package"
+   - name: "install phpmyadmin dependencies"
      apt:
-       name: "phpmyadmin"
-       state: latest
+       name: "{{ item }}"
+       state: present
+     with_items:
+       - "php7.0-zip"
+       - "php7.0-mbstring"
+       - "php7.0-mysqli"
+       - "composer"
 
-   - name: "symlink phpmyadmin directory"
-     file:
-       src: /usr/share/phpmyadmin
-       dest: "/var/www/phpmyadmin.{{ canonical_hostname }}"
-       state: link
-       owner: root
-       group: www-data
+   - name: "clone phpmyadmin repository"
+     git:
+       repo: "https://github.com/phpmyadmin/phpmyadmin.git"
+       dest: "/var/www/phpmyadmin"
+       refspec: "STABLE"
+
+   - name: "place phpmyadmin config.inc.php"
+     template:
+       src: "templates/var/www/phpmyadmin/config.inc.php.j2"
+       dest: "/var/www/phpmyadmin/config.inc.php"
+       owner: "root"
+       group: "root"
+
+   - name: "install phpmyadmin composer dependencies"
+     composer:
+       working_dir: "/var/www/phpmyadmin"
+       no_dev: true
+       command: "update"
 
    - name: "place phpmyadmin nginx config"
      template:

@@ -1,0 +1,14 @@
+<?php
+// {{ ansible_managed }}
+$cfg['blowfish_secret'] = '{{ lookup('password', 'credentials/phpmyadmin/blowfish_secret chars=hexdigits length=128') }}'
+
+$cfg['Servers'][1]['controluser'] = 'phpmyadmin';
+#cfg['Servers'][1]['controlpass'] = '{{ lookup('password', 'credentials/mysql/phpmyadmin chars=hexdigit length=65') }}';
+
+$cfg['UploadDir'] = '';
+$cfg['SaveDir'] = '';
+$cfg['BZipDump'] = false;
+$cfg['ZeroConf'] = false;
+$cfg['DefaultLang'] = 'en';
+$cfg['ServerDefault'] = 1;
+?>

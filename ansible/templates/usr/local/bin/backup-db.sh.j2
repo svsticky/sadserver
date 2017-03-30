@@ -5,16 +5,14 @@ set -efu -o pipefail
 
 DB_USER="root"
 DB_PASS="{{ lookup('password', 'credentials/mysql/root') }}"
-TMPDIR=~/db-backup-tmp
+TMPDIR=/tmp
 FILE="databases-$(date +'%Y-%m-%d').sql.gz"
 HASH=sha256 # Choose from md5/sha1/sha224/sha256/sha384/sha512
 S3PATH="s3://sticky-automatic-backups/websites/databases"
 
-mkdir ${TMPDIR}
 mysqldump --user=${DB_USER} --password=${DB_PASS} --all-databases | gzip -9 > ${TMPDIR}/${FILE}
 ${HASH}sum ${TMPDIR}/$FILE > ${TMPDIR}/${FILE}.${HASH}
 aws s3 cp ${TMPDIR}/ ${S3PATH}/ --recursive
 rm ${TMPDIR}/${FILE}
 aws s3 cp ${S3PATH}/${FILE} ${TMPDIR}/${FILE}
 ${HASH}sum --check ${TMPDIR}/${FILE}.${HASH}
-rm -r ${TMPDIR}

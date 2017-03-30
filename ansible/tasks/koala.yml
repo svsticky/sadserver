@@ -203,6 +203,7 @@
     - "koala-check-study-year.timer"
     - "koala-reindex-search.service"
     - "koala-reindex-search.timer"
+    - "koala-rake-fail@.service"
   notify:
     - "systemctl daemon-reload"
 

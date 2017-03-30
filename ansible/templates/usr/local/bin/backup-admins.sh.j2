@@ -3,16 +3,14 @@
 
 set -efu -o pipefail
 
-TMPDIR=~/admins-backup-tmp
+TMPDIR=/tmp
 FILE="admins-$(date +'%Y-%m-%d').tar.gz"
 HASH=sha256 # Choose from md5/sha1/sha224/sha256/sha384/sha512
 S3PATH="s3://sticky-automatic-backups/admins"
 
-mkdir ${TMPDIR}
-tar cvf - /home | gzip -9 > ${TMPDIR}/${FILE}
+tar --exclude='/home/koala/.rbenv' --exclude='/home/koala/.bundle' -cvf - /home | gzip -9 > ${TMPDIR}/${FILE}
 ${HASH}sum ${TMPDIR}/${FILE} > ${TMPDIR}/${FILE}.${HASH}
 aws s3 cp ${TMPDIR}/ ${S3PATH}/ --recursive
 rm ${TMPDIR}/${FILE}
 aws s3 cp ${S3PATH}/${FILE} ${TMPDIR}/${FILE}
 ${HASH}sum --check ${TMPDIR}/${FILE}.${HASH}
-rm -r ${TMPDIR}

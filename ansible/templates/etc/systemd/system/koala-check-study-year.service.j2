@@ -2,9 +2,12 @@
 
 [Unit]
 Description=Check for creation of new study year for Constipated Koala
+OnFailure=koala-rake-fail@Check\x20for\x20creation\x20of\x20new\x20study\x20year.service
 
 [Service]
 Type=simple
 User=koala
-ExecStart=/home/koala/.rbenv/shims/bundle exec rake RAILS_ENV={{ koala.environment }} admin:start_year
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
+ExecStart=/home/koala/.rbenv/shims/bundle exec rake RAILS_ENV={{ koala.environment }} admin:start_year
+
+# No notification to Slack on success, because this has to run every night

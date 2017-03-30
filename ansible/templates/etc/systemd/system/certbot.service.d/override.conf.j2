@@ -1,4 +1,8 @@
 # {{ ansible_managed }}
 
+[Unit]
+OnFailure=certbot-fail.service
+
 [Service]
-ExecStart=/usr/bin/certbot renew --quiet --agree-tos --post-hook="/bin/systemctl reload nginx.service"
+ExecStartPre=/usr/bin/certbot renew --quiet --agree-tos --post-hook="/bin/systemctl reload nginx.service"
+ExecStart=/bin/sh -c "echo \"*Renewal check of certificates completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Certbot service' --icon ':lock_with_ink_pen:' --attachment 'good'"

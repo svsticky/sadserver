@@ -92,6 +92,7 @@
   with_items:
     - "etc/systemd/system/certbot.service.d/override.conf"
     - "etc/systemd/system/certbot.timer.d/override.conf"
+    - "etc/systemd/system/certbot-fail.service"
   notify: "systemctl daemon-reload"
 
 - name: "request certificates"

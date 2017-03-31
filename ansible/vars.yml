@@ -55,8 +55,8 @@ users:
     admin: false
     state: "present"
     keys:
-      - "{{ lookup('password', 'credentials/ssh/indievelopment/geert.pub') }}"
-      - "{{ lookup('password', 'credentials/ssh/indievelopment/marc.pub') }}"
+      - "{{ lookup('file', 'credentials/ssh/indievelopment/geert.pub') }}"
+      - "{{ lookup('file', 'credentials/ssh/indievelopment/marc.pub') }}"
   - name: "sodi"
     admin: false
     state: "present"

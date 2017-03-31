@@ -31,7 +31,11 @@ users:
   - name: "bestuur"
     admin: false
     state: "present"
-    keys: []
+    keys:
+      - "https://github.com/PabloEnriqueIglesias.keys"
+      - "https://github.com/Sithias.keys"
+      - "https://github.com/yorickvanzweeden.keys"
+      - "https://github.com/RobinSikkens.keys"
   - name: "commit"
     admin: false
     state: "present"
@@ -50,7 +54,9 @@ users:
   - name: "indievelopment"
     admin: false
     state: "present"
-    keys: []
+    keys:
+      - "{{ lookup('password', 'credentials/ssh/indievelopment/geert.pub') }}"
+      - "{{ lookup('password', 'credentials/ssh/indievelopment/marc.pub') }}"
   - name: "sodi"
     admin: false
     state: "present"

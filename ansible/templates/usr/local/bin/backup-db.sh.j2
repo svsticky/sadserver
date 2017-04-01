@@ -4,7 +4,7 @@
 set -efu -o pipefail
 
 DB_USER="root"
-DB_PASS="{{ lookup('password', 'credentials/mysql/root') }}"
+DB_PASS="{{ lookup('file', 'credentials/mysql/root') }}"
 TMPDIR=/tmp
 FILE="databases-$(date +'%Y-%m-%d').sql.gz"
 HASH=sha256 # Choose from md5/sha1/sha224/sha256/sha384/sha512

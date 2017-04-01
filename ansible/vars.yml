@@ -2,6 +2,8 @@
 canonical_hostname: "dev.svsticky.nl"
 
 users:
+# For keys, do not use paths to GitHub or keyfiles with >1 key, since that
+# breaks the deletion of a specific key.
   - name: "arian"
     admin: true
     state: "present"

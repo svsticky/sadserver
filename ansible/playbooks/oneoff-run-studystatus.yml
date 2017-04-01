@@ -44,7 +44,7 @@
         become_user: "koala"
 
       - name: "get affected members"
-        command: "mysql -u koala -p{{ lookup('password', '../credentials/mysql/koala') }} -NBe \"{{ item }}\""
+        command: "mysql -u koala -p{{ lookup('file', '../credentials/mysql/koala') }} -NBe \"{{ item }}\""
         with_items: "USE koala; SELECT CONCAT_WS(' ',`members`.`first_name`,`members`.`infix`,`members`.`last_name`) FROM `educations` JOIN `members` ON `educations`.`member_id`=`members`.`id` WHERE `educations`.`updated_at` > DATE_SUB(NOW(),INTERVAL 1 HOUR) ORDER BY `members`.`last_name` DESC;"
         register: affected_members
         changed_when: false

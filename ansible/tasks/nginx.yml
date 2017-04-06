@@ -144,6 +144,7 @@
   with_items:
     - "security-headers.conf"
     - "php-parameters.conf"
+  notify: "reload nginx"
 
 - name: "copy nginx configurations for regular websites"
   template:
@@ -151,12 +152,14 @@
     dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
+  notify: "reload nginx"
 
 - name: "copy nginx configuration for savadaba.nl"
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
   with_items: "etc/nginx/sites-available/savadaba.nl.conf"
+  notify: "reload nginx"
 
 - name: "enable regular nginx configurations"
   file:

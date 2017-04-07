@@ -100,7 +100,6 @@
   # --non-interactive makes sure command never waits for user input
   # --keep-until-expiring makes sure cert only gets renewed when cert is actually close to expiring
   # --expand enables adding more SAN's to the same cert lineage later on
-  # --must-staple sets flag in cert for mandatory stapled OCSP response
   # --webroot sets domain validation method
   # --domain adds main hostname of a website as CN and SAN, and all alternative hostnames as SAN's
   command: >
@@ -113,7 +112,6 @@
     --email "itcrowd@svsticky.nl"
     --keep-until-expiring
     --expand
-    --must-staple
     --webroot
     --webroot-path /var/www/acme-challenges
     --domain {{ item.name }}

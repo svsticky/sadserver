@@ -138,7 +138,6 @@ websites:
 
   - name: "koala.{{ canonical_hostname }}"
     custom_config: true
-    real_certificate: true
     alternative_names:
       - "intro.{{ canonical_hostname }}"
       - "leden.{{ canonical_hostname }}"

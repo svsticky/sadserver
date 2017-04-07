@@ -51,14 +51,14 @@ cp -r /root/.ssh /home/ansible/
 chown ansible:ansible -R /home/ansible/.ssh
 EOC
 
-echo "==> Sucessfully bootstrapped host"
+echo "==> Successfully bootstrapped host"
 
 cat << EOM
 
 Now edit the hosts file to contain ${SSH_HOST} and run the main playbook
 by executing:
 
-  ansible-playbook -i hosts main.yml --ask-become-pass
+  ./scripts/run-playbook.sh main.yml
 
 It will attempt to run the main playbook under the ansible user we've just
 created. The user ansible has the password ${PASSWORD}

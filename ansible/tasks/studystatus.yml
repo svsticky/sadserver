@@ -22,13 +22,16 @@
       accept_hostkey: true
       dest: "/home/ansible/git/studystatus"
       key_file: "/home/ansible/.ssh/deploy_ed25519"
+    register: "clone_studystatus"
   become: false
 
 - name: "install studystatus dependencies"
   pip:
     requirements: "/home/ansible/git/studystatus/requirements.txt"
+  when: clone_studystatus.changed
 
 - name: "install the studystatus package and wrapper"
   make:
     chdir: "/home/ansible/git/studystatus"
     target: "install"
+  when: clone_studystatus.changed

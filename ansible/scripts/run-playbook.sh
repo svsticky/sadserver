@@ -12,5 +12,5 @@ ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "${GIT_ROOT}/ansible/hosts" --as
 if [ "$?" = "0" ]; then
   echo "*Deployment of playbook \"_$1_\" successfully completed*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | slacktee --icon ':ok_hand:' --attachment 'good' > /dev/null
 else
-  echo "*Deployment of playbook \"_$1_\" FAILED!*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | slacktee --icon ':exclamation:' --attachment 'danger' > /dev/null
+  echo "@it-crowd-commissie *Deployment of playbook \"_$1_\" FAILED!*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | slacktee --icon ':exclamation:' --attachment 'danger' > /dev/null
 fi

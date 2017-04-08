@@ -201,6 +201,8 @@
   with_items:
     - "koala-check-study-year.service"
     - "koala-check-study-year.timer"
+    - "koala-clean-users-table.service"
+    - "koala-clean-users-table.timer"
     - "koala-reindex-search.service"
     - "koala-reindex-search.timer"
     - "koala-rake-fail@.service"
@@ -214,6 +216,7 @@
     state: "started"
   with_items:
     - "koala-check-study-year.timer"
+    - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
 
 - block:

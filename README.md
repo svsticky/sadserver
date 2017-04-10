@@ -18,7 +18,7 @@ This repository contains Ansible playbooks and relevant documentation for the
 IT infrastructure at Study Association Sticky.
 
 For help and questions, contact the relevant committee -- at the time of
-writing, this is the [IT Crowd](mailto:helloit@svsticky.nl).
+writing, this is the [IT Crowd].
 
 Godspeed!
 
@@ -27,7 +27,7 @@ Godspeed!
 The code/scripts in this repository depends on the following software:
 
  - Ansible ~> 2.2
- - [slacktee](https://github.com/course-hero/slacktee) (no config necessary)
+ - [slacktee] (no config necessary)
  - Any POSIX compatible shell
 
 ## Ansible playbook
@@ -41,10 +41,13 @@ The ansible directory contains three important files:
  - `ansible/scripts/bootstrap-new-host.sh` -- an `sh` script that can be used
    to bootstrap a vanilla Ubuntu 16.04 system so that it's ready to run our
    main playbook. Run with your favourite shell.
- - `hosts` -- an [Ansible inventory file][inventory] file which contains a
-   specification of all of our hosts.
+ - `ansible/hosts` -- an [Ansible inventory file][inventory] file which
+    contains a specification of all of our hosts.
  - `ansible/main.yml` -- the main playbook. It can be run with the command
    `ansible-playbook -i hosts main.yml`.
+ - `ansible/scripts/run-playbook.sh` -- the `sh` script that should be used to run
+    playbooks on our hosts. Posts progress notifications to our Slack channel.
 
+  [IT Crowd]:mailto:helloit@svsticky.nl
   [inventory]:https://docs.ansible.com/ansible/intro_inventory.html
-
+  [slacktee]:https://github.com/course-hero/slacktee

@@ -94,9 +94,6 @@ fail2ban:
   ignoreip: "127.0.0.1/8"
   bantime: 600
   maxretry: 3
-
-  destemail: "root@localhost"
-  mta: "sendmail"
   banaction: "iptables-multiport"
 
   services:

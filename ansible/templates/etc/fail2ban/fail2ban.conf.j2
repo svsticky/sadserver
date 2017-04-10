@@ -4,5 +4,10 @@
 
 loglevel = {{ fail2ban.loglevel }}
 logtarget = /var/log/fail2ban.log
+
 socket = /var/run/fail2ban/fail2ban.sock
+syslogsocket = auto
 pidfile = /var/run/fail2ban/fail2ban.pid
+
+dbfile = /var/lib/fail2ban/fail2ban.sqlite3
+dbpurgeage = 86400

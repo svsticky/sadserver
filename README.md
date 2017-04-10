@@ -36,7 +36,7 @@ The `ansible/` directory in this repository contains Ansible playbooks, which
 are a runnable specification of commands that should be executed when
 configuring a Linux system.
 
-The ansible directory contains three important files:
+The ansible directory contains four important files:
 
  - `ansible/scripts/bootstrap-new-host.sh` -- an `sh` script that can be used
    to bootstrap a vanilla Ubuntu 16.04 system so that it's ready to run our

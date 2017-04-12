@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 ##
 ## USAGE: ./scripts/run-playbook.sh <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK PARAMETERS>]

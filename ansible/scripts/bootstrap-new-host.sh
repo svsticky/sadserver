@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 ##
 ## USAGE: ./scripts/bootstrap-new-host.sh <HOSTNAME | IP>

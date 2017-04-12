@@ -1,7 +1,9 @@
 #!/bin/bash
 # {{ ansible_managed }}
 
-set -efu -o pipefail
+# Unofficial Bash strict mode
+set -efuo pipefail
+IFS=$'\n\t'
 
 TMPDIR="/tmp"
 FILE="websites-$(date +'%Y-%m-%d').tar.gz"

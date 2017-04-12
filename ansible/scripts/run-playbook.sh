@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# Unofficial Bash strict mode (edited, to work with non-Bash)
+set -efu
+IFS="$(printf '%b_' '\t\n')"
+# Protect trailing \n
+IFS="${IFS%_}"
+
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"

@@ -11,7 +11,11 @@
 ## to the playbook itself.
 ##
 
-set -e
+# Unofficial Bash strict mode (edited, to work with non-Bash)
+set -efu
+IFS="$(printf '%b_' '\t\n')"
+# Protect trailing \n
+IFS="${IFS%_}"
 
 display_error() {
   echo >&2 "$1"

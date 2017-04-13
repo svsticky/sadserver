@@ -22,7 +22,7 @@
     name: "{{ item.name }}"
     shell: "/bin/bash"
     state: "{{ item.state }}"
-  when: "{{ item.admin }}"
+  when: item.admin == true
   with_items:
     - "{{ users }}"
 
@@ -31,7 +31,7 @@
     name: "{{ item.name }}"
     home: "/var/www/{{ item.name }}"
     move_home: true
-  when: "{{ not item.admin and item.state == 'present' }}"
+  when: item.admin != true and item.state == 'present'
   with_items:
     - "{{ users }}"
 
@@ -40,7 +40,7 @@
     path: "/var/www/{{ item.name }}"
     owner: "root"
     state: "directory"
-  when: "{{ not item.admin and item.state == 'present' }}"
+  when: item.admin != true and item.state == 'present'
   with_items:
     - "{{ users }}"
 
@@ -49,7 +49,7 @@
     user: "{{ item.0.name }}"
     key: "{{ item.1 }}"
     state: "{{ item.0.state }}"
-  when: "{{ item.0.state == 'present' }}"
+  when: item.0.state == 'present'
   with_subelements:
     - "{{ users }}"
     - "keys"
@@ -59,7 +59,7 @@
     user: "ansible"
     key: "{{ item.1 }}"
     state: "{{ item.0.state }}"
-  when: "{{ item.0.admin }} and {{ item.0.state == 'present' }}"
+  when: item.0.admin == true and item.0.state == 'present'
   with_subelements:
     - "{{ users }}"
     - "keys"

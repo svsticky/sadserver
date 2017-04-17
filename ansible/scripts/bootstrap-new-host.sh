@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ##
 ## USAGE: ./scripts/bootstrap-new-host.sh <HOSTNAME | IP>
@@ -11,11 +11,9 @@
 ## to the playbook itself.
 ##
 
-# Unofficial Bash strict mode (edited, to work with non-Bash)
-set -efu
-IFS="$(printf '%b_' '\t\n')"
-# Protect trailing \n
-IFS="${IFS%_}"
+# Unofficial Bash strict mode
+set -efuo pipefail
+IFS=$'\n\t'
 
 display_error() {
   echo >&2 "$1"

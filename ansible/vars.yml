@@ -2,86 +2,121 @@
 canonical_hostname: "dev.svsticky.nl"
 
 users:
-# For keys, do not use paths to GitHub or keyfiles with >1 key, since that
-# breaks the deletion of a specific key.
   - name: "arian"
     admin: true
     state: "present"
     keys:
-      - { path: "https://github.com/arianvp.keys", state: "present" }
+      - path: "https://github.com/arianvp.keys"
+        state: "present"
+
   - name: "laurens"
     admin: true
     state: "present"
     keys:
-      - { path: "https://github.com/duijf.keys", state: "present" }
+      - path: "https://github.com/duijf.keys"
+        state: "present"
+
   - name: "maarten"
     admin: true
     state: "present"
     keys:
-      - { path: "https://github.com/spasticVerbalizer.keys", state: "present" }
+      - path: "https://github.com/spasticVerbalizer.keys"
+        state: "present"
+
   - name: "tom"
     admin: true
     state: "present"
     keys:
-      - { path: "https://github.com/tomwassenberg.keys", state: "present" }
+      - path: "https://github.com/tomwassenberg.keys"
+        state: "present"
+
   - name: "yorick"
     admin: true
     state: "present"
     keys:
-      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
+      - path: "https://github.com/yorickvanzweeden.keys"
+        state: "present"
 
   - name: "bestuur"
     admin: false
     state: "present"
     keys:
-      - { path: "https://github.com/PabloEnriqueIglesias.keys", state: "present" }
-      - { path: "https://github.com/Sithias.keys", state: "present" }
-      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
-      - { path: "https://github.com/RobinSikkens.keys", state: "present" }
+      - path: "https://github.com/PabloEnriqueIglesias.keys"
+        state: "present"
+      - path: "https://github.com/Sithias.keys"
+        state: "present"
+      - path: "https://github.com/yorickvanzweeden.keys"
+        state: "present"
+      - path: "https://github.com/RobinSikkens.keys"
+        state: "present"
+
   - name: "commit"
     admin: false
     state: "present"
     keys:
-      - { path: "https://github.com/cdfa.keys", state: "present" }
-      - { path: "https://github.com/DatDutchDude.keys", state: "present" }
-      - { path: "https://github.com/emielvanrijn.keys", state: "present" }
-      - { path: "https://github.com/GlennStewart125.keys", state: "present" }
-      - { path: "https://github.com/M8eld.keys", state: "present" }
-      - { path: "https://github.com/spasticVerbalizer.keys", state: "present" }
-      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
+      - path: "https://github.com/cdfa.keys"
+        state: "present"
+      - path: "https://github.com/DatDutchDude.keys"
+        state: "present"
+      - path: "https://github.com/emielvanrijn.keys"
+        state: "present"
+      - path: "https://github.com/GlennStewart125.keys"
+        state: "present"
+      - path: "https://github.com/M8eld.keys"
+        state: "present"
+      - path: "https://github.com/spasticVerbalizer.keys"
+        state: "present"
+      - path: "https://github.com/yorickvanzweeden.keys"
+        state: "present"
+
   - name: "dgdarc"
     admin: false
     state: "present"
     keys: []
+
   - name: "indievelopment"
     admin: false
     state: "present"
     keys:
-      - { path: "{{ lookup('file', 'credentials/ssh/geert.manual.pub') }}", state: "present" }
-      - { path: "{{ lookup('file', 'credentials/ssh/marc.manual.pub') }}", state: "present" }
+      - path: "{{ lookup('file', 'credentials/ssh/geert.manual.pub') }}"
+        state: "present"
+      - path: "{{ lookup('file', 'credentials/ssh/marc.manual.pub') }}"
+        state: "present"
+
   - name: "sodi"
     admin: false
     state: "present"
     keys:
-      - { path: "https://github.com/emielvanrijn.keys", state: "present" }
-      - { path: "https://github.com/rcdewit.keys", state: "present" }
-      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
+      - path: "https://github.com/emielvanrijn.keys"
+        state: "present"
+      - path: "https://github.com/rcdewit.keys"
+        state: "present"
+      - path: "https://github.com/yorickvanzweeden.keys"
+        state: "present"
+
   - name: "stichting"
     admin: false
     state: "present"
     keys: []
+
   - name: "studytrip"
     admin: false
     state: "present"
     keys:
-      - { path: "https://github.com/rcdewit.keys", state: "present" }
-      - { path: "https://github.com/yorickvanzweeden.keys", state: "present" }
+      - path: "https://github.com/rcdewit.keys"
+        state: "present" }
+      - path: "https://github.com/yorickvanzweeden.keys"
+        state: "present"
+
   - name: "symposium"
     admin: false
     state: "present"
     keys:
-      - { path: "https://github.com/DatDutchDude.keys", state: "present" }
-      - { path: "https://github.com/emielvanrijn.keys", state: "present" }
+      - path: "https://github.com/DatDutchDude.keys"
+        state: "present"
+      - path: "https://github.com/emielvanrijn.keys"
+        state: "present"
+
   - name: "wintersport"
     admin: false
     state: "present"

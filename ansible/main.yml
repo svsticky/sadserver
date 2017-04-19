@@ -58,6 +58,7 @@
     - include: "tasks/nginx.yml"
     - include: "tasks/firewall.yml"
     - include: "tasks/database.yml"
+    - include: "tasks/phpmyadmin.yml"
     - include: "tasks/koala.yml"
     - include: "tasks/studystatus.yml"
     - include: "tasks/backups.yml"

@@ -1,0 +1,53 @@
+---
+- name: "install phpmyadmin dependencies"
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "php7.0-zip"
+    - "php7.0-xml"
+    - "php7.0-mbstring"
+    - "php7.0-mysqli"
+    - "composer"
+
+- name: "clone phpmyadmin repository"
+  git:
+    repo: "https://github.com/phpmyadmin/phpmyadmin.git"
+    dest: "/var/www/phpmyadmin.{{ canonical_hostname }}"
+    depth: 1
+    force: true
+    version: "STABLE"
+
+- name: "place phpmyadmin config.inc.php"
+  template:
+    src: "templates/var/www/phpmyadmin/{{ item }}.j2"
+    dest: "/var/www/phpmyadmin.{{ canonical_hostname }}/{{ item }}"
+  with_items: "config.inc.php"
+
+- name: "install phpmyadmin composer dependencies"
+  composer:
+    working_dir: "/var/www/phpmyadmin.{{ canonical_hostname }}"
+    no_dev: true
+    command: "update"
+
+- name: "set permissions on phpmyadmin webroot"
+  file:
+    path: /var/www/phpmyadmin.{{ canonical_hostname }}
+    recurse: true
+    owner: "root"
+    group: "www-data"
+    state: "directory"
+
+- name: "place phpmyadmin nginx config"
+  template:
+    src: "templates/etc/nginx/sites-available/phpmyadmin.conf.j2"
+    dest: "/etc/nginx/sites-available/phpmyadmin.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "symlink phpmyadmin nginx config"
+  file:
+    src: "/etc/nginx/sites-available/{{ item }}"
+    dest: "/etc/nginx/sites-enabled/{{ item }}"
+    state: link
+  with_items: "phpmyadmin.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"

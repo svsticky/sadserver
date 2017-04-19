@@ -145,6 +145,12 @@ websites:
     alternative_names:
       - "status.{{ canonical_hostname }}"
 
+  - name: "phpmyadmin.{{ canonical_hostname }}"
+    custom_config: true
+    database: "phpmyadmin"
+    alternative_names:
+      - "pma.{{ canonical_hostname }}"
+
   - name: "radio.{{ canonical_hostname }}"
     user: "commit"
     alternative_names: []

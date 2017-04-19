@@ -4,7 +4,7 @@
 $cfg['blowfish_secret'] = '{{ lookup('password', 'credentials/phpmyadmin/blowfish_secret chars=hexdigits length=128') }}';
 
 $cfg['Servers'][1]['controluser'] = 'phpmyadmin';
-$cfg['Servers'][1]['controlpass'] = '{{ lookup('password', 'credentials/mysql/phpmyadmin chars=hexdigit length=128') }}';
+$cfg['Servers'][1]['controlpass'] = '{{ lookup('file', 'credentials/mysql/phpmyadmin') }}';
 $cfg['Servers'][1]['pmadb'] = 'phpmyadmin';
 
 $cfg['Servers'][1]['bookmarktable'] = 'pma__bookmark';

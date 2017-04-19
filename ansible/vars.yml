@@ -57,8 +57,8 @@ users:
     admin: false
     state: "present"
     keys:
-      - { path: "{{ lookup('file', 'credentials/ssh/indievelopment/geert.pub') }}", state: "present" }
-      - { path: "{{ lookup('file', 'credentials/ssh/indievelopment/marc.pub') }}", state: "present" }
+      - { path: "{{ lookup('file', 'credentials/ssh/geert.manual.pub') }}", state: "present" }
+      - { path: "{{ lookup('file', 'credentials/ssh/marc.manual.pub') }}", state: "present" }
   - name: "sodi"
     admin: false
     state: "present"

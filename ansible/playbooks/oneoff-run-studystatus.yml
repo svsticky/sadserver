@@ -1,0 +1,68 @@
+---
+- hosts: all
+
+  vars_files:
+      - "../vars.yml"
+
+  vars_prompt:
+      - name: "solis_id"
+        prompt: "Enter your student number"
+        private: false
+
+      - name: "solis_password"
+        prompt: "Enter your student password"
+        private: true
+
+      - name: "student"
+        prompt: "Enter the student number of the subject, or leave blank for all students"
+        private: false
+
+  tasks:
+      - block:
+        - name: "run studystatus for all students"
+          shell: "eval \"$(rbenv init - )\"; bundle exec rake RAILS_ENV={{ koala.environment }} studystatus:update_all['{{ solis_id }}','{{ solis_password }}']"
+          args:
+            chdir: "/var/www/koala.{{ canonical_hostname }}"
+            executable: "/bin/bash"
+          register: "update_all_output"
+          async: 1800
+          poll: 30
+          when: student == ""
+
+        - name: "run studystatus for specific student"
+          shell: "eval \"$(rbenv init - )\"; bundle exec rake RAILS_ENV={{ koala.environment }} studystatus:update['{{ solis_id }}','{{ solis_password }}','{{ student }}']"
+          args:
+            chdir: "/var/www/koala.{{ canonical_hostname }}"
+            executable: "/bin/bash"
+          register: "update_specific_output"
+          async: 1800
+          poll: 30
+          when: student != ""
+        environment:
+          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+        become: true
+        become_user: "koala"
+
+      - name: "get affected members"
+        command: "mysql -u koala -p{{ lookup('file', '../credentials/mysql/koala') }} -NBe \"{{ item }}\""
+        with_items: "USE koala; SELECT CONCAT_WS(' ',`members`.`first_name`,`members`.`infix`,`members`.`last_name`) FROM `educations` JOIN `members` ON `educations`.`member_id`=`members`.`id` WHERE `educations`.`updated_at` > DATE_SUB(NOW(),INTERVAL 1 HOUR) ORDER BY `members`.`last_name` DESC;"
+        register: affected_members
+        changed_when: false
+
+      - name: "print list of affected members"
+        debug:
+          var: "affected_members.results[0].stdout_lines"
+        when: affected_members.results[0] is defined
+        changed_when: false
+
+      # Workaround for Ansible bug #4297
+      - name: "parse output of studystatus"
+        set_fact:
+          studystatus_output: "{{ update_all_output if student == \"\" else update_specific_output }}"
+        changed_when: false
+
+      - name: "verbose output of studystatus"
+        debug:
+          var: "studystatus_output.stdout_lines"
+          verbosity: 3
+        changed_when: false

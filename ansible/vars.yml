@@ -6,67 +6,67 @@ users:
     admin: true
     state: "present"
     keys:
-      - path: "https://github.com/arianvp.keys"
+      - key: "arianvp.github.pub"
         state: "present"
 
   - name: "laurens"
     admin: true
     state: "present"
     keys:
-      - path: "https://github.com/duijf.keys"
+      - key: "duijf.github.pub"
         state: "present"
 
   - name: "maarten"
     admin: true
     state: "present"
     keys:
-      - path: "https://github.com/spasticVerbalizer.keys"
+      - key: "spasticVerbalizer.github.pub"
         state: "present"
 
   - name: "tom"
     admin: true
     state: "present"
     keys:
-      - path: "https://github.com/tomwassenberg.keys"
+      - key: "tomassenberg.github.pub"
         state: "present"
 
   - name: "yorick"
     admin: true
     state: "present"
     keys:
-      - path: "https://github.com/yorickvanzweeden.keys"
+      - key: "yorick.github.pub"
         state: "present"
 
   - name: "bestuur"
     admin: false
     state: "present"
     keys:
-      - path: "https://github.com/PabloEnriqueIglesias.keys"
+      - key: "PabloEnriqueIglesias.github.pub"
         state: "present"
-      - path: "https://github.com/Sithias.keys"
+      - key: "Sithias.github.pub"
         state: "present"
-      - path: "https://github.com/yorickvanzweeden.keys"
+      - key: "yorickvanzweeden.github.pub"
         state: "present"
-      - path: "https://github.com/RobinSikkens.keys"
+      - key: "RobinSikkens.github.pub"
         state: "present"
 
   - name: "commit"
     admin: false
     state: "present"
     keys:
-      - path: "https://github.com/cdfa.keys"
+      - key: "cdfa.github.pub"
         state: "present"
-      - path: "https://github.com/DatDutchDude.keys"
+      - key: "DatDutchDude.github.pub"
         state: "present"
-      - path: "https://github.com/emielvanrijn.keys"
+      - key: "emielvanrijn.github.pub"
         state: "present"
-      - path: "https://github.com/GlennStewart125.keys"
+      - key: "GlennStewart125.github.pub"
         state: "present"
-      - path: "https://github.com/M8eld.keys"
+      - key: "M8eld.github.pub"
         state: "present"
-      - path: "https://github.com/spasticVerbalizer.keys"
+      - key: "spasticVerbalizer.github.pub"
         state: "present"
-      - path: "https://github.com/yorickvanzweeden.keys"
+      - key: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "dgdarc"
@@ -78,20 +78,20 @@ users:
     admin: false
     state: "present"
     keys:
-      - path: "{{ lookup('file', 'credentials/ssh/geert.manual.pub') }}"
+      - key: "geert.manual.pub"
         state: "present"
-      - path: "{{ lookup('file', 'credentials/ssh/marc.manual.pub') }}"
+      - key: "marc.manual.pub"
         state: "present"
 
   - name: "sodi"
     admin: false
     state: "present"
     keys:
-      - path: "https://github.com/emielvanrijn.keys"
+      - key: "emielvanrijn.github.pub"
         state: "present"
-      - path: "https://github.com/rcdewit.keys"
+      - key: "rcdewit.github.pub"
         state: "present"
-      - path: "https://github.com/yorickvanzweeden.keys"
+      - key: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "stichting"
@@ -103,18 +103,18 @@ users:
     admin: false
     state: "present"
     keys:
-      - path: "https://github.com/rcdewit.keys"
-        state: "present" }
-      - path: "https://github.com/yorickvanzweeden.keys"
+      - key: "rcdewit.github.pub"
+        state: "present"
+      - key: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "symposium"
     admin: false
     state: "present"
     keys:
-      - path: "https://github.com/DatDutchDude.keys"
+      - key: "DatDutchDude.github.pub"
         state: "present"
-      - path: "https://github.com/emielvanrijn.keys"
+      - key: "emielvanrijn.github.pub"
         state: "present"
 
   - name: "wintersport"

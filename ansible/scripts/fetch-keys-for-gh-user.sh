@@ -1,12 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## This script is a utility to fetch SSH public keys from a GitHub
 ## account and add them to the proper directory.
 ##
 ## USAGE: fetch-keys-for-gh-user.sh GITHUB_USERNAME
 
-# Strict mode
+# Unofficial Bash strict mode
 set -efuo pipefail
+IFS=$'\n\t'
 
 # Find the absolute path to the skyblue repository
 SKYBLUE_DIR=$(git rev-parse --show-toplevel)

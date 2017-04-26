@@ -1,0 +1,8 @@
+---
+- hosts: all
+
+  tasks:
+    - name: "enable Koala's maintenance mode"
+      file:
+        state: "touch"
+        dest: "/var/www/koala.{{ canonical_hostname }}/MAINTENANCE_MODE"

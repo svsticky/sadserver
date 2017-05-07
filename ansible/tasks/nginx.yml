@@ -109,7 +109,7 @@
     {% endif %}
     --non-interactive
     --agree-tos
-    --email "itcrowd@svsticky.nl"
+    --email "domreg@svsticky.nl"
     --keep-until-expiring
     --expand
     --webroot

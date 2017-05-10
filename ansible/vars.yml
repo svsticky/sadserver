@@ -202,7 +202,6 @@ koala:
   server: "unicorn" # or webrick
   git_ref: "development" # Should be master, when in production
   ruby_version: "2.3.0"
-  studystatus_path: "/usr/local/bin/studystatus.py"
 
 slacktee:
   revision: "2dd488b93fa13d305d27c1c820641e600845710e"

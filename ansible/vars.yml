@@ -12,9 +12,9 @@ users:
         state: "present"
       - id: "spasticVerbalizer.github.pub"
         state: "present"
-      - id: "tomassenberg.github.pub"
+      - id: "tomwassenberg.github.pub"
         state: "present"
-      - id: "yorick.github.pub"
+      - id: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "arian"
@@ -42,14 +42,14 @@ users:
     admin: true
     state: "present"
     keys:
-      - id: "tomassenberg.github.pub"
+      - id: "tomwassenberg.github.pub"
         state: "present"
 
   - name: "yorick"
     admin: true
     state: "present"
     keys:
-      - id: "yorick.github.pub"
+      - id: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "bestuur"

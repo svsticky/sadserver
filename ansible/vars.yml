@@ -2,71 +2,86 @@
 canonical_hostname: "dev.svsticky.nl"
 
 users:
+  - name: "ansible"
+    admin: true
+    state: "present"
+    keys:
+      - id: "arianvp.github.pub"
+        state: "present"
+      - id: "duijf.github.pub"
+        state: "present"
+      - id: "spasticVerbalizer.github.pub"
+        state: "present"
+      - id: "tomassenberg.github.pub"
+        state: "present"
+      - id: "yorick.github.pub"
+        state: "present"
+
   - name: "arian"
     admin: true
     state: "present"
     keys:
-      - key: "arianvp.github.pub"
+      - id: "arianvp.github.pub"
         state: "present"
 
   - name: "laurens"
     admin: true
     state: "present"
     keys:
-      - key: "duijf.github.pub"
+      - id: "duijf.github.pub"
         state: "present"
 
   - name: "maarten"
     admin: true
     state: "present"
     keys:
-      - key: "spasticVerbalizer.github.pub"
+      - id: "spasticVerbalizer.github.pub"
         state: "present"
 
   - name: "tom"
     admin: true
     state: "present"
     keys:
-      - key: "tomassenberg.github.pub"
+      - id: "tomassenberg.github.pub"
         state: "present"
 
   - name: "yorick"
     admin: true
     state: "present"
     keys:
-      - key: "yorick.github.pub"
+      - id: "yorick.github.pub"
         state: "present"
 
   - name: "bestuur"
     admin: false
     state: "present"
     keys:
-      - key: "PabloEnriqueIglesias.github.pub"
+      - id: "PabloEnriqueIglesias.github.pub"
         state: "present"
-      - key: "Sithias.github.pub"
+      - id: "Sithias.github.pub"
         state: "present"
-      - key: "yorickvanzweeden.github.pub"
+      - id: "yorickvanzweeden.github.pub"
         state: "present"
-      - key: "RobinSikkens.github.pub"
+      - id: "RobinSikkens.github.pub"
         state: "present"
 
   - name: "commit"
     admin: false
     state: "present"
     keys:
-      - key: "cdfa.github.pub"
+      - id: "cdfa.github.pub"
         state: "present"
-      - key: "DatDutchDude.github.pub"
+      - id: "DatDutchDude.github.pub"
         state: "present"
-      - key: "emielvanrijn.github.pub"
+      - id: "emielvanrijn.github.pub"
         state: "present"
-      - key: "GlennStewart125.github.pub"
+      - id: "GlennStewart125.github.pub"
         state: "present"
-      - key: "M8eld.github.pub"
+      - id: "M8eld.github.pub"
         state: "present"
-      - key: "spasticVerbalizer.github.pub"
+      - id: "spasticVerbalizer.github.pub"
         state: "present"
-      - key: "yorickvanzweeden.github.pub"
+      - id: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "dgdarc"
@@ -78,20 +93,20 @@ users:
     admin: false
     state: "present"
     keys:
-      - key: "geert.manual.pub"
+      - id: "geert.manual.pub"
         state: "present"
-      - key: "marc.manual.pub"
+      - id: "marc.manual.pub"
         state: "present"
 
   - name: "sodi"
     admin: false
     state: "present"
     keys:
-      - key: "emielvanrijn.github.pub"
+      - id: "emielvanrijn.github.pub"
         state: "present"
-      - key: "rcdewit.github.pub"
+      - id: "rcdewit.github.pub"
         state: "present"
-      - key: "yorickvanzweeden.github.pub"
+      - id: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "stichting"
@@ -103,18 +118,18 @@ users:
     admin: false
     state: "present"
     keys:
-      - key: "rcdewit.github.pub"
+      - id: "rcdewit.github.pub"
         state: "present"
-      - key: "yorickvanzweeden.github.pub"
+      - id: "yorickvanzweeden.github.pub"
         state: "present"
 
   - name: "symposium"
     admin: false
     state: "present"
     keys:
-      - key: "DatDutchDude.github.pub"
+      - id: "DatDutchDude.github.pub"
         state: "present"
-      - key: "emielvanrijn.github.pub"
+      - id: "emielvanrijn.github.pub"
         state: "present"
 
   - name: "wintersport"

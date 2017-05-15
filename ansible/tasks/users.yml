@@ -44,42 +44,12 @@
   with_items:
     - "{{ users }}"
 
-- name: "set users' keys"
-  authorized_key:
-    user: "{{ item.0.name }}"
-    key: "{{ lookup('file', 'credentials/ssh/' + item.1.key) }}"
-    state: "{{ item.0.state }}"
-  when: item.0.state == 'present' and item.1.state == 'present'
-  with_subelements:
-    - "{{ users }}"
-    - "keys"
-
-- name: "remove disabled keys from users"
-  authorized_key:
-    user: "{{ item.0.name }}"
-    key: "{{ lookup('file', 'credentials/ssh/' + item.1.key) }}"
-    state: "absent"
-  when: item.0.state == 'present' and item.1.state == 'absent'
-  with_subelements:
-    - "{{ users }}"
-    - "keys"
-
-- name: "add ssh keys of admin users to ansible user"
-  authorized_key:
-    user: "ansible"
-    key: "{{ lookup('file', 'credentials/ssh/' + item.1.key) }}"
-    state: "{{ item.0.state }}"
-  when: item.0.admin == true and item.0.state == 'present' and item.1.state == 'present'
-  with_subelements:
-    - "{{ users }}"
-    - "keys"
-
-- name: "remove disabled keys of admin users from ansible user"
-  authorized_key:
-    user: "ansible"
-    key: "{{ lookup('file', 'credentials/ssh/' + item.1.key) }}"
-    state: "absent"
-  when: item.0.admin == true and item.0.state == 'present' and item.1.state == 'absent'
+- name: "ensure SSH keys for all users are present"
+  blockinfile:
+    path: "/home/{{ item.0.name }}/.ssh/authorized_keys"
+    block: "{{ lookup('file', 'credentials/ssh/' + item.1.id) }}"
+    state: item.0.state == 'present' and item.1.state == 'present'
+    marker:  "# {mark} SSH key for {{ item.1.id }}"
   with_subelements:
     - "{{ users }}"
     - "keys"

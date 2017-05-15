@@ -4,6 +4,7 @@ canonical_hostname: "dev.svsticky.nl"
 users:
   - name: "ansible"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
       - id: "arianvp.github.pub"
@@ -19,6 +20,7 @@ users:
 
   - name: "arian"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
       - id: "arianvp.github.pub"
@@ -26,6 +28,7 @@ users:
 
   - name: "laurens"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
       - id: "duijf.github.pub"
@@ -33,6 +36,7 @@ users:
 
   - name: "maarten"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
       - id: "spasticVerbalizer.github.pub"
@@ -40,6 +44,7 @@ users:
 
   - name: "tom"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
       - id: "tomwassenberg.github.pub"
@@ -47,6 +52,7 @@ users:
 
   - name: "yorick"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
       - id: "yorickvanzweeden.github.pub"
@@ -54,6 +60,7 @@ users:
 
   - name: "bestuur"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
       - id: "PabloEnriqueIglesias.github.pub"
@@ -67,6 +74,7 @@ users:
 
   - name: "commit"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
       - id: "cdfa.github.pub"
@@ -86,11 +94,13 @@ users:
 
   - name: "dgdarc"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys: []
 
   - name: "indievelopment"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
       - id: "geert.manual.pub"
@@ -100,6 +110,7 @@ users:
 
   - name: "sodi"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
       - id: "emielvanrijn.github.pub"
@@ -111,11 +122,13 @@ users:
 
   - name: "stichting"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys: []
 
   - name: "studytrip"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
       - id: "rcdewit.github.pub"
@@ -125,6 +138,7 @@ users:
 
   - name: "symposium"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
       - id: "DatDutchDude.github.pub"
@@ -134,6 +148,7 @@ users:
 
   - name: "wintersport"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys: []
 

@@ -27,7 +27,7 @@ echo -e "*Deployment of playbook \"_${PLAYBOOK}_\" started by ${USER}*\n_(branch
 
 ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "${GIT_ROOT}/ansible/hosts" --ask-become-pass --extra-vars "playbook_revision=${GIT_REVISION}" "$@"
 
-if [ "$?" = "0" ]; then
+if [[ "$?" = "0" ]]; then
   echo -e "*Deployment of playbook \"_${PLAYBOOK}_\" successfully completed*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':ok_hand:' --attachment 'good' > /dev/null
 else
   echo -e "@it-crowd-commissie *Deployment of playbook \"_${PLAYBOOK}_\" FAILED!*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':exclamation:' --attachment 'danger' > /dev/null

@@ -224,6 +224,10 @@ websites:
     user: "commit"
     alternative_names: []
 
+  - name: "digidecs.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names: []
+
 # - name: "savadaba.nl"
 #   custom_config: true
 #   alternative_names:

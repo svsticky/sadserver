@@ -1,4 +1,9 @@
 ---
+- name: "ensure github's ssh key is known"
+  shell: "ssh-keyscan -H github.com >> /etc/ssh/ssh_known_hosts"
+  args:
+    creates: "/etc/ssh/ssh_known_hosts"
+
 - name: "enable NOPASSWD for sudo group"
   lineinfile:
     dest: "/etc/sudoers.d/ansible"

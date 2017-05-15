@@ -6,6 +6,7 @@
   become_method: "sudo"
   vars_files:
     - "vars.yml"
+    - "secrets.yml"
 
   handlers:
     - name: "restart nginx"

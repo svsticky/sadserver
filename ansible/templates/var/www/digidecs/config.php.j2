@@ -1,0 +1,25 @@
+<?php
+
+// Define basic constants
+define('BASE_DIR', '/var/www/commit/digidecs.{{ canonical_hostname }}/');
+define('TEMPLATES_DIR', BASE_DIR . 'templates/');
+
+// Define email constants
+define('EMAIL_TO_ADDRESS', 'itcrowd@svsticky.nl');
+define('EMAIL_TO_NAME', 'Penningmeester Sticky');
+define('EMAIL_SUBJECT_BASE', '[DigiDecs] Nieuwe declaratie:');
+
+// Mailgun settings
+define('EMAIL_API_KEY', '{{ secret_mailgun_token }}');
+define('EMAIL_DOMAIN', 'svsticky.nl');
+
+// Define upload restrictions
+define('FILE_MAX_FILESIZE', 100000000);
+$allowed_filetypes  =
+        array(
+                'jpg' => 'image/jpeg',
+                'png' => 'image/png',
+                'pdf' => 'application/pdf',
+        );
+
+?>

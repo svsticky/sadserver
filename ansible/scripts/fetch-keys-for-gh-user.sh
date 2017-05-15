@@ -19,4 +19,4 @@ if [[ -z "$1" ]]; then
 fi
 
 CREDENTIALS_PATH="${SKYBLUE_DIR}/ansible/credentials/ssh/$1.github.pub"
-curl "https://github.com/$1.keys" > "${CREDENTIALS_PATH}"
+curl --fail "https://github.com/$1.keys" > "${CREDENTIALS_PATH}"

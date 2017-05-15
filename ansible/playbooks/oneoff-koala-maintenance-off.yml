@@ -10,3 +10,4 @@
         state: "absent"
         dest: "/var/www/koala.{{ canonical_hostname }}/MAINTENANCE_MODE"
       become: true
+      become_user: "koala"

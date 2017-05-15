@@ -2,86 +2,153 @@
 canonical_hostname: "dev.svsticky.nl"
 
 users:
+  - name: "ansible"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "arianvp.github.pub"
+        state: "present"
+      - id: "duijf.github.pub"
+        state: "present"
+      - id: "spasticVerbalizer.github.pub"
+        state: "present"
+      - id: "tomwassenberg.github.pub"
+        state: "present"
+      - id: "yorickvanzweeden.github.pub"
+        state: "present"
+
   - name: "arian"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
-      - "https://github.com/arianvp.keys"
+      - id: "arianvp.github.pub"
+        state: "present"
+
   - name: "laurens"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
-      - "https://github.com/duijf.keys"
+      - id: "duijf.github.pub"
+        state: "present"
+
   - name: "maarten"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
-      - "https://github.com/spasticVerbalizer.keys"
+      - id: "spasticVerbalizer.github.pub"
+        state: "present"
+
   - name: "tom"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
-      - "https://github.com/tomwassenberg.keys"
+      - id: "tomwassenberg.github.pub"
+        state: "present"
+
   - name: "yorick"
     admin: true
+    home_prefix: "/home"
     state: "present"
     keys:
-      - "https://github.com/yorickvanzweeden.keys"
+      - id: "yorickvanzweeden.github.pub"
+        state: "present"
 
   - name: "bestuur"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
-      - "https://github.com/PabloEnriqueIglesias.keys"
-      - "https://github.com/Sithias.keys"
-      - "https://github.com/yorickvanzweeden.keys"
-      - "https://github.com/RobinSikkens.keys"
+      - id: "PabloEnriqueIglesias.github.pub"
+        state: "present"
+      - id: "Sithias.github.pub"
+        state: "present"
+      - id: "yorickvanzweeden.github.pub"
+        state: "present"
+      - id: "RobinSikkens.github.pub"
+        state: "present"
+
   - name: "commit"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
-      - "https://github.com/cdfa.keys"
-      - "https://github.com/DatDutchDude.keys"
-      - "https://github.com/emielvanrijn.keys"
-      - "https://github.com/GlennStewart125.keys"
-      - "https://github.com/M8eld.keys"
-      - "https://github.com/spasticVerbalizer.keys"
-      - "https://github.com/yorickvanzweeden.keys"
+      - id: "cdfa.github.pub"
+        state: "present"
+      - id: "DatDutchDude.github.pub"
+        state: "present"
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+      - id: "GlennStewart125.github.pub"
+        state: "present"
+      - id: "M8eld.github.pub"
+        state: "present"
+      - id: "spasticVerbalizer.github.pub"
+        state: "present"
+      - id: "yorickvanzweeden.github.pub"
+        state: "present"
+
   - name: "dgdarc"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys: []
+
   - name: "indievelopment"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
-      - "{{ lookup('file', 'credentials/ssh/indievelopment/geert.pub') }}"
-      - "{{ lookup('file', 'credentials/ssh/indievelopment/marc.pub') }}"
+      - id: "geert.manual.pub"
+        state: "present"
+      - id: "marc.manual.pub"
+        state: "present"
+
   - name: "sodi"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
-      - "https://github.com/emielvanrijn.keys"
-      - "https://github.com/rcdewit.keys"
-      - "https://github.com/yorickvanzweeden.keys"
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+      - id: "rcdewit.github.pub"
+        state: "present"
+      - id: "yorickvanzweeden.github.pub"
+        state: "present"
+
   - name: "stichting"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys: []
+
   - name: "studytrip"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
-      - "https://github.com/rcdewit.keys"
-      - "https://github.com/yorickvanzweeden.keys"
+      - id: "rcdewit.github.pub"
+        state: "present"
+      - id: "yorickvanzweeden.github.pub"
+        state: "present"
+
   - name: "symposium"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys:
-      - "https://github.com/DatDutchDude.keys"
-      - "https://github.com/emielvanrijn.keys"
+      - id: "DatDutchDude.github.pub"
+        state: "present"
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+
   - name: "wintersport"
     admin: false
+    home_prefix: "/var/www"
     state: "present"
     keys: []
 

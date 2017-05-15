@@ -15,6 +15,7 @@
     groups: "{%if item.admin %}sudo,adm{% else %}committee{% endif %}"
     state: "{{ item.state }}"
     home: "{{ item.home_prefix }}/{{ item.name }}"
+    move_home: true
   with_items:
     - "{{ users }}"
 

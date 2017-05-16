@@ -1,5 +1,5 @@
 ---
-canonical_hostname: {{ inventory_hostname }}
+canonical_hostname: "{{ inventory_hostname }}"
 
 users:
   - name: "ansible"
@@ -175,7 +175,7 @@ upload_limit: 15
 # Defines the default of requesting staging certificates, or not.
 # When true, no certificates are requested for `alternative_names`.
 # Can be disabled on a per-website basis by adding `real_certificate`
-staging_certificates: {{ staging }}
+staging_certificates: "{{ staging }}"
 
 
 # Defines our websites.
@@ -276,7 +276,7 @@ koala:
   environment: "production"
   server: "unicorn" # or webrick
   # Works for me TM
-  git_ref: {% if staging %} "development" {% else %} "master"  {% endif %}
+  git_ref: "{% if staging %}development{% else %}master{% endif %}"
   ruby_version: "2.3.0"
 
 slacktee:

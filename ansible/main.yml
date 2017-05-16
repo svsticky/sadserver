@@ -6,7 +6,6 @@
   become_method: "sudo"
   vars_files:
     - "vars.yml"
-    - "secrets.yml"
 
   handlers:
     - name: "restart nginx"
@@ -57,6 +56,7 @@
     - include: "tasks/packages.yml"
     - include: "tasks/fail2ban.yml"
     - include: "tasks/nginx.yml"
+    - include: "tasks/digidecs.yml"
     - include: "tasks/firewall.yml"
     - include: "tasks/database.yml"
     - include: "tasks/phpmyadmin.yml"

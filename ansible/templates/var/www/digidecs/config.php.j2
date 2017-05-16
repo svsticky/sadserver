@@ -9,13 +9,14 @@ define('TEMPLATES_DIR', BASE_DIR . 'templates/');
 define('EMAIL_TO_ADDRESS', 'penningmeester@{{ canonical_hostname }}');
 define('EMAIL_TO_NAME', 'Penningmeester Sticky');
 define('EMAIL_SUBJECT_BASE', '[DigiDecs] Nieuwe declaratie:');
+define('EMAIL_FIRST_NAME', 'Yorick');
 
 // Mailgun settings
 define('EMAIL_API_KEY', '{{ secret_mailgun_token }}');
 define('EMAIL_DOMAIN', 'svsticky.nl');
 
 // Define upload restrictions
-define('FILE_MAX_FILESIZE', 100000000);
+define('FILE_MAX_FILESIZE', {{ 20 * 2**20|int }});
 $allowed_filetypes  =
         array(
                 'jpg' => 'image/jpeg',

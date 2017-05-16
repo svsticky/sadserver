@@ -180,23 +180,23 @@ staging_certificates: {{ staging }}
 
 # Defines our websites.
 websites:
-- name: "dgdarc.{{ inventory_hostname }}"
-  user: "dgdarc"
-  database: true
-  alternative_names:
-    - "dgdarc.nl"
-    - "www.dgdarc.nl"
-    - "dgdarc.com"
-    - "www.dgdarc.com"
+  - name: "dgdarc.{{ inventory_hostname }}"
+    user: "dgdarc"
+    database: true
+    alternative_names:
+      - "dgdarc.nl"
+      - "www.dgdarc.nl"
+      - "dgdarc.com"
+      - "www.dgdarc.com"
 
-- name: "indievelopment.{{ inventory_hostname }}"
-  user: "indievelopment"
-  database: true
-  alternative_names:
-    - "indievelopment.nl"
-    - "www.indievelopment.nl"
-    - "indiedevelopment.nl"
-    - "www.indiedevelopment.nl"
+  - name: "indievelopment.{{ inventory_hostname }}"
+    user: "indievelopment"
+    database: true
+    alternative_names:
+      - "indievelopment.nl"
+      - "www.indievelopment.nl"
+      - "indiedevelopment.nl"
+      - "www.indiedevelopment.nl"
 
   - name: "digidecs.{{ canonical_hostname }}"
     user: "commit"

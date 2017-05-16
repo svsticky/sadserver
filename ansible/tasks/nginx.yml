@@ -115,9 +115,11 @@
     --webroot
     --webroot-path /var/www/acme-challenges
     --domain {{ item.name }}
+    {% if not staging_certificates %}
     {% for hostname in item.alternative_names %}
     --domain {{ hostname }}
     {% endfor %}
+    {% endif %}
   with_items: "{{ websites }}"
   register: certbot_output
   changed_when: "'no action taken' not in certbot_output.stdout"

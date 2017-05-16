@@ -1,5 +1,5 @@
 ---
-canonical_hostname: "dev.svsticky.nl"
+canonical_hostname: {{ inventory_hostname }}
 
 users:
   - name: "ansible"
@@ -173,28 +173,30 @@ fail2ban:
 upload_limit: 15
 
 # Defines the default of requesting staging certificates, or not.
+# When true, no certificates are requested for `alternative_names`.
 # Can be disabled on a per-website basis by adding `real_certificate`
-staging_certificates: true
+staging_certificates: {{ staging }}
 
+
+# Defines our websites.
 websites:
-# Domains that are commented are done so
-# because of DNS, uncomment when in production
+- name: "dgdarc.{{ inventory_hostname }}"
+  user: "dgdarc"
+  database: true
+  alternative_names:
+    - "dgdarc.nl"
+    - "www.dgdarc.nl"
+    - "dgdarc.com"
+    - "www.dgdarc.com"
 
-# - name: "dgdarc.nl"
-#   user: "dgdarc"
-#   database: true
-#   alternative_names:
-#     - "www.dgdarc.nl"
-#     - "dgdarc.com"
-#     - "www.dgdarc.com"
-
-# - name: "indievelopment.nl"
-#   user: "indievelopment"
-#   database: true
-#   alternative_names:
-#     - "www.indievelopment.nl"
-#     - "indiedevelopment.nl"
-#     - "www.indiedevelopment.nl"
+- name: "indievelopment.{{ inventory_hostname }}"
+  user: "indievelopment"
+  database: true
+  alternative_names:
+    - "indievelopment.nl"
+    - "www.indievelopment.nl"
+    - "indiedevelopment.nl"
+    - "www.indiedevelopment.nl"
 
   - name: "digidecs.{{ canonical_hostname }}"
     user: "commit"
@@ -267,7 +269,8 @@ websites:
 koala:
   environment: "production"
   server: "unicorn" # or webrick
-  git_ref: "development" # Should be master, when in production
+  # Works for me TM
+  git_ref: {% if staging %} "development" {% else %} "master"  {% endif %}
   ruby_version: "2.3.0"
 
 slacktee:

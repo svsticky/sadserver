@@ -226,7 +226,9 @@ websites:
 
   - name: "digidecs.{{ canonical_hostname }}"
     user: "commit"
-    alternative_names: []
+    alternative_names:
+      - "declaraties.{{ canonical_hostname }}"
+      - "declareren.{{ canonical_hostname }}"
 
 # - name: "savadaba.nl"
 #   custom_config: true

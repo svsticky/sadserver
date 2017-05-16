@@ -1,16 +1,28 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # {{ ansible_managed }}
 
-set -efu -o pipefail
+# Unofficial Bash strict mode
+set -Efuo pipefail
+IFS=$'\n\t'
 
-TMPDIR=/tmp
+TMPDIR="/tmp"
 FILE="admins-$(date +'%Y-%m-%d').tar.gz"
-HASH=sha256 # Choose from md5/sha1/sha224/sha256/sha384/sha512
+HASH="sha256" # Choose from md5/sha1/sha224/sha256/sha384/sha512
 S3PATH="s3://sticky-automatic-backups/admins"
 
-tar --exclude='/home/koala/.rbenv' --exclude='/home/koala/.bundle' -cvf - /home | gzip -9 > ${TMPDIR}/${FILE}
-${HASH}sum ${TMPDIR}/${FILE} > ${TMPDIR}/${FILE}.${HASH}
-aws s3 cp ${TMPDIR}/ ${S3PATH}/ --recursive
-rm ${TMPDIR}/${FILE}
-aws s3 cp ${S3PATH}/${FILE} ${TMPDIR}/${FILE}
-${HASH}sum --check ${TMPDIR}/${FILE}.${HASH}
+cleanup() {
+    # Ensure files are deleted, in case script crashes
+    rm -rf "${TMPDIR}/${FILE}{,.${HASH}}"
+}
+
+if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
+    trap cleanup EXIT
+
+
+    tar --exclude='/home/koala/.rbenv' --exclude='/home/koala/.bundle' -cvf - /home | gzip -9 > "${TMPDIR}/${FILE}"
+    ${HASH}sum "${TMPDIR}/${FILE}" > "${TMPDIR}/${FILE}.${HASH}"
+    aws s3 cp "${TMPDIR}/" "${S3PATH}/" --recursive
+    rm "${TMPDIR}/${FILE}"
+    aws s3 cp "${S3PATH}/${FILE}" "${TMPDIR}/${FILE}"
+    ${HASH}sum --check "${TMPDIR}/${FILE}.${HASH}"
+fi

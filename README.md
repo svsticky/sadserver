@@ -28,7 +28,7 @@ The code/scripts in this repository depends on the following software:
 
  - Ansible ~> 2.2
  - [slacktee] (no config necessary)
- - Any POSIX compatible shell
+ - bash
 
 ## Ansible playbook
 

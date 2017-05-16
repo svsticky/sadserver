@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ##
 ## USAGE: ./scripts/bootstrap-new-host.sh <HOSTNAME | IP>
@@ -11,10 +11,12 @@
 ## to the playbook itself.
 ##
 
-set -e
+# Unofficial Bash strict mode
+set -Efuo pipefail
+IFS=$'\n\t'
 
 display_error() {
-  echo >&2 $1
+  echo >&2 "$1"
 }
 
 # Check if $1, which is the first argument of our script
@@ -34,19 +36,20 @@ PASSWORD=$(openssl rand -base64 15)
 echo "==> Bootstrapping host '${1}'"
 
 echo "==> Installing Python 2.7"
-ssh -T $SSH_SPEC > /dev/null << EOC
+ssh -T "${SSH_SPEC}" > /dev/null << "EOC"
 DEBIAN_FRONTEND=noninteractive apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python2.7
 EOC
 
 echo "==> Creating ansible user"
-ssh -T $SSH_SPEC > /dev/null << EOC
+# EOC not quoted because password variable needs to expand client side
+ssh -T "${SSH_SPEC}" > /dev/null << EOC
 useradd -m -d /home/ansible -s /bin/bash ansible -G sudo
 echo "ansible:${PASSWORD}" | chpasswd
 EOC
 
 echo "==> Copying root ssh keys to ansible user"
-ssh -T $SSH_SPEC > /dev/null << EOC
+ssh -T "${SSH_SPEC}" > /dev/null << "EOC"
 cp -r /root/.ssh /home/ansible/
 chown ansible:ansible -R /home/ansible/.ssh
 EOC

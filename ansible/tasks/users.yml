@@ -28,7 +28,7 @@
   with_items:
     - "{{ users }}"
 
-- name: "add warning about being on a prod system to ~/.bashrc"
+- name: "add environment to bash prompt"
   lineinfile:
     dest: "/home/{{ item.name }}/.bashrc"
     regexp: "^export PS1="
@@ -36,8 +36,6 @@
   when: item.admin == true and item.state == 'present'
   with_items:
     - "{{ users }}"
-  tags:
-    - "shell_prompt"
 
 - name: "fix permissions for chroot of committee users"
   file:

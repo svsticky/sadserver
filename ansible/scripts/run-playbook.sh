@@ -21,7 +21,7 @@ GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 PLAYBOOK="$1"
-SLACKTEE="$(which slacktee.sh) --config ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
+SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
 
 echo -e "*Deployment of playbook \"_${PLAYBOOK}_\" started by ${USER}*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':construction:' --attachment '#46c4ff' > /dev/null
 

@@ -182,7 +182,7 @@ staging_certificates: "{{ staging }}"
 websites:
   - name: "dgdarc.{{ inventory_hostname }}"
     user: "dgdarc"
-    database: true
+    database: "dgdarc"
     alternative_names:
       - "dgdarc.nl"
       - "www.dgdarc.nl"
@@ -191,7 +191,7 @@ websites:
 
   - name: "indievelopment.{{ inventory_hostname }}"
     user: "indievelopment"
-    database: true
+    database: "indievelopment"
     alternative_names:
       - "indievelopment.nl"
       - "www.indievelopment.nl"

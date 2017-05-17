@@ -39,7 +39,7 @@ notify \
   ':construction:' \
   '#46c4ff' \
   "*Deployment of playbook \`${PLAYBOOK}\` started by ${USER}* \n" \
-  "(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")"
+  "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
 
 ANSIBLE_SSH_PIPELINING=true \
   ansible-playbook \
@@ -56,11 +56,11 @@ if [[ "$?" = "0" ]]; then
     ':ok_hand:' \
     'good' \
     "*Deployment of playbook \`${PLAYBOOK}\` successfully completed* \n" \
-    "(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")"
+    "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
 else
   notify \
     ':exclamation:' \
     'danger' \
     "@it-crowd-commissie *Deployment of playbook \`${PLAYBOOK}\` FAILED!* \n" \
-    "(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")"
+    "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
 fi

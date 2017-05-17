@@ -1,4 +1,12 @@
 ---
+- name: "install system-wide known hostkeys"
+  template:
+    src: "templates/etc/ssh/ssh_known_hosts"
+    dest: "/etc/ssh/ssh_known_hosts"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
 - name: "enable NOPASSWD for sudo group"
   lineinfile:
     dest: "/etc/sudoers.d/ansible"

@@ -1,5 +1,5 @@
 ---
-canonical_hostname: "dev.svsticky.nl"
+canonical_hostname: "{{ inventory_hostname }}"
 
 users:
   - name: "ansible"
@@ -173,28 +173,30 @@ fail2ban:
 upload_limit: 15
 
 # Defines the default of requesting staging certificates, or not.
+# When true, no certificates are requested for `alternative_names`.
 # Can be disabled on a per-website basis by adding `real_certificate`
-staging_certificates: true
+staging_certificates: "{{ staging }}"
 
+
+# Defines our websites.
 websites:
-# Domains that are commented are done so
-# because of DNS, uncomment when in production
+  - name: "dgdarc.{{ inventory_hostname }}"
+    user: "dgdarc"
+    database: "dgdarc"
+    alternative_names:
+      - "dgdarc.nl"
+      - "www.dgdarc.nl"
+      - "dgdarc.com"
+      - "www.dgdarc.com"
 
-# - name: "dgdarc.nl"
-#   user: "dgdarc"
-#   database: true
-#   alternative_names:
-#     - "www.dgdarc.nl"
-#     - "dgdarc.com"
-#     - "www.dgdarc.com"
-
-# - name: "indievelopment.nl"
-#   user: "indievelopment"
-#   database: true
-#   alternative_names:
-#     - "www.indievelopment.nl"
-#     - "indiedevelopment.nl"
-#     - "www.indiedevelopment.nl"
+  - name: "indievelopment.{{ inventory_hostname }}"
+    user: "indievelopment"
+    database: "indievelopment"
+    alternative_names:
+      - "indievelopment.nl"
+      - "www.indievelopment.nl"
+      - "indiedevelopment.nl"
+      - "www.indiedevelopment.nl"
 
   - name: "digidecs.{{ canonical_hostname }}"
     user: "commit"
@@ -221,6 +223,12 @@ websites:
   - name: "radio.{{ canonical_hostname }}"
     user: "commit"
     alternative_names: []
+
+  - name: "digidecs.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names:
+      - "declaraties.{{ canonical_hostname }}"
+      - "declareren.{{ canonical_hostname }}"
 
 # - name: "savadaba.nl"
 #   custom_config: true
@@ -267,9 +275,20 @@ websites:
 koala:
   environment: "production"
   server: "unicorn" # or webrick
-  git_ref: "development" # Should be master, when in production
+  # Works for me TM
+  git_ref: "{% if staging %}development{% else %}master{% endif %}"
   ruby_version: "2.3.0"
 
 slacktee:
   revision: "2dd488b93fa13d305d27c1c820641e600845710e"
   checksum: "sha256:b59522b40de167e5c88ddf09f5d02560759902fc503e0bd3cea5c1fa45b780df"
+
+# Secrets
+secret_mailgun_token: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  33346137623461336632333635643836323761616463356661666238616230653565346665633064
+  3935336366323262373139646534363332343237663035300a386665333238346162313765336130
+  36306165323763316133303939643731623931353937326663316331386164303138396662363739
+  3037643736666639640a636163663864633735666139356639613131363739393431346361303030
+  32636338636261326238643235396236303538353337613733623430653533396537643062316436
+  6261653332633332333837363037663234383063666533613432

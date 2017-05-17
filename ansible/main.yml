@@ -1,5 +1,5 @@
 ---
-- hosts: "development"
+- hosts: "all"
   user: "ansible"
   become: true
   become_user: "root"
@@ -56,6 +56,7 @@
     - include: "tasks/packages.yml"
     - include: "tasks/fail2ban.yml"
     - include: "tasks/nginx.yml"
+    - include: "tasks/digidecs.yml"
     - include: "tasks/firewall.yml"
     - include: "tasks/database.yml"
     - include: "tasks/phpmyadmin.yml"

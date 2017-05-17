@@ -1,0 +1,27 @@
+---
+- name: "install composer"
+  apt:
+    name: "{{ item }}"
+    state: "present"
+  become: "true"
+  with_items:
+    - "composer"
+    - "php7.0-curl"
+    - "php7.0-bcmath"
+
+- name: "clone digidecs repository"
+  git:
+    repo: "https://github.com/svsticky/digidecs.git"
+    dest: "/var/www/commit/digidecs.{{ canonical_hostname }}"
+    version: "feature/iban_validation"
+
+- name: "place config file"
+  template:
+    src: "templates/var/www/digidecs/config.php.j2"
+    dest: "/var/www/commit/digidecs.{{ canonical_hostname }}/config.php"
+    mode: "0744"
+
+- name: "run composer"
+  composer:
+    working_dir: "/var/www/commit/digidecs.{{ canonical_hostname }}"
+    command: "install"

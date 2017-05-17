@@ -132,11 +132,6 @@
     tags:
       - "koala"
 
-  - name: "ensure github's ssh key is known"
-    shell: "ssh-keyscan -H github.com >> ~/.ssh/known_hosts"
-    args:
-      creates: "~/.ssh/known_hosts"
-
   - name: "copy deploy keys for user koala"
     template:
       src: "templates/home/ansible/.ssh/{{ item.from }}.j2"

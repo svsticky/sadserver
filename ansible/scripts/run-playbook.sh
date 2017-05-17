@@ -25,7 +25,7 @@ SLACKTEE="$(which slacktee.sh) --config ${GIT_ROOT}/ansible/templates/etc/slackt
 
 echo -e "*Deployment of playbook \"_${PLAYBOOK}_\" started by ${USER}*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':construction:' --attachment '#46c4ff' > /dev/null
 
-ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "${GIT_ROOT}/ansible/hosts" --ask-become-pass --extra-vars "playbook_revision=${GIT_REVISION}" "$@"
+ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "${GIT_ROOT}/ansible/hosts" --ask-become-pass --ask-vault-pass --extra-vars "playbook_revision=${GIT_REVISION}" "$@"
 
 if [[ "$?" = "0" ]]; then
   echo -e "*Deployment of playbook \"_${PLAYBOOK}_\" successfully completed*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':ok_hand:' --attachment 'good' > /dev/null

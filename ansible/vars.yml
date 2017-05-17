@@ -235,11 +235,11 @@ websites:
 #   alternative_names:
 #     - "www.savadaba.nl"
 
-# - name: "sodi.nl"
-#   user: "sodi"
-#   database: "sodi"
-#   alternative_names:
-#     - "www.sodi.nl"
+  - name: "sodi.{{ canonical_hostname }}"
+    user: "sodi"
+    alternative_names:
+      - "sodi.nl"
+      - "www.sodi.nl"
 
 # - name: "stichtingsticky.nl"
 #   user: "stichting"

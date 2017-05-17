@@ -189,6 +189,12 @@ websites:
       - "dgdarc.com"
       - "www.dgdarc.com"
 
+  - name: "digidecs.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names:
+      - "declaraties.{{ canonical_hostname }}"
+      - "declareren.{{ canonical_hostname }}"
+
   - name: "indievelopment.{{ inventory_hostname }}"
     user: "indievelopment"
     database: "indievelopment"
@@ -197,10 +203,6 @@ websites:
       - "www.indievelopment.nl"
       - "indiedevelopment.nl"
       - "www.indiedevelopment.nl"
-
-  - name: "digidecs.{{ canonical_hostname }}"
-    user: "commit"
-    alternative_names: []
 
   - name: "koala.{{ canonical_hostname }}"
     custom_config: true
@@ -223,12 +225,6 @@ websites:
   - name: "radio.{{ canonical_hostname }}"
     user: "commit"
     alternative_names: []
-
-  - name: "digidecs.{{ canonical_hostname }}"
-    user: "commit"
-    alternative_names:
-      - "declaraties.{{ canonical_hostname }}"
-      - "declareren.{{ canonical_hostname }}"
 
 # - name: "savadaba.nl"
 #   custom_config: true

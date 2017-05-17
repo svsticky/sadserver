@@ -21,14 +21,46 @@ GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 PLAYBOOK="$1"
-SLACKTEE="$(which slacktee.sh) --config ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
+SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
 
-echo -e "*Deployment of playbook \"_${PLAYBOOK}_\" started by ${USER}*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':construction:' --attachment '#46c4ff' > /dev/null
+# This function sends messages to Slack using `slacktee.sh`
+#
+# The first argument is the icon to accompany the message with [1]
+# The second argument is the message highlight color
+# All remaining strings are used in the message.
+#
+# [1]: https://www.webpagefx.com/tools/emoji-cheat-sheet/
+function notify() {
+  # ${@:3} means: all arguments except for the first two
+  echo -e "${@:3}" | ${SLACKTEE} --icon $1 --attachment $2 > /dev/null
+}
 
-ANSIBLE_SSH_PIPELINING=true ansible-playbook -i "${GIT_ROOT}/ansible/hosts" --ask-become-pass --ask-vault-pass --extra-vars "playbook_revision=${GIT_REVISION}" "$@"
+notify \
+  ':construction:' \
+  '#46c4ff' \
+  "*Deployment of playbook \`${PLAYBOOK}\` started by ${USER}* \n" \
+  "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
+
+ANSIBLE_SSH_PIPELINING=true \
+  ansible-playbook \
+  --inventory \
+  "${GIT_ROOT}/ansible/hosts" \
+  --ask-become-pass \
+  --ask-vault-pass \
+  --extra-vars \
+  "playbook_revision=${GIT_REVISION}" \
+  "$@"
 
 if [[ "$?" = "0" ]]; then
-  echo -e "*Deployment of playbook \"_${PLAYBOOK}_\" successfully completed*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':ok_hand:' --attachment 'good' > /dev/null
+  notify \
+    ':ok_hand:' \
+    'good' \
+    "*Deployment of playbook \`${PLAYBOOK}\` successfully completed* \n" \
+    "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
 else
-  echo -e "@it-crowd-commissie *Deployment of playbook \"_${PLAYBOOK}_\" FAILED!*\n_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_" | ${SLACKTEE} --icon ':exclamation:' --attachment 'danger' > /dev/null
+  notify \
+    ':exclamation:' \
+    'danger' \
+    "@it-crowd-commissie *Deployment of playbook \`${PLAYBOOK}\` FAILED!* \n" \
+    "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
 fi

@@ -213,6 +213,7 @@
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
+  when: not staging
 
 - block:
   - name: "ensure webrick script is present in development"

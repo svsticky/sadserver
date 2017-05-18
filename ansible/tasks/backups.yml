@@ -61,5 +61,6 @@
       - "backup-admins.timer"
       - "backup-db.timer"
       - "backup-websites.timer"
+    when: not staging
 
   tags: "backups"

@@ -170,7 +170,7 @@ fail2ban:
       logpath: "/var/log/auth.log"
 
 # the upload limit for php-fpm and nginx in megabytes
-upload_limit: 15
+upload_limit: 30
 
 # Defines the default of requesting staging certificates, or not.
 # When true, no certificates are requested for `alternative_names`.

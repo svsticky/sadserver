@@ -2,25 +2,24 @@
 
 # Database credentials
 DATABASE_USER=koala
-DATABASE_PASSWORD={{ lookup('file', 'credentials/mysql/koala') }}
+DATABASE_PASSWORD={{ secret_mysql.koala_password }}
 DATABASE_SOCKET=/var/run/mysqld/mysqld.sock
 
-# Secrets
-SECRET_KEY_BASE={{ lookup('password', 'credentials/koala/rails_secret chars=hexdigits length=128') }}
-DEVISE_SECRET={{ lookup('password', 'credentials/koala/devise_secret chars=hexdigits length=128') }}
+SECRET_KEY_BASE={{ secret_koala.rails_secret }}
+DEVISE_SECRET={{ secret_koala.devise_secret }}
 
 # API tokens
-MAILGUN_DOMAIN=
-MAILGUN_TOKEN=
-CHECKOUT_TOKEN={{ lookup('password', 'credentials/koala/checkout_token chars=hexdigits length=128') }}
+MAILGUN_DOMAIN=svsticky.nl
+MAILGUN_TOKEN={{ secret_mailgun_token }}
+CHECKOUT_TOKEN={{ secret_koala.checkout_token }}
 
 # AWS credentials
-AWS_ACCESS=
-AWS_SECRET=
+AWS_ACCESS={{ secret_koala.aws_access_key }}
+AWS_SECRET={{ secret_koala.aws_secret_key }}
 
 # Mollie
 MOLLIE_DOMAIN=https://api.mollie.nl
-MOLLIE_TOKEN=
+MOLLIE_TOKEN={{ secret_mollie_token }}
 MOLLIE_VERSION=v1
 
 # Other

@@ -22,7 +22,7 @@
   - name: "generate and set database root password if not set"
     mysql_user:
       name: "root"
-      password: "{{ lookup('password', 'credentials/mysql/root length=128 chars=hexdigits') }}"
+      password: "{{ secret_mysql.root_password }}"
 
   - name: "disable any existing authentication plugin for root user"
     command: 'mysql -NBe "{{ item }}"'
@@ -62,7 +62,7 @@
   - name: "create website database users"
     mysql_user:
       name: "{{ item.database }}"
-      password: "{{ lookup('password', 'credentials/mysql/{{ item.database }} length=64 chars=hexdigits') }}"
+      password: "[secret_mysql][item.database + '_password']"
       priv: "{{ item.database }}.*:ALL"
       state: "present"
     with_items: "{{ websites }}"

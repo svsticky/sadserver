@@ -2,4 +2,4 @@
 
 [client]
 user=root
-password={{ lookup('file', 'credentials/mysql/root') }}
+password={{ secret_mysql.root_password }}

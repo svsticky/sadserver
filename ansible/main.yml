@@ -6,6 +6,8 @@
   become_method: "sudo"
   vars_files:
     - "vars.yml"
+    - "credentials/shared.yml"
+    - "credentials/{% if staging %}staging{% else %}production{% endif %}.yml"
 
   handlers:
     - name: "restart nginx"

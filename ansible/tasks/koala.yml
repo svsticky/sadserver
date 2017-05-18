@@ -14,7 +14,7 @@
   - name: "ensure koala database user exists"
     mysql_user:
       name: "koala"
-      password: "{{ lookup('password', 'credentials/mysql/koala length=64 chars=hexdigits') }}"
+      password: "{{ secret_mysql.koala_password }}"
       host: "localhost"
       priv: "koala.*:ALL/koala-development.*:ALL"
     tags:
@@ -148,13 +148,18 @@
     tags:
       - "koala"
 
-  - name: "copy deploy keys for user koala"
+  - name: "copy deploy key (private) for user koala"
+    copy:
+      content: "{{ secret_deploy_key }}"
+      dest: "/home/koala/.ssh/id_ed25519"
+      mode: "0600"
+
+  - name: "copy deploy key (public) for user koala"
     template:
       src: "templates/home/ansible/.ssh/{{ item.from }}.j2"
       dest: "/home/koala/.ssh/{{ item.to }}"
       mode: "0600"
     with_items:
-      - { from: "deploy_ed25519",     to: "id_ed25519" }
       - { from: "deploy_ed25519.pub", to: "id_ed25519.pub" }
 
   - name: "check status of koala's local git repo"

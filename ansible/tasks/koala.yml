@@ -202,6 +202,15 @@
     tags:
       - "koala"
 
+  - name: "ensure assets are precompiled"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: 'eval "$(rbenv init - )"; rails assets:precompile'
+    args:
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "koala_assets_result"
+    changed_when: koala_assets_result.stdout.find("Already up-to-date.") == -1
+
   become: true
   become_user: "koala"
 

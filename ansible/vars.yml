@@ -274,8 +274,8 @@ koala:
   environment: "production"
   server: "unicorn" # or webrick
   # Works for me TM
-  git_ref: "{% if staging %}development{% else %}master{% endif %}"
-  ruby_version: "2.3.0"
+  git_ref: "{% if staging %}debt/rails-update{% else %}master{% endif %}"
+  ruby_version: "2.4.1"
 
 slacktee:
   revision: "2dd488b93fa13d305d27c1c820641e600845710e"

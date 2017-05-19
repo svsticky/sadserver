@@ -6,7 +6,7 @@ DATABASE_PASSWORD={{ lookup('file', 'credentials/mysql/koala') }}
 DATABASE_SOCKET=/var/run/mysqld/mysqld.sock
 
 # Secrets
-RAILS_SECRET={{ lookup('password', 'credentials/koala/rails_secret chars=hexdigits length=128') }}
+SECRET_KEY_BASE={{ lookup('password', 'credentials/koala/rails_secret chars=hexdigits length=128') }}
 DEVISE_SECRET={{ lookup('password', 'credentials/koala/devise_secret chars=hexdigits length=128') }}
 
 # API tokens
@@ -20,9 +20,8 @@ AWS_SECRET=
 
 # Mollie
 MOLLIE_DOMAIN=https://api.mollie.nl
-MOLLIE_TOKEN=test_g9JwwQACdTK8HiibZSZZwiV7rt2zeW
+MOLLIE_TOKEN=
 MOLLIE_VERSION=v1
 
 # Other
-IDEAL_PLATFORM=
 RAILS_ENV={{ koala.environment }}

@@ -22,7 +22,6 @@
       dest: "/var/www/commit/digidecs.{{ canonical_hostname }}/config.php"
       mode: "0744"
       owner: "commit"
-      group: "www-data"
 
   - name: "run composer"
     composer:
@@ -31,3 +30,10 @@
 
   become: true
   become_user: "commit"
+
+- name: "set www-data group on digidecs files"
+  file:
+    path: "/var/www/commit/digidecs.{{ canonical_hostname }}"
+    group: "www-data"
+    recurse: true
+    state: "directory"

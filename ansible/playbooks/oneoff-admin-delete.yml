@@ -18,7 +18,7 @@
       - name: "remove admin"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: 'eval "$(rbenv init - )"; bundle exec rails RAILS_ENV={{ koala.environment }} "admin:delete[{{ admin_to_remove}}]"'
+        shell: 'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }} "admin:delete[{{ admin_to_remove}}]"'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"

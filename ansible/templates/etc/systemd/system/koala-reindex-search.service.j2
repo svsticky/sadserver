@@ -8,5 +8,5 @@ OnFailure=koala-rake-fail@Reindex\x20fuzzy\x20search\x20index.service
 Type=simple
 User=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
-ExecStartPre=/home/koala/.rbenv/shims/bundle exec rails RAILS_ENV={{ koala.environment }} admin:reindex_members
+ExecStartPre=/home/koala/.rbenv/shims/rails RAILS_ENV={{ koala.environment }} admin:reindex_members
 ExecStart=/bin/sh -c "echo \"*Koala service \'Reindex fuzzy search index\' completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Koala service' --icon '::' --attachment 'good'"

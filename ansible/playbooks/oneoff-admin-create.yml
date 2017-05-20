@@ -27,7 +27,7 @@
       - name: "create admin"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: 'eval "$(rbenv init - )"; bundle exec rails RAILS_ENV={{ koala.environment }} "admin:create[{{ new_admins_username }}, {{ new_admins_password }}]"'
+        shell: 'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }} "admin:create[{{ new_admins_username }}, {{ new_admins_password }}]"'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"

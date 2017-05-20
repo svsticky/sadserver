@@ -251,6 +251,7 @@
     template:
       src: "templates/etc/nginx/sites-available/koala.j2"
       dest: "/etc/nginx/sites-available/koala.{{ canonical_hostname }}.conf"
+    notify: "reload nginx"
 
   - name: "enable koala's nginx config"
     file:

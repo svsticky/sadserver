@@ -16,6 +16,7 @@
     - "etc/nginx/nginx.conf"
     - "etc/ssl/certs/letsencrypt-ocsp-chain.pem"
     - "etc/php/7.0/fpm/php.ini"
+  notify: "reload nginx"
 
 - name: "ensure stock nginx configuration is not present"
   file:
@@ -24,6 +25,7 @@
   with_items:
     - "sites-available/default"
     - "sites-enabled/default"
+  notify: "reload nginx"
 
 - name: "copy dhparams and default nginx configuration"
   template:
@@ -32,12 +34,14 @@
   with_items:
     - "etc/nginx/dhparams.pem"
     - "etc/nginx/sites-available/default.conf"
+  notify: "reload nginx"
 
 - name: "enable default nginx config"
   file:
     src: "/etc/nginx/sites-available/default.conf"
     dest: "/etc/nginx/sites-enabled/default.conf"
     state: "link"
+  notify: "reload nginx"
 
 # This enables the nginx service, and reloads
 # or starts it if necessary. Let's Encrypt depends

@@ -135,7 +135,7 @@
     state: "stopped"
   when: staging
 
-- name: "create website directories"
+- name: "create regular website directories"
   file:
     path: "/var/www/{{ item.user }}/{{ item.name }}"
     owner: "{{ item.user }}"
@@ -144,6 +144,16 @@
     state: "directory"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
+
+- name: "create custom website directories"
+  file:
+    path: "/var/www/{{ item.user }}/{{ item.name }}"
+    owner: "{{ item.user }}"
+    group: "www-data"
+    mode: "0755"
+    state: "directory"
+  with_items:
+    - { user: "commit", name: "svsticky.nl" }
 
 - name: "create nginx includes directory"
   file:
@@ -167,11 +177,13 @@
   when: item.custom_config is undefined
   notify: "reload nginx"
 
-- name: "copy nginx configuration for savadaba.nl"
+- name: "copy custom nginx configurations"
   template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
-  with_items: "etc/nginx/sites-available/savadaba.nl.conf"
+    src: "templates/etc/nginx/sites-available/{{ item.src }}.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ item.dest }}.conf"
+  with_items:
+    - { src: "savadaba", dest: "savadaba.{{ canonical_hostname }}" }
+    - { src: "svsticky", dest: "{{ canonical_hostname }}" }
   notify: "reload nginx"
 
 - name: "enable regular nginx configurations"
@@ -183,15 +195,15 @@
   when: item.custom_config is undefined
   notify: "reload nginx"
 
-# Commented out because of DNS, uncomment when in
-# production
-# - name: "enable nginx configuration for savadaba.nl"
-#   file:
-#     src: "/etc/nginx/sites-available/{{ item }}"
-#     dest: "/etc/nginx/sites-enabled/{{ item }}"
-#     state: "link"
-#   with_items: "savadaba.nl.conf"
-#   notify: "reload nginx"
+- name: "enable custom nginx configurations"
+  file:
+    src: "/etc/nginx/sites-available/{{ item }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ item }}.conf"
+    state: "link"
+  with_items:
+    - "{{ canonical_hostname }}"
+    - "savadaba.{{ canonical_hostname }}"
+  notify: "reload nginx"
 
 - name: "create htpasswd.d directory for basic auth files"
   file:

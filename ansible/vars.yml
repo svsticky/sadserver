@@ -226,10 +226,11 @@ websites:
     user: "commit"
     alternative_names: []
 
-# - name: "savadaba.nl"
-#   custom_config: true
-#   alternative_names:
-#     - "www.savadaba.nl"
+  - name: "savadaba.{{ canonical_hostname }}"
+    custom_config: true
+    alternative_names:
+      - "savadaba.nl"
+      - "www.savadaba.nl"
 
   - name: "sodi.{{ canonical_hostname }}"
     user: "sodi"
@@ -237,10 +238,11 @@ websites:
       - "sodi.nl"
       - "www.sodi.nl"
 
-# - name: "stichtingsticky.nl"
-#   user: "stichting"
-#   alternative_names:
-#     - "www.stichtingsticky.nl"
+  - name: "stichting.{{ canonical_hostname }}"
+    user: "stichting"
+    alternative_names:
+      - "stichtingsticky.nl"
+      - "www.stichtingsticky.nl"
 
   - name: "studytrip.{{ canonical_hostname }}"
     user: "studytrip"
@@ -254,10 +256,10 @@ websites:
     custom_config: true
     alternative_names:
       - "www.{{ canonical_hostname }}"
-#     - "stickyutrecht.nl"
-#     - "www.stickyutrecht.nl"
-#     - "studieverenigingsticky.nl"
-#     - "www.studieverenigingsticky.nl"
+      - "stickyutrecht.nl"
+      - "www.stickyutrecht.nl"
+      - "studieverenigingsticky.nl"
+      - "www.studieverenigingsticky.nl"
 
   - name: "symposium.{{ canonical_hostname }}"
     user: "symposium"

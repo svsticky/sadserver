@@ -23,7 +23,7 @@ server {
   ssl_certificate      /etc/letsencrypt/live/{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/{{ canonical_hostname }}/privkey.pem;
 
-  root /var/www/bestuur/svsticky.nl;
+  root /var/www/commit/svsticky.nl;
   index index.php index.html index.htm;
 
   include includes/security-headers.conf;
@@ -45,10 +45,6 @@ server {
   location ~* /declaraties {
     return 301 https://digidecs.{{ canonical_hostname }}/;
    }
-
-  location ~* /fluxx {
-    return 301 https://docs.google.com/forms/d/e/1FAIpQLScmP2HYi9M4-vJTrh9BEYdHheWDJ3g2ZqYTbDfWi-quzVx_pg/viewform;
-  }
 
   location ~* /panda {
     return 301 https://www.youtube.com/watch?v=AC3Ejf7vPEY;

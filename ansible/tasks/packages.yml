@@ -39,9 +39,8 @@
   with_items:
     - "etc/slacktee.conf"
 
-- name: "enable unattended-upgrades notification"
+- name: "enable unattended-upgrades notification in production"
   service:
     name: "unattended-upgrades-output.timer"
-    enabled: "yes"
-    state: "started"
-  when: not staging
+    enabled: {% if staging %}false{% else %}true{% endif %}
+    state: "{% if staging %}stopped{% else %}started{% endif %}"

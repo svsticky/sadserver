@@ -7,11 +7,11 @@
     group: "root"
     mode: "0644"
 
-- name: "enable NOPASSWD for sudo group"
+- name: "set NOPASSWD for sudo group in staging"
   lineinfile:
     dest: "/etc/sudoers.d/ansible"
     line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
-    state: "present"
+    state: "{% if staging %}present{% else %}absent{% endif %}"
     create: true
     validate: "visudo -cf %s"
 

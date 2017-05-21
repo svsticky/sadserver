@@ -204,16 +204,15 @@
   notify:
     - "systemctl daemon-reload"
 
-- name: "ensure koala's timers are started and enabled"
+- name: "ensure koala's timers are started and enabled in production"
   service:
     name: "{{ item }}"
-    enabled: true
-    state: "started"
+    enabled: {% if staging %}false{% else %}true{% endif %}
+    state: "{% if staging %}stopped{% else %}started{% endif %}"
   with_items:
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
-  when: not staging
 
 - block:
   - name: "ensure webrick script is present in development"

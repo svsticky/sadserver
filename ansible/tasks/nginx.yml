@@ -128,12 +128,11 @@
   register: certbot_output
   changed_when: "'no action taken' not in certbot_output.stdout"
 
-- name: "disable certbot timer if on staging"
+- name: "ensure certbot timer is started in production"
   service:
     name: "certbot.timer"
-    enabled: false
-    state: "stopped"
-  when: staging
+    enabled: {% if staging %}false{% else %}true{% endif %}
+    state: "{% if staging %}stopped{% else %}started{% endif %}"
 
 - name: "create regular website directories"
   file:

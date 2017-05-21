@@ -42,5 +42,5 @@
 - name: "enable unattended-upgrades notification in production"
   service:
     name: "unattended-upgrades-output.timer"
-    enabled: {% if staging %}false{% else %}true{% endif %}
+    enabled: "{% if staging %}false{% else %}true{% endif %}"
     state: "{% if staging %}stopped{% else %}started{% endif %}"

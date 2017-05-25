@@ -180,7 +180,7 @@
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_gem_result"
-    changed_when: koala_gem_result.stdout.find("Installing") != -1
+    changed_when: "'Installing' in koala_gem_result.stdout"
     tags:
       - "koala"
 

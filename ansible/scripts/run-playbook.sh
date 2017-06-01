@@ -17,11 +17,48 @@ set -eEfuo pipefail
 # Although in strict mode, space character is not removed from $IFS
 # here, because of the spaces in $SLACKTEE
 
+USAGE="Usage: $0 playbook <production | staging>"
+if [ -z ${1+x} ]; then
+  echo $USAGE
+  exit 1
+fi
+if [ -z ${2+x} ]; then
+  echo $USAGE
+  exit 1
+fi
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 PLAYBOOK="$1"
 SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
+
+TARGET_HOST="dev.svsticky.nl"
+
+
+case $2 in
+  production)
+    read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/N]:" choice
+      case "$choice" in
+        fidgetspinner)
+          TARGET_HOST="svsticky.nl"
+          ;;
+        *)
+          echo "ABORTED DEPLOY"
+          exit 0
+          ;;
+      esac
+    ;;
+  staging)
+    TARGET_HOST="dev.svsticky.nl"
+    ;;
+  *)
+    echo  $USAGE
+    exit 1
+    ;;
+esac
+
+
+
 
 # This function sends messages to Slack using `slacktee.sh`
 #
@@ -48,6 +85,7 @@ ANSIBLE_SSH_PIPELINING=true \
   --ask-become-pass \
   --ask-vault-pass \
   --extra-vars \
+  --limit=${TARGET_HOST} \
   "playbook_revision=${GIT_REVISION}" \
   "$@"
 

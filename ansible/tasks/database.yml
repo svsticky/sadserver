@@ -62,6 +62,8 @@
   - name: "create website database users"
     mysql_user:
       name: "{{ item.database }}"
+      # Using dict syntax because variable names had to nested here.
+      # Link: https://stackoverflow.com/questions/40774205/ansible-nested-variables-in-template
       password: "[secret_mysql][item.database + '_password']"
       priv: "{{ item.database }}.*:ALL"
       state: "present"

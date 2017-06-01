@@ -274,7 +274,7 @@ koala:
   environment: "{% if staging %}staging{% else %}production{% endif %}"
   server: "unicorn" # or webrick
   # Change git-tag here to deploy new release in production
-  git_ref: "{% if staging %}development{% else %}v1.5.2{% endif %}"
+  git_ref: "{% if staging %}development{% else %}v1.6.0{% endif %}"
   ruby_version: "2.4.1"
 
 slacktee:

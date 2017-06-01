@@ -25,6 +25,13 @@ server {
 	gzip_static on;
 	try_files $uri @unicorn;
 
+	location ~* ^/assets/ {
+		expires 1y;
+		add_header Cache-Control public;
+
+		add_header ETag "";
+	}
+
 	location ~* ^/api/ {
 		if (-f /var/www/koala.{{ canonical_hostname }}/MAINTENANCE_MODE) {
 		    error_page 503 /503.json;

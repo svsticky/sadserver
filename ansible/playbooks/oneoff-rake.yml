@@ -13,7 +13,7 @@
       - name: "custom rake task"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: 'eval "$(rbenv init - )"; bundle exec rake RAILS_ENV={{ koala.environment }} {{ rake_task }}'
+        shell: 'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }} {{ rake_task }}'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"

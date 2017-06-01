@@ -57,6 +57,22 @@
       - "ruby"
       - "koala"
 
+  - name: "add apt key for yarn repository"
+    apt_key:
+      url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
+      state: "present"
+
+  - name: "add yarn repository"
+    apt_repository:
+      repo: "deb https://dl.yarnpkg.com/debian/ stable main"
+      state: "present"
+
+  - name: "install yarn"
+    apt:
+     name: "yarn"
+     state: "present"
+     update_cache: true
+
   - name: "ensure koala service file is present"
     template:
       src: "templates/{{ item }}.j2"
@@ -164,14 +180,14 @@
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_gem_result"
-    changed_when: koala_gem_result.stdout.find("Installing") != -1
+    changed_when: "'Installing' in koala_gem_result.stdout"
     tags:
       - "koala"
 
   - name: "ensure tmp directories exist"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rake tmp:create'
+    shell: 'eval "$(rbenv init - )"; rails tmp:create'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
@@ -185,6 +201,15 @@
       mode: "0775"
     tags:
       - "koala"
+
+  - name: "ensure assets are precompiled"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: 'eval "$(rbenv init - )"; rails assets:precompile'
+    args:
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "koala_assets_result"
+    changed_when: koala_assets_result.stdout.find("Already up-to-date.") == -1
 
   become: true
   become_user: "koala"

@@ -8,6 +8,6 @@ OnFailure=koala-rake-fail@Clean\x20users\x20table.service
 Type=simple
 User=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
-ExecStart=/home/koala/.rbenv/shims/bundle exec rake RAILS_ENV={{ koala.environment }} devise:clean_unconfirmed_emails devise:clean_reset_tokens
+ExecStart=/home/koala/.rbenv/shims/rails RAILS_ENV={{ koala.environment }} devise:clean_unconfirmed_emails devise:clean_reset_tokens
 
 # No notification to Slack on success, because these jobs are not vital to Koala's operation

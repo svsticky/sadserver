@@ -62,7 +62,7 @@
   - name: "create website database users"
     mysql_user:
       name: "{{ item.database }}"
-      # Using dict syntax because variable names had to nested here.
+      # Using the bracket syntax to refer to the dict, in order to dynamically construct variable names.
       # Link: https://stackoverflow.com/questions/40774205/ansible-nested-variables-in-template
       password: "[secret_mysql][item.database + '_password']"
       priv: "{{ item.database }}.*:ALL"

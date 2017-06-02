@@ -254,7 +254,7 @@
           state: "dump"
           target: "{{ koala_backup_dest }}"
           login_user: "koala"
-          login_password: "{{ lookup('file', 'credentials/mysql/koala') }}"
+          login_password: "{{ secret_mysql.koala_password }}"
 
       - name: "get the backup"
         fetch:

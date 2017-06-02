@@ -1,0 +1,13 @@
+---
+- name: "clone sodi website from git"
+  git:
+    repo: "git@github.com:svsticky/sodi.nl.git"
+    dest: "/var/www/sodi.{{ canonical_hostname }}"
+    version: "master"
+
+- name: "set www-data group on sodi files"
+  file:
+    path: "/var/www/sodi.{{ canonical_hostname }}"
+    group: "www-data"
+    recurse: true
+    state: "directory"

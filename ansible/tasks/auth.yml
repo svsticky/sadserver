@@ -26,6 +26,15 @@
     - "home/ansible/.ssh/deploy_ed25519"
     - "home/ansible/.ssh/deploy_ed25519.pub"
 
+- name: "symlink deploy keys for root"
+  file:
+    src: "/home/ansible/.ssh/{{ item.src }}"
+    path: "/root/.ssh/{{ item.dest }}"
+    state: link
+  with_items:
+    - { src: "deploy_ed25519", dest: "id_ed25519" }
+    - { src: "deploy_ed25519.pub", dest: "id_ed25519.pub" }
+
 - name: "remove public keys for root account"
   file:
     path: "/root/.ssh/authorized_keys"

@@ -1,13 +1,13 @@
-- name: "ensure koala is not running"
-  service:
-    name: "koala"
-    state: "stopped"
-  become: true
-  become_user: root
-
 - name: "enable Koala's maintenance mode"
   file:
     state: "touch"
     dest: "/var/www/koala.{{ canonical_hostname }}/MAINTENANCE_MODE"
   become: true
   become_user: "koala"
+
+- name: "ensure koala is not running"
+  service:
+    name: "koala"
+    state: "stopped"
+  become: true
+  become_user: root

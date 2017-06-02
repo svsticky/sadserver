@@ -84,8 +84,8 @@ ANSIBLE_SSH_PIPELINING=true \
   "${GIT_ROOT}/ansible/hosts" \
   --ask-become-pass \
   --ask-vault-pass \
-  --extra-vars \
   --limit=${TARGET_HOST} \
+  --extra-vars \
   "playbook_revision=${GIT_REVISION}" \
   "$@"
 

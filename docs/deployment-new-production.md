@@ -89,11 +89,13 @@ be done manually:
 
 After these steps, everything is migrated, and the services should be available
 from the same URL's as before. Koala will experience downtime from the moment
-that point 3 has finished, other services from the moment point 5 has finished.
+its service has been stopped on the old server, until it has eventually been
+started on the new server.
 
 After this has all finished, we can point another DNS name in the new DNS zone
-to the old server, to keep it available for a while as backup. We should update
-the site names in its webserver accordingly, and perhaps disable Koala entirely,
-so people don't enter data there unknowingly.
+to the old server (e.g. `old.svsticky.nl`), to keep it available for a while
+as backup. We should update the site names in its webserver accordingly, and
+disable Koala entirely, so users don't enter data when they arrive there because
+of DNS caching.
 
  [reverse DNS]:https://en.wikipedia.org/wiki/Reverse_DNS_lookup

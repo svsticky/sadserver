@@ -12,7 +12,7 @@ server {
   ssl_certificate      /etc/letsencrypt/live/{{ item.name }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/{{ item.name }}/privkey.pem;
 
-  root /var/www/{{ item.user }}/{{ item.name }};
+  root /var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{ item.name }};
   index index.php index.html index.htm;
 
   include includes/security-headers.conf;

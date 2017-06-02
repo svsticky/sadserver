@@ -206,6 +206,7 @@ websites:
 
   - name: "koala.{{ canonical_hostname }}"
     custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
     alternative_names:
       - "intro.{{ canonical_hostname }}"
       - "leden.{{ canonical_hostname }}"
@@ -213,12 +214,14 @@ websites:
 
   - name: "metrics.{{ canonical_hostname }}"
     custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
     alternative_names:
       - "status.{{ canonical_hostname }}"
 
   - name: "phpmyadmin.{{ canonical_hostname }}"
     custom_config: true
     database: "phpmyadmin"
+    # Hostnames have to be set in custom nginx config as well!
     alternative_names:
       - "pma.{{ canonical_hostname }}"
 
@@ -228,6 +231,7 @@ websites:
 
   - name: "savadaba.{{ canonical_hostname }}"
     custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
     alternative_names:
       - "savadaba.nl"
       - "www.savadaba.nl"
@@ -254,6 +258,7 @@ websites:
     user: "commit"
     database: "svsticky"
     custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
     alternative_names:
       - "www.{{ canonical_hostname }}"
       - "stickyutrecht.nl"

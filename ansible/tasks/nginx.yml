@@ -134,25 +134,25 @@
     enabled: "{% if staging %}false{% else %}true{% endif %}"
     state: "{% if staging %}stopped{% else %}started{% endif %}"
 
-- name: "create regular website directories"
+- name: "create website directories for regular websites"
   file:
-    path: "/var/www/{{ item.user }}/{{ item.name }}"
-    owner: "{{ item.user }}"
+    path: "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{ item.name }}"
+    owner: "{{ item.user | default(omit) }}"
     group: "www-data"
     mode: "0755"
     state: "directory"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
 
-- name: "create custom website directories"
+- name: "create website directories for custom websites"
   file:
-    path: "/var/www/{{ item.user }}/{{ item.name }}"
-    owner: "{{ item.user }}"
+    path: "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{ item.name }}"
+    owner: "{{ item.user | default(omit) }}"
     group: "www-data"
     mode: "0755"
     state: "directory"
   with_items:
-    - { user: "commit", name: "svsticky.nl" }
+    - { user: "commit", name: "{{ canonical_hostname }}" }
 
 - name: "create nginx includes directory"
   file:

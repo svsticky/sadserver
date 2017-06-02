@@ -34,7 +34,7 @@ $ ssh <user>@svsticky.nl
 
 # Dump all databases to a file databases.sql, you will be prompted for the
 # mysql root password
-$ mysqldump --user root --databases dgdarc indievelopment koala sticky_wp > databases.sql
+$ mysqldump --user root --databases dgdarc indievelopment koala svsticky > databases.sql
 
 $ exit
 
@@ -53,29 +53,18 @@ $ scp <user>@svsticky.nl:~/databases.sql .
 $ ./scripts/bootstrap-new-host.sh svsticky.nl
 ```
 
-**Change the inventory** so it contains the new production server
-
-```bash
-# On your local machine, whilst in skyblue/ansible
-$ echo "svsticky.nl ansible_python_interpreter=/usr/bin/python2.7 staging=false" > hosts
-
-# Commit your changes
-$ git add hosts
-$ git commit -m "IT'S HAPPENING"
-```
-
 **Run the playbook** on the new production server
 
 ```bash
 # On your local machine, whilst in skyblue/ansible
-$ ./scripts/run-playbook.sh main.yml
+$ ./scripts/run-playbook.sh main.yml production
 ```
 
 **Copy over the old databases**. You can find the database password in
 Lastpass.
 
 ```bash
-$ scp databases.sql > <user>@svsticky.nl:~/databases.sql
+$ scp databases.sql <user>@svsticky.nl:~/databases.sql
 $ ssh user@svsticky.nl
 $ mysql -u root -p < databases.sql
 ```
@@ -83,14 +72,13 @@ $ mysql -u root -p < databases.sql
 **Start koala on the new server**
 
 ```bash
-$ ssh <user>@svsticky.nl
-$ sudo systemctl start koala
+# On your local machine, whilst in skyblue/ansible
+$ ./scripts/run-playbook.sh playbooks/oneoff-koala-maintenance-off.yml production
 ```
 
 **Migrate the websites** The following is not part of the playbook and needs to
 be done manually:
 
- - SODI - the new one, preferably
  - Sticky's WordPress site - here be dragons
  - Symposium
  - Indievelopment

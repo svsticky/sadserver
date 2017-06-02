@@ -108,18 +108,6 @@ users:
       - id: "marc.manual.pub"
         state: "present"
 
-  - name: "sodi"
-    admin: false
-    home_prefix: "/var/www"
-    state: "present"
-    keys:
-      - id: "emielvanrijn.github.pub"
-        state: "present"
-      - id: "rcdewit.github.pub"
-        state: "present"
-      - id: "yorickvanzweeden.github.pub"
-        state: "present"
-
   - name: "stichting"
     admin: false
     home_prefix: "/var/www"
@@ -237,7 +225,6 @@ websites:
       - "www.savadaba.nl"
 
   - name: "sodi.{{ canonical_hostname }}"
-    user: "sodi"
     alternative_names:
       - "sodi.nl"
       - "www.sodi.nl"

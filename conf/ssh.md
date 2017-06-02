@@ -6,7 +6,7 @@ Root login staat uit, net zoals password login. Je hebt keys nodig.
 
 ### Administrators
 
-- _admin (wordt binnenkort uitgefaseerd)_
+- _admin (machine user, gebruikt door Koala)_
 - arian
 - laurens
 - maarten

@@ -1,7 +1,12 @@
 `skyblue`
 ========
 
-Deze VPS draait meerdere websites en heeft alles overgenomen van de oude server in de kelder sinds de zomer van 2014. De IT Crowd heeft de server in beheer, maar ook de CommIT heeft beperkt toegang tot sommige sites. Daarnaast heeft de CommIT een team op GitHub waarbij ze meerdere projecten kunnen aanpassen. Hierna kan de IT Crowd de laatste dingen testen en op de server deployen. Controle over de VPS kan via SSH en via een controlepaneel van CloudVPS.
+Deze VPS draait meerdere websites en heeft alles overgenomen van de oude server
+in de kelder sinds de zomer van 2014. De IT Crowd heeft de server in beheer,
+maar ook de CommIT heeft beperkt toegang tot sommige sites. Daarnaast heeft de
+CommIT een team op GitHub waarbij ze meerdere projecten kunnen aanpassen.
+Hierna kan de IT Crowd de laatste dingen testen en op de server deployen.
+Controle over de VPS kan via SSH en via een controlepaneel van CloudVPS.
 
 System specifications
 ---------------------
@@ -27,7 +32,8 @@ IP-adres
 SSL-certificaten
 ----------------
 
-Voor informatie over de voorziening van SSL-certificaten, kijk [hier](../tutorials/letsencrypt.md).
+Voor informatie over de voorziening van SSL-certificaten, kijk
+[hier](../tutorials/letsencrypt.md).
 
 Admins
 ------
@@ -43,7 +49,7 @@ Daemons
 
  - SSH
  - nginx
- - MongoDB
+ - MariaDB
  - Ruby
 
 Production services
@@ -53,13 +59,13 @@ Production services
  - `digidecs.svsticky.nl`
 
  - `koala.svsticky.nl` (+ `intro.svsticky.nl`)
- - `betalingen.svsticky.nl`
 
- - `darksideof.it`
  - `dgdarc.nl`
+ - `idata.svsticky.nl`
  - `indievelopment.nl`
  - `phpmyadmin.svsticky.nl`
  - `radio.svsticky.nl`
+ - `savadaba.nl`
  - `sodi.nl`
  - `stichtingsticky.nl`
  - `studiereis.svsticky.nl`

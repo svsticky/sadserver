@@ -157,14 +157,31 @@
       - { from: "deploy_ed25519",     to: "id_ed25519" }
       - { from: "deploy_ed25519.pub", to: "id_ed25519.pub" }
 
+  - name: "check status of koala's local git repo"
+    git:
+      repo: "git@github.com:svsticky/constipated-koala.git"
+      dest: "/var/www/koala.{{ canonical_hostname }}"
+      clone: false
+      update: false
+    register: "koala_checkout_result"
+
+  - name: "set status of koala repo in fact"
+    set_fact:
+      koala_updated: true
+    when:
+      # List is evaluated as logical AND
+      - koala_checkout_result.changed
+      - koala_checkout_result.before != None
+
   - include: "playbooks/.koala-maintenance-on.yml"
+    when: koala_updated | default(false)
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
       version: "{{ koala.git_ref }}"
-    register: "koala_checkout_result"
+    when: koala_checkout_result.changed
     tags:
       - "koala"
 
@@ -248,13 +265,12 @@
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
 
-    when: >
-      koala_checkout_result.before != koala_checkout_result.after and
-      koala_checkout_result.before != 'null'
+    when: koala_updated | default(false)
     become: true
     become_user: "koala"
 
   - include: "playbooks/.koala-maintenance-off.yml"
+    when: koala_updated | default(false)
 
   become: true
   become_user: "koala"

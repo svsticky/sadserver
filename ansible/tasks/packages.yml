@@ -8,20 +8,13 @@
     - "htop"
     - "unattended-upgrades"
 
-- name: "install slacktee"
-  get_url:
-    url: "https://raw.githubusercontent.com/course-hero/slacktee/{{ slacktee.revision }}/slacktee.sh"
-    dest: "/usr/local/bin/slacktee"
-    mode: "0755"
-    checksum: "{{ slacktee.checksum }}"
-
 - name: "update all packages"
   apt:
     upgrade: "yes"
     update_cache: "yes"
     cache_valid_time: 100
 
-- name: "configure unattended-upgrades and slacktee"
+- name: "configure unattended-upgrades"
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
@@ -32,15 +25,22 @@
   notify:
     - "systemctl daemon-reload"
 
+- name: "enable unattended-upgrades notification in production"
+  service:
+    name: "unattended-upgrades-output.timer"
+    enabled: "{% if staging %}false{% else %}true{% endif %}"
+    state: "{% if staging %}stopped{% else %}started{% endif %}"
+
+- name: "install slacktee"
+  get_url:
+    url: "https://raw.githubusercontent.com/course-hero/slacktee/{{ slacktee.revision }}/slacktee.sh"
+    dest: "/usr/local/bin/slacktee"
+    mode: "0755"
+    checksum: "{{ slacktee.checksum }}"
+
 - name: "configure slacktee"
   template:
     src: "templates/{{ item }}"
     dest: "/{{ item }}"
   with_items:
     - "etc/slacktee.conf"
-
-- name: "enable unattended-upgrades notification in production"
-  service:
-    name: "unattended-upgrades-output.timer"
-    enabled: "{% if staging %}false{% else %}true{% endif %}"
-    state: "{% if staging %}stopped{% else %}started{% endif %}"

@@ -9,5 +9,5 @@ Type=simple
 User=root
 Group=root
 PrivateTmp=true
-ExecStartPre=/usr/local/bin/backup-websites.sh
-ExecStart=/bin/sh -c "echo \"*Backup of all websites completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'"
+ExecStartPre=/usr/local/bin/backup-to-s3.sh websites
+ExecStart=/bin/sh -c "echo \"*{% if staging %}_FROM STAGING:_ {% endif %}Backup of all websites completed* _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'"

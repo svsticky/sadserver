@@ -13,7 +13,7 @@
 ##
 
 # Unofficial Bash strict mode
-set -Efuo pipefail
+set -eEfuo pipefail
 # Although in strict mode, space character is not removed from $IFS
 # here, because of the spaces in $SLACKTEE
 

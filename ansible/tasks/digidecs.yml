@@ -3,7 +3,7 @@
   apt:
     name: "{{ item }}"
     state: "present"
-  become: "true"
+  become: true
   with_items:
     - "composer"
     - "php7.0-curl"

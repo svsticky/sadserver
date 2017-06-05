@@ -14,13 +14,20 @@
 ## permission-wise, while this script remains readable for everyone.
 ##
 ## A new backup source can be added by adding a new "elif" block in the if
-## statement down below.
+## statement down below, and updating this block and $USAGE.
 
 # Unofficial Bash strict mode
 set -eEfuo pipefail
 IFS=$'\n\t'
 
-SOURCE="${1:-none}"
+USAGE="Usage: ${0} <admins | databases | websites>"
+
+if [[ -z ${1+x} ]]; then
+  echo "${USAGE}"
+  exit 1
+fi
+
+SOURCE="${1}"
 TMPDIR="/tmp"
 FILE="${SOURCE}-$(date +'%Y-%m-%d')"
 HASH="sha256" # Choose from md5/sha1/sha224/sha256/sha384/sha512
@@ -28,10 +35,14 @@ HASH="sha256" # Choose from md5/sha1/sha224/sha256/sha384/sha512
 S3BUCKET="{% if staging %}staging-{% endif %}sticky-automatic-backups"
 
 cleanup() {
-    # Ensure files are deleted, in case script crashes
+  # Ensure files are deleted, in case script crashes
+
+  # Check because file extension is only set when a valid backup source is passed
+  if [[ -n ${FILE_EXT+x} ]]; then
     # Use {TMPDIR:?} so this will *never* remove files from /, even though "set -u" should already prevent this
     rm -rf "${TMPDIR:?}/${FILE}.${FILE_EXT}" 1> /dev/null
     rm -rf "${TMPDIR:?}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
+  fi
 }
 
 trap cleanup EXIT
@@ -53,7 +64,7 @@ elif [[ ${SOURCE} == "databases" ]]; then
   source /usr/local/bin/backup-to-s3-credentials.sh
   mysqldump --user="${DB_USER}" --password="${DB_PASS}" --all-databases | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
 else
-  echo "Unknown/no backup source specified."
+  echo "${USAGE}"
   exit 1
 fi
 

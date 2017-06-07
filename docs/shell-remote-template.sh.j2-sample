@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+##
+## Explain what this script does here.
+##
+## USAGE: shell-template.sh <PARAMETERS>
+##
+
+# Unofficial Bash strict mode
+set -eEfuo pipefail
+IFS=$'\n\t'

@@ -2,7 +2,8 @@
 These are some guidelines you should probably adhere to when working on shell
 scripts in this repository. If you want to deviate from these guidelines, that
 is of course fair, as long as you have a good reason. Bonus points if you add
-documentation about such deviations in this guide.
+documentation about such deviations in this guide. A quick checklist can be
+found [below](#checklist).
 
 ## ShellCheck
 [ShellCheck] is a linter that gives all kinds of warnings and suggestions
@@ -49,32 +50,36 @@ trap cleanup EXIT
 
 ## **Checklist**
 
-1. Use Bash, start with the following shebang: 
+1. Use Bash, start with the following shebang:
    `#!/usr/bin/env bash`.
-1. Add some documentation that explains what the script does, including one
-line that shows what parameters are accepted and in what order. E.g. `USAGE:
-bootstrap-new-host.sh <HOSTNAME | IP>`.
 1. For server-side scripts:
    1. Follow it by the Ansible header:
       `# {{ ansible_managed }}`.
    1. Suffix the file name with the `j2` file extension.
-1. Add abovementioned Strict Mode to the top of your script, directly
-following the shebang and `ansible_managed` header:
+1. Add some documentation that explains what the script does, including one
+line that shows what parameters are accepted and in what order. E.g. `USAGE:
+bootstrap-new-host.sh <HOSTNAME | IP>`.
+1. Add abovementioned Strict Mode to your script:
    ```
    # Unofficial Bash strict mode
    set -eEfuo pipefail
    IFS=$'\n\t'
    ```
-1. Run every edit through the ShellCheck linter, using a plugin in your
-   favorite editor or by running:
-   `shellcheck <PATH_TO_SCRIPT>`.
 1. Use Bash's extended test command, instead of the regular test
 construct (e.g. in if statements), because it's less
 [error-prone][testcommand]:
    ~~`if [ true ]`~~ `if [[ true ]]`
+1. Run every edit through the ShellCheck linter, using a plugin in your
+   favorite editor or by running:
+   `shellcheck <PATH_TO_SCRIPT>`.
+
+Templates for [local][localtemplate] and [remote][remotetemplate] scripts are
+available, that start you off on the right foot.
 
 [ShellCheck]: https://github.com/koalaman/shellcheck
 [badcode]: https://github.com/koalaman/shellcheck/blob/master/README.md#gallery-of-bad-code
 [strictmode]: http://redsymbol.net/articles/unofficial-bash-strict-mode/
 [ifs]: https://en.wikipedia.org/wiki/Internal_field_separator
 [testcommand]: https://stackoverflow.com/questions/669452/is-preferable-over-in-bash
+[localtemplate]: ./shell-local-template.sh-sample
+[remotetemplate]: ./shell-remote-template.sh.j2-sample

@@ -24,8 +24,11 @@ what all commands do:
 - `set -u`: Exit when any unset variable is encountered.
 - `IFS=$'\n\t'`: Sets the Bash variable for the [Internal Field
 Separator][ifs] to just a newline and a tab character, while omitting the
-space character. This makes sure that word splitting does not take place on
-spaces.
+space character. The Internal Field Separator is the delimiter that is used to
+determine how [_word splitting_][wordsplitting] is performed. This makes sure
+that word splitting does not take place on spaces. As mentioned in the Strict
+Mode [article][strictmode], this gives us less surprising and confusing
+behavior. You can find a nice example there as well.
 
 ## Use of exit codes
 Most shell scripts we have are run non-interactively. This means we want to
@@ -80,6 +83,7 @@ available, that start you off on the right foot.
 [badcode]: https://github.com/koalaman/shellcheck/blob/master/README.md#gallery-of-bad-code
 [strictmode]: http://redsymbol.net/articles/unofficial-bash-strict-mode/
 [ifs]: https://en.wikipedia.org/wiki/Internal_field_separator
+[wordsplitting]: https://www.gnu.org/software/bash/manual/html_node/Word-Splitting.html
 [testcommand]: https://stackoverflow.com/questions/669452/is-preferable-over-in-bash
 [localtemplate]: ./shell-local-template.sh-sample
 [remotetemplate]: ./shell-remote-template.sh.j2-sample

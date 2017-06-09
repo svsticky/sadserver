@@ -31,7 +31,7 @@ fi
 
 SOURCE="${1}"
 TMPDIR="/tmp"
-FILE="${SOURCE}-$(date +'%Y-%m-%d')"
+FILE="${SOURCE}-$(date +'%Y%m%d-%H%M%S')"
 HASH="sha256" # Choose from md5/sha1/sha224/sha256/sha384/sha512
 
 S3BUCKET="{% if staging %}staging-{% endif %}sticky-automatic-backups"

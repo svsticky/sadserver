@@ -4,17 +4,19 @@
 ##
 ## USAGE: backup-to-s3.sh <BACKUP_SOURCE>
 ##
-## This script can be used manually or by a service to backup a few sources of
-## our data to Amazon S3:
+## This script can be used manually or by a service to backup a few
+## sources of our data to Amazon S3:
 ## - the admins' home directories
-## - the data of our websites (and also the home directories of its users)
+## - the data of our websites (and also the home directories of its
+## users)
 ## - the databases of our websites
 ## To backup databases, it depends on the database credentials stored in
-## backup-to-s3-credentials.sh. This is done so that file can be locked down
-## permission-wise, while this script remains readable for everyone.
+## backup-to-s3-credentials.sh. This is done so that file can be locked
+## down permission-wise, while this script remains readable for
+## everyone.
 ##
-## A new backup source can be added by adding a new "elif" block in the if
-## statement down below, and updating this block and $USAGE.
+## A new backup source can be added by adding a new "elif" block in the
+## if statement down below, and updating this block and $USAGE.
 
 # Unofficial Bash strict mode
 set -eEfuo pipefail
@@ -37,9 +39,11 @@ S3BUCKET="{% if staging %}staging-{% endif %}sticky-automatic-backups"
 cleanup() {
   # Ensure files are deleted, in case script crashes
 
-  # Check because file extension is only set when a valid backup source is passed
+  # Check because file extension is only set when a valid backup source
+  # is passed
   if [[ -n ${FILE_EXT+x} ]]; then
-    # Use {TMPDIR:?} so this will *never* remove files from /, even though "set -u" should already prevent this
+    # Use {TMPDIR:?} so this will *never* remove files from /, even
+    # though "set -u" should already prevent this
     rm -rf "${TMPDIR:?}/${FILE}.${FILE_EXT}" 1> /dev/null
     rm -rf "${TMPDIR:?}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
   fi
@@ -50,29 +54,41 @@ trap cleanup EXIT
 if [[ ${SOURCE} == "admins" ]]; then
   S3PATH="${SOURCE}"
   FILE_EXT="tar.gz"
-  # Some directories excluded to save space, since they only contain binaries/cache anyway.
-  tar --exclude='home/koala/.rbenv' --exclude='home/koala/.bundle' --exclude='home/koala/.cache' -c -f - -C / home | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
+  # Some directories excluded to save space, since they only contain
+  # binaries/cache anyway.
+  tar --exclude='home/koala/.rbenv' --exclude='home/koala/.bundle' \
+  --exclude='home/koala/.cache' -c -f - -C / home | gzip -9 > \
+  "${TMPDIR}/${FILE}.${FILE_EXT}"
 elif [[ ${SOURCE} == "websites" ]]; then
   S3PATH="${SOURCE}"
   FILE_EXT="tar.gz"
-  # phpMyAdmin and SODI directories excluded because no other committee can write to these folders and they are deployed from git anyway.
-  tar --exclude='var/www/phpmyadmin.{{ canonical_hostname }}' --exclude='var/www/sodi.{{ canonical_hostname }}' -c -f - -C / var/www | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
+  # phpMyAdmin and SODI directories excluded because no other committee
+  # can write to these folders and they are deployed from git anyway.
+  tar --exclude='var/www/phpmyadmin.{{ canonical_hostname }}' \
+  --exclude='var/www/sodi.{{ canonical_hostname }}' -c -f - -C / \
+  var/www | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
 elif [[ ${SOURCE} == "databases" ]]; then
   S3PATH="websites/${SOURCE}"
   FILE_EXT="sql.gz"
   # Get database credentials from locked down file
   source /usr/local/bin/backup-to-s3-credentials.sh
-  mysqldump --user="${DB_USER}" --password="${DB_PASS}" --all-databases | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
+  mysqldump --user="${DB_USER}" --password="${DB_PASS}" \
+  --all-databases | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
 else
   echo "${USAGE}"
   exit 1
 fi
 
-${HASH}sum "${TMPDIR}/${FILE}.${FILE_EXT}" > "${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}"
-aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}" "s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null
-aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}" "s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null
-# Use {TMPDIR:?} so this will *never* remove files from /, even though "set -u" should already prevent this
+${HASH}sum "${TMPDIR}/${FILE}.${FILE_EXT}" > \
+"${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}"
+aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}" \
+"s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null
+aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}" \
+"s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null
+# Use {TMPDIR:?} so this will *never* remove files from /, even though
+# "set -u" should already prevent this
 rm "${TMPDIR:?}/${FILE}.${FILE_EXT}" 1> /dev/null
-aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" "${TMPDIR}/${FILE}.${FILE_EXT}" 1> /dev/null
+aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" \
+"${TMPDIR}/${FILE}.${FILE_EXT}" 1> /dev/null
 ${HASH}sum --check "${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
 echo "Backup of ${SOURCE} successful!"

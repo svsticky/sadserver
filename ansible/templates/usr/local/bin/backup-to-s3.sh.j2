@@ -105,4 +105,9 @@ aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" \
 
 ${HASH}sum --check "${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
 
+echo "*{% if staging %}_FROM STAGING:_ {% endif %}Backup of ${SOURCE} \
+completed* _($(date +'%F %T %:z'))_" | /usr/local/bin/slacktee --plain-text \
+--username 'Backup service' --icon ':floppy_disk:' --attachment 'good' 1> \
+/dev/null
+
 echo "Backup of ${SOURCE} successful!"

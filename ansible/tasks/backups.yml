@@ -34,7 +34,7 @@
       mode: "{{ item.mode }}"
     with_items:
       - { path: "usr/local/bin/backup-to-s3.sh", mode: "0744" }
-      - { path: "usr/local/bin/backup-to-s3-credentials.sh", mode: "0600" }
+      - { path: "usr/local/etc/backup-to-s3-credentials.conf", mode: "0600" }
 
   - name: "ensure backup services and timers are present"
     template:

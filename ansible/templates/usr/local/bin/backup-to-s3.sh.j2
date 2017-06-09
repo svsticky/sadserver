@@ -4,19 +4,18 @@
 ##
 ## USAGE: backup-to-s3.sh <BACKUP_SOURCE>
 ##
-## This script can be used manually or by a service to backup a few
-## sources of our data to Amazon S3:
+## This script can be used manually or by a service to backup a few sources of
+## our data to Amazon S3:
 ## - the admins' home directories
-## - the data of our websites (and also the home directories of its
-## users)
+## - the data of our websites (and also the home directories of its users)
 ## - the databases of our websites
 ## To backup databases, it depends on the database credentials stored in
-## /usr/local/etc/backup-to-s3-credentials.conf. This is done so that
-## file can be locked down permission-wise, while this script remains
-## readable for everyone.
+## /usr/local/etc/backup-to-s3-credentials.conf. This is done so that file can
+## be locked down permission-wise, while this script remains readable for
+## everyone.
 ##
-## A new backup source can be added by adding a new "elif" block in the
-## if statement down below, and updating this block and $USAGE.
+## A new backup source can be added by adding a new "elif" block in the if
+## statement down below, and updating this block and $USAGE.
 
 # Unofficial Bash strict mode
 set -eEfuo pipefail
@@ -39,11 +38,11 @@ S3BUCKET="{% if staging %}staging-{% endif %}sticky-automatic-backups"
 cleanup() {
   # Ensure files are deleted, in case script crashes
 
-  # Check because file extension is only set when a valid backup source
-  # is passed
+  # Check because file extension is only set when a valid backup source is
+  # passed
   if [[ -n ${FILE_EXT+x} ]]; then
-    # Use {TMPDIR:?} so this will *never* remove files from /, even
-    # though "set -u" should already prevent this
+    # Use {TMPDIR:?} so this will *never* remove files from /, even though
+    # "set -u" should already prevent this
     rm -rf "${TMPDIR:?}/${FILE}.${FILE_EXT}" 1> /dev/null
     rm -rf "${TMPDIR:?}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
   fi
@@ -88,14 +87,14 @@ fi
 ${HASH}sum "${TMPDIR}/${FILE}.${FILE_EXT}" > \
 "${TMPDIR:?}/${FILE}.${FILE_EXT}.${HASH}"
 
-aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}" \
-"s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null
+aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}" "s3://${S3BUCKET}/${S3PATH}/" 1> \
+/dev/null
 
 aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}" \
 "s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null
 
-# Use {TMPDIR:?} so this will *never* remove files from /, even though
-# "set -u" should already prevent this
+# Use {TMPDIR:?} so this will *never* remove files from /, even though "set -u"
+# should already prevent this
 rm "${TMPDIR:?}/${FILE}.${FILE_EXT}" 1> /dev/null
 
 aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" \

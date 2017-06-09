@@ -59,7 +59,7 @@ if [[ ${SOURCE} == "admins" ]]; then
   # binaries/cache anyway.
   tar --exclude='home/koala/.rbenv' --exclude='home/koala/.bundle' \
   --exclude='home/koala/.cache' -c -f - -C / home | gzip -9 > \
-  "${TMPDIR}/${FILE}.${FILE_EXT}"
+  "${TMPDIR:?}/${FILE}.${FILE_EXT}"
 
 elif [[ ${SOURCE} == "websites" ]]; then
   S3PATH="${SOURCE}"
@@ -69,7 +69,7 @@ elif [[ ${SOURCE} == "websites" ]]; then
   # can write to these folders and they are deployed from git anyway.
   tar --exclude='var/www/phpmyadmin.{{ canonical_hostname }}' \
   --exclude='var/www/sodi.{{ canonical_hostname }}' -c -f - -C / \
-  var/www | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
+  var/www | gzip -9 > "${TMPDIR:?}/${FILE}.${FILE_EXT}"
 
 elif [[ ${SOURCE} == "databases" ]]; then
   S3PATH="websites/${SOURCE}"
@@ -79,14 +79,14 @@ elif [[ ${SOURCE} == "databases" ]]; then
   source /usr/local/bin/backup-to-s3-credentials.sh
 
   mysqldump --user="${DB_USER}" --password="${DB_PASS}" \
-  --all-databases | gzip -9 > "${TMPDIR}/${FILE}.${FILE_EXT}"
+  --all-databases | gzip -9 > "${TMPDIR:?}/${FILE}.${FILE_EXT}"
 else
   echo "${USAGE}"
   exit 1
 fi
 
 ${HASH}sum "${TMPDIR}/${FILE}.${FILE_EXT}" > \
-"${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}"
+"${TMPDIR:?}/${FILE}.${FILE_EXT}.${HASH}"
 
 aws s3 cp "${TMPDIR}/${FILE}.${FILE_EXT}" \
 "s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null

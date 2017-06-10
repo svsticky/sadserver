@@ -6,7 +6,7 @@
 ## USAGE: fetch-keys-for-gh-user.sh GITHUB_USERNAME
 
 # Unofficial Bash strict mode
-set -efuo pipefail
+set -eEfuo pipefail
 IFS=$'\n\t'
 
 # Find the absolute path to the skyblue repository

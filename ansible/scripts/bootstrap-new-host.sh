@@ -12,7 +12,7 @@
 ##
 
 # Unofficial Bash strict mode
-set -Efuo pipefail
+set -eEfuo pipefail
 IFS=$'\n\t'
 
 display_error() {

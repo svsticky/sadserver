@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Backup of all MariaDB databases to AWS S3
+OnFailure=backup-fail@all\x20MariaDB\x20databases.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+PrivateTmp=true
+ExecStart=/usr/local/bin/backup-to-s3.sh databases

@@ -23,12 +23,12 @@ IFS=$'\n\t'
 
 USAGE="Usage: ${0} <admins | databases | websites>"
 
-display_error() {
+print_to_stderr() {
   echo >&2 "${1}"
 }
 
 if [[ -z ${1+x} ]]; then
-  display_error "${USAGE}"
+  print_to_stderr "${USAGE}"
   exit 1
 fi
 
@@ -87,7 +87,7 @@ case "${SOURCE}" in
           --all-databases | gzip -9 > "${TMPDIR:?}/${FILE}.${FILE_EXT}"
           ;;
         *)
-          display_error "${USAGE}"
+          print_to_stderr "${USAGE}"
           exit 1
 esac
 

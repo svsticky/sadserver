@@ -29,7 +29,7 @@ fi
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
-PLAYBOOK="$1"
+ARGS="${@:2}"
 SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
 
 TARGET_HOST="dev.svsticky.nl"
@@ -75,8 +75,28 @@ function notify() {
 notify \
   ':construction:' \
   '#46c4ff' \
-  "*Deployment of playbook \`${PLAYBOOK}\` started by ${USER}* \n" \
+  "*Deployment of playbook \`${ARGS}\` started by ${USER}* \n" \
   "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
+
+function deploy_end {
+  export EXIT=$?
+  if [[ "$EXIT" = "0" ]]; then
+    notify \
+      ':ok_hand:' \
+      'good' \
+      "*Deployment of playbook \`${ARGS}\` successfully completed* \n" \
+      "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
+  else
+    notify \
+      ':exclamation:' \
+      'danger' \
+      "@it-crowd-commissie *Deployment of playbook \`${ARGS}\` FAILED!* \n" \
+      "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
+    exit $EXIT
+  fi
+}
+
+trap deploy_end EXIT
 
 ANSIBLE_SSH_PIPELINING=true \
   ansible-playbook \
@@ -87,18 +107,5 @@ ANSIBLE_SSH_PIPELINING=true \
   --limit=${TARGET_HOST} \
   --extra-vars \
   "playbook_revision=${GIT_REVISION}" \
-  ${@:3}
+  ${@:2}
 
-if [[ "$?" = "0" ]]; then
-  notify \
-    ':ok_hand:' \
-    'good' \
-    "*Deployment of playbook \`${PLAYBOOK}\` successfully completed* \n" \
-    "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
-else
-  notify \
-    ':exclamation:' \
-    'danger' \
-    "@it-crowd-commissie *Deployment of playbook \`${PLAYBOOK}\` FAILED!* \n" \
-    "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
-fi

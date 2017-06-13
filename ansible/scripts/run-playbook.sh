@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ##
-## USAGE: ./scripts/run-playbook.sh <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK PARAMETERS>]
+## USAGE: ./scripts/run-playbook.sh <production | staging> <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK PARAMETERS>]
 ##
 ## This is a wrapper script for ansible-playbook, that lets you run playbooks
 ## on our server.
@@ -17,12 +17,12 @@ set -eEfuo pipefail
 # Although in strict mode, space character is not removed from $IFS
 # here, because of the spaces in $SLACKTEE
 
-USAGE="Usage: $0 playbook <production | staging>"
-if [ -z ${1+x} ]; then
+USAGE="USAGE: $0 <production | staging> <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK PARAMETERS>]"
+if [[ -z ${1+x} ]]; then
   echo $USAGE
   exit 1
 fi
-if [ -z ${2+x} ]; then
+if [[ -z ${2+x} ]]; then
   echo $USAGE
   exit 1
 fi
@@ -35,7 +35,7 @@ SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config ${GIT_ROOT}/ansible/t
 TARGET_HOST="dev.svsticky.nl"
 
 
-case $2 in
+case $1 in
   production)
     read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/N]:" choice
       case "$choice" in
@@ -87,7 +87,7 @@ ANSIBLE_SSH_PIPELINING=true \
   --limit=${TARGET_HOST} \
   --extra-vars \
   "playbook_revision=${GIT_REVISION}" \
-  "$@"
+  ${@:3}
 
 if [[ "$?" = "0" ]]; then
   notify \

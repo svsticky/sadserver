@@ -24,18 +24,18 @@
       name: "root"
       password: "{{ secret_mysql.root_password }}"
 
-  - name: "disable any existing authentication plugin for root user"
-    command: 'mysql -NBe "{{ item }}"'
-    with_items:
-      - "UPDATE mysql.user SET plugin='' WHERE User='root';"
-      - "FLUSH PRIVILEGES"
-    changed_when: false
-
   - name: "ensure /root/.my.cnf is present and correct"
     template:
       src: "templates/root/.my.cnf.j2"
       dest: "/root/.my.cnf"
       mode: "0700"
+
+  - name: "only allow mysql_native_password auth plugin"
+    command: 'mysql -NBe "{{ item }}"'
+    with_items:
+      - "UPDATE mysql.user SET plugin='mysql_native_password' WHERE User='root';"
+      - "FLUSH PRIVILEGES"
+    changed_when: false
 
   - name: "ensure remote root and anonymous login is disallowed"
     command: 'mysql -NBe "{{ item }}"'

@@ -4,6 +4,7 @@
   become: true
   become_user: "root"
   become_method: "sudo"
+  force_handlers: true
   vars_files:
     - "vars.yml"
 

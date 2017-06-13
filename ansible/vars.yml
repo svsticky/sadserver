@@ -142,7 +142,7 @@ users:
 
 unattended_upgrades:
   security: true
-  all: false
+  all: true
 
 fail2ban:
   loglevel: "WARNING"

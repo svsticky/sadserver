@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 ##
-## USAGE: ./scripts/run-playbook.sh <production | staging> <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK PARAMETERS>]
+## USAGE: ./scripts/run-playbook.sh <production | staging> <PLAYBOOK_PATH>
+## [<ANSIBLE-PLAYBOOK PARAMETERS>]
 ##
 ## This is a wrapper script for ansible-playbook, that lets you run playbooks
 ## on our server.
@@ -17,7 +18,8 @@ set -eEfuo pipefail
 # Although in strict mode, space character is not removed from $IFS
 # here, because of the spaces in $SLACKTEE
 
-USAGE="USAGE: $0 <production | staging> <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK PARAMETERS>]"
+USAGE="USAGE: $0 <production | staging> <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK \
+PARAMETERS>]"
 if [[ -z ${1+x} ]]; then
   echo $USAGE
   exit 1
@@ -29,15 +31,18 @@ fi
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
+ENVIRONMENT="${1}"
 ARGS="${@:2}"
-SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
+SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config \
+${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
 
 TARGET_HOST="dev.svsticky.nl"
 
 
-case $1 in
+case ${ENVIRONMENT} in
   production)
-    read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/N]:" choice
+    read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/N]: " \
+    choice
       case "$choice" in
         fidgetspinner)
           TARGET_HOST="svsticky.nl"
@@ -52,7 +57,7 @@ case $1 in
     TARGET_HOST="dev.svsticky.nl"
     ;;
   *)
-    echo  $USAGE
+    echo "$USAGE"
     exit 1
     ;;
 esac
@@ -75,8 +80,8 @@ function notify() {
 notify \
   ':construction:' \
   '#46c4ff' \
-  "*Deployment of playbook \`${ARGS}\` started by ${USER}* \n" \
-  "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
+  "*Deployment of playbook \`${ARGS}\` in ${ENVIRONMENT} environment started \
+by ${USER}*\n" "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
 
 function deploy_end {
   export EXIT=$?
@@ -84,13 +89,15 @@ function deploy_end {
     notify \
       ':ok_hand:' \
       'good' \
-      "*Deployment of playbook \`${ARGS}\` successfully completed* \n" \
+      "*Deployment of playbook \`${ARGS}\` in ${ENVIRONMENT} environment \
+successfully completed* \n" \
       "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
   else
     notify \
       ':exclamation:' \
       'danger' \
-      "@it-crowd-commissie *Deployment of playbook \`${ARGS}\` FAILED!* \n" \
+      "@it-crowd-commissie *Deployment of playbook \`${ARGS}\` in \
+${ENVIRONMENT} environment FAILED!* \n" \
       "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
     exit $EXIT
   fi
@@ -108,4 +115,3 @@ ANSIBLE_SSH_PIPELINING=true \
   --extra-vars \
   "playbook_revision=${GIT_REVISION}" \
   ${@:2}
-

@@ -19,10 +19,18 @@
     tags:
         - "service"
 
+  - name: "check if mysql root password has already been set"
+    stat:
+      path: "/root/.my.cnf"
+    register: mysql_root_password_existence
+
+  # Only set password when it hasn't been set yet, because changing the
+  # password would not work at this moment.
   - name: "generate and set database root password if not set"
     mysql_user:
       name: "root"
       password: "{{ secret_mysql.root_password }}"
+    when: mysql_root_password_existence.stat.exists == False
 
   - name: "ensure /root/.my.cnf is present and correct"
     template:
@@ -31,14 +39,14 @@
       mode: "0700"
 
   - name: "only allow mysql_native_password auth plugin"
-    command: 'mysql -NBe "{{ item }}"'
+    command: 'mysql -NBe "{{ item }}" -u "root" -p"{{ secret_mysql.root_password }}"'
     with_items:
       - "UPDATE mysql.user SET plugin='mysql_native_password' WHERE User='root';"
       - "FLUSH PRIVILEGES"
     changed_when: false
 
   - name: "ensure remote root and anonymous login is disallowed"
-    command: 'mysql -NBe "{{ item }}"'
+    command: 'mysql -NBe "{{ item }}" -u "root" -p"{{ secret_mysql.root_password }}"'
     with_items:
       - "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
       - "DELETE FROM mysql.user WHERE User='';"
@@ -49,6 +57,8 @@
     mysql_db:
       name: "test"
       state: "absent"
+      login_user: "root"
+      login_password: "{{ secret_mysql.root_password }}"
 
     # NOTE: mysql_db and mysql_user are preview modules, and may not be
     # backward compatible.
@@ -56,6 +66,8 @@
     mysql_db:
       name: "{{ item.database }}"
       state: "present"
+      login_user: "root"
+      login_password: "{{ secret_mysql.root_password }}"
     with_items: "{{ websites }}"
     when: item.database is defined
 
@@ -67,6 +79,8 @@
       password: "[secret_mysql][item.database + '_password']"
       priv: "{{ item.database }}.*:ALL"
       state: "present"
+      login_user: "root"
+      login_password: "{{ secret_mysql.root_password }}"
     with_items: "{{ websites }}"
     when: item.database is defined
 

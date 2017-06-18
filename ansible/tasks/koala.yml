@@ -17,6 +17,8 @@
       password: "{{ secret_mysql.koala_password }}"
       host: "localhost"
       priv: "koala.*:ALL/koala-development.*:ALL"
+      login_user: "root"
+      login_password: "{{ secret_mysql.root_password }}"
     tags:
       - "database"
       - "koala"

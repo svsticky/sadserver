@@ -16,6 +16,8 @@ CHECKOUT_TOKEN={{ secret_koala.checkout_token }}
 # AWS credentials
 AWS_ACCESS={{ secret_koala.aws_access_key }}
 AWS_SECRET={{ secret_koala.aws_secret_key }}
+AWS_REGION=eu-west-1
+AWS_BUCKET={% if staging %}staging-{% endif %}koala-images
 
 # Mollie
 MOLLIE_DOMAIN=https://api.mollie.nl

@@ -1,14 +1,16 @@
 // {{ ansible_managed }}
 
 Unattended-Upgrade::Allowed-Origins {
-	{% if unattended_upgrades.security %}
+{% if unattended_upgrades.security %}
 	"${distro_id} ${distro_codename}-security";
-	{% endif %}
+{% endif %}
 
-	{% if unattended_upgrades.all %}
+{% if unattended_upgrades.all %}
 	"${distro_id} stable";
 	"${distro_id} ${distro_codename}-updates";
-	{% endif %}
+	"LP-PPA-certbot-certbot:xenial";
+	"yarn:stable";
+{% endif %}
 };
 
 Unattended-Upgrade::Package-Blacklist { };

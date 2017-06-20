@@ -26,6 +26,14 @@ users:
       - id: "arianvp.github.pub"
         state: "present"
 
+  - name: "emiel"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+
   - name: "laurens"
     admin: true
     home_prefix: "/home"
@@ -103,16 +111,16 @@ users:
     home_prefix: "/var/www"
     state: "present"
     keys:
-      - id: "geert.manual.pub"
-        state: "present"
-      - id: "marc.manual.pub"
+      - id: "rcdewit.github.pub"
         state: "present"
 
   - name: "stichting"
     admin: false
     home_prefix: "/var/www"
     state: "present"
-    keys: []
+    keys:
+      - id: "rcdewit.github.pub"
+        state: "present"
 
   - name: "studytrip"
     admin: false

@@ -168,7 +168,7 @@ staging_certificates: "{{ staging }}"
 
 # Defines our websites.
 websites:
-  - name: "dgdarc.{{ inventory_hostname }}"
+  - name: "dgdarc.{{ canonical_hostname }}"
     user: "dgdarc"
     database: "dgdarc"
     alternative_names:
@@ -183,7 +183,7 @@ websites:
       - "declaraties.{{ canonical_hostname }}"
       - "declareren.{{ canonical_hostname }}"
 
-  - name: "indievelopment.{{ inventory_hostname }}"
+  - name: "indievelopment.{{ canonical_hostname }}"
     user: "indievelopment"
     database: "indievelopment"
     alternative_names:

@@ -1,6 +1,9 @@
 ---
 canonical_hostname: "{{ inventory_hostname }}"
 
+secrets_environment_directory:
+  "{% if staging %}staging{% else %}production{% endif %}"
+
 users:
   - name: "ansible"
     admin: true

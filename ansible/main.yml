@@ -7,7 +7,6 @@
   vars_files:
     - "vars.yml"
     - "credentials/shared.yml"
-    - "credentials/{% if staging %}staging{% else %}production{% endif %}.yml"
 
   handlers:
     - name: "restart nginx"
@@ -51,6 +50,9 @@
       listen: "reboot server"
 
   tasks:
+    # secrets.yml should always be included the first, because it sets the
+    # secrets that could be used by any other task.
+    - include: "tasks/secrets.yml"
     - include: "tasks/users.yml"
     - include: "tasks/motd.yml"
     - include: "tasks/auth.yml"

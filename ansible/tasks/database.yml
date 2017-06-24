@@ -22,8 +22,9 @@
   - name: "prepare db"
     command: "mysql -NBe '{{ item }}'"
     with_items:
-      - "grant all privileges on *.* to `root`@`localhost` identified via unix_socket with grant option;"
-      - "drop database test;"
+      - "grant all privileges on *.* to `root`@`localhost` identified via
+        unix_socket with grant option;"
+      - "drop database if exists test;"
 
   - name: "create website databases"
     command: "mysql -NBe 'create database if not exists {{ item.database }};'"
@@ -32,9 +33,15 @@
 
   # TODO: cut permission scope?
   - name: "create website database users"
-    command: "mysql -NBe 'grant all privileges on {{ item.database }}.* to `{{ item.database }}`@`localhost` identified via mysql_native_password with {{ item.db_pass_hash }};'"
+    # Using the bracket syntax to refer to the dict, in order to dynamically
+    # construct variable names. Link:
+    # https://stackoverflow.com/questions/40774205/ansible-nested-variables-in-template
+    command: >
+      mysql -NBe 'grant all privileges on {{ item.database }}.* to
+      `{{ item.database }}`@`localhost` identified via mysql_native_password
+      using "{{ secret_mysql[item.database + '_password'] }}";'
     with_items: "{{ websites }}"
-    when: (item.database is defined) and (item.db_pass_hash is defined)
+    when: item.database is defined
 
   tags:
     - "database"

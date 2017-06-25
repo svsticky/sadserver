@@ -9,10 +9,6 @@
 ## - the admins' home directories
 ## - the data of our websites (and also the home directories of its users)
 ## - the databases of our websites
-## To backup databases, it depends on the database credentials stored in
-## /usr/local/etc/backup-to-s3-credentials.conf. This is done so that file can
-## be locked down permission-wise, while this script remains readable for
-## everyone.
 ##
 ## A new backup source can be added by adding a new "elif" block in the if
 ## statement down below, and updating this block and $USAGE.
@@ -80,11 +76,9 @@ case "${SOURCE}" in
           S3PATH="websites/${SOURCE}"
           FILE_EXT="sql.gz"
 
-          # Get database credentials from locked down file
-          source /usr/local/etc/backup-to-s3-credentials.conf
-
-          mysqldump --user="${DB_USER}" --password="${DB_PASS}" \
-          --all-databases | gzip -9 > "${TMPDIR:?}/${FILE}.${FILE_EXT}"
+          # Uses root's unix socket for authentication
+          mysqldump --all-databases | gzip -9 > \
+          "${TMPDIR:?}/${FILE}.${FILE_EXT}"
           ;;
         *)
           print_to_stderr "${USAGE}"

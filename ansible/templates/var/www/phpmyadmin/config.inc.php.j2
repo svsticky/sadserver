@@ -4,7 +4,7 @@
 $cfg['blowfish_secret'] = '{{ secret_phpmyadmin_blowfish_secret }}';
 
 $cfg['Servers'][1]['controluser'] = 'phpmyadmin';
-$cfg['Servers'][1]['controlpass'] = '{{ secret_mysql.phpmyadmin_password }}';
+$cfg['Servers'][1]['controlpass'] = '{{ secret_mysql.phpmyadmin.password }}';
 $cfg['Servers'][1]['pmadb'] = 'phpmyadmin';
 
 $cfg['Servers'][1]['bookmarktable'] = 'pma__bookmark';

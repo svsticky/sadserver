@@ -12,13 +12,10 @@
       - "koala"
 
   - name: "ensure koala database user exists"
-    mysql_user:
-      name: "koala"
-      password: "{{ secret_mysql.koala_password }}"
-      host: "localhost"
-      priv: "koala.*:ALL/koala-development.*:ALL"
-      login_user: "root"
-      login_password: "{{ secret_mysql.root_password }}"
+    command: >
+      mysql -NBe 'grant all privileges on koala.* to
+      `koala`@`localhost` identified via mysql_native_password
+      using "{{ secret_mysql.koala.hash }}";'
     tags:
       - "database"
       - "koala"
@@ -256,7 +253,7 @@
           state: "dump"
           target: "{{ koala_backup_dest }}"
           login_user: "koala"
-          login_password: "{{ secret_mysql.koala_password }}"
+          login_password: "{{ secret_mysql.koala.password }}"
 
       - name: "get the backup"
         fetch:

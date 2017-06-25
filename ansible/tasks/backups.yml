@@ -27,14 +27,13 @@
       path: "/root/.aws/config"
       state: "link"
 
-  - name: "ensure aws cli scripts are present, with correct permissions"
+  - name: "ensure aws cli script is present, with correct permissions"
     template:
-      src: "templates/{{ item.path }}.j2"
-      dest: "/{{ item.path }}"
-      mode: "{{ item.mode }}"
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+      mode: "0744"
     with_items:
-      - { path: "usr/local/bin/backup-to-s3.sh", mode: "0744" }
-      - { path: "usr/local/etc/backup-to-s3-credentials.conf", mode: "0600" }
+      - "usr/local/bin/backup-to-s3.sh"
 
   - name: "ensure backup services and timers are present"
     template:

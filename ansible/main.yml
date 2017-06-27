@@ -50,8 +50,8 @@
       listen: "reboot server"
 
   tasks:
-    # secrets.yml should always be included the first, because it sets the
-    # secrets that could be used by any other task.
+    # secrets.yml should always be included the first, because it sets all the
+    # environment-specific secrets that could be used by any other task.
     - include: "tasks/secrets.yml"
     - include: "tasks/users.yml"
     - include: "tasks/motd.yml"

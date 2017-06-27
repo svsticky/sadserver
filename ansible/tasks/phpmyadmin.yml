@@ -38,6 +38,11 @@
     group: "www-data"
     state: "directory"
 
+- name: "create tables in phpmyadmin database"
+  command:
+    "mysql -NBe 'source /var/www/phpmyadmin.{{ canonical_hostname
+    }}/sql/create_tables.sql;'"
+
 - name: "place phpmyadmin nginx config"
   template:
     src: "templates/etc/nginx/sites-available/phpmyadmin.conf.j2"

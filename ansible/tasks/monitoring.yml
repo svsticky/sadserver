@@ -25,7 +25,7 @@
     accept_hostkey: true
     repo: "https://github.com/firehol/netdata.git"
     dest: "/usr/local/src/netdata"
-    update: true
+    update: false
   tags:
     - "monitoring"
     - "packages"
@@ -35,6 +35,23 @@
   args:
     chdir: "/usr/local/src/netdata"
     creates: "/usr/sbin/netdata"
+  tags:
+    - "monitoring"
+    - "packages"
+
+- name: "check if netdata is installed"
+  stat:
+    path: "/usr/sbin/netdata"
+  register: "netdata_path"
+  tags:
+    - "monitoring"
+    - "packages"
+
+- name: "check for updates to netdata"
+  command: "/usr/local/src/netdata/netdata-updater.sh"
+  args:
+    chdir: "/usr/local/src/netdata"
+  when: netdata_path.stat.exists == true
   tags:
     - "monitoring"
     - "packages"

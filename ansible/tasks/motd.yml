@@ -20,3 +20,14 @@
   with_items:
     - "01-skyblue-header"
     - "02-playbook-revision"
+
+- name: "set hostname"
+  hostname:
+    name: "{{ server_hostname }}"
+
+- name: "update hostname in /etc/hosts"
+  lineinfile:
+    regexp: "^127.0.1.1"
+    line: "^127.0.1.1 {{ canonical_hostname }} {{ server_hostname }}"
+    path: "/etc/hosts"
+    state: "present"

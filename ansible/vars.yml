@@ -1,5 +1,6 @@
 ---
 canonical_hostname: "{{ inventory_hostname }}"
+server_hostname: "sadserver"
 
 secrets_environment_directory:
   "{% if staging %}staging{% else %}production{% endif %}"

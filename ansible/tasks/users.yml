@@ -19,6 +19,12 @@
   with_items:
     - "{{ users }}"
 
+- name: "require the admin user to immediately choose a new password"
+  command: "passwd -de {{ item.name }}"
+  when: item.admin and item.name != "ansible"
+  with_items:
+    - "{{ users }}"
+
 - name: "set shell for admins"
   user:
     name: "{{ item.name }}"

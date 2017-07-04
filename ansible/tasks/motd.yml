@@ -29,7 +29,7 @@
   lineinfile:
     regexp: "^127.0.1.1"
     line:
-      "^127.0.1.1 {{ server_hostname }}.{{ canonical_hostname }}
+      "127.0.1.1 {{ server_hostname }}.{{ canonical_hostname }}
       {{ server_hostname }}"
     path: "/etc/hosts"
     state: "present"

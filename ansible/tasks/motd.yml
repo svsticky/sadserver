@@ -28,6 +28,8 @@
 - name: "update hostname in /etc/hosts"
   lineinfile:
     regexp: "^127.0.1.1"
-    line: "^127.0.1.1 {{ canonical_hostname }} {{ server_hostname }}"
+    line:
+      "^127.0.1.1 {{ server_hostname }}.{{ canonical_hostname }}
+      {{ server_hostname }}"
     path: "/etc/hosts"
     state: "present"

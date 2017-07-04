@@ -34,8 +34,8 @@ $ ssh <user>@svsticky.nl
 
 # Dump all databases to a file databases.sql, you will be prompted for the
 # mysql root password
-$ mysqldump --user root --password --databases dgdarc indievelopment koala 
-svsticky > databases.sql
+$ mysqldump --user root --password --databases dgdarc indievelopment koala \
+  svsticky > databases.sql
 
 $ exit
 

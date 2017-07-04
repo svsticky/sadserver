@@ -62,6 +62,7 @@
     - include: "tasks/fail2ban.yml"
     - include: "tasks/nginx.yml"
     - include: "tasks/digidecs.yml"
+    - include: "tasks/sodi.yml"
     - include: "tasks/firewall.yml"
     - include: "tasks/database.yml"
     - include: "tasks/phpmyadmin.yml"

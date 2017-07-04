@@ -126,6 +126,7 @@
   with_items: "{{ websites }}"
   register: certbot_output
   changed_when: "'no action taken' not in certbot_output.stdout"
+  notify: "reload nginx"
 
 - name: "ensure certbot timer is started in production"
   service:

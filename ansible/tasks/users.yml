@@ -38,7 +38,7 @@
   lineinfile:
     dest: "/home/{{ item.name }}/.bashrc"
     regexp: "^export PS1="
-    line: "export PS1='\\n\\e[31m\\e[1m{% if staging %}STAGING{% else %}!! PRODUCTION !!{% endif %}\\e[0m \\e[33m\\e[1m`whoami`@`hostname --long`\\e[0m:`pwd`\\n$ '"
+    line: "export PS1='\\n\\e[31m\\e[1m{% if staging == 'true' %}STAGING{% else %}!! PRODUCTION !!{% endif %}\\e[0m \\e[33m\\e[1m`whoami`@`hostname --long`\\e[0m:`pwd`\\n$ '"
   when: item.admin == true and item.state == 'present'
   with_items:
     - "{{ users }}"

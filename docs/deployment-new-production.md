@@ -70,7 +70,7 @@ Lastpass.
 ```bash
 $ scp databases.sql <user>@svsticky.nl:~/databases.sql
 $ ssh user@svsticky.nl
-$ mysql -u root -p < databases.sql
+$ sudo mysql < databases.sql
 ```
 
 **Start koala on the new server**

@@ -3,7 +3,7 @@ canonical_hostname: "{{ inventory_hostname }}"
 server_hostname: "sadserver"
 
 secrets_environment_directory:
-  "{% if staging %}staging{% else %}production{% endif %}"
+  "{% if staging == 'true' %}staging{% else %}production{% endif %}"
 
 users:
   - name: "ansible"
@@ -278,8 +278,8 @@ slacktee:
   checksum: "sha256:b59522b40de167e5c88ddf09f5d02560759902fc503e0bd3cea5c1fa45b780df"
 
 koala:
-  environment: "{% if staging %}staging{% else %}production{% endif %}"
+  environment: "{% if staging == 'true' %}staging{% else %}production{% endif %}"
   server: "unicorn" # or webrick
   # Change git-tag here to deploy new release in production
-  git_ref: "{% if staging %}development{% else %}v1.6.0{% endif %}"
+  git_ref: "{% if staging == 'true' %}development{% else %}v1.6.0{% endif %}"
   ruby_version: "2.4.1"

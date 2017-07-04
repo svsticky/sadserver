@@ -11,7 +11,7 @@
   lineinfile:
     dest: "/etc/sudoers.d/ansible"
     line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
-    state: "{% if staging %}present{% else %}absent{% endif %}"
+    state: "{% if staging == 'true' %}present{% else %}absent{% endif %}"
     create: true
     validate: "visudo -cf %s"
 

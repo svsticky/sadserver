@@ -53,8 +53,8 @@
   - name: "start and enable backup timers in production"
     service:
       name: "{{ item }}"
-      enabled: "{% if staging %}false{% else %}true{% endif %}"
-      state: "{% if staging %}stopped{% else %}started{% endif %}"
+      enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
+      state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
     with_items:
       - "backup-admins.timer"
       - "backup-databases.timer"

@@ -33,7 +33,7 @@ TMPDIR="/tmp"
 FILE="${SOURCE}-$(date +'%Y%m%d-%H%M%S')"
 HASH="sha256" # Choose from md5/sha1/sha224/sha256/sha384/sha512
 
-S3BUCKET="{% if staging %}staging-{% endif %}sticky-automatic-backups"
+S3BUCKET="{% if staging == 'true' %}staging-{% endif %}sticky-automatic-backups"
 
 cleanup() {
   # Ensure files are deleted, in case script crashes
@@ -103,7 +103,7 @@ aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" \
 
 ${HASH}sum --check "${TMPDIR}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
 
-echo "*{% if staging %}_FROM STAGING:_ {% endif %}Backup of ${SOURCE} \
+echo "*{% if staging == 'true' %}_FROM STAGING:_ {% endif %}Backup of ${SOURCE} \
 completed* _($(date +'%F %T %:z'))_" | /usr/local/bin/slacktee --plain-text \
 --username 'Backup service' --icon ':floppy_disk:' --attachment 'good' 1> \
 /dev/null

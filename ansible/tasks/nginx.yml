@@ -130,8 +130,8 @@
 - name: "ensure certbot timer is started in production"
   service:
     name: "certbot.timer"
-    enabled: "{% if staging %}false{% else %}true{% endif %}"
-    state: "{% if staging %}stopped{% else %}started{% endif %}"
+    enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
+    state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
 
 - name: "create website directories for regular websites"
   file:

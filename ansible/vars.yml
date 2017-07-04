@@ -172,12 +172,6 @@ fail2ban:
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 30
 
-# Defines the default of requesting staging certificates, or not.
-# When true, no certificates are requested for `alternative_names`.
-# Can be disabled on a per-website basis by adding `real_certificate`
-staging_certificates: "{{ staging }}"
-
-
 # Defines our websites.
 websites:
   - name: "dgdarc.{{ canonical_hostname }}"

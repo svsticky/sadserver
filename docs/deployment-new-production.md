@@ -9,12 +9,15 @@ values.
 
 **Re-create the DNS zones** of all of Sticky's domains at DigitalOcean with the
 IP address of the new droplet. DigitalOcean is currently not the authorative
-nameserver for the domain, so no traffic will change. These are the following:
+nameserver for the domains, so no traffic will change. These are the following:
 
  - dgdarc.com
  - dgdarc.nl
+ - indievelopment.nl
+ - indiedevelopment.nl
  - savadaba.nl
  - sodi.nl
+ - stichtingsticky.nl
  - stickyutrecht.nl
  - studieverenigingsticky.nl
  - svsticky.nl

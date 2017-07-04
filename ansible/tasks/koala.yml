@@ -12,11 +12,10 @@
       - "koala"
 
   - name: "ensure koala database user exists"
-    mysql_user:
-      name: "koala"
-      password: "{{ lookup('password', 'credentials/mysql/koala length=64 chars=hexdigits') }}"
-      host: "localhost"
-      priv: "koala.*:ALL/koala-development.*:ALL"
+    command: >
+      mysql -NBe 'grant all privileges on koala.* to
+      `koala`@`localhost` identified via mysql_native_password
+      using "{{ secret_mysql.koala.hash }}";'
     tags:
       - "database"
       - "koala"
@@ -148,13 +147,18 @@
     tags:
       - "koala"
 
-  - name: "copy deploy keys for user koala"
+  - name: "copy deploy key (private) for user koala"
+    copy:
+      content: "{{ secret_deploy_key }}"
+      dest: "/home/koala/.ssh/id_ed25519"
+      mode: "0600"
+
+  - name: "copy deploy key (public) for user koala"
     template:
       src: "templates/home/ansible/.ssh/{{ item.from }}.j2"
       dest: "/home/koala/.ssh/{{ item.to }}"
       mode: "0600"
     with_items:
-      - { from: "deploy_ed25519",     to: "id_ed25519" }
       - { from: "deploy_ed25519.pub", to: "id_ed25519.pub" }
 
   - name: "check status of koala's local git repo"
@@ -249,7 +253,7 @@
           state: "dump"
           target: "{{ koala_backup_dest }}"
           login_user: "koala"
-          login_password: "{{ lookup('file', 'credentials/mysql/koala') }}"
+          login_password: "{{ secret_mysql.koala.password }}"
 
       - name: "get the backup"
         fetch:

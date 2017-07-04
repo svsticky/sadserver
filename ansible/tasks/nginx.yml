@@ -100,7 +100,6 @@
   notify: "systemctl daemon-reload"
 
 - name: "request certificates"
-  # --staging should be removed when deploying in production
   # --non-interactive makes sure command never waits for user input
   # --keep-until-expiring makes sure cert only gets renewed when cert is actually close to expiring
   # --expand enables adding more SAN's to the same cert lineage later on

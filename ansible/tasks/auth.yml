@@ -15,7 +15,15 @@
     create: true
     validate: "visudo -cf %s"
 
-- name: "copy deploy keys"
+- name: "copy deploy key (private)"
+  copy:
+    content: "{{ secret_deploy_key }}"
+    dest: "/home/ansible/.ssh/deploy_ed25519"
+    owner: "ansible"
+    group: "ansible"
+    mode: "0600"
+
+- name: "copy deploy key (public)"
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
@@ -23,7 +31,6 @@
     group: "ansible"
     mode: "0600"
   with_items:
-    - "home/ansible/.ssh/deploy_ed25519"
     - "home/ansible/.ssh/deploy_ed25519.pub"
 
 - name: "symlink deploy keys for root"

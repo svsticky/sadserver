@@ -240,10 +240,10 @@
 
       - name: "determine backup destination"
         set_fact:
-          koala_backup_dest: >
-            /home/koala/koala-database-preupgrade-{{
+          koala_backup_dest:
+            "/home/koala/koala-database-preupgrade-{{
             ansible_date_time.date }}T{{ ansible_date_time.hour
-            }}{{ ansible_date_time.minute }}.sql
+            }}{{ ansible_date_time.minute }}.sql"
 
         # /home/koala/koala-database-upgrade-YYYY-MM-DDTHHmm.sql
 

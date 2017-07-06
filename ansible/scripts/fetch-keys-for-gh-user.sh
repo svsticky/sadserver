@@ -10,7 +10,7 @@ set -eEfuo pipefail
 IFS=$'\n\t'
 
 # Find the absolute path to the skyblue repository
-SKYBLUE_DIR=$(git rev-parse --show-toplevel)
+SADSERVER_DIR=$(git rev-parse --show-toplevel)
 
 # Check if a GH username was given
 if [[ -z "$1" ]]; then

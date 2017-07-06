@@ -18,7 +18,7 @@
     dest: "/etc/update-motd.d/{{ item }}"
     mode: "0755"
   with_items:
-    - "01-skyblue-header"
+    - "01-sadserver-header"
     - "02-playbook-revision"
 
 - name: "set custom hostname, in production"

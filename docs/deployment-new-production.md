@@ -53,14 +53,14 @@ $ scp <user>@svsticky.nl:~/databases.sql .
 **Bootstrap the new production server**
 
 ```bash
-# On your local machine, whilst in skyblue/ansible
+# On your local machine, whilst in sadserver/ansible
 $ ./scripts/bootstrap-new-host.sh svsticky.nl
 ```
 
 **Run the playbook** on the new production server
 
 ```bash
-# On your local machine, whilst in skyblue/ansible
+# On your local machine, whilst in sadserver/ansible
 $ ./scripts/run-playbook.sh main.yml production
 ```
 
@@ -76,7 +76,7 @@ $ sudo mysql < databases.sql
 **Start koala on the new server**
 
 ```bash
-# On your local machine, whilst in skyblue/ansible
+# On your local machine, whilst in sadserver/ansible
 $ ./scripts/run-playbook.sh playbooks/oneoff-koala-maintenance-off.yml production
 ```
 

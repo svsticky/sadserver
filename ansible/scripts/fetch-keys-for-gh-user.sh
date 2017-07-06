@@ -9,7 +9,7 @@
 set -eEfuo pipefail
 IFS=$'\n\t'
 
-# Find the absolute path to the skyblue repository
+# Find the absolute path to the sadserver repository
 SADSERVER_DIR=$(git rev-parse --show-toplevel)
 
 # Check if a GH username was given
@@ -18,5 +18,5 @@ if [[ -z "$1" ]]; then
   exit 1
 fi
 
-CREDENTIALS_PATH="${SKYBLUE_DIR}/ansible/credentials/ssh/$1.github.pub"
+CREDENTIALS_PATH="${SADSERVER_DIR}/ansible/credentials/ssh/$1.github.pub"
 curl --fail "https://github.com/$1.keys" > "${CREDENTIALS_PATH}"

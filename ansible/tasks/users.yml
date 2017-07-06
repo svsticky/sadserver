@@ -21,7 +21,11 @@
 
 - name: "require the admin user to immediately choose a new password"
   command: "passwd -de {{ item.name }}"
-  when: item.admin and item.name != "ansible"
+  when:
+    # List is evaluated as logical AND
+    - staging == 'false'
+    - item.admin
+    - item.name != "ansible"
   with_items:
     - "{{ users }}"
 
@@ -30,7 +34,10 @@
     name: "{{ item.name }}"
     shell: "/bin/bash"
     state: "{{ item.state }}"
-  when: item.admin == true and item.state == 'present'
+  when:
+    # List is evaluated as logical AND
+    - item.admin == true
+    - item.state == 'present'
   with_items:
     - "{{ users }}"
 
@@ -48,7 +55,10 @@
     path: "/var/www/{{ item.name }}"
     owner: "root"
     state: "directory"
-  when: item.admin != true and item.state == 'present'
+  when:
+    # List is evaluated as logical AND
+    - item.admin != true
+    - item.state == 'present'
   with_items:
     - "{{ users }}"
 

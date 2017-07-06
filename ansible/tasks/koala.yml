@@ -260,6 +260,7 @@
           src: "{{ koala_backup_dest }}"
           dest: "koala-backups/"
           flat: true
+        when: staging == 'false'
 
       - name: "run migration(s)"
         environment:

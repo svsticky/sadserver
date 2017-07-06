@@ -21,11 +21,12 @@
     - "01-skyblue-header"
     - "02-playbook-revision"
 
-- name: "set hostname"
+- name: "set custom hostname, in production"
   hostname:
     name: "{{ server_hostname }}"
+  when: staging != 'true'
 
-- name: "update hostname in /etc/hosts"
+- name: "update hostname in /etc/hosts, in production"
   lineinfile:
     regexp: "^127.0.1.1"
     line:
@@ -33,3 +34,4 @@
       {{ server_hostname }}"
     path: "/etc/hosts"
     state: "present"
+  when: staging != 'true'

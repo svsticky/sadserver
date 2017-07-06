@@ -15,6 +15,41 @@
     create: true
     validate: "visudo -cf %s"
 
+- name:
+    "require the admin user to immediately choose a new password in production"
+  command: "passwd -de {{ item.name }}"
+  when:
+    # List is evaluated as logical AND
+    - staging == 'false'
+    - item.admin
+    - item.name != "ansible"
+  with_items:
+    - "{{ users }}"
+
+- name: "ensure .ssh-directory is present at all users"
+  file:
+    dest: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh"
+    state: "directory"
+    owner: "{{ item.0.name }}"
+    mode: "0755"
+  when: item.0.state == 'present'
+  with_subelements:
+    - "{{ users }}"
+    - "keys"
+
+- name: "ensure SSH keys for users are present"
+  blockinfile:
+    path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
+    block: "{{ lookup('file', 'credentials/ssh/' + item.1.id) }}"
+    state: "{{ item.1.state }}"
+    marker:  "# {mark} SSH key for {{ item.1.id }}"
+    create: yes
+  # Only run the above logic when we still want the user to exist.
+  when: item.0.state == 'present'
+  with_subelements:
+    - "{{ users }}"
+    - "keys"
+
 - name: "copy deploy key (private)"
   copy:
     content: "{{ secret_deploy_key }}"

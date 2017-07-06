@@ -54,10 +54,9 @@
     # secrets.yml should always be included the first, because it sets all the
     # environment-specific secrets that could be used by any other task.
     - include: "tasks/secrets.yml"
+    - include: "tasks/system-settings.yml"
     - include: "tasks/users.yml"
-    - include: "tasks/motd.yml"
     - include: "tasks/auth.yml"
-    - include: "tasks/locale.yml"
     - include: "tasks/packages.yml"
     - include: "tasks/fail2ban.yml"
     - include: "tasks/nginx.yml"

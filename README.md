@@ -12,8 +12,6 @@
 
 **Add docs about:**
 - Secrets
-- How to add SSH keys
-- Structure of templates folder
 - Counterintuitive tasks/modules we use
 
 # Server workspace
@@ -87,6 +85,13 @@ These are more specific and consist of not necessarily idempotent tasks. These
 are used to e.g. create a new admin user in Koala, and to restart Koala or
 nginx.
 
+Templates that have to be parsed and copied to the host, reside in the
+`ansible/templates` directory. That directory follows the hierarchy of the root
+filesystem on the host, so a template that has to be placed in `/home/koala` on
+the host resides in `ansible/templates/home/koala` in the repository. The file
+names should also be the same as their target name where possible. For more
+information look at our [Ansible styleguide].
+
 All variables we use, except for secrets, are stored in `ansible/vars.yml`. This
 variable file is included in the main playbook, and most of the other playbooks.
 In that file are listed, among other things:
@@ -94,10 +99,6 @@ In that file are listed, among other things:
 - The Linux users, either admins or committees
   - The SSH keys that can be used to SSH in with these accounts
 - The websites we host
-  - Important to note is that the `name` of a website should always be a
-  subdomain of the canonical hostname. This has to do with the current state
-  of our DNS zones, and ensures that TLS certificates are set up correctly in
-  the staging environment. This could be improved perhaps.
 - Application-specific variables
 
 It might be worth splitting this file up, giving users and/or websites their
@@ -145,6 +146,7 @@ probably your fellow committee members.
 Godspeed!
 
   [sadserver]:https://twitter.com/sadserver
+  [Ansible styleguide]:docs/ansible-styleguide.md
   [inventory]:https://docs.ansible.com/ansible/intro_inventory.html
   [slacktee]:https://github.com/course-hero/slacktee
   [deployment-new-production]:docs/deployment-new-production.md

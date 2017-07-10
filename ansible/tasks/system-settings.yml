@@ -7,6 +7,7 @@
     - "10-help-text"
     - "51-cloudguest"
 
+# This tool outputs our beautiful hostname header.
 - name: "install toilet"
   apt:
     pkg: "toilet"
@@ -21,11 +22,13 @@
     - "01-{{ server_hostname }}-header"
     - "02-playbook-revision"
 
+# In staging we just use the name that is set when creating our VPS.
 - name: "set custom hostname, in production"
   hostname:
     name: "{{ server_hostname }}"
   when: staging != 'true'
 
+# In staging we just use the name that is set when creating our VPS.
 - name: "update hostname in /etc/hosts, in production"
   lineinfile:
     regexp: "^127.0.1.1"

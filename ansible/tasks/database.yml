@@ -33,7 +33,7 @@
     tags:
         - "service"
 
-  - name: "prepare db"
+  - name: "configure root MariaDB account and delete test database"
     command: "mysql -NBe '{{ item }}'"
     with_items:
       - "grant all privileges on *.* to `root`@`localhost` identified via

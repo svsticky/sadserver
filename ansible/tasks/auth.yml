@@ -1,4 +1,6 @@
 ---
+# Contains a snapshot of the hostkeys of github.com, so these can be validated
+# at runtime
 - name: "install system-wide known hostkeys"
   template:
     src: "templates/etc/ssh/ssh_known_hosts"
@@ -15,6 +17,8 @@
     create: true
     validate: "visudo -cf %s"
 
+# Hack, to make it possible to set your password as admin when you login. Resets
+# the password at every login.
 - name:
     "require the admin user to immediately choose a new password in production"
   command: "passwd -de {{ item.name }}"
@@ -64,7 +68,7 @@
       user: "{{ item.0.name }}"
       key: "{{ item.1.id }}"
 
-- name: "copy deploy key (private)"
+- name: "copy deploy key (private) for private projects on GitHub"
   copy:
     content: "{{ secret_deploy_key }}"
     dest: "/home/ansible/.ssh/deploy_ed25519"
@@ -72,7 +76,7 @@
     group: "ansible"
     mode: "0600"
 
-- name: "copy deploy key (public)"
+- name: "copy deploy key (public) for private projects on GitHub"
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"

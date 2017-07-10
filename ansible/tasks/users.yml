@@ -35,6 +35,8 @@
   loop_control:
     label: "{{ item.name }}"
 
+# This is set separately, so it's not enabled for committee users, who should be
+# only able to use SFTP.
 - name: "set shell for admins"
   user:
     name: "{{ item.name }}"

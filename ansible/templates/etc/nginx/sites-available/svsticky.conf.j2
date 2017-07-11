@@ -49,4 +49,8 @@ server {
   location ~* /panda {
     return 301 https://www.youtube.com/watch?v=AC3Ejf7vPEY;
   }
+
+  location / {
+    try_files $uri $uri/ /index.php?q=$uri&$args;
+  }
 }

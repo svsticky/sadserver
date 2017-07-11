@@ -21,4 +21,8 @@ server {
   location ~* /.git/ {
     deny all;
   }
+
+  location / {
+    try_files $uri $uri/ /index.php?q=$uri&$args;
+  }
 }

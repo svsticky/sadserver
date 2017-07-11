@@ -34,7 +34,7 @@
   file:
     path: /var/www/phpmyadmin.{{ canonical_hostname }}
     recurse: true
-    owner: "root"
+    owner: "www-data"
     group: "www-data"
     state: "directory"
 

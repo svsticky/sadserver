@@ -134,25 +134,35 @@
     enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
     state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
 
-- name: "create website directories for regular websites"
+# This task is used for websites which use the default nginx config, and need
+# its webroot to be created.
+- name: "create directories for regular websites"
   file:
-    path: "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{ item.name }}"
-    owner: "{{ item.user | default(omit) }}"
-    group: "www-data"
-    mode: "0755"
+    path:
+      "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
+      item.name }}"
+    owner: "www-data"
+    group: "{{ item.user | default(omit) }}"
+    mode: "2775"
     state: "directory"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
 
-- name: "create website directories for custom websites"
+# This task is used for websites which use a custom nginx config, but which
+# still do need their webroot to be created.
+- name: "create directories for custom websites"
   file:
-    path: "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{ item.name }}"
-    owner: "{{ item.user | default(omit) }}"
-    group: "www-data"
-    mode: "0755"
+    path:
+      "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
+      item.name }}"
+    owner: "www-data"
+    group: "{{ item.user | default(omit) }}"
+    mode: "2775"
     state: "directory"
-  with_items:
-    - { user: "commit", name: "{{ canonical_hostname }}" }
+  with_items: "{{ websites }}"
+  # When a website needs to be added, add its name to the list here
+  when:
+    - item.name == canonical_hostname
 
 - name: "create nginx includes directory"
   file:

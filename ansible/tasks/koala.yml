@@ -12,10 +12,11 @@
       - "koala"
 
   - name: "ensure koala database user exists"
-    command: >
-      mysql -NBe 'grant all privileges on koala.* to
-      `koala`@`localhost` identified via mysql_native_password
-      using "{{ secret_mysql.koala.hash }}";'
+    command:
+      "mysql -NBe 'grant all privileges on `koala{% if koala.environment ==
+      'development' %}-development{% endif %}`.* to `koala`@`localhost`
+      identified via mysql_native_password using
+      \"{{ secret_mysql.koala.hash }}\";'"
     tags:
       - "database"
       - "koala"
@@ -249,7 +250,9 @@
 
       - name: "make database backup"
         mysql_db:
-          db: "koala"
+          db:
+            "koala{% if koala.environment == 'development' %}-development{%
+            endif %}"
           state: "dump"
           target: "{{ koala_backup_dest }}"
           login_user: "koala"
@@ -305,24 +308,14 @@
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
 
-- block:
-  - name: "ensure webrick script is present in development"
-    template:
-      src: "templates/{{ item }}.j2"
-      dest: "/{{ item }}"
-      mode: "0755"
-      owner: "koala"
-      group: "koala"
-    with_items: "home/koala/webrick.sh"
-
-  - name: "ensure webrick service file is present in development"
-    template:
-      src: "templates/{{ item }}.j2"
-      dest: "/{{ item }}"
-    with_items: "etc/systemd/system/webrick.service"
-    notify:
-      - "systemctl daemon-reload"
-
+- name: "ensure webrick script is present in development"
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/{{ item }}"
+    mode: "0755"
+    owner: "koala"
+    group: "koala"
+  with_items: "home/koala/webrick.sh"
   when: koala.server == "webrick"
   tags:
     - "koala"

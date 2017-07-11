@@ -21,18 +21,18 @@ set -eEfuo pipefail
 USAGE="USAGE: $0 <production | staging> <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK \
 PARAMETERS>]"
 if [[ -z ${1+x} ]]; then
-  echo $USAGE
+  echo "$USAGE"
   exit 1
 fi
 if [[ -z ${2+x} ]]; then
-  echo $USAGE
+  echo "$USAGE"
   exit 1
 fi
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 ENVIRONMENT="${1}"
-ARGS="${@:2}"
+ARGS=( "${@:2}" )
 SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config \
 ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
 
@@ -74,14 +74,15 @@ esac
 # [1]: https://www.webpagefx.com/tools/emoji-cheat-sheet/
 function notify() {
   # ${@:3} means: all arguments except for the first two
-  echo -e "${@:3}" | ${SLACKTEE} --icon $1 --attachment $2 > /dev/null
+  echo -e "${@:3}" | ${SLACKTEE} --icon "$1" --attachment "$2" > /dev/null
 }
 
 notify \
   ':construction:' \
   '#46c4ff' \
-  "*Deployment of playbook \`${ARGS}\` in ${ENVIRONMENT} environment started \
-by ${USER}*\n" "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
+  "*Deployment of playbook \`${ARGS[*]}\` in ${ENVIRONMENT} environment \
+started by ${USER}*\n" \
+  "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
 
 function deploy_end {
   export EXIT=$?
@@ -89,14 +90,14 @@ function deploy_end {
     notify \
       ':ok_hand:' \
       'good' \
-      "*Deployment of playbook \`${ARGS}\` in ${ENVIRONMENT} environment \
+      "*Deployment of playbook \`${ARGS[*]}\` in ${ENVIRONMENT} environment \
 successfully completed* \n" \
       "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
   else
     notify \
       ':exclamation:' \
       'danger' \
-      "@it-crowd-commissie *Deployment of playbook \`${ARGS}\` in \
+      "@it-crowd-commissie *Deployment of playbook \`${ARGS[*]}\` in \
 ${ENVIRONMENT} environment FAILED!* \n" \
       "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
     exit $EXIT
@@ -114,4 +115,4 @@ ANSIBLE_SSH_PIPELINING=true \
   --limit=${TARGET_HOST} \
   --extra-vars \
   "playbook_revision=${GIT_REVISION}" \
-  ${@:2}
+  "${ARGS[@]}"

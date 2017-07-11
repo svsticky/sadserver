@@ -269,8 +269,10 @@ websites:
     alternative_names: []
 
 slacktee:
-  revision: "2dd488b93fa13d305d27c1c820641e600845710e"
-  checksum: "sha256:b59522b40de167e5c88ddf09f5d02560759902fc503e0bd3cea5c1fa45b780df"
+  revision:
+    "71cb65a13190165314a2cb78b34011669e7121dd"
+  checksum:
+    "sha256:d317354ca2d918ec07fd3f1e71a84be2fe9ee1821638830ddb50b85f77294c6f"
 
 koala:
   environment: "{% if staging == 'true' %}staging{% else %}production{% endif %}"

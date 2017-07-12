@@ -43,10 +43,10 @@
     path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
     block: "{{ lookup('file', 'credentials/ssh/' + item.1.id) }}"
     state: "{{ item.1.state }}"
-    marker:  "# {mark} SSH key for {{ item.1.id }}"
+    marker: "# {mark} SSH key for {{ item.1.id }}"
     owner: "{{ item.0.name }}"
     group: "{{ item.0.name }}"
-    create: yes
+    create: true
   # Only run the above logic when we still want the user to exist.
   when: item.0.state == 'present'
   with_subelements:

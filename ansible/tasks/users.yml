@@ -9,7 +9,7 @@
     path: "/var/www"
     state: "directory"
 
-- name: "create users"
+- name: "create/delete users"
   user:
     name: "{{ item.name }}"
     groups: "{%if item.admin %}sudo,adm{% else %}committee{% endif %}"

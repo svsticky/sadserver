@@ -124,7 +124,7 @@
     {% endfor %}
     {% endif %}
   with_items: "{{ websites }}"
-  register: certbot_output
+  register: "certbot_output"
   changed_when: "'no action taken' not in certbot_output.stdout"
   notify: "reload nginx"
 

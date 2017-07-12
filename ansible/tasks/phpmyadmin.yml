@@ -2,7 +2,7 @@
 - name: "install phpmyadmin dependencies"
   apt:
     name: "{{ item }}"
-    state: present
+    state: "present"
   with_items:
     - "php7.0-zip"
     - "php7.0-xml"
@@ -32,7 +32,7 @@
 
 - name: "set permissions on phpmyadmin webroot"
   file:
-    path: /var/www/phpmyadmin.{{ canonical_hostname }}
+    path: "/var/www/phpmyadmin.{{ canonical_hostname }}"
     recurse: true
     owner: "www-data"
     group: "www-data"

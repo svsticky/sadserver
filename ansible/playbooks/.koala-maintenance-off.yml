@@ -4,7 +4,6 @@
     enabled: true
     state: "started"
   become: true
-  become_user: root
 
 - name: "disable Koala's maintenance mode"
   file:

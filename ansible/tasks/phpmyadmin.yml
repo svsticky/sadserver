@@ -52,7 +52,7 @@
 - name: "symlink phpmyadmin nginx config"
   file:
     src: "/etc/nginx/sites-available/{{ item }}"
-    dest: "/etc/nginx/sites-enabled/{{ item }}"
+    path: "/etc/nginx/sites-enabled/{{ item }}"
     state: link
   with_items: "phpmyadmin.{{ canonical_hostname }}.conf"
   notify: "reload nginx"

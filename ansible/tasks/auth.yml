@@ -28,7 +28,7 @@
 
 - name: "ensure .ssh-directory is present at all users"
   file:
-    dest: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh"
+    path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh"
     state: "directory"
     owner: "{{ item.0.name }}"
     group: "{{ item.0.name }}"

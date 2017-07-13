@@ -70,7 +70,7 @@
 - name: "enable nginx proxy config for metrics site"
   file:
     src: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}.conf"
-    dest: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}.conf"
     state: "link"
   tags:
     - "monitoring"

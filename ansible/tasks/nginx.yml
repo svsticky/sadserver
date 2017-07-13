@@ -39,7 +39,7 @@
 - name: "enable default nginx config"
   file:
     src: "/etc/nginx/sites-available/default.conf"
-    dest: "/etc/nginx/sites-enabled/default.conf"
+    path: "/etc/nginx/sites-enabled/default.conf"
     state: "link"
   notify: "reload nginx"
 
@@ -166,7 +166,7 @@
 
 - name: "create nginx includes directory"
   file:
-    dest: "/etc/nginx/includes"
+    path: "/etc/nginx/includes"
     state: "directory"
 
 - name: "copy nginx include files"
@@ -198,7 +198,7 @@
 - name: "enable regular nginx configurations"
   file:
     src: "/etc/nginx/sites-available/{{ item.name }}.conf"
-    dest: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
     state: "link"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
@@ -207,7 +207,7 @@
 - name: "enable custom nginx configurations"
   file:
     src: "/etc/nginx/sites-available/{{ item }}.conf"
-    dest: "/etc/nginx/sites-enabled/{{ item }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item }}.conf"
     state: "link"
   with_items:
     - "{{ canonical_hostname }}"
@@ -216,5 +216,5 @@
 
 - name: "create htpasswd.d directory for basic auth files"
   file:
-    dest: "/etc/nginx/htpasswd.d"
+    path: "/etc/nginx/htpasswd.d"
     state: "directory"

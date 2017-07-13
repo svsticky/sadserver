@@ -221,7 +221,7 @@
 
   - name: "ensure log directory exists"
     file:
-      dest: "/var/www/koala.{{ canonical_hostname }}/log"
+      path: "/var/www/koala.{{ canonical_hostname }}/log"
       state: "directory"
       mode: "0775"
     tags:
@@ -339,7 +339,7 @@
   - name: "enable koala's nginx config"
     file:
       src: "/etc/nginx/sites-available/{{ item }}"
-      dest: "/etc/nginx/sites-enabled/{{ item }}"
+      path: "/etc/nginx/sites-enabled/{{ item }}"
       state: "link"
     with_items: "koala.{{ canonical_hostname }}.conf"
     notify: "reload nginx"

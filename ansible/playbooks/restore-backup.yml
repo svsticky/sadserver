@@ -1,0 +1,106 @@
+---
+# This playbook can be run on staging to test the integrity of the backup, and
+# in production to set up a new production environment. Because it always needs
+# access to the production AWS bucket, when running on staging you need to add
+# "--vault-id production@prompt" to the run-playbook.sh call!
+- hosts: "all"
+  user: "ansible"
+  become: true
+  become_user: "root"
+  become_method: "sudo"
+  force_handlers: true
+
+  vars_prompt:
+    - name: "confirm"
+      default: 'ABORT'
+      private: false
+      prompt: |-
+        This playbook will restore a backup of the production server. This will
+        replace the data in many directories. There should be twice the size of
+        this backup available as free disk space, since the archives have to be
+        extracted.
+        Assume you will lose *any existing data* on this server. Are you
+        CERTAIN that you wish to continue? If so, enter "obliteration". Any
+        other value will abort
+
+  tasks:
+    - name: "check that confirmation is given"
+      assert:
+        that:
+          - "confirm == 'obliteration'"
+
+    # We only need this when running on staging, to access
+    # the AWS bucket later that has the production backups
+    - name: "load secrets from production"
+      include_vars:
+        name: "production"
+        file: "../group_vars/production/vault.yml"
+      when: "'production' not in group_names"
+
+    - name: "create temporary directory to store backup archives"
+      tempfile:
+          prefix: "backup-restore-test."
+          state: "directory"
+      register: "backup_restore_tmp_dir"
+
+    - name: "find latest backups"
+      shell:
+        "aws s3 ls s3://sticky-automatic-backups/{{ item }}/
+        | awk -F' ' '{print $NF}'
+        | sort -r
+        | head -n1"
+      register: "backup_filenames"
+      with_items:
+        - "admins"
+        - "websites"
+        - "websites/databases"
+
+    - name: "download latest backups"
+      shell:
+        "aws s3 cp s3://sticky-automatic-backups/\
+        {{ item.item }}/{{ item.stdout }}
+        {{ backup_restore_tmp_dir.path }}/{{ item.stdout }}"
+      register: "downloaded_items"
+      with_items: "{{ backup_filenames.results }}"
+      loop_control:
+        label: "/{{ item.item }}/{{ item.stdout }}"
+
+    - name: "unpack admins and website backups"
+      unarchive:
+        src: "{{ backup_restore_tmp_dir.path }}/{{ item.stdout }}"
+        # The paths in the backup archives are relative to /, so this extracts
+        # them to the right location.
+        dest: "/"
+        remote_src: true
+      with_items: "{{ backup_filenames.results }}"
+      # Skip db backup here, because that's not an archive
+      when: "'websites/databases' != item.item"
+      loop_control:
+        label: "{{ item.stdout }}"
+
+    - name: "remove all existing databases"
+      shell:
+        "mysql -e "show databases"
+        | grep -v -e Database -e mysql -e information_schema
+        | gawk '{print "drop database " $1 ";select sleep(0.1);"}'
+        | mysql"
+
+    - name: "restore production databases"
+      shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | mysql"
+      with_items: "{{ backup_filenames.results }}"
+      when: "item.item == 'websites/databases'"
+      loop_control:
+        label: "{{ item.stdout }}"
+
+    - name: "delete backup archives"
+      file:
+        path: "{{ backup_restore_tmp_dir.path }}"
+        state: "absent"
+
+    - debug:
+        msg:
+          "The backup has been restored. Check the target folders, the
+          databases and the operation of the server to determine its
+          integrity. Be aware that paths and configuration files will still
+          refer to the canonical hostname used in production, and might need to
+          be changed manually to make services work."

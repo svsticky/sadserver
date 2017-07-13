@@ -50,6 +50,9 @@ cleanup() {
 
 trap cleanup EXIT
 
+# Save time of backup in local timezone, for use in notification
+BACKUP_DATE=$(TZ='Europe/Amsterdam' date +'%F %R %:z')
+
 case "${SOURCE}" in
         admins)
           S3PATH="${SOURCE}"
@@ -89,8 +92,12 @@ case "${SOURCE}" in
           exit 1
 esac
 
-SUCCESS_MESSAGE="*{% if 'staging' in group_names %}_FROM STAGING:_ {% endif
-%}Backup of ${SOURCE} completed* _($(date +'%F %T %:z'))_"
+BACKUP_SIZE=$(stat --printf="%s" "{{ tmp_dir }}/${FILE}.${FILE_EXT}" | \
+numfmt --to=iec --suffix=B --format="%.2f")
+
+SUCCESS_MESSAGE="*{% if 'staging' in group_names %}__FROM STAGING:_ {% endif
+%}Backup of ${SOURCE} completed* _(${BACKUP_DATE})_\n_(Backup size: \
+${BACKUP_SIZE})_"
 
 ${HASH}sum "{{ tmp_dir }}/${FILE}.${FILE_EXT}" > \
 "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
@@ -108,8 +115,8 @@ ${HASH}sum "{{ tmp_dir }}/${FILE}.${FILE_EXT}" > \
 
   ${HASH}sum --check "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
 
-  echo "${SUCCESS_MESSAGE}" | /usr/local/bin/slacktee --plain-text --username \
-  'Backup service' --icon ':floppy_disk:' --attachment 'good'
+  echo -e "${SUCCESS_MESSAGE}" | /usr/local/bin/slacktee --plain-text\
+  --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'
 } 1> /dev/null
 
 echo "Backup of ${SOURCE} successful!"

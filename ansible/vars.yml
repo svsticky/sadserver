@@ -5,6 +5,8 @@ server_hostname: "sadserver"
 secrets_environment_directory:
   "{% if staging == 'true' %}staging{% else %}production{% endif %}"
 
+# This is also used for the root user, but the "$" at the end is replaced by a
+# "#" through a regex in tasks/users.yml.
 bash_prompt:
   "export PS1='\\n\\e[31m\\e[1m{% if staging == 'true' %}STAGING{% else %}!! \
   PRODUCTION !!{% endif %}\\e[0m \\e[33m\\e[1m`whoami`@`hostname --long`\

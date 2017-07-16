@@ -56,4 +56,5 @@
   lineinfile:
     dest: "/root/.bashrc"
     regexp: "^export PS1="
-    line: "{{ bash_prompt }}"
+    line:
+      "{{ bash_prompt | regex_replace('\\$ ', '# ') }}"

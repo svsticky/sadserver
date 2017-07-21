@@ -12,6 +12,8 @@ bash_prompt:
   PRODUCTION !!{% endif %}\\e[0m \\e[33m\\e[1m`whoami`@`hostname --long`\
   \\e[0m:`pwd`\\n$ '"
 
+tmp_dir: "/tmp"
+
 users:
   - name: "ansible"
     admin: true

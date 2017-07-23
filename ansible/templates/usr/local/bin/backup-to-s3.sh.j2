@@ -29,8 +29,8 @@ if [[ -z ${1:-} ]]; then
 fi
 
 SOURCE="${1}"
-FILE="${SOURCE}-$(date +'%Y%m%d-%H%M%S')"
 HASH="sha256" # Choose from md5/sha1/sha224/sha256/sha384/sha512
+FILE_TITLE="${SOURCE}-$(date +'%Y%m%d-%H%M%S')"
 
 S3BUCKET="{% if 'staging' in group_names %}staging-{% endif
 %}sticky-automatic-backups"
@@ -38,12 +38,12 @@ S3BUCKET="{% if 'staging' in group_names %}staging-{% endif
 cleanup() {
   # Ensure files are deleted, in case script crashes
 
-  # Check because file extension is only set when a valid backup source is
+  # Check because complete file name is only set when a valid backup source is
   # passed
-  if [[ -n ${FILE_EXT:-} ]]; then
+  if [[ -n ${FILE_NAME:-} ]]; then
     {
-      rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
-      rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
+      rm -rf "{{ tmp_dir }}/${FILE_NAME}"
+      rm -rf "{{ tmp_dir }}/${FILE_NAME}.${HASH}"
     } 1> /dev/null
   fi
 }
@@ -56,17 +56,17 @@ BACKUP_DATE=$(TZ='Europe/Amsterdam' date +'%F %R %:z')
 case "${SOURCE}" in
         admins)
           S3PATH="${SOURCE}"
-          FILE_EXT="tar.gz"
+          FILE_NAME="${FILE_TITLE}.tar.gz"
 
           # Some directories excluded to save space, since they only contain
           # binaries/cache anyway.
           tar --exclude='home/koala/.rbenv' --exclude='home/koala/.bundle' \
-          --exclude='home/koala/.cache' -c -f - -C / home | gzip -9 > \
-          "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
+          --exclude='home/koala/.cache' -c -f - -C / home | \
+          gzip -9 > "{{ tmp_dir }}/${FILE_NAME}"
           ;;
         websites)
           S3PATH="${SOURCE}"
-          FILE_EXT="tar.gz"
+          FILE_NAME="${FILE_TITLE}.tar.gz"
 
           # phpMyAdmin and SODI directories excluded because no other
           # committee can write to these folders and they are deployed from \
@@ -76,44 +76,40 @@ case "${SOURCE}" in
 	    --exclude='var/www/phpmyadmin.{{ canonical_hostname }}' \
             --exclude='var/www/sodi.{{ canonical_hostname }}' \
 	    --exclude='var/www/pretix/venv' \
-	    -c -f - -C / \
-          var/www | gzip -9 > "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
+	    -c -f - -C / var/www | gzip -9 > "{{ tmp_dir }}/${FILE_NAME}"
           ;;
         databases)
           S3PATH="websites/${SOURCE}"
-          FILE_EXT="sql.gz"
+          FILE_NAME="${FILE_TITLE}.sql.gz"
 
           # Uses root's unix socket for authentication
-          mysqldump --all-databases | gzip -9 > \
-          "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
+          mysqldump --all-databases | gzip -9 > "{{ tmp_dir }}/${FILE_NAME}"
           ;;
         *)
           print_to_stderr "${USAGE}"
           exit 1
 esac
 
-BACKUP_SIZE=$(stat --printf="%s" "{{ tmp_dir }}/${FILE}.${FILE_EXT}" | \
+BACKUP_SIZE=$(stat --printf="%s" "{{ tmp_dir }}/${FILE_NAME}" | \
 numfmt --to=iec --suffix=B --format="%.2f")
 
 SUCCESS_MESSAGE="*{% if 'staging' in group_names %}__FROM STAGING:_ {% endif
 %}Backup of ${SOURCE} completed* _(${BACKUP_DATE})_\n_(Backup size: \
 ${BACKUP_SIZE})_"
 
-${HASH}sum "{{ tmp_dir }}/${FILE}.${FILE_EXT}" > \
-"{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
+${HASH}sum "{{ tmp_dir }}/${FILE_NAME}" > "{{ tmp_dir }}/${FILE_NAME}.${HASH}"
 
 {
-  aws s3 cp "{{ tmp_dir }}/${FILE}.${FILE_EXT}" "s3://${S3BUCKET}/${S3PATH}/"
+  aws s3 cp "{{ tmp_dir }}/${FILE_NAME}" "s3://${S3BUCKET}/${S3PATH}/"
 
-  aws s3 cp "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}" \
-  "s3://${S3BUCKET}/${S3PATH}/"
+  aws s3 cp "{{ tmp_dir }}/${FILE_NAME}.${HASH}" "s3://${S3BUCKET}/${S3PATH}/"
 
-  rm "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
+  rm "{{ tmp_dir }}/${FILE_NAME}"
 
-  aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" \
-  "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
+  aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE_NAME}" \
+  "{{ tmp_dir }}/${FILE_NAME}"
 
-  ${HASH}sum --check "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
+  ${HASH}sum --check "{{ tmp_dir }}/${FILE_NAME}.${HASH}"
 
   echo -e "${SUCCESS_MESSAGE}" | /usr/local/bin/slacktee --plain-text\
   --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'

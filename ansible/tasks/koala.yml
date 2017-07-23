@@ -98,8 +98,10 @@
       repo: "{{ item.url }}"
       dest: "~/.rbenv/plugins/{{ item.name }}"
     with_items:
-      - { name: "ruby-build", url: "https://github.com/rbenv/ruby-build.git" }
-      - { name: "rbenv-vars", url: "https://github.com/rbenv/rbenv-vars.git" }
+      - name: "ruby-build"
+        url: "https://github.com/rbenv/ruby-build.git"
+      - name: "rbenv-vars"
+        url: "https://github.com/rbenv/rbenv-vars.git"
       # NOTE: This will install the latest development versions, should we pin
       # a tag/commit/release?
     tags:
@@ -160,7 +162,8 @@
       dest: "/home/koala/.ssh/{{ item.to }}"
       mode: "0600"
     with_items:
-      - { from: "deploy_ed25519.pub", to: "id_ed25519.pub" }
+      - from: "deploy_ed25519.pub"
+        to: "id_ed25519.pub"
 
   - name: "check status of koala's local git repo"
     git:

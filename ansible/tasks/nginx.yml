@@ -193,8 +193,10 @@
     src: "templates/etc/nginx/sites-available/{{ item.src }}.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.dest }}.conf"
   with_items:
-    - { src: "savadaba", dest: "savadaba.{{ canonical_hostname }}" }
-    - { src: "svsticky", dest: "{{ canonical_hostname }}" }
+    - src: "savadaba"
+      dest: "savadaba.{{ canonical_hostname }}"
+    - src: "svsticky"
+      dest: "{{ canonical_hostname }}"
   notify: "reload nginx"
 
 - name: "enable regular nginx configurations"

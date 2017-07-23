@@ -12,8 +12,10 @@
       group: "{{ item.owner }}"
       state: "directory"
     with_items:
-      - { path: "/home/ansible", owner: "ansible" }
-      - { path: "/root", owner: "root" }
+      - path: "/home/ansible"
+        owner: "ansible"
+      - path: "/root"
+        owner: "root"
 
   - name: "ensure aws cli configuration is present"
     template:

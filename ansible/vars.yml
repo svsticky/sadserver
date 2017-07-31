@@ -271,7 +271,7 @@ websites:
   - name: "symposium.{{ canonical_hostname }}"
     user: "symposium"
     alternative_names:
-      - "idata.svsticky.nl"
+      - "idata.{{ canonical_hostname }}"
 
   - name: "wintersport.{{ canonical_hostname }}"
     user: "wintersport"

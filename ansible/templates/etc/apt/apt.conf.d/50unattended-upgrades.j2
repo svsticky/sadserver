@@ -4,8 +4,8 @@ Unattended-Upgrade::Allowed-Origins {
 {% if unattended_upgrades.security %}
 	"${distro_id} ${distro_codename}-security";
 {% endif %}
-
 {% if unattended_upgrades.all %}
+
 	"${distro_id} stable";
 	"${distro_id} ${distro_codename}-updates";
 	"LP-PPA-certbot-certbot:xenial";

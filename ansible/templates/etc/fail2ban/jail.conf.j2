@@ -15,8 +15,8 @@ chain = INPUT
 action_ = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
 
 action = %(action_)s
-
 {% for service in fail2ban.services %}
+
 [{{ service.name }}]
 
 enabled = {{ service.enabled|default("true") }}

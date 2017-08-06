@@ -8,7 +8,10 @@
   vars_prompt:
       - name: "confirm"
         default: 'ABORT'
-        prompt: "The playbook you are about to execute will DELETE THE DATABASE if it exists, and rebuild it. Are you CERTAIN that you wish to continue? If so, enter `obliteration`. Any other value will abort."
+        prompt:
+          "The playbook you are about to execute will DELETE THE DATABASE if it
+          exists, and rebuild it. Are you CERTAIN that you wish to continue? If
+          so, enter `obliteration`. Any other value will abort."
 
   tasks:
       - assert:
@@ -18,7 +21,9 @@
       - name: "create database"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell: 'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }} db:setup'
+        shell:
+          'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
+          db:setup'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"

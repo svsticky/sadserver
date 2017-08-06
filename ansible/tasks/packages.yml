@@ -34,7 +34,9 @@
 
 - name: "install slacktee"
   get_url:
-    url: "https://raw.githubusercontent.com/course-hero/slacktee/{{ slacktee.revision }}/slacktee.sh"
+    url:
+      "https://raw.githubusercontent.com/course-hero/slacktee/{{
+      slacktee.revision }}/slacktee.sh"
     dest: "/usr/local/bin/slacktee"
     mode: "0755"
     checksum: "{{ slacktee.checksum }}"

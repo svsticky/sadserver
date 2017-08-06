@@ -101,15 +101,18 @@
 
 - name: "request certificates"
   # --non-interactive makes sure command never waits for user input
-  # --keep-until-expiring makes sure cert only gets renewed when cert is actually close to expiring
+  # --keep-until-expiring makes sure cert only gets renewed when cert is
+  # actually close to expiring
   # --expand enables adding more SAN's to the same cert lineage later on
   # --webroot sets domain validation method
-  # --domain adds main hostname of a website as CN and SAN, and all alternative hostnames as SAN's
+  # --domain adds main hostname of a website as CN and SAN, and all alternative
+  # hostnames as SAN's
   # --renew-hook reloads nginx after a successful issuance, and adds this in the
   # renewal configuration of the certificate
   command: >
     certbot certonly
-    {% if staging == 'true' and (item.real_certificate is not defined or item.real_certificate == false) %}
+    {% if staging == 'true' and (item.real_certificate is not defined or
+    item.real_certificate == false) %}
     --staging
     {% endif %}
     --non-interactive

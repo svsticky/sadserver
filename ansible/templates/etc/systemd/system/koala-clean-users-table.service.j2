@@ -1,7 +1,8 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Clean unconfirmed emails and reset tokens from Constipated Koala's db
+Description=Clean unconfirmed emails and reset tokens from Constipated Koala's\
+db
 OnFailure=koala-rake-fail@Clean\x20users\x20table.service
 
 [Service]
@@ -11,4 +12,5 @@ WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
 ExecStart=/home/koala/.rbenv/shims/rails RAILS_ENV={{ koala.environment }}\
 devise:clean_unconfirmed_emails devise:clean_reset_tokens
 
-# No notification to Slack on success, because these jobs are not vital to Koala's operation
+# No notification to Slack on success, because these jobs are not vital to
+# Koala's operation

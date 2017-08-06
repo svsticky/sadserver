@@ -35,7 +35,8 @@
   - name: "create website database users"
     # Using the bracket syntax to refer to the dict, in order to dynamically
     # construct variable names. Link:
-    # https://stackoverflow.com/questions/40774205/ansible-nested-variables-in-template
+    # https://stackoverflow.com/questions/40774205/ansible-nested-variables-in-
+    # template
     command: >
       mysql -NBe 'grant all privileges on {{ item.database }}.* to
       `{{ item.database }}`@`localhost` identified via mysql_native_password

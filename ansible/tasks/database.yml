@@ -11,6 +11,20 @@
     tags:
         - "packages"
 
+  - name: "create folder for mariadb override"
+    file:
+      path: "/etc/systemd/system/mysql.service.d"
+      state: "directory"
+    notify: "systemctl daemon-reload"
+
+  - name: "override parameters of mariadb service"
+    template:
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+    with_items:
+      - "etc/systemd/system/mysql.service.d/override.conf"
+    notify: "systemctl daemon-reload"
+
   - name: "ensure database is enabled and running"
     service:
         name: "mysql"

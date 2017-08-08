@@ -2,7 +2,7 @@
 
 [Unit]
 Description=Run koala {{ koala.environment }} service
-Requires=mysql.service
+Wants=mysql.service
 After=network.target
 
 [Service]
@@ -17,6 +17,7 @@ ExecStart=/home/koala/webrick.sh
 User=koala
 Group=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

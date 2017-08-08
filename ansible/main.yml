@@ -41,13 +41,8 @@
       listen: "reboot server"
 
     - name: "wait for server to finish rebooting"
-      wait_for:
-        host: "{{ inventory_hostname }}"
-        search_regex: "OpenSSH"
-        port: 22
+      wait_for_connection:
         delay: 20
-      connection: "local"
-      become: false
       listen: "reboot server"
 
   tasks:

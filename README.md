@@ -21,9 +21,9 @@ Godspeed!
 
 ## Dependencies
 
-The code/scripts in this repository depends on the following software:
+The code in this repository depends on the following software:
 
- - Ansible ~> 2.2
+ - Ansible >= 2.3
  - [slacktee] (no config necessary)
  - bash
 

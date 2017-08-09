@@ -1,0 +1,30 @@
+---
+- name: "restart nginx"
+  service:
+    name: "nginx"
+    state: "restarted"
+
+- name: "reload nginx"
+  service:
+    name: "nginx"
+    state: "reloaded"
+
+- name: "restart fail2ban"
+  service:
+    name: "fail2ban"
+    state: "restarted"
+
+- name: "systemctl daemon-reload"
+  command: "systemctl daemon-reload"
+
+- name: "issue reboot command"
+  shell: "sleep 2 && /sbin/reboot"
+  async: 60
+  poll: 0
+  ignore_errors: true
+  listen: "reboot server"
+
+- name: "wait for server to finish rebooting"
+  wait_for_connection:
+    delay: 20
+  listen: "reboot server"

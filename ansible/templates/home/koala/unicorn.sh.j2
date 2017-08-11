@@ -1,9 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+##
+## This script is used to start unicorn, which serves Constipated Koala to a
+## unix socket.
+##
+## USAGE: sudo systemctl start koala
+## This command executes this script from a systemd unit. You should not run
+## this script manually.
+##
+
+# Unofficial Bash strict mode
+set -eEfuo pipefail
+IFS=$'\n\t'
 
 PATH="/home/koala/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
 cd /var/www/koala.{{ canonical_hostname }}
 bundle exec unicorn -c config/unicorn.rb -E {{ koala.environment }} -D
-
-# {{ ansible_managed }}

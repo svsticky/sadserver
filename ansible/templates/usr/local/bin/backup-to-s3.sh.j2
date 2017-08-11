@@ -40,8 +40,10 @@ cleanup() {
   # Check because file extension is only set when a valid backup source is
   # passed
   if [[ -n ${FILE_EXT+x} ]]; then
-    rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}" 1> /dev/null
-    rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
+    {
+      rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
+      rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
+    } 1> /dev/null
   fi
 }
 
@@ -82,25 +84,27 @@ case "${SOURCE}" in
           exit 1
 esac
 
+SUCCESS_MESSAGE="*{% if staging == 'true' %}_FROM STAGING:_ {% endif %}Backup \
+of ${SOURCE} completed* _($(date +'%F %T %:z'))_"
+
 ${HASH}sum "{{ tmp_dir }}/${FILE}.${FILE_EXT}" > \
 "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
 
-aws s3 cp "{{ tmp_dir }}/${FILE}.${FILE_EXT}" "s3://${S3BUCKET}/${S3PATH}/" 1> \
-/dev/null
+{
+  aws s3 cp "{{ tmp_dir }}/${FILE}.${FILE_EXT}" "s3://${S3BUCKET}/${S3PATH}/"
 
-aws s3 cp "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}" \
-"s3://${S3BUCKET}/${S3PATH}/" 1> /dev/null
+  aws s3 cp "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}" \
+  "s3://${S3BUCKET}/${S3PATH}/"
 
-rm "{{ tmp_dir }}/${FILE}.${FILE_EXT}" 1> /dev/null
+  rm "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
 
-aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" \
-"{{ tmp_dir }}/${FILE}.${FILE_EXT}" 1> /dev/null
+  aws s3 cp "s3://${S3BUCKET}/${S3PATH}/${FILE}.${FILE_EXT}" \
+  "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
 
-${HASH}sum --check "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}" 1> /dev/null
+  ${HASH}sum --check "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"
 
-echo "*{% if staging == 'true' %}_FROM STAGING:_ {% endif %}Backup of ${SOURCE}\
- completed* _($(date +'%F %T %:z'))_" | /usr/local/bin/slacktee --plain-text \
---username 'Backup service' --icon ':floppy_disk:' --attachment 'good' 1> \
-/dev/null
+  echo "${SUCCESS_MESSAGE}" | /usr/local/bin/slacktee --plain-text --username \
+  'Backup service' --icon ':floppy_disk:' --attachment 'good'
+} 1> /dev/null
 
 echo "Backup of ${SOURCE} successful!"

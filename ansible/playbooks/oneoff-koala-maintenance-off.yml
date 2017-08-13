@@ -7,4 +7,4 @@
       - "../vars.yml"
 
   tasks:
-    - include: "playbooks/.koala-maintenance-off.yml"
+    - include: ".koala-maintenance-off.yml"

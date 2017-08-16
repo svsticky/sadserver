@@ -4,23 +4,8 @@ This guide details the steps needed to get a new production environment up and
 running.
 
 **Create a new droplet** on DigitalOcean named `svsticky.nl`. The name is
-important: it ensures [reverse DNS] lookups for the droplet IP give the correct
-values.
-
-**Re-create the DNS zones** of all of Sticky's domains at DigitalOcean with the
-IP address of the new droplet. DigitalOcean is currently not the authorative
-nameserver for the domains, so no traffic will change. These are the following:
-
- - dgdarc.com
- - dgdarc.nl
- - indievelopment.nl
- - indiedevelopment.nl
- - savadaba.nl
- - sodi.nl
- - stichtingsticky.nl
- - stickyutrecht.nl
- - studieverenigingsticky.nl
- - svsticky.nl
+important: it ensures [reverse DNS] lookups for the droplet IP receive the
+correct values.
 
 **Stop Koala** on the old production environment.
 
@@ -46,9 +31,9 @@ $ exit
 $ scp <user>@svsticky.nl:~/databases.sql .
 ```
 
-**Change the authorative nameservers** of all domains to DigitalOcean.
-
-**Wait for the DNS propagation**
+**Redirect requests for ACME challenges** from the old server to the new server.
+This allows us to prove ownership of the domains we need to request TLS
+certificates for, during the deployment of the new server.
 
 **Bootstrap the new production server**
 
@@ -92,14 +77,30 @@ be done manually:
  - Studiereis
  - DGDARC
 
+**Update the DNS zones** at DigitalOcean of all of Sticky's domains with the IP
+addresses of the new droplet. These are the following:
+
+ - dgdarc.com
+ - dgdarc.nl
+ - indievelopment.nl
+ - indiedevelopment.nl
+ - savadaba.nl
+ - sodi.nl
+ - stichtingsticky.nl
+ - stickyutrecht.nl
+ - studieverenigingsticky.nl
+ - svsticky.nl
+
+**Wait for the DNS propagation**
+
 After these steps, everything is migrated, and the services should be available
 from the same URL's as before. Koala will experience downtime from the moment
-its service has been stopped on the old server, until it has eventually been
-started on the new server.
+its service has been stopped on the old server, until it has been started on
+the new server and the changes to the DNS zones have propagated.
 
 After this has all finished, we can point another DNS name in the new DNS zone
-to the old server (e.g. `old.svsticky.nl`), to keep it available for a while
-as backup. We should update the site names in its webserver accordingly, and
+to the old server (e.g. `old.svsticky.nl`), to keep it available for a while as
+backup. We should update the site names in its webserver accordingly, and
 disable Koala entirely, so users don't enter data when they arrive there because
 of DNS caching.
 

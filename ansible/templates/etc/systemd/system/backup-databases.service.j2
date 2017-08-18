@@ -2,6 +2,8 @@
 
 [Unit]
 Description=Backup of all MariaDB databases to AWS S3
+BindsTo=mysql.service
+After=mysql.service
 OnFailure=backup-fail@all\x20MariaDB\x20databases.service
 
 [Service]

@@ -141,8 +141,10 @@ users:
     state: "present"
     keys:
       - id: "rcdewit.github.pub"
-        state: "present"
+        state: "absent"
       - id: "yorickvanzweeden.github.pub"
+        state: "present"
+      - id: "Rogions.github.pub"
         state: "present"
 
   - name: "symposium"

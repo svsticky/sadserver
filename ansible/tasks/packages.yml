@@ -1,4 +1,11 @@
 ---
+# Needed because of Ansible issue #25414
+- name: "check if unattended-upgrades is not in progress"
+  shell:
+    "while fuser /var/lib/dpkg/lock; do sleep 1; done;"
+  become: true
+  changed_when: false
+
 - name: "install common utilities"
   apt:
     pkg: "{{ item }}"

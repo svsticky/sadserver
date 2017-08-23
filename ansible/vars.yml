@@ -140,8 +140,6 @@ users:
     home_prefix: "/var/www"
     state: "present"
     keys:
-      - id: "rcdewit.github.pub"
-        state: "absent"
       - id: "yorickvanzweeden.github.pub"
         state: "present"
       - id: "Rogions.github.pub"

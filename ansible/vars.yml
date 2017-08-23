@@ -24,7 +24,7 @@ users:
         state: "present"
       - id: "duijf.github.pub"
         state: "present"
-      - id: "spasticVerbalizer.github.pub"
+      - id: "maartenberg.github.pub"
         state: "present"
       - id: "tomwassenberg.github.pub"
         state: "present"
@@ -60,7 +60,7 @@ users:
     home_prefix: "/home"
     state: "present"
     keys:
-      - id: "spasticVerbalizer.github.pub"
+      - id: "maartenberg.github.pub"
         state: "present"
 
   - name: "tom"
@@ -108,7 +108,7 @@ users:
         state: "present"
       - id: "agarwaemben.github.pub"
         state: "present"
-      - id: "spasticVerbalizer.github.pub"
+      - id: "maartenberg.github.pub"
         state: "present"
       - id: "yorickvanzweeden.github.pub"
         state: "present"

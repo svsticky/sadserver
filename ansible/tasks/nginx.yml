@@ -107,8 +107,8 @@
   # --webroot sets domain validation method
   # --domain adds main hostname of a website as CN and SAN, and all alternative
   # hostnames as SAN's
-  # --renew-hook reloads nginx after a successful issuance, and adds this in the
-  # renewal configuration of the certificate
+  # --deploy-hook reloads nginx after a successful issuance, and adds this in
+  # the renewal configuration of the certificate
   command: >
     certbot certonly
     {% if staging == 'true' and (item.real_certificate is not defined or
@@ -128,7 +128,7 @@
     --domain {{ hostname }}
     {% endfor %}
     {% endif %}
-    --renew-hook "systemctl reload nginx"
+    --deploy-hook "systemctl reload nginx"
   with_items: "{{ websites }}"
   register: "certbot_output"
   changed_when: "'no action taken' not in certbot_output.stdout"

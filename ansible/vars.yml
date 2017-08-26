@@ -278,10 +278,8 @@ websites:
     alternative_names: []
 
 slacktee:
-  revision:
-    "71cb65a13190165314a2cb78b34011669e7121dd"
-  checksum:
-    "sha256:d317354ca2d918ec07fd3f1e71a84be2fe9ee1821638830ddb50b85f77294c6f"
+  repo: "https://github.com/course-hero/slacktee.git"
+  install_path: "/usr/local/src/slacktee"
 
 koala:
   environment:

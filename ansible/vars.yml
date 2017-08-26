@@ -288,3 +288,10 @@ koala:
   # Change git-tag here to deploy new release in production
   git_ref: "{% if staging == 'true' %}development{% else %}v1.6.3{% endif %}"
   ruby_version: "2.4.1"
+  dependencies:
+    - repo: "rbenv"
+      install_path: "~/.rbenv"
+    - repo: "ruby-build"
+      install_path: "~/.rbenv/plugins/ruby-build"
+    - repo: "rbenv-vars"
+      install_path: "~/.rbenv/plugins/rbenv-vars"

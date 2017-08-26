@@ -85,28 +85,40 @@
 
 # As koala:
 - block:
-  - name: "ensure rbenv is installed"
+  # Only ensure repository is cloned, don't checkout yet
+  - name: "clone repository of rbenv + plugins"
     git:
-      repo: "https://github.com/rbenv/rbenv.git"
-      dest: "~/.rbenv"
-    tags:
-      - "ruby"
-      - "koala"
+      repo: "https://github.com/rbenv/{{ item.repo }}.git"
+      dest: "{{ item.install_path }}"
+      update: false
+    with_items: "{{ koala.dependencies }}"
 
-  - name: "ensure rbenv plugins are installed"
+  - name: "retrieve all version numbers of rbenv + plugins"
+    shell: "git fetch --tags"
+    args:
+      chdir: "{{ item.install_path }}"
+    register: "rbenv_fetch"
+    changed_when: rbenv_fetch.stdout != ""
+    with_items: "{{ koala.dependencies }}"
+
+  - name: "determine latest version number of rbenv + plugins"
+    shell: "git describe --tags $(git rev-list --tags --max-count=1)"
+    args:
+      chdir: "{{ item.install_path }}"
+    register: "rbenv_versions"
+    # The next task already shows if there is actually a change
+    changed_when: false
+    with_items: "{{ koala.dependencies }}"
+
+  - name: "install newest release of rbenv + plugins"
     git:
-      repo: "{{ item.url }}"
-      dest: "~/.rbenv/plugins/{{ item.name }}"
-    with_items:
-      - name: "ruby-build"
-        url: "https://github.com/rbenv/ruby-build.git"
-      - name: "rbenv-vars"
-        url: "https://github.com/rbenv/rbenv-vars.git"
-      # NOTE: This will install the latest development versions, should we pin
-      # a tag/commit/release?
-    tags:
-      - "ruby"
-      - "koala"
+      repo: "https://github.com/rbenv/{{ item.0.repo }}"
+      dest: "{{ item.0.install_path }}"
+      version: "{{ item.1.stdout }}"
+    when: item.1.item.repo == item.0.repo
+    with_nested:
+      - "{{ koala.dependencies }}"
+      - "{{ rbenv_versions.results }}"
 
   - name: "ensure environment variables are set in .bashrc"
     blockinfile:

@@ -39,7 +39,7 @@
     enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
     state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
 
-# Only ensure repository is cloned, don't checkout yet
+# Only ensure repository is cloned, don't update yet
 - name: "clone repository of slacktee"
   git:
     repo: "{{ slacktee.repo }}"

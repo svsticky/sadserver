@@ -124,7 +124,7 @@ users:
     home_prefix: "/var/www"
     state: "present"
     keys:
-      - id: "rcdewit.github.pub"
+      - id: "RCdeWit.github.pub"
         state: "present"
 
   - name: "stichting"
@@ -132,7 +132,7 @@ users:
     home_prefix: "/var/www"
     state: "present"
     keys:
-      - id: "rcdewit.github.pub"
+      - id: "RCdeWit.github.pub"
         state: "present"
 
   - name: "studytrip"

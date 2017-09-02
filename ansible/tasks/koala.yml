@@ -185,9 +185,9 @@
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
-      clone: false
-      update: false
+      version: "{{ koala.git_ref }}"
     register: "koala_checkout_result"
+    check_mode: true
 
   - name: "set status of koala repo in fact"
     set_fact:

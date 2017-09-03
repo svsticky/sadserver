@@ -10,3 +10,4 @@
     name: "koala"
     state: "stopped"
   become: true
+  become_user: "root"

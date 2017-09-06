@@ -43,6 +43,7 @@
     path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
     block: "{{ lookup('file', 'credentials/ssh/' + item.1.id) }}"
     state: "{{ item.1.state }}"
+    # When changing value of marker, also update it in task down below
     marker: "# {mark} SSH key for {{ item.1.id }}"
     owner: "{{ item.0.name }}"
     group: "{{ item.0.name }}"
@@ -86,6 +87,27 @@
   file:
     path: "/root/.ssh/authorized_keys"
     state: "absent"
+
+# The bootstrap script adds the SSH keys (as added by DO), to the ansible user.
+# Afterwards, they are re-added and managed by Ansible itself, so the old
+# duplicates must be deleted once.
+- block:
+  - name:
+      "save current list of public keys for ansible user"
+    shell:
+      "tail -n +$(grep -nm 1 '# BEGIN SSH key' {{ item }} | cut -f1 -d:) {{
+      item }}"
+    register: "ansible_user_public_keys"
+    with_items: "~/.ssh/authorized_keys"
+    changed_when: false
+
+  - name:
+      "remove superfluous public keys for ansible user, added by bootstrap
+      script"
+    copy:
+      content: "{{ ansible_user_public_keys.results[0].stdout + '\n' }}"
+      dest: "~/.ssh/authorized_keys"
+  become: false
 
 - name: "copy hardened sshd configuration"
   template:

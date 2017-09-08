@@ -100,6 +100,7 @@
     register: "ansible_user_public_keys"
     with_items: "~/.ssh/authorized_keys"
     changed_when: false
+    check_mode: false
 
   - name:
       "remove superfluous public keys for ansible user, added by bootstrap

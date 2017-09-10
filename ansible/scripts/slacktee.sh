@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
 
+# ------------------------------------------------------------
+# Copyright 2017 Course Hero, Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------
+
+
 # ----------
 # Default Configuration
 # ----------
@@ -233,7 +250,14 @@ function process_line()
 		if [[ -z "$text" ]]; then
 			text="$line"
 		else
-			text="$text\n$line"
+			# See https://api.slack.com/rtm#limits for details on character limits
+			local message="$text\n$line"
+			if [[ ${#message} -ge 4000 ]]; then
+				send_message "$text"
+				text="$line"
+			else
+				text="$text\n$line"
+			fi
 		fi  
 	fi  
 }

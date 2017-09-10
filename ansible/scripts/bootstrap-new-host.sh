@@ -59,10 +59,9 @@ echo "==> Successfully bootstrapped host"
 
 cat << EOM
 
-Now edit the hosts file to contain ${SSH_HOST} and run the main playbook
-by executing:
+Now you can run the main playbook by executing:
 
-  ./scripts/run-playbook.sh main.yml
+  scripts/run-playbook.sh <staging|production> main.yml
 
 It will attempt to run the main playbook under the ansible user we've just
 created. The user ansible has the password ${PASSWORD}

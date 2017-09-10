@@ -10,9 +10,8 @@ correct values.
 **Stop Koala** on the old production environment.
 
 ```bash
-$ ssh <user>@svsticky.nl
-$ sudo service unicorn stop
-$ exit
+# On your local machine, whilst in sadserver/ansible
+$ ./scripts/run-playbook.sh production playbooks/oneoff-stop-koala.yml
 ```
 
 **Export the databases** that are relevant to the new server:
@@ -20,10 +19,9 @@ $ exit
 ```bash
 $ ssh <user>@svsticky.nl
 
-# Dump all databases to a file databases.sql, you will be prompted for the
-# mysql root password
-$ mysqldump --user root --password --databases dgdarc indievelopment koala \
-  svsticky > databases.sql
+# Dump all databases to a file databases.sql
+$ sudo mysqldump --databases dgdarc indievelopment koala studytrip svsticky > \
+databases.sql
 
 $ exit
 
@@ -49,8 +47,7 @@ $ ./scripts/bootstrap-new-host.sh svsticky.nl
 $ ./scripts/run-playbook.sh main.yml production
 ```
 
-**Copy over the old databases**. You can find the database password in
-Lastpass.
+**Copy over the old databases**.
 
 ```bash
 $ scp databases.sql <user>@svsticky.nl:~/databases.sql

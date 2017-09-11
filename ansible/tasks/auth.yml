@@ -25,6 +25,8 @@
     - item.name != "ansible"
   with_items:
     - "{{ users }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: "ensure .ssh-directory is present at all users"
   file:
@@ -36,7 +38,11 @@
   when: item.0.state == 'present'
   with_subelements:
     - "{{ users }}"
+    # "Keys" is added to the loop, so the directory is not created if there are
+    # no keys
     - "keys"
+  loop_control:
+    label: "{{ item.0.name }}"
 
 - name: "ensure SSH keys for users are present"
   blockinfile:
@@ -53,6 +59,10 @@
   with_subelements:
     - "{{ users }}"
     - "keys"
+  loop_control:
+    label:
+      user: "{{ item.0.name }}"
+      key: "{{ item.1.id }}"
 
 - name: "copy deploy key (private)"
   copy:

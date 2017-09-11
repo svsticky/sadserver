@@ -132,6 +132,8 @@
   with_items: "{{ websites }}"
   register: "certbot_output"
   changed_when: "'no action taken' not in certbot_output.stdout"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: "ensure certbot timer is started in production"
   service:
@@ -152,6 +154,8 @@
     state: "directory"
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
+  loop_control:
+    label: "{{ item.name }}"
 
 # This task is used for websites which use a custom nginx config, but which
 # still do need their webroot to be created.
@@ -168,6 +172,8 @@
   # When a website needs to be added, add its name to the list here
   when:
     - item.name == canonical_hostname
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: "create nginx includes directory"
   file:
@@ -190,6 +196,8 @@
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
   notify: "reload nginx"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: "copy custom nginx configurations"
   template:
@@ -201,6 +209,8 @@
     - src: "svsticky"
       dest: "{{ canonical_hostname }}"
   notify: "reload nginx"
+  loop_control:
+    label: "{{ item.dest }}"
 
 - name: "enable regular nginx configurations"
   file:
@@ -210,6 +220,8 @@
   with_items: "{{ websites }}"
   when: item.custom_config is undefined
   notify: "reload nginx"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: "enable custom nginx configurations"
   file:

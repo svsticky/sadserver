@@ -100,6 +100,8 @@
     register: "rbenv_fetch"
     changed_when: rbenv_fetch.stdout != ""
     with_items: "{{ koala.dependencies }}"
+    loop_control:
+      label: "{{ item.repo }}"
 
   - name: "determine latest version number of rbenv + plugins"
     shell: "git describe --tags $(git rev-list --tags --max-count=1)"
@@ -109,6 +111,8 @@
     # The next task already shows if there is actually a change
     changed_when: false
     with_items: "{{ koala.dependencies }}"
+    loop_control:
+      label: "{{ item.repo }}"
 
   - name: "install newest release of rbenv + plugins"
     git:
@@ -119,6 +123,8 @@
     with_nested:
       - "{{ koala.dependencies }}"
       - "{{ rbenv_versions.results }}"
+    loop_control:
+      label: "{{ item.0.repo }}"
 
   - name: "ensure environment variables are set in .bashrc"
     blockinfile:

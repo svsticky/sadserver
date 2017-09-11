@@ -44,6 +44,8 @@
     command: "mysql -NBe 'create database if not exists {{ item.database }};'"
     with_items: "{{ websites }}"
     when: item.database is defined
+    loop_control:
+      label: "{{ item.name }}"
 
   # TODO: cut permission scope?
   - name: "create website database users"
@@ -57,6 +59,8 @@
       using "{{ secret_mysql[item.database]['hash'] }}";'
     with_items: "{{ websites }}"
     when: item.database is defined
+    loop_control:
+      label: "{{ item.name }}"
 
   tags:
     - "database"

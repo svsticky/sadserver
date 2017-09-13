@@ -75,9 +75,10 @@
 
   - name: "ensure koala service file is present"
     template:
-      src: "templates/{{ item }}.j2"
-      dest: "/{{ item }}"
-    with_items: "etc/systemd/system/koala.service"
+      src: "templates/{{ path }}.j2"
+      dest: "/{{ path }}"
+    vars:
+      path: "etc/systemd/system/koala.service"
     notify:
       - "systemctl daemon-reload"
 
@@ -337,12 +338,13 @@
 
 - name: "ensure webrick script is present in development"
   template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
+    src: "templates/{{ path }}.j2"
+    dest: "/{{ path }}"
     mode: "0755"
     owner: "koala"
     group: "koala"
-  with_items: "home/koala/webrick.sh"
+  vars:
+    path: "home/koala/webrick.sh"
   when: koala.server == "webrick"
   tags:
     - "koala"
@@ -350,12 +352,13 @@
 - block:
   - name: "ensure unicorn script is present in production"
     template:
-      src: "templates/{{ item }}.j2"
-      dest: "/{{ item }}"
+      src: "templates/{{ path }}.j2"
+      dest: "/{{ path }}"
       mode: "0755"
       owner: "koala"
       group: "koala"
-    with_items: "home/koala/unicorn.sh"
+    vars:
+      path: "home/koala/unicorn.sh"
 
   - name: "place koala's nginx configuration"
     template:
@@ -365,10 +368,11 @@
 
   - name: "enable koala's nginx config"
     file:
-      src: "/etc/nginx/sites-available/{{ item }}"
-      path: "/etc/nginx/sites-enabled/{{ item }}"
+      src: "/etc/nginx/sites-available/{{ filename }}"
+      path: "/etc/nginx/sites-enabled/{{ filename }}"
       state: "link"
-    with_items: "koala.{{ canonical_hostname }}.conf"
+    vars:
+      filename: "koala.{{ canonical_hostname }}.conf"
     notify: "reload nginx"
 
   when: koala.server == "unicorn"

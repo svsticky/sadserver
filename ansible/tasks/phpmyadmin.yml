@@ -20,9 +20,10 @@
 
 - name: "place phpmyadmin config.inc.php"
   template:
-    src: "templates/var/www/phpmyadmin/{{ item }}.j2"
-    dest: "/var/www/phpmyadmin.{{ canonical_hostname }}/{{ item }}"
-  with_items: "config.inc.php"
+    src: "templates/var/www/phpmyadmin/{{ filename }}.j2"
+    dest: "/var/www/phpmyadmin.{{ canonical_hostname }}/{{ filename }}"
+  vars:
+    filename: "config.inc.php"
 
 - name: "install phpmyadmin composer dependencies"
   composer:
@@ -51,8 +52,9 @@
 
 - name: "symlink phpmyadmin nginx config"
   file:
-    src: "/etc/nginx/sites-available/{{ item }}"
-    path: "/etc/nginx/sites-enabled/{{ item }}"
+    src: "/etc/nginx/sites-available/{{ filename }}"
+    path: "/etc/nginx/sites-enabled/{{ filename }}"
     state: link
-  with_items: "phpmyadmin.{{ canonical_hostname }}.conf"
+  vars:
+    filename: "phpmyadmin.{{ canonical_hostname }}.conf"
   notify: "reload nginx"

@@ -38,6 +38,7 @@
 
 - name: "copy locale variables"
   template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
-  with_items: "etc/default/locale"
+    src: "templates/{{ path }}.j2"
+    dest: "/{{ path }}"
+  vars:
+    path: "etc/default/locale"

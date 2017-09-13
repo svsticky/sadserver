@@ -104,11 +104,12 @@
 - block:
   - name:
       "save current list of public keys for ansible user"
+    vars:
+      auth_keys: "~/.ssh/authorized_keys"
     shell:
-      "tail -n +$(grep -nm 1 '# BEGIN SSH key' {{ item }} | cut -f1 -d:) {{
-      item }}"
+      "tail -n +$(grep -nm 1 '# BEGIN SSH key' {{ auth_keys }} | cut -f1 -d:)
+      {{ auth_keys }}"
     register: "ansible_user_public_keys"
-    with_items: "~/.ssh/authorized_keys"
     changed_when: false
     check_mode: false
 
@@ -116,13 +117,14 @@
       "remove superfluous public keys for ansible user, added by bootstrap
       script"
     copy:
-      content: "{{ ansible_user_public_keys.results[0].stdout + '\n' }}"
+      content: "{{ ansible_user_public_keys.stdout + '\n' }}"
       dest: "~/.ssh/authorized_keys"
   become: false
 
 - name: "copy hardened sshd configuration"
   template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
-  with_items: "etc/ssh/sshd_config"
+    src: "templates/{{ path }}.j2"
+    dest: "/{{ path }}"
+  vars:
+    path: "etc/ssh/sshd_config"
   notify: "reboot server"

@@ -19,10 +19,10 @@
 
   - name: "override parameters of mariadb service"
     template:
-      src: "templates/{{ item }}.j2"
-      dest: "/{{ item }}"
-    with_items:
-      - "etc/systemd/system/mysql.service.d/override.conf"
+      src: "templates/{{ override_path }}.j2"
+      dest: "/{{ override_path }}"
+    vars:
+      override_path: "etc/systemd/system/mysql.service.d/override.conf"
     notify: "systemctl daemon-reload"
 
   - name: "ensure database is enabled and running"

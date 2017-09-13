@@ -69,10 +69,11 @@
 
 - name: "create symlink to slacktee in $PATH"
   file:
-    src: "{{ slacktee.install_path }}/{{ item }}.sh"
-    path: "/usr/local/bin/{{ item }}"
+    src: "{{ slacktee.install_path }}/{{ filename }}.sh"
+    path: "/usr/local/bin/{{ filename }}"
     state: "link"
-  with_items: "slacktee"
+  vars:
+    filename: "slacktee"
 
 - name: "configure slacktee"
   template:

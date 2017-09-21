@@ -39,6 +39,8 @@
     enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
     state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
 
+# slacktee is the tool we use to let the server send notifications to Slack.
+# Replaces email.
 # Only ensure repository is cloned, don't update yet
 - name: "clone repository of slacktee"
   git:

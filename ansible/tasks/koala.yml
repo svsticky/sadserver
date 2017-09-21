@@ -188,6 +188,8 @@
       - from: "deploy_ed25519.pub"
         to: "id_ed25519.pub"
 
+  # This checks if Koala is already locally present, and if there is an update
+  # on the remote
   - name: "check status of koala's local git repo"
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
@@ -196,6 +198,7 @@
     register: "koala_checkout_result"
     check_mode: true
 
+  # This sets the information gained from the previous task in a fact
   - name: "set status of koala repo in fact"
     set_fact:
       koala_updated: true
@@ -204,6 +207,8 @@
       - koala_checkout_result.changed
       - koala_checkout_result.before != None
 
+  # Enables maintenance mode only when Koala was already running, and needs to
+  # be updated
   - include: "playbooks/.koala-maintenance-on.yml"
     when: koala_updated | default(false)
 
@@ -262,9 +267,10 @@
     register: "koala_assets_result"
     changed_when: koala_assets_result.stdout.find("Already up-to-date.") == -1
 
-    # Process update
+    # This block only runs when Koala was already present, and needs to be
+    # updated. Makes a backup of Koala's db before performing any operations on
+    # the db.
   - block:
-
       - name: "determine backup destination"
         set_fact:
           koala_backup_dest:
@@ -284,7 +290,7 @@
           login_user: "koala"
           login_password: "{{ secret_mysql.koala.password }}"
 
-      - name: "get the backup"
+      - name: "download the backup"
         fetch:
           src: "{{ koala_backup_dest }}"
           dest: "koala-backups/"
@@ -300,11 +306,12 @@
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
-
     when: koala_updated | default(false)
     become: true
     become_user: "koala"
 
+  # Disables maintenance mode only when Koala had to be updated, and can now be
+  # started again.
   - include: "playbooks/.koala-maintenance-off.yml"
     when: koala_updated | default(false)
 
@@ -336,6 +343,9 @@
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
 
+# This task is used when you set koala.server to "webrick". Useful when you
+# want to use this playbook for a development server, instead of
+# staging|production.
 - name: "ensure webrick script is present in development"
   template:
     src: "templates/{{ path }}.j2"

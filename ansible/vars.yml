@@ -14,6 +14,7 @@ bash_prompt:
 
 tmp_dir: "/tmp"
 
+# When editing keys, be sure to read ../docs/updating-ssh-keys.md first!
 users:
   - name: "ansible"
     admin: true
@@ -181,7 +182,11 @@ fail2ban:
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 30
 
-# Defines our websites.
+# Defines our websites. Important to note is that the "name" of a website should
+# always be a subdomain of the canonical hostname (using the
+# "canonical_hostname" variable). This has to do with the current state of our
+# DNS zones, and ensures that TLS certificates are set up correctly in the
+# staging environment. This could be improved perhaps.
 websites:
   - name: "dgdarc.{{ canonical_hostname }}"
     user: "dgdarc"

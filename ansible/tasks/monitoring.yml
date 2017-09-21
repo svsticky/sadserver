@@ -38,6 +38,8 @@
     - "monitoring"
     - "packages"
 
+# Checks if netdata is installed, so the next update task knows if it has to
+# check for updates.
 - name: "check if netdata is installed"
   stat:
     path: "/usr/sbin/netdata"

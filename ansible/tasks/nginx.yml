@@ -43,10 +43,9 @@
     state: "link"
   notify: "reload nginx"
 
-# This enables the nginx service, and reloads
-# or starts it if necessary. Let's Encrypt depends
-# on this.
-- name: "enable, start and reload/start nginx"
+# This enables the nginx service, and reloads or starts it if necessary. Let's
+# Encrypt depends on this.
+- name: "enable and start/reload nginx"
   service:
     name: "nginx"
     enabled: true
@@ -57,8 +56,8 @@
     path: "/var/www/html"
     state: "absent"
 
-# We need this, because certbot is still at
-# 0.4.x in the xenial repo as of 2017-02-06
+# We need this, because certbot is still at 0.4.x in the xenial repo as of
+# 2017-09-15
 - name: "add certbot apt repository"
   apt_repository:
     repo: "ppa:certbot/certbot"
@@ -68,17 +67,15 @@
     name: "certbot"
     state: "latest"
 
-# This will be used by all websites that
-# need a certificate
+# This directory will be used to validate all websites that need a certificate
 - name: "create acme-challenges directory"
   file:
     path: "/var/www/acme-challenges"
     state: "directory"
     owner: "root"
     group: "www-data"
-    # The 2xxx octal means the group setuid bit is set, meaning
-    # all files that get created in this directory will have
-    # the group `www-data`
+    # The 2xxx octal means the group setuid bit is set, meaning all files that
+    # get created in this directory will have the group `www-data`.
     mode: "2750"
 
 - name: "create folders for certbot renewal override"

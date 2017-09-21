@@ -39,7 +39,7 @@
     group: "www-data"
     state: "directory"
 
-- name: "create tables in phpmyadmin database"
+- name: "create default tables in phpmyadmin database"
   command:
     "mysql -NBe 'source /var/www/phpmyadmin.{{ canonical_hostname
     }}/sql/create_tables.sql;'"

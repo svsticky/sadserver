@@ -63,11 +63,17 @@
   # The next task already shows if there is actually a change
   changed_when: false
 
-- name: "install newest release of slacktee"
-  git:
-    repo: "{{ slacktee.repo }}"
-    dest: "{{ slacktee.install_path }}"
-    version: "{{ slacktee_version.stdout }}"
+# Wrapped in block because otherwise templating is done before skipping task,
+# which will fail in check mode
+- block:
+  - name: "install newest release of slacktee"
+    git:
+      repo: "{{ slacktee.repo }}"
+      dest: "{{ slacktee.install_path }}"
+      version: "{{ slacktee_version.stdout }}"
+  # Don't run in check mode because previous "git fetch" task also can't be run
+  # in check mode
+  when: not ansible_check_mode
 
 - name: "create symlink to slacktee in $PATH"
   file:

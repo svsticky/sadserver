@@ -152,8 +152,10 @@ users:
     state: "present"
     keys:
       - id: "DatDutchDude.github.pub"
-        state: "present"
+        state: "absent"
       - id: "emielvanrijn.github.pub"
+        state: "present"
+      - id: "duijf.github.pub"
         state: "present"
 
   - name: "wintersport"
@@ -281,6 +283,12 @@ websites:
   - name: "wintersport.{{ canonical_hostname }}"
     user: "wintersport"
     alternative_names: []
+
+  - name: "execut.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "execut.nl"
+      - "www.execut.nl"
 
 slacktee:
   repo: "https://github.com/course-hero/slacktee.git"

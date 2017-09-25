@@ -156,6 +156,14 @@ users:
       - id: "emielvanrijn.github.pub"
         state: "present"
 
+  - name: "execut"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "duijf.github.pub"
+        state: "present"
+
   - name: "wintersport"
     admin: false
     home_prefix: "/var/www"
@@ -280,6 +288,10 @@ websites:
 
   - name: "wintersport.{{ canonical_hostname }}"
     user: "wintersport"
+    alternative_names: []
+
+  - name: "execut.nl"
+    user: "execut"
     alternative_names: []
 
 slacktee:

@@ -26,6 +26,7 @@
     # List is evaluated as logical AND
     - staging == 'false'
     - item.admin
+    - item.state == "present"
     - item.name != "ansible"
   with_items:
     - "{{ users }}"

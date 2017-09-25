@@ -152,15 +152,9 @@ users:
     state: "present"
     keys:
       - id: "DatDutchDude.github.pub"
-        state: "present"
+        state: "absent"
       - id: "emielvanrijn.github.pub"
         state: "present"
-
-  - name: "execut"
-    admin: false
-    home_prefix: "/var/www"
-    state: "present"
-    keys:
       - id: "duijf.github.pub"
         state: "present"
 

@@ -102,7 +102,7 @@ users:
       - id: "cdfa.github.pub"
         state: "present"
       - id: "DatDutchDude.github.pub"
-        state: "present"
+        state: "absent"
       - id: "emielvanrijn.github.pub"
         state: "present"
       - id: "GlennStewart125.github.pub"
@@ -112,6 +112,10 @@ users:
       - id: "maartenberg.github.pub"
         state: "present"
       - id: "yorickvanzweeden.github.pub"
+        state: "present"
+      #- id: "raatmarien.github.pub" # Currently no keys
+        #state: "present"
+      - id: "ebilkill.github.pub"
         state: "present"
 
   - name: "dgdarc"

@@ -284,9 +284,11 @@ websites:
     user: "wintersport"
     alternative_names: []
 
-  - name: "execut.nl"
-    user: "execut"
-    alternative_names: []
+  - name: "execut.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "execut.nl"
+      - "www.execut.nl"
 
 slacktee:
   repo: "https://github.com/course-hero/slacktee.git"

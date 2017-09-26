@@ -109,11 +109,12 @@
 - block:
   - name:
       "save current list of public keys for ansible user"
-    vars:
-      auth_keys: "~/.ssh/authorized_keys"
     shell:
-      "tail -n +$(grep -nm 1 '# BEGIN SSH key' {{ auth_keys }} | cut -f1 -d:)
-      {{ auth_keys }}"
+      "sed -n '/# BEGIN SSH key/,$p' ~/.ssh/authorized_keys"
+    args:
+      # To prevent warning about using a module like lineinfile instead of sed,
+      # which is most likely not possible in this case.
+      warn: false
     register: "ansible_user_public_keys"
     changed_when: false
     check_mode: false

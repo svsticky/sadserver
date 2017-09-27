@@ -159,6 +159,8 @@ users:
         state: "present"
       - id: "duijf.github.pub"
         state: "present"
+      - id: "RCdeWit.github.pub"
+        state: "present"
 
   - name: "wintersport"
     admin: false

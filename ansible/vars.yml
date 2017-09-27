@@ -190,7 +190,7 @@ fail2ban:
     - name: "koala"
       port: "https"
       filter: "koala"
-      logpath: "/var/www/koala.svsticky.nl/log/production.log"
+      logpath: "/var/www/koala.{{ canonical_hostname }}/log/{{ koala.environment }}.log"
       maxretry: 10
 
 # the upload limit for php-fpm and nginx in megabytes

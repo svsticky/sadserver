@@ -33,7 +33,7 @@ for USERNAME in "${@}"; do
   # Re-enable halting on errors
   set -e
 
-  AMOUNT_OF_KEYS="$(wc -l "${CREDENTIALS_PATH}" | awk '{print $1}')"
+  AMOUNT_OF_KEYS="$(grep -c '.*' "${CREDENTIALS_PATH}")"
   if [[ "${AMOUNT_OF_KEYS}" -gt 0 ]]; then
     echo "${AMOUNT_OF_KEYS} Key(s) fetched successfully for ${USERNAME}."
   else

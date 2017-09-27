@@ -9,6 +9,8 @@
     path: "/var/www"
     state: "directory"
 
+# When users are deleted here, their home directory is not. Run
+# ../playbooks/oneoff-purge-old-users.yml for that.
 - name: "create/delete users"
   user:
     name: "{{ item.name }}"

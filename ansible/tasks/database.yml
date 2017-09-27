@@ -43,7 +43,10 @@
   - name: "create website databases"
     command: "mysql -NBe 'create database if not exists {{ item.database }};'"
     with_items: "{{ websites }}"
-    when: item.database is defined
+    when:
+      # List is evaluated as logical AND
+      - item.state == "present"
+      - item.database is defined
     loop_control:
       label: "{{ item.name }}"
 
@@ -58,7 +61,10 @@
       `{{ item.database }}`@`localhost` identified via mysql_native_password
       using "{{ secret_mysql[item.database]['hash'] }}";'
     with_items: "{{ websites }}"
-    when: item.database is defined
+    when:
+      # List is evaluated as logical AND
+      - item.state == "present"
+      - item.database is defined
     loop_control:
       label: "{{ item.name }}"
 

@@ -29,8 +29,6 @@ users:
         state: "present"
       - id: "tomwassenberg.github.pub"
         state: "present"
-      - id: "yorickvanzweeden.github.pub"
-        state: "absent"
 
   - name: "arian"
     admin: true
@@ -72,24 +70,12 @@ users:
       - id: "tomwassenberg.github.pub"
         state: "present"
 
-  - name: "yorick"
-    admin: true
-    home_prefix: "/home"
-    state: "absent"
-    keys:
-      - id: "yorickvanzweeden.github.pub"
-        state: "absent"
-
   - name: "bestuur"
     admin: false
     home_prefix: "/var/www"
     state: "present"
     keys:
-      - id: "PabloEnriqueIglesias.github.pub"
-        state: "absent"
       - id: "Sithias.github.pub"
-        state: "absent"
-      - id: "yorickvanzweeden.github.pub"
         state: "absent"
       - id: "RobinSikkens.github.pub"
         state: "absent"
@@ -111,8 +97,6 @@ users:
         state: "present"
       - id: "maartenberg.github.pub"
         state: "present"
-      - id: "yorickvanzweeden.github.pub"
-        state: "absent"
       #- id: "raatmarien.github.pub" # Currently no keys
         #state: "present"
       - id: "ebilkill.github.pub"
@@ -145,8 +129,6 @@ users:
     home_prefix: "/var/www"
     state: "present"
     keys:
-      - id: "yorickvanzweeden.github.pub"
-        state: "absent"
       - id: "Rogions.github.pub"
         state: "present"
 

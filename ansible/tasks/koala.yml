@@ -7,6 +7,7 @@
       state: "present"
       system: true
       shell: "/bin/bash"
+    notify: "restart koala"
     tags:
       - "ruby"
       - "koala"
@@ -72,6 +73,7 @@
      name: "yarn"
      state: "present"
      update_cache: true
+    notify: "restart koala"
 
   - name: "ensure koala service file is present"
     template:
@@ -81,6 +83,7 @@
       path: "etc/systemd/system/koala.service"
     notify:
       - "systemctl daemon-reload"
+      - "restart koala"
 
   become: true
 
@@ -134,6 +137,7 @@
         - "{{ rbenv_versions.results }}"
       loop_control:
         label: "{{ item.0.repo }}"
+      notify: "restart koala"
 
   - name: "ensure environment variables are set in .bashrc"
     blockinfile:
@@ -143,6 +147,7 @@
       block: |
         export PATH="$HOME/.rbenv/bin:$PATH"
         eval "$(rbenv init -)"
+    notify: "restart koala"
     tags:
       - "koala"
       - "ruby"
@@ -154,6 +159,7 @@
     args:
       executable: "/bin/bash"
       creates: "/home/koala/.rbenv/versions/{{ koala.ruby_version }}"
+    notify: "restart koala"
     tags:
       - "ruby"
       - "koala"
@@ -234,6 +240,7 @@
       src: "templates/var/www/koala/.rbenv-vars.j2"
       dest: "/var/www/koala.{{ canonical_hostname }}/.rbenv-vars"
       mode: "0700"
+    notify: "restart koala"
     tags:
       - "koala"
 
@@ -245,6 +252,7 @@
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_gem_result"
     changed_when: "'Installing' in koala_gem_result.stdout"
+    notify: "restart koala"
     tags:
       - "koala"
 
@@ -255,6 +263,7 @@
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
+    notify: "restart koala"
     tags:
       - "koala"
 
@@ -263,6 +272,7 @@
       path: "/var/www/koala.{{ canonical_hostname }}/log"
       state: "directory"
       mode: "0775"
+    notify: "restart koala"
     tags:
       - "koala"
 
@@ -274,6 +284,7 @@
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_assets_result"
     changed_when: koala_assets_result.stdout.find("Already up-to-date.") == -1
+    notify: "restart koala"
 
     # This block only runs when Koala was already present, and needs to be
     # updated. Makes a backup of Koala's db before performing any operations on
@@ -377,6 +388,7 @@
       group: "koala"
     vars:
       path: "home/koala/unicorn.sh"
+    notify: "restart koala"
 
   - name: "place koala's nginx configuration"
     template:

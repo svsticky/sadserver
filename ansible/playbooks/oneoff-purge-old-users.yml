@@ -1,0 +1,38 @@
+---
+- hosts: all
+  user: "ansible"
+  become: true
+  become_user: "root"
+  become_method: "sudo"
+  force_handlers: true
+
+  vars_files:
+      - "../vars.yml"
+  vars_prompt:
+      - name: "confirm"
+        default: 'ABORT'
+        prompt:
+          "The playbook you are about to execute will DELETE THE HOME DIRECTORY
+          OF ALL USERS WHOSE \"STATE\" IS SET TO ABSENT. Are you CERTAIN that
+          you wish to continue? If so, enter `obliteration`. Any other value
+          will abort."
+
+  tasks:
+      - assert:
+          that:
+            - "confirm == 'obliteration'"
+
+      - name: "delete home directory of absent users"
+        file:
+          path:
+            "{{ item.home_prefix }}/{{ item.name }}"
+          state: "absent"
+        with_items: "{{ users }}"
+        when: item.state == "absent"
+        loop_control:
+          label: "{{ item.home_prefix }}/{{ item.name }}"
+
+      - debug:
+          msg:
+            "The home directories of all absent users are deleted. You are now
+            free to remove the entry of the user from the users list."

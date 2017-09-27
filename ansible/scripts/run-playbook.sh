@@ -38,20 +38,35 @@ ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
 
 TARGET_HOST="dev.svsticky.nl"
 
+function abort_deploy() {
+  echo "ABORTED DEPLOY"
+  exit 0
+}
 
 case ${ENVIRONMENT} in
   production)
     read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/N]: " \
-    choice
-      case "$choice" in
+    PROD_CHOICE
+      case "${PROD_CHOICE}" in
         fidgetspinner)
           TARGET_HOST="svsticky.nl"
           ;;
         *)
-          echo "ABORTED DEPLOY"
-          exit 0
+          abort_deploy
           ;;
       esac
+      if [[ ${GIT_BRANCH} != "master" ]]; then
+        read -p "You are deploying to production from a branch other than \
+'master', are you sure? [y/n]: " \
+        BRANCH_CHOICE
+        case "${BRANCH_CHOICE}" in
+          y)
+            ;;
+          *)
+            abort_deploy
+            ;;
+        esac
+      fi
     ;;
   staging)
     TARGET_HOST="dev.svsticky.nl"
@@ -61,9 +76,6 @@ case ${ENVIRONMENT} in
     exit 1
     ;;
 esac
-
-
-
 
 # This function sends messages to Slack using `slacktee.sh`
 #

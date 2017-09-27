@@ -1,13 +1,25 @@
 ---
-- name: "reload nginx"
+- name: "check if koala is running"
+  command: "systemctl is-active koala"
+  register: "koala_running"
+  listen: "restart koala"
+
+- name: "restart koala service"
   service:
-    name: "nginx"
-    state: "reloaded"
+    name: "koala"
+    state: "restarted"
+  when: koala_running.rc == 0
+  listen: "restart koala"
 
 - name: "restart fail2ban"
   service:
     name: "fail2ban"
     state: "restarted"
+
+- name: "reload nginx"
+  service:
+    name: "nginx"
+    state: "reloaded"
 
 - name: "systemctl daemon-reload"
   command: "systemctl daemon-reload"

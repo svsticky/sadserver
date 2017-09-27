@@ -17,21 +17,33 @@
     create: true
     validate: "visudo -cf %s"
 
-# Hack, to make it possible to set your password as admin when you login. Resets
-# the password at every login.
-- name:
-    "require the admin user to immediately choose a new password in production"
-  command: "passwd -de {{ item.name }}"
+- name: "check if password of admin user is locked"
+  shell: "passwd --status {{ item.name }} | awk '{print $2}'"
+  register: "admin_passwords"
+  with_items: "{{ users }}"
   when:
     # List is evaluated as logical AND
     - staging == 'false'
     - item.admin
     - item.state == "present"
     - item.name != "ansible"
-  with_items:
-    - "{{ users }}"
+  changed_when: false
   loop_control:
     label: "{{ item.name }}"
+  check_mode: false
+
+- name:
+    "make new admin users choose a password at next login, in production"
+  command: "passwd -de {{ item.item.name }}"
+  with_items: "{{ admin_passwords.results }}"
+  when:
+    # List is evaluated as logical AND
+    - staging == 'false'
+    - item.stdout is defined
+    - item.stdout == "L"
+  loop_control:
+    label:
+      user: "{{ item.item.name }}"
 
 - name: "ensure .ssh-directory is present at all users"
   file:

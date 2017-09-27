@@ -187,6 +187,11 @@ fail2ban:
       port: "https"
       filter: "phpmyadmin-syslog"
       logpath: "/var/log/auth.log"
+    - name: "koala"
+      port: "https"
+      filter: "koala"
+      logpath: "/var/www/koala.svsticky.nl/log/production.log"
+      maxretry: 10
 
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 30

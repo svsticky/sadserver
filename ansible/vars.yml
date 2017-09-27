@@ -185,7 +185,7 @@ fail2ban:
     - name: "pma"
       port: "https"
       filter: "phpmyadmin-syslog"
-      logpath: "%(syslog_authpriv)s"
+      logpath: "/var/log/auth.log"
 
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 30

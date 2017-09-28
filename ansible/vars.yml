@@ -172,7 +172,7 @@ unattended_upgrades:
 
 fail2ban:
   loglevel: "WARNING"
-  ignoreip: "127.0.0.1/8"
+  ignoreip: "127.0.0.1/8 131.211.42.201"
   bantime: 600
   maxretry: 6
   banaction: "iptables-multiport"
@@ -181,11 +181,11 @@ fail2ban:
     - name: "sshd"
       port: "ssh"
       filter: "sshd"
-      logpath: "/var/log/auth.log"
+      logpath: "%(sshd_log)s"
     - name: "pma"
       port: "https"
       filter: "phpmyadmin-syslog"
-      logpath: "/var/log/auth.log"
+      logpath: "%(syslog_authpriv)s"
 
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit: 30

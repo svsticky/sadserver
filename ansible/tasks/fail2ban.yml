@@ -13,6 +13,7 @@
   with_items:
     - "etc/fail2ban/fail2ban.conf"
     - "etc/fail2ban/jail.conf"
+    - "etc/fail2ban/filter.d/phpmyadmin-syslog.conf"
   notify:
     - "restart fail2ban"
 

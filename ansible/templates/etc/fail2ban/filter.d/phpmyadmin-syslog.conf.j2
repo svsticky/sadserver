@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+
+# This is a temporary copy of a fail2ban filter not yet implemented in the release we use.
+
+# Fail2Ban is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+# Fail2Ban filter for the phpMyAdmin-syslog
+#
+
+[INCLUDES]
+
+before = common.conf
+
+[Definition]
+
+_daemon = phpMyAdmin
+
+failregex = ^%(__prefix_line)suser denied: (?:\S+|.*?) \(mysql-denied\) from <HOST>\s*$
+
+ignoreregex =
+
+
+# Author: Pavel Mihadyuk
+# Regex fixes: Serg G. Brester

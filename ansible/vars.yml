@@ -174,7 +174,7 @@ fail2ban:
   loglevel: "WARNING"
   ignoreip: "127.0.0.1/8"
   bantime: 600
-  maxretry: 3
+  maxretry: 6
   banaction: "iptables-multiport"
 
   services:

@@ -27,7 +27,8 @@ for USERNAME in "${@}"; do
   /dev/null 2>&1
 
   if [[ "${?}" != "0" ]]; then
-    echo "Fetching keys failed. Did you enter a correct GitHub username?"
+    echo -e "Fetching keys failed. Did you enter a correct GitHub username?\n"
+    echo "Be advised that these are case-sensitive."
     exit 1
   fi
   # Re-enable halting on errors

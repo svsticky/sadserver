@@ -105,7 +105,7 @@ users:
         state: "present"
       - id: "GlennStewart125.github.pub"
         state: "present"
-      - id: "agarwaemben.github.pub"
+      - id: "Agarwaemben.github.pub"
         state: "present"
       - id: "maartenberg.github.pub"
         state: "present"

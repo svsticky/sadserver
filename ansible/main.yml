@@ -11,23 +11,23 @@
     # Environment-specific variables are included by tasks/secrets.yml.
 
   handlers:
-    - include: "handlers.yml"
+    - include_tasks: "handlers.yml"
 
   tasks:
     # secrets.yml should always be included the first, because it sets all the
     # environment-specific secrets that could be used by any other task.
-    - include: "tasks/secrets.yml"
-    - include: "tasks/system-settings.yml"
-    - include: "tasks/users.yml"
-    - include: "tasks/auth.yml"
-    - include: "tasks/packages.yml"
-    - include: "tasks/fail2ban.yml"
-    - include: "tasks/nginx.yml"
-    - include: "tasks/digidecs.yml"
-    - include: "tasks/sodi.yml"
-    - include: "tasks/firewall.yml"
-    - include: "tasks/database.yml"
-    - include: "tasks/phpmyadmin.yml"
-    - include: "tasks/koala.yml"
-    - include: "tasks/backups.yml"
-    - include: "tasks/monitoring.yml"
+    - include_tasks: "tasks/secrets.yml"
+    - include_tasks: "tasks/system-settings.yml"
+    - include_tasks: "tasks/users.yml"
+    - include_tasks: "tasks/auth.yml"
+    - include_tasks: "tasks/packages.yml"
+    - include_tasks: "tasks/fail2ban.yml"
+    - include_tasks: "tasks/nginx.yml"
+    - include_tasks: "tasks/digidecs.yml"
+    - include_tasks: "tasks/sodi.yml"
+    - include_tasks: "tasks/firewall.yml"
+    - include_tasks: "tasks/database.yml"
+    - include_tasks: "tasks/phpmyadmin.yml"
+    - include_tasks: "tasks/koala.yml"
+    - include_tasks: "tasks/backups.yml"
+    - include_tasks: "tasks/monitoring.yml"

@@ -7,4 +7,4 @@
       - "../vars.yml"
 
   tasks:
-    - include: ".koala-maintenance-on.yml"
+    - include_tasks: ".koala-maintenance-on.yml"

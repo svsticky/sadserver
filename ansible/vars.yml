@@ -181,7 +181,7 @@ fail2ban:
     - name: "sshd"
       port: "ssh"
       filter: "sshd"
-      logpath: "%(sshd_log)s"
+      logpath: "%(syslog_authpriv)s"
     - name: "pma"
       port: "https"
       filter: "phpmyadmin-syslog"

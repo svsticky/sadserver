@@ -52,7 +52,7 @@ server to become Sticky's production server.
 
 The code in this repository depends on the following software:
 
- - Ansible >= 2.3
+ - Ansible >= 2.4
  - [slacktee] (no config necessary)
  - bash
 

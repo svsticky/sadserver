@@ -11,7 +11,7 @@
     # Environment-specific variables are included by tasks/secrets.yml.
 
   handlers:
-    - include_tasks: "handlers.yml"
+    - import_tasks: "handlers.yml"
 
   tasks:
     # secrets.yml should always be included the first, because it sets all the

@@ -46,10 +46,6 @@ server {
     return 301 https://digidecs.{{ canonical_hostname }}/;
    }
 
-  location ~* /doos {
-    return 301 https://docs.google.com/forms/d/e/1FAIpQLSelbBlYsKI9z9OHO9wkQfSrZFYCC4Mg66d_HyFTjWv8Y8f2mA/viewform;
-   }
-
   location ~* /(fb|facebook) {
     return 301 https://www.facebook.com/groups/814759978565158/;
   }

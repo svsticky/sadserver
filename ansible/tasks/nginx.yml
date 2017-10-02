@@ -170,8 +170,9 @@
     mode: "2775"
     state: "directory"
   with_items: "{{ websites }}"
-  # When a website needs to be added, add its name to the list here
   when:
+    # When a website needs to be added, add a new condition to this list item
+    # using "or"
     - item.name == canonical_hostname
   loop_control:
     label: "{{ item.name }}"

@@ -45,28 +45,34 @@ function abort_deploy() {
 
 case ${ENVIRONMENT} in
   production)
-    read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/N]: " \
-    PROD_CHOICE
-      case "${PROD_CHOICE}" in
-        fidgetspinner)
-          TARGET_HOST="svsticky.nl"
+    while [[ -z ${PROD_CHOICE+x} || ${PROD_CHOICE} != "fidgetspinner" && \
+    ${PROD_CHOICE} != "n" ]]; do
+      read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/n]: "\
+      PROD_CHOICE
+    done
+    case "${PROD_CHOICE}" in
+      fidgetspinner)
+        TARGET_HOST="svsticky.nl"
+        ;;
+      *)
+        abort_deploy
+        ;;
+    esac
+    if [[ ${GIT_BRANCH} != "master" ]]; then
+      while [[ -z ${BRANCH_CHOICE+x} || ${BRANCH_CHOICE} != "Y" && \
+      ${BRANCH_CHOICE} != "n" ]]; do
+        read -p "You are deploying to production from a branch other than \
+'master', are you sure? [Y/n]: " \
+        BRANCH_CHOICE
+      done
+      case "${BRANCH_CHOICE}" in
+        Y)
           ;;
         *)
           abort_deploy
           ;;
       esac
-      if [[ ${GIT_BRANCH} != "master" ]]; then
-        read -p "You are deploying to production from a branch other than \
-'master', are you sure? [y/n]: " \
-        BRANCH_CHOICE
-        case "${BRANCH_CHOICE}" in
-          y)
-            ;;
-          *)
-            abort_deploy
-            ;;
-        esac
-      fi
+    fi
     ;;
   staging)
     TARGET_HOST="dev.svsticky.nl"

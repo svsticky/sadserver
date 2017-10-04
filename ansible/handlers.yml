@@ -2,6 +2,9 @@
 - name: "check if koala is running"
   command: "systemctl is-active koala"
   register: "koala_running"
+  failed_when:
+    - koala_running.rc != 0
+    - koala_running.rc != 3
   listen: "restart koala"
 
 - name: "restart koala service"

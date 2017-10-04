@@ -223,7 +223,8 @@
 
   # Enables maintenance mode only when Koala was already running, and needs to
   # be updated
-  - include_tasks: "playbooks/.koala-maintenance-on.yml"
+  - name: "start process of enabling koala's maintenance mode"
+    include_tasks: "playbooks/.koala-maintenance-on.yml"
     when: koala_updated | default(false)
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
@@ -331,7 +332,8 @@
 
   # Disables maintenance mode only when Koala had to be updated, and can now be
   # started again.
-  - include_tasks: "playbooks/.koala-maintenance-off.yml"
+  - name: "start process of disabling koala's maintenance mode"
+    include_tasks: "playbooks/.koala-maintenance-off.yml"
     when: koala_updated | default(false)
 
   become: true

@@ -7,4 +7,5 @@
       - "../vars.yml"
 
   tasks:
-    - include_tasks: ".koala-maintenance-off.yml"
+    - name: "start process of disabling koala's maintenance mode"
+      include_tasks: ".koala-maintenance-off.yml"

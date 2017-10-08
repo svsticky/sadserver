@@ -1,0 +1,64 @@
+---
+- hosts: "all"
+  user: "root"
+  gather_facts: false
+  force_handlers: true
+
+  vars:
+    # Hardcoded path because it's hardcoded in some places in the main playbook
+    # as well
+    ansible_home_dir: "/home/ansible"
+    finish_msg: |
+      Now you can run the main playbook in the same way as this playbook, which
+      will run under the ansible user we've just created. The user ansible has
+      the password:
+      {{ ansible_user_password.stdout }}
+      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      @@ ADD THE PASSWORD ABOVE TO THE IT-CROWD PASSWORD MANAGER @@
+      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  vars_prompt:
+    - name: "new_host"
+      default: "dev.svsticky.nl"
+      prompt:
+        "Please enter the hostname or IP of the server that needs to be
+        bootstrapped"
+
+  tasks:
+    - name: "install python 2.7"
+      raw:
+        "apt-get update && apt-get install -y --no-install-recommends
+        python2.7"
+
+    - name: "generate random password"
+      shell: "openssl rand -base64 32"
+      register: "ansible_user_password"
+
+    - name: "create ansible user"
+      user:
+        name: "ansible"
+        groups: "sudo,adm"
+        home: "{{ ansible_home_dir }}"
+        shell: "/bin/bash"
+        password: "{{ ansible_user_password.stdout | password_hash('sha256') }}"
+        state: "present"
+
+    - name: "create directory for ansible user's ssh keys"
+      file:
+        path: "{{ ansible_home_dir }}/.ssh"
+        state: "directory"
+        mode: "0700"
+        owner: "ansible"
+        group: "ansible"
+
+    - name: "copy root's ssh keys to ansible user"
+      copy:
+        src: "/root/.ssh/authorized_keys"
+        dest: "{{ ansible_home_dir }}/.ssh/"
+        remote_src: true
+        mode: "0600"
+        owner: "ansible"
+        group: "ansible"
+
+    - debug:
+        msg: "{{ finish_msg.split('\n') }}"

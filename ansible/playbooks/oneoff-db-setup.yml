@@ -1,35 +1,36 @@
 ---
-- hosts: all
+- hosts: "all"
   user: "ansible"
   force_handlers: true
 
   vars_files:
-      - "../vars.yml"
+    - "../vars.yml"
+
   vars_prompt:
-      - name: "confirm"
-        default: 'ABORT'
-        prompt:
-          "The playbook you are about to execute will DELETE THE DATABASE if it
-          exists, and rebuild it. Are you CERTAIN that you wish to continue? If
-          so, enter `obliteration`. Any other value will abort."
+    - name: "confirm"
+      default: 'ABORT'
+      prompt:
+        "The playbook you are about to execute will DELETE THE DATABASE if it
+        exists, and rebuild it. Are you CERTAIN that you wish to continue? If
+        so, enter `obliteration`. Any other value will abort."
 
   tasks:
-      - assert:
-          that:
-            - "confirm == 'obliteration'"
+    - assert:
+        that:
+          - "confirm == 'obliteration'"
 
-      - name: "create database"
-        environment:
-          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell:
-          'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
-          db:setup'
-        args:
-          chdir: "/var/www/koala.{{ canonical_hostname }}"
-          executable: "/bin/bash"
-        register: "result"
-        become: true
-        become_user: "koala"
+    - name: "create database"
+      environment:
+        PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+      shell:
+        'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
+        db:setup'
+      args:
+        chdir: "/var/www/koala.{{ canonical_hostname }}"
+        executable: "/bin/bash"
+      register: "result"
+      become: true
+      become_user: "koala"
 
-      - debug:
-          var: "result.stdout_lines"
+    - debug:
+        var: "result.stdout_lines"

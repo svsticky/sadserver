@@ -1,29 +1,29 @@
 ---
-- hosts: all
+- hosts: "all"
   user: "ansible"
   force_handlers: true
 
   vars_files:
-      - "../vars.yml"
+    - "../vars.yml"
 
   vars_prompt:
-      - name: "rake_task"
-        prompt: "Enter task to execute:"
-        private: false
+    - name: "rake_task"
+      prompt: "Enter task to execute:"
+      private: false
 
   tasks:
-      - name: "custom rake task"
-        environment:
-          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell:
-          'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
-          {{ rake_task }}'
-        args:
-          chdir: "/var/www/koala.{{ canonical_hostname }}"
-          executable: "/bin/bash"
-        register: "result"
-        become: true
-        become_user: "koala"
+    - name: "custom rake task"
+      environment:
+        PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+      shell:
+        'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
+        {{ rake_task }}'
+      args:
+        chdir: "/var/www/koala.{{ canonical_hostname }}"
+        executable: "/bin/bash"
+      register: "result"
+      become: true
+      become_user: "koala"
 
-      - debug:
-          var: "result.stdout_lines"
+    - debug:
+        var: "result.stdout_lines"

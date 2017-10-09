@@ -1,11 +1,11 @@
 ---
-- hosts: all
+- hosts: "all"
   user: "ansible"
   force_handlers: true
 
   tasks:
-  - name: "reload nginx config"
-    service:
-      name: "nginx"
-      state: "reloaded"
-    become: true
+    - name: "reload nginx config"
+      service:
+        name: "nginx"
+        state: "reloaded"
+      become: true

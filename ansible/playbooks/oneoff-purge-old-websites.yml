@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "all"
   user: "ansible"
   become: true
   become_user: "root"
@@ -7,83 +7,84 @@
   force_handlers: true
 
   vars_files:
-      - "../vars.yml"
+    - "../vars.yml"
+
   vars_prompt:
-      - name: "confirm"
-        default: 'ABORT'
-        prompt:
-          "The playbook you are about to execute will DELETE ALL DATA OF
-          ALL WEBSITES WHOSE \"STATE\" IS SET TO ABSENT. Are you CERTAIN that
-          you wish to continue? If so, enter `obliteration`. Any other value
-          will abort."
+    - name: "confirm"
+      default: 'ABORT'
+      prompt:
+        "The playbook you are about to execute will DELETE ALL DATA OF
+        ALL WEBSITES WHOSE \"STATE\" IS SET TO ABSENT. Are you CERTAIN that
+        you wish to continue? If so, enter `obliteration`. Any other value
+        will abort."
 
   tasks:
-      - assert:
-          that:
-            - "confirm == 'obliteration'"
+    - assert:
+        that:
+          - "confirm == 'obliteration'"
 
-      # Revoke website certificate, to avoid renewal notifications from the CA
-      - name: "revoke certificate(s)"
-        # --non-interactive makes sure command never waits for user input
-        command:
-          "certbot revoke
-          --non-interactive
-          {% if staging_certificates and (item.real_certificate is not defined
-          or item.real_certificate == false) %}
-          --staging
-          {% endif %}
-          --cert-path /etc/letsencrypt/live/{{ item.name }}/cert.pem
-          --reason cessationofoperation"
-        with_items: "{{ websites }}"
-        # Added because Certbot will error if cert is already deleted
-        failed_when: false
-        when: item.state == "absent"
+    # Revoke website certificate, to avoid renewal notifications from the CA
+    - name: "revoke certificate(s)"
+      # --non-interactive makes sure command never waits for user input
+      command:
+        "certbot revoke
+        --non-interactive
+        {% if staging_certificates and (item.real_certificate is not defined
+        or item.real_certificate == false) %}
+        --staging
+        {% endif %}
+        --cert-path /etc/letsencrypt/live/{{ item.name }}/cert.pem
+        --reason cessationofoperation"
+      with_items: "{{ websites }}"
+      # Added because Certbot will error if cert is already deleted
+      failed_when: false
+      when: item.state == "absent"
 
-      - name: "delete certificate(s)"
-        command:
-          "certbot delete
-          --non-interactive
-          --cert-name {{ item.name }}"
-        with_items: "{{ websites }}"
-        # Added because Certbot will error if cert is already deleted
-        failed_when: false
-        when: item.state == "absent"
+    - name: "delete certificate(s)"
+      command:
+        "certbot delete
+        --non-interactive
+        --cert-name {{ item.name }}"
+      with_items: "{{ websites }}"
+      # Added because Certbot will error if cert is already deleted
+      failed_when: false
+      when: item.state == "absent"
 
-      - name: "delete webroot(s)"
-        file:
-          path:
-            "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif
-            %}{{ item.name }}"
-          state: "absent"
-        with_items: "{{ websites }}"
-        when:
-          # List is evaluated as logical AND
-          - item.state == "absent"
-          - item.custom_config is undefined
+    - name: "delete webroot(s)"
+      file:
+        path:
+          "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif
+          %}{{ item.name }}"
+        state: "absent"
+      with_items: "{{ websites }}"
+      when:
+        # List is evaluated as logical AND
+        - item.state == "absent"
+        - item.custom_config is undefined
 
-      - name: "delete database(s)"
-        command: "mysql -NBe 'DROP DATABASE IF EXISTS {{ item.database }};'"
-        with_items: "{{ websites }}"
-        when:
-          # List is evaluated as logical AND
-          - item.state == "absent"
-          - item.database is defined
+    - name: "delete database(s)"
+      command: "mysql -NBe 'DROP DATABASE IF EXISTS {{ item.database }};'"
+      with_items: "{{ websites }}"
+      when:
+        # List is evaluated as logical AND
+        - item.state == "absent"
+        - item.database is defined
 
-      - name: "delete database user(s)"
-        command: "mysql -NBe 'DROP USER {{ item.database }}@localhost;'"
-        with_items: "{{ websites }}"
-        # Added because MySQL will error if user is already deleted. "DROP USER
-        # IF EXISTS" is added in MariaDB 10.1.3, but we're not on that version
-        # yet.
-        failed_when: false
-        when:
-          # List is evaluated as logical AND
-          - item.state == "absent"
-          - item.database is defined
+    - name: "delete database user(s)"
+      command: "mysql -NBe 'DROP USER {{ item.database }}@localhost;'"
+      with_items: "{{ websites }}"
+      # Added because MySQL will error if user is already deleted. "DROP USER
+      # IF EXISTS" is added in MariaDB 10.1.3, but we're not on that version
+      # yet.
+      failed_when: false
+      when:
+        # List is evaluated as logical AND
+        - item.state == "absent"
+        - item.database is defined
 
-      - debug:
-          msg:
-            "The certificates of all absent websites are revoked and deleted.
-            Also, its webroot, database and db user (if existing) are deleted.
-            Remember to delete any specific templates/tasks from this repository
-            yourself."
+    - debug:
+        msg:
+          "The certificates of all absent websites are revoked and deleted.
+          Also, its webroot, database and db user (if existing) are deleted.
+          Remember to delete any specific templates/tasks from this repository
+          yourself."

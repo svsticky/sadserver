@@ -1,10 +1,10 @@
 ---
-- hosts: all
+- hosts: "all"
   user: "ansible"
   force_handlers: true
 
   vars_files:
-      - "../vars.yml"
+    - "../vars.yml"
 
   tasks:
     - name: "start process of disabling koala's maintenance mode"

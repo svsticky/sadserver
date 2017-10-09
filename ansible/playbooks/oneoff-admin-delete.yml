@@ -1,34 +1,34 @@
 ---
-- hosts: all
+- hosts: "all"
   user: "ansible"
   force_handlers: true
 
   vars_files:
-      - "../vars.yml"
+    - "../vars.yml"
 
   vars_prompt:
-      - name: "admin_to_remove"
-        default: ""
-        prompt: "Please enter the username to remove: (Ctrl-C to cancel)"
-        private: false
+    - name: "admin_to_remove"
+      default: ""
+      prompt: "Please enter the username to remove: (Ctrl-C to cancel)"
+      private: false
 
   tasks:
-      - assert:
-          that:
-            - "admin_to_remove != ''"
+    - assert:
+        that:
+          - "admin_to_remove != ''"
 
-      - name: "remove admin"
-        environment:
-          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell:
-          'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
-          "admin:delete[{{ admin_to_remove}}]"'
-        args:
-          chdir: "/var/www/koala.{{ canonical_hostname }}"
-          executable: "/bin/bash"
-        register: "result"
-        become: true
-        become_user: "koala"
+    - name: "remove admin"
+      environment:
+        PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+      shell:
+        'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
+        "admin:delete[{{ admin_to_remove}}]"'
+      args:
+        chdir: "/var/www/koala.{{ canonical_hostname }}"
+        executable: "/bin/bash"
+      register: "result"
+      become: true
+      become_user: "koala"
 
-      - debug:
-          var: "result.stdout_lines"
+    - debug:
+        var: "result.stdout_lines"

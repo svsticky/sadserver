@@ -1,10 +1,40 @@
 ---
-- name: "install fail2ban"
+- name: "ensure fail2ban package is no longer present"
   apt:
     pkg: "fail2ban"
+    state: "absent"
+
+- name: "install fail2ban dependencies"
+  apt:
+    pkg: "python3-pyinotify"
     state: "present"
-  notify:
-    - "restart fail2ban"
+
+- name: "clone fail2ban"
+  git:
+    repo: "https://github.com/fail2ban/fail2ban"
+    dest: "/home/ansible/fail2ban"
+    depth: 1
+    force: true
+    version: "0.10"
+  register: "fail2ban_clone_result"
+
+- name: "install fail2ban"
+  command: "python setup.py install"
+  become: true
+  args:
+    chdir: "/home/ansible/fail2ban"
+  #when: "fail2ban_clone_result.changed"
+
+- name: "install fail2ban service file"
+  file:
+    src: "/home/ansible/fail2ban/build/fail2ban.service"
+    dest: "/etc/systemd/system/fail2ban.service"
+    state: "link"
+  notify: "systemctl daemon-reload"
+  #when: "fail2ban_clone_result.changed"
+
+- name: "flush handlers"
+  meta: "flush_handlers"
 
 - name: "configure fail2ban"
   template:

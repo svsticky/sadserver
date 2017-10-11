@@ -8,6 +8,15 @@
      X88 888  888 Y88b 888      X88 Y8b.     888      Y8bd8P  Y8b.     888
  88888P' "Y888888  "Y88888  88888P'  "Y8888  888       Y88P    "Y8888  888
 ```
+
+**TL;DR:**
+
+```
+# Environment can be `production` or `staging`
+$ cd ansible/
+$ ./scripts/run-playbook.sh <ENVIRONMENT> main.yml
+```
+
 # Server workspace
 
 This repository contains Ansible playbooks and relevant documentation for the

@@ -23,7 +23,7 @@
   become: true
   args:
     chdir: "/home/ansible/fail2ban"
-  #when: "fail2ban_clone_result.changed"
+  when: "fail2ban_clone_result.changed"
 
 - name: "install fail2ban service file"
   file:
@@ -31,7 +31,7 @@
     dest: "/etc/systemd/system/fail2ban.service"
     state: "link"
   notify: "systemctl daemon-reload"
-  #when: "fail2ban_clone_result.changed"
+  when: "fail2ban_clone_result.changed"
 
 - name: "flush handlers"
   meta: "flush_handlers"

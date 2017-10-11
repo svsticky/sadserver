@@ -41,7 +41,7 @@ fail2ban:
 upload_limit: 30
 
 slack_notifications:
-  default_channel: "alerts"
+  default_channel: "notifications"
   slacktee:
     repo: "https://github.com/course-hero/slacktee.git"
     install_path: "/usr/local/src/slacktee"

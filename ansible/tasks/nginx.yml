@@ -43,13 +43,13 @@
     state: "link"
   notify: "reload nginx"
 
-# This enables the nginx service, and reloads or starts it if necessary. Let's
-# Encrypt depends on this.
-- name: "enable and start/reload nginx"
+# This enables the nginx service, and starts it if necessary. Certbot depends on
+# this.
+- name: "enable and start nginx"
   service:
     name: "nginx"
     enabled: true
-    state: "reloaded"
+    state: "started"
 
 - name: "Delete default html directory"
   file:
@@ -95,6 +95,9 @@
     - "etc/systemd/system/certbot.timer.d/override.conf"
     - "etc/systemd/system/certbot-fail.service"
   notify: "systemctl daemon-reload"
+
+# To make sure nginx is reloaded if needed
+- meta: "flush_handlers"
 
 - name: "request certificates"
   # --non-interactive makes sure command never waits for user input

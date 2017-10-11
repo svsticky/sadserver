@@ -1,9 +1,4 @@
 ---
-- name: "ensure fail2ban package is no longer present"
-  apt:
-    pkg: "fail2ban"
-    state: "absent"
-
 - name: "install fail2ban dependencies"
   apt:
     pkg: "python3-pyinotify"

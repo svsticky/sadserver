@@ -45,13 +45,13 @@ function abort_deploy() {
 
 case ${ENVIRONMENT} in
   production)
-    while [[ -z ${PROD_CHOICE+x} || ${PROD_CHOICE} != "fidgetspinner" && \
+    while [[ -z ${PROD_CHOICE+x} || ${PROD_CHOICE} != "Y" && \
     ${PROD_CHOICE} != "n" ]]; do
-      read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [fidgetspinner/n]: "\
+      read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [Y/n]: "\
       PROD_CHOICE
     done
     case "${PROD_CHOICE}" in
-      fidgetspinner)
+      Y)
         TARGET_HOST="svsticky.nl"
         ;;
       *)

@@ -115,8 +115,8 @@
     path: "/root/.ssh/authorized_keys"
     state: "absent"
 
-# The bootstrap script adds the SSH keys (as added by DO), to the ansible user.
-# Afterwards, they are re-added and managed by Ansible itself, so the old
+# The bootstrap playbook adds the SSH keys (as added by DO), to the ansible
+# user. Afterwards, they are re-added and managed by Ansible itself, so the old
 # duplicates must be deleted once.
 - block:
   - name:
@@ -133,7 +133,7 @@
 
   - name:
       "remove superfluous public keys for ansible user, added by bootstrap
-      script"
+      playbook"
     copy:
       content: "{{ ansible_user_public_keys.stdout + '\n' }}"
       dest: "~/.ssh/authorized_keys"

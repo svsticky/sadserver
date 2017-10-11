@@ -139,19 +139,19 @@ as much as possible, while existing completely independent of the production
 environment. Ansible uses an [inventory file][inventory] to list all hosts,
 which is kept in this repository in `ansible/hosts`.
 
-To make a host ready to run the main Ansible playbooks on, a small shell script
+To make a host ready to run regular Ansible playbooks on, a special playbook
 should be used that bootstraps the server. It installs Ansible's dependencies,
-and sets up a non-root user that Ansible can use. This should be run as follows:
-`$ ansible/scripts/bootstrap-new-host.sh <HOST>`, where `<HOST>` should be
-substituted by the DNS name of the vanilla server.
+and sets up a non-root user for Ansible to use. A playbook should be applied to
+a host by means of a wrapper script around `ansible-playbook`, that posts
+progress notifications to the committee's Slack team, among a few other things.
+To bootstrap the new server, the script should be run as follows:
+`$ ansible/scripts/run-playbook.sh <ENVIRONMENT>
+ansible/playbooks/oneoff-bootstrap-new-host.yml`, where `<ENVIRONMENT>` should
+be substituted by either `production` or `staging`.
 
 After the bootstrapping, the main playbook can be run to completely set up the
-server. A playbook should be applied to a host by means of a wrapper script
-around `ansible-playbook`, that posts progress notifications to the committee's Slack
-team, among a few other things. To continue setting up a new server, the script
-should be run as follows:
-`$ ansible/scripts/run-playbook.sh <ENVIRONMENT> main.yml`, where
-`<ENVIRONMENT>` should be substituted by either `production` or `staging`.
+server. The main playbook can be applied in the same way as the bootstrap
+playbook.
 
 When this has successfully finished, a server exists that matches one of the
 environments. When migrating the production server, a few more tasks should be

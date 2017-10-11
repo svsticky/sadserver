@@ -7,14 +7,12 @@
 "Y8888b. .d888888 888  888 "Y8888b. 88888888 888     Y88  88P 88888888 888
      X88 888  888 Y88b 888      X88 Y8b.     888      Y8bd8P  Y8b.     888
  88888P' "Y888888  "Y88888  88888P'  "Y8888  888       Y88P    "Y8888  888
-```
 
-**TL;DR:**
 
-```
-# Environment can be `production` or `staging`
-$ cd ansible/
-$ ./scripts/run-playbook.sh <ENVIRONMENT> main.yml
+Deploy me:
+
+$ cd ansible
+$ ./scripts/run-playbook.sh (production|staging) main.yml
 ```
 
 # Server workspace
@@ -27,6 +25,11 @@ account.
 In this README, we try to give some reasons as to why the project is organised
 the way it is. Don't try to reinvent the wheel, but feel free to periodically
 reconsider the way things are done!
+
+Quick links:
+
+ 1. [Updating SSH keys][ssh-keys]
+ 1. [Documentation][docs]
 
 ## Reasons for the current approach to Sticky's server management
 
@@ -162,6 +165,8 @@ probably your fellow committee members.
 
 Godspeed!
 
+  [ssh-keys]:./docs/updating-ssh-keys.md
+  [docs]:./docs
   [sadserver]:https://twitter.com/sadserver
   [Ansible styleguide]:docs/ansible-styleguide.md
   [ansible/credentials/]:ansible/credentials

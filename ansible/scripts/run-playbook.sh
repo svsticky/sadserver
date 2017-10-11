@@ -91,7 +91,7 @@ esac
 #
 # [1]: https://www.webpagefx.com/tools/emoji-cheat-sheet/
 function notify() {
-  # ${@:3} means: all arguments except for the first two
+  # ${@:n} means: all arguments except for the first n-1
   echo -e "${@:3}" | ${SLACKTEE} --icon "$1" --attachment "$2" > /dev/null
 }
 
@@ -115,7 +115,7 @@ successfully completed* \n" \
     notify \
       ':exclamation:' \
       'danger' \
-      "@it-crowd-commissie *Deployment of playbook \`${ARGS[*]}\` in \
+      "*Deployment of playbook \`${ARGS[*]}\` in \
 ${ENVIRONMENT} environment FAILED!* \n" \
       "_(branch: ${GIT_BRANCH} - revision \"${GIT_REVISION}\")_"
     exit $EXIT

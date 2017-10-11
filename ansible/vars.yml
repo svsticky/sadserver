@@ -165,7 +165,9 @@ users:
     admin: false
     home_prefix: "/var/www"
     state: "present"
-    keys: []
+    keys:
+      - id: "alextjanse.github.pub"
+        state: "present"
 
 unattended_upgrades:
   security: true

@@ -88,10 +88,11 @@ There is one main playbook, `ansible/main.yml`, that includes many files that
 consist of tasks. This is the playbook that sets up an entire server that hosts
 all the applications Sticky self-hosts. This playbook is completely idempotent,
 which means it can be run multiple times on the same server without any
-unintended consequences. Our other playbooks are stored in `ansible/playbooks/`.
-These are more specific and consist of not necessarily idempotent tasks. These
-are used to e.g. create a new admin user in Koala, and to restart Koala or
-nginx.
+unintended consequences. You can't deploy this playbook on a host without
+[bootstrapping] it first. Our other playbooks are stored in
+`ansible/playbooks/`. These are more specific and consist of not necessarily
+idempotent tasks. These are used to e.g. create a new admin user in Koala, and
+to restart Koala or nginx.
 
 #### Templates
 
@@ -146,8 +147,8 @@ a host by means of a wrapper script around `ansible-playbook`, that posts
 progress notifications to the committee's Slack team, among a few other things.
 To bootstrap the new server, the script should be run as follows:
 `$ ansible/scripts/run-playbook.sh <ENVIRONMENT>
-ansible/playbooks/oneoff-bootstrap-new-host.yml`, where `<ENVIRONMENT>` should
-be substituted by either `production` or `staging`.
+ansible/bootstrap-new-host.yml`, where `<ENVIRONMENT>` should be substituted by
+either `production` or `staging`.
 
 After the bootstrapping, the main playbook can be run to completely set up the
 server. The main playbook can be applied in the same way as the bootstrap
@@ -168,6 +169,7 @@ Godspeed!
   [ssh-keys]:./docs/updating-ssh-keys.md
   [docs]:./docs
   [sadserver]:https://twitter.com/sadserver
+  [bootstrapping]:#how-to-set-up-the-staging-and-production-environment
   [Ansible styleguide]:docs/ansible-styleguide.md
   [ansible/credentials/]:ansible/credentials
   [ansible/credentials/shared.yml]:ansible/credentials/shared.yml

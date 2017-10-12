@@ -60,8 +60,8 @@ trap cleanup EXIT
       `# {{ ansible_managed }}`.
    1. Suffix the file name with the `j2` file extension.
 1. Add some documentation that explains what the script does, including one
-line that shows what parameters are accepted and in what order. E.g. `USAGE:
-bootstrap-new-host.sh <HOSTNAME | IP>`.
+line that shows what parameters are accepted and in what order.
+E.g. `USAGE: scripts/fetch-keys-for-gh-user.sh [GITHUB_USERNAME]`.
 1. Add abovementioned Strict Mode to your script:
    ```
    # Unofficial Bash strict mode

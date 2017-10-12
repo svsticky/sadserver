@@ -37,14 +37,14 @@ certificates for, during the deployment of the new server.
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ ./scripts/bootstrap-new-host.sh svsticky.nl
+$ scripts/run-playbook.sh production bootstrap-new-host.yml
 ```
 
 **Run the playbook** on the new production server
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ ./scripts/run-playbook.sh main.yml production
+$ ./scripts/run-playbook.sh production main.yml
 ```
 
 **Copy over the old databases**.
@@ -59,7 +59,8 @@ $ sudo mysql < databases.sql
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ ./scripts/run-playbook.sh playbooks/oneoff-koala-maintenance-off.yml production
+$ ./scripts/run-playbook.sh production \
+playbooks/oneoff-koala-maintenance-off.yml
 ```
 
 **Migrate the websites** The following is not part of the playbook and needs to

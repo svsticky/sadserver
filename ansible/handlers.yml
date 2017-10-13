@@ -25,7 +25,8 @@
     state: "reloaded"
 
 - name: "systemctl daemon-reload"
-  command: "systemctl daemon-reload"
+  systemd:
+    daemon_reload: true
 
 - name: "issue reboot command"
   shell: "sleep 2 && /sbin/reboot"

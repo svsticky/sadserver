@@ -21,10 +21,10 @@
   when: "fail2ban_clone_result.changed"
 
 - name: "install fail2ban service file"
-  file:
+  copy:
     src: "/home/ansible/fail2ban/build/fail2ban.service"
     dest: "/etc/systemd/system/fail2ban.service"
-    state: "link"
+    remote_src: true
   notify: "systemctl daemon-reload"
   when: "fail2ban_clone_result.changed"
 

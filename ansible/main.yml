@@ -13,11 +13,13 @@
   handlers:
     - import_tasks: "handlers.yml"
 
-  tasks:
+  pre_tasks:
     # secrets.yml should always be included the first, because it sets all the
     # environment-specific secrets that could be used by any other task.
     - name: "start process of handling environment-specific secrets"
       include_tasks: "tasks/secrets.yml"
+
+  tasks:
     - name: "start process of managing general system settings"
       include_tasks: "tasks/system-settings.yml"
     - name: "start process of user management"
@@ -27,8 +29,6 @@ users"
       include_tasks: "tasks/auth.yml"
     - name: "start process of general package management"
       include_tasks: "tasks/packages.yml"
-    - name: "start process of configuring fail2ban"
-      include_tasks: "tasks/fail2ban.yml"
     - name: "start process of configuring the webserver"
       include_tasks: "tasks/nginx.yml"
     - name: "start process of installing digidecs"
@@ -47,3 +47,9 @@ users"
       include_tasks: "tasks/backups.yml"
     - name: "start process of configuring monitoring services"
       include_tasks: "tasks/monitoring.yml"
+
+  post_tasks:
+    # Included the last, so any service that fail2ban is applied to, already
+    # exists. Otherwise fail2ban would miss the log files it has to monitor.
+    - name: "start process of configuring fail2ban"
+      include_tasks: "tasks/fail2ban.yml"

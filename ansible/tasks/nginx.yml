@@ -109,7 +109,7 @@
   # hostnames as SAN's
   # --deploy-hook reloads nginx after a successful issuance, and adds this in
   # the renewal configuration of the certificate
-  command: >
+  command: >-
     certbot certonly
     {% if staging == 'true' and (item.real_certificate is not defined or
     item.real_certificate == false) %}

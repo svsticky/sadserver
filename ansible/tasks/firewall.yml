@@ -27,11 +27,12 @@
     direction: "incoming"
     state: "enabled"
 
-# Implemented because fail2ban doesn't support ipv6 traffic yet.
-# Should be deprecated when fail2ban 0.10 is released.
+# Remove firewall rule which was implemented because fail2ban didn't support 
+# ipv6 at the time. Since 0.10, it does.
 - name: "rate limit ipv6 traffic to ssh" 
   ufw:
     rule: "limit"
     from_ip: "::/0"
     to_port: "ssh"
     proto: "tcp"
+    delete: true

@@ -5,18 +5,9 @@
   become_user: "root"
   become_method: "sudo"
   force_handlers: true
-  vars_files:
-    - "group_vars/credentials/shared.yml"
-    # Environment-specific variables are included by tasks/secrets.yml.
 
   handlers:
     - import_tasks: "handlers/main.yml"
-
-  pre_tasks:
-    # secrets.yml should always be included the first, because it sets all the
-    # environment-specific secrets that could be used by any other task.
-    - name: "start process of handling environment-specific secrets"
-      include_tasks: "tasks/secrets.yml"
 
   tasks:
     - name: "start process of managing general system settings"

@@ -64,7 +64,7 @@
 - name: "ensure SSH keys for users are present"
   blockinfile:
     path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
-    block: "{{ lookup('file', 'group_vars/ssh_keys/' + item.1.id) }}"
+    block: "{{ lookup('file', 'group_vars/all/ssh_keys/' + item.1.id) }}"
     state: "{{ item.1.state }}"
     # When changing value of marker, also update it in task down below
     marker: "# {mark} SSH key for {{ item.1.id }}"

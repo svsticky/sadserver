@@ -5,4 +5,4 @@
 
   tasks:
     - name: "start process of disabling koala's maintenance mode"
-      include_tasks: ".koala-maintenance-off.yml"
+      include_tasks: ".maintenance-off.yml"

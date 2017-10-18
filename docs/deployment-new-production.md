@@ -11,7 +11,7 @@ correct values.
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ ./scripts/run-playbook.sh production playbooks/oneoff-stop-koala.yml
+$ ./scripts/run-playbook.sh production playbooks/koala/stop.yml
 ```
 
 **Export the databases** that are relevant to the new server:
@@ -60,7 +60,7 @@ $ sudo mysql < databases.sql
 ```bash
 # On your local machine, whilst in sadserver/ansible
 $ ./scripts/run-playbook.sh production \
-playbooks/oneoff-koala-maintenance-off.yml
+playbooks/koala/maintenance-off.yml
 ```
 
 **Migrate the websites** The following is not part of the playbook and needs to

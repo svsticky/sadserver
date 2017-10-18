@@ -1,16 +1,6 @@
 ---
-canonical_hostname: "{{ inventory_hostname }}"
 server_hostname: "sadserver"
-
-secrets_environment_directory:
-  "{% if staging == 'true' %}staging{% else %}production{% endif %}"
-
-# This is also used for the root user, but the "$" at the end is replaced by a
-# "#" through a regex in tasks/users.yml.
-bash_prompt:
-  "export PS1='\\n\\e[31m\\e[1m{% if staging == 'true' %}STAGING{% else %}!! \
-  PRODUCTION !!{% endif %}\\e[0m \\e[33m\\e[1m`whoami`@`hostname --long`\
-  \\e[0m:`pwd`\\n$ '"
+canonical_hostname: "{{ inventory_hostname }}"
 
 tmp_dir: "/tmp"
 
@@ -192,7 +182,9 @@ fail2ban:
     - name: "koala"
       port: "https"
       filter: "koala"
-      logpath: "/var/www/koala.{{ canonical_hostname }}/log/{{ koala.environment }}.log"
+      logpath:
+        "/var/www/koala.{{ canonical_hostname }}/log/\
+        {{ koala_env.environment }}.log"
       maxretry: 10
 
 # the upload limit for php-fpm and nginx in megabytes
@@ -331,12 +323,10 @@ slacktee:
   repo: "https://github.com/course-hero/slacktee.git"
   install_path: "/usr/local/src/slacktee"
 
+# Koala's environment-specific vars are defined in their respective file with
+# group_vars, in the dict "koala_env"
 koala:
-  environment:
-    "{% if staging == 'true' %}staging{% else %}production{% endif %}"
   server: "unicorn" # or webrick
-  # Change git-tag here to deploy new release in production
-  git_ref: "{% if staging == 'true' %}development{% else %}v1.6.11{% endif %}"
   ruby_version: "2.4.1"
   threads: 6
   dependencies:

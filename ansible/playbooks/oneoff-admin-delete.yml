@@ -3,9 +3,6 @@
   user: "ansible"
   force_handlers: true
 
-  vars_files:
-    - "../vars.yml"
-
   vars_prompt:
     - name: "admin_to_remove"
       default: ""
@@ -21,7 +18,8 @@
       environment:
         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
       shell:
-        'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
+        'eval "$(rbenv init - )"; bin/rails
+        RAILS_ENV={{ koala_env.environment }}
         "admin:delete[{{ admin_to_remove}}]"'
       args:
         chdir: "/var/www/koala.{{ canonical_hostname }}"

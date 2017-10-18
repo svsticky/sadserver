@@ -1,0 +1,13 @@
+---
+secrets_environment_directory: "production"
+
+# This is also used for the root user, but the "$" at the end is replaced by a
+# "#" through a regex in tasks/users.yml.
+bash_prompt:
+  "export PS1='\\n\\e[31m\\e[1m!! PRODUCTION !!\\e[0m \\e[33m\\e[1m`whoami`@`\
+  hostname --long`\\e[0m:`pwd`\\n$ '"
+
+koala_env:
+  environment: "production"
+  # Change git-tag here to deploy new release in production
+  git_ref: "v1.6.11"

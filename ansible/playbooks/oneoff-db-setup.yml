@@ -3,9 +3,6 @@
   user: "ansible"
   force_handlers: true
 
-  vars_files:
-    - "../vars.yml"
-
   vars_prompt:
     - name: "confirm"
       default: 'ABORT'
@@ -23,8 +20,8 @@
       environment:
         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
       shell:
-        'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
-        db:setup'
+        'eval "$(rbenv init - )"; bin/rails
+        RAILS_ENV={{ koala_env.environment }} db:setup'
       args:
         chdir: "/var/www/koala.{{ canonical_hostname }}"
         executable: "/bin/bash"

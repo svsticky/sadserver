@@ -6,12 +6,11 @@
   become_method: "sudo"
   force_handlers: true
   vars_files:
-    - "vars.yml"
-    - "credentials/shared.yml"
+    - "group_vars/credentials/shared.yml"
     # Environment-specific variables are included by tasks/secrets.yml.
 
   handlers:
-    - import_tasks: "handlers.yml"
+    - import_tasks: "handlers/main.yml"
 
   pre_tasks:
     # secrets.yml should always be included the first, because it sets all the

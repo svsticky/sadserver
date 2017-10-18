@@ -14,7 +14,7 @@
 
   - name: "ensure koala database user exists"
     command:
-      "mysql -NBe 'grant all privileges on `koala{% if koala.environment ==
+      "mysql -NBe 'grant all privileges on `koala{% if koala_env.environment ==
       'development' %}-development{% endif %}`.* to `koala`@`localhost`
       identified via mysql_native_password using
       \"{{ secret_mysql.koala.hash }}\";'"
@@ -208,7 +208,7 @@
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
-      version: "{{ koala.git_ref }}"
+      version: "{{ koala_env.git_ref }}"
     register: "koala_checkout_result"
     check_mode: true
 
@@ -231,7 +231,7 @@
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
-      version: "{{ koala.git_ref }}"
+      version: "{{ koala_env.git_ref }}"
     when: koala_checkout_result.changed
     tags:
       - "koala"
@@ -303,7 +303,7 @@
       - name: "make database backup"
         mysql_db:
           db:
-            "koala{% if koala.environment == 'development' %}-development{%
+            "koala{% if koala_env.environment == 'development' %}-development{%
             endif %}"
           state: "dump"
           target: "{{ koala_backup_dest }}"
@@ -321,8 +321,8 @@
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell:
-          'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
-          db:migrate'
+          'eval "$(rbenv init - )"; bin/rails
+          RAILS_ENV={{ koala_env.environment }} db:migrate'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"

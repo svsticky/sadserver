@@ -19,7 +19,7 @@ if [[ -z "${1+x}" ]]; then
 fi
 
 for USERNAME in "${@}"; do
-  CREDENTIALS_PATH="${SADSERVER_DIR}/ansible/credentials/ssh/${USERNAME}.github.pub"
+  CREDENTIALS_PATH="${SADSERVER_DIR}/ansible/group_vars/ssh_keys/${USERNAME}.github.pub"
   # Temporarily disable halting on errors, to manually catch possible curl
   # errors
   set +e

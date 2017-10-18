@@ -12,7 +12,7 @@ import yaml
 
 
 VARSFILE = 'vars.yml'
-KEYDIR = 'credentials/ssh'
+KEYDIR = 'group_vars/ssh_keys'
 
 def load_vars() -> dict:
     ''' Open and parse vars.yml. '''

@@ -1,0 +1,155 @@
+---
+# When editing keys, be sure to read ../docs/updating-ssh-keys.md first!
+# When adding admin users, be sure to add their keys to the "ansible" user too!
+users:
+  - name: "ansible"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "arianvp.github.pub"
+        state: "present"
+      - id: "duijf.github.pub"
+        state: "present"
+      - id: "maartenberg.github.pub"
+        state: "present"
+      - id: "RobinSikkens.github.pub"
+        state: "present"
+      - id: "romanpeters.github.pub"
+        state: "present"
+      - id: "tomwassenberg.github.pub"
+        state: "present"
+
+  - name: "arian"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "arianvp.github.pub"
+        state: "present"
+
+  - name: "emiel"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+
+  - name: "laurens"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "duijf.github.pub"
+        state: "present"
+
+  - name: "maarten"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "maartenberg.github.pub"
+        state: "present"
+
+  - name: "robin"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "RobinSikkens.github.pub"
+        state: "present"
+
+  - name: "roman"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "romanpeters.github.pub"
+        state: "present"
+
+  - name: "tom"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    keys:
+      - id: "tomwassenberg.github.pub"
+        state: "present"
+
+  - name: "bestuur"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+
+  - name: "commit"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "cdfa.github.pub"
+        state: "present"
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+      - id: "GlennStewart125.github.pub"
+        state: "present"
+      - id: "Agarwaemben.github.pub"
+        state: "present"
+      - id: "maartenberg.github.pub"
+        state: "present"
+      #- id: "raatmarien.github.pub" # Currently no keys
+        #state: "present"
+      - id: "ebilkill.github.pub"
+        state: "present"
+
+  - name: "dgdarc"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys: []
+
+  - name: "indievelopment"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "RCdeWit.github.pub"
+        state: "present"
+
+  - name: "stichting"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "RCdeWit.github.pub"
+        state: "present"
+
+  - name: "studytrip"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "Rogions.github.pub"
+        state: "present"
+
+  - name: "symposium"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "emielvanrijn.github.pub"
+        state: "present"
+      - id: "duijf.github.pub"
+        state: "present"
+      - id: "RCdeWit.github.pub"
+        state: "present"
+
+  - name: "wintersport"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    keys:
+      - id: "alextjanse.github.pub"
+        state: "present"

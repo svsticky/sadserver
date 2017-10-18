@@ -315,7 +315,7 @@
           src: "{{ koala_backup_dest }}"
           dest: "koala-backups/"
           flat: true
-        when: staging == 'false'
+        when: "'staging' not in group_names"
 
       - name: "run migration(s)"
         environment:
@@ -357,8 +357,11 @@
 - name: "ensure koala's timers are started and enabled in production"
   service:
     name: "{{ item }}"
-    enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
-    state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
+    enabled:
+      "{% if 'staging' in group_names %}false{% else %}true\
+      {% endif %}"
+    state:
+      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
   with_items:
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"

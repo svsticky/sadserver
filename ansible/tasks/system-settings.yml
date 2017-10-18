@@ -26,7 +26,7 @@
 - name: "set custom hostname, in production"
   hostname:
     name: "{{ server_hostname }}"
-  when: staging != 'true'
+  when: "'staging' not in group_names"
 
 # In staging we just use the name that is set when creating our VPS.
 - name: "update hostname in /etc/hosts, in production"
@@ -37,7 +37,7 @@
       {{ server_hostname }}"
     path: "/etc/hosts"
     state: "present"
-  when: staging != 'true'
+  when: "'staging' not in group_names"
 
 - name: "copy locale variables"
   template:

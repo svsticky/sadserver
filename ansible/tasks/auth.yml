@@ -13,7 +13,7 @@
   lineinfile:
     dest: "/etc/sudoers.d/ansible"
     line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
-    state: "{% if staging == 'true' %}present{% else %}absent{% endif %}"
+    state: "{% if 'staging' in group_names %}present{% else %}absent{% endif %}"
     create: true
     validate: "visudo -cf %s"
 
@@ -23,7 +23,7 @@
   with_items: "{{ users }}"
   when:
     # List is evaluated as logical AND
-    - staging == 'false'
+    - "'staging' not in group_names"
     - item.admin
     - item.state == "present"
     - item.name != "ansible"
@@ -38,7 +38,7 @@
   with_items: "{{ admin_passwords.results }}"
   when:
     # List is evaluated as logical AND
-    - staging == 'false'
+    - "'staging' not in group_names"
     - item.stdout is defined
     - item.stdout == "L"
   loop_control:

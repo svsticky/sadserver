@@ -1,5 +1,5 @@
 [production]
-svsticky.nl ansible_python_interpreter=/usr/bin/python2.7 staging=false
+svsticky.nl ansible_python_interpreter=/usr/bin/python2.7
 
 [staging]
-dev.svsticky.nl ansible_python_interpreter=/usr/bin/python2.7 staging=true
+dev.svsticky.nl ansible_python_interpreter=/usr/bin/python2.7

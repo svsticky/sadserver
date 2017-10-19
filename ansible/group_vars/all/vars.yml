@@ -1,4 +1,9 @@
 ---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
 server_hostname: "sadserver"
 canonical_hostname: "{{ inventory_hostname }}"
 
@@ -52,3 +57,7 @@ koala:
       install_path: "~/.rbenv/plugins/ruby-build"
     - repo: "rbenv-vars"
       install_path: "~/.rbenv/plugins/rbenv-vars"
+
+secret_deploy_key: "{{ vault_secret_deploy_key }}"
+
+secret_mailgun_token: "{{ vault_secret_mailgun_token }}"

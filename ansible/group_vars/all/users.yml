@@ -1,4 +1,9 @@
 ---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
 # When editing keys, be sure to read ../docs/updating-ssh-keys.md first!
 # When adding admin users, be sure to add their keys to the "ansible" user too!
 users:

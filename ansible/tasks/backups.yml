@@ -22,9 +22,11 @@
 
   - name: "place aws wrapper"
     template:
-      src: "templates/usr/local/bin/aws"
-      dest: "/usr/local/bin/aws"
+      src: "templates/{{ aws_cli_path }}.j2"
+      dest: "/{{ aws_cli_path }}"
       mode: "0755"
+    vars:
+      aws_cli_path: "usr/local/bin/aws"
 
   - name: "ensure aws cli configuration folders are present"
     file:

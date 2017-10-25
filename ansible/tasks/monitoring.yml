@@ -30,7 +30,7 @@
     - "packages"
 
 - name: "build and install netdata"
-  command: "/usr/local/src/netdata/netdata-installer.sh --dont-wait"
+  command: "./netdata-installer.sh --dont-wait"
   args:
     chdir: "/usr/local/src/netdata"
     creates: "/usr/sbin/netdata"
@@ -49,13 +49,27 @@
     - "packages"
 
 - name: "check for updates to netdata"
-  command: "/usr/local/src/netdata/netdata-updater.sh"
+  command: "./netdata-updater.sh"
   args:
     chdir: "/usr/local/src/netdata"
   when: netdata_path.stat.exists == true
   tags:
     - "monitoring"
     - "packages"
+
+- name: "enable slack notifications for netdata's alarms"
+  lineinfile:
+    path: "/etc/netdata/health_alarm_notify.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: "present"
+  with_items:
+    - regexp: "^SEND_SLACK="
+      line: "SEND_SLACK=\"YES\""
+    - regexp: "^SLACK_WEBHOOK_URL="
+      line: "SLACK_WEBHOOK_URL=\"{{ slack_notifications.webhook_url }}\""
+    - regexp: "^DEFAULT_RECIPIENT_SLACK="
+      line: "DEFAULT_RECIPIENT_SLACK=\"{{ slack_notifications.default_channel }}\""
 
 - name: "copy nginx files for metrics site"
   template:

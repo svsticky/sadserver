@@ -1,0 +1,57 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+server_hostname:
+canonical_hostname:
+
+tmp_dir:
+
+unattended_upgrades:
+  security:
+  all:
+
+fail2ban:
+  loglevel:
+  ignoreip:
+  bantime:
+  maxretry:
+  banaction:
+
+  services:
+    - name:
+      port:
+      filter:
+      logpath:
+    - name:
+      port:
+      filter:
+      logpath:
+    - name:
+      port:
+      filter:
+      logpath:
+      maxretry:
+
+# the upload limit for php-fpm and nginx in megabytes
+upload_limit:
+
+slacktee:
+  repo:
+  install_path:
+
+# Koala's environment-specific vars are defined in their respective file with
+# group_vars, in the dict "koala_env"
+koala:
+  server:
+  ruby_version:
+  threads:
+  dependencies:
+    - repo:
+      install_path:
+
+secret_deploy_key:
+
+secret_mailgun_token:

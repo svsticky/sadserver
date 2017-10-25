@@ -1,0 +1,17 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+# Defines our websites. Important to note is that the "name" of a website should
+# always be a subdomain of the canonical hostname (using the
+# "canonical_hostname" variable). This has to do with the current state of our
+# DNS zones, and ensures that TLS certificates are set up correctly in the
+# staging environment. This could be improved perhaps.
+websites:
+  - name:
+    user:
+    database:
+    alternative_names:
+    state:

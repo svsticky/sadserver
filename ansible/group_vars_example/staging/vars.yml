@@ -1,0 +1,38 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+# This is also used for the root user, but the "$" at the end is replaced by a
+# "#" through a regex in tasks/users.yml.
+bash_prompt:
+
+koala_env:
+  environment:
+  git_ref:
+
+secret_koala:
+  checkout_token:
+  devise_secret:
+  rails_secret:
+  aws_access_key:
+  aws_secret_key:
+
+secret_mysql:
+  example:
+    password:
+    hash:
+
+# General secrets
+secret_backup_aws:
+  access_key:
+  secret_key:
+
+secret_metrics:
+  password:
+  hash:
+
+secret_mollie_token:
+
+secret_phpmyadmin_blowfish_secret:

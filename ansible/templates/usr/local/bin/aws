@@ -1,4 +1,5 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 source /opt/awscli/bin/activate
 aws "$@"

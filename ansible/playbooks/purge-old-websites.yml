@@ -6,9 +6,6 @@
   become_method: "sudo"
   force_handlers: true
 
-  vars_files:
-    - "../vars.yml"
-
   vars_prompt:
     - name: "confirm"
       default: 'ABORT'

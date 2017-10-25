@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Run koala {{ koala.environment }} service
+Description=Run koala {{ koala_env.environment }} service
 Wants=mysql.service
 After=network.target
 

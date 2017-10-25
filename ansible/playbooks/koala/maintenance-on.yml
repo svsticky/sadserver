@@ -3,9 +3,6 @@
   user: "ansible"
   force_handlers: true
 
-  vars_files:
-    - "../vars.yml"
-
   tasks:
     - name: "start process of enabling koala's maintenance mode"
-      include_tasks: ".koala-maintenance-on.yml"
+      include_tasks: ".maintenance-on.yml"

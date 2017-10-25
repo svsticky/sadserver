@@ -105,25 +105,24 @@ information look at our [Ansible styleguide].
 
 #### Variables
 
-All variables we use, except for secrets, are stored in `ansible/vars.yml`. This
-variable file is included in the main playbook, and most of the other playbooks.
-In that file are listed, among other things:
+All variables we use are stored in [ansible/group_vars/]. This folder utilizes a
+subfolder for each inventory group, in addition to the general `all`. The
+appropriate folders are automatically loaded by Ansible when running a playbook.
+In these folders are listed:
 
 - The Linux users, either admins or committees
+([ansible/group_vars/all/users.yml])
   - The SSH keys that can be used to SSH in with these accounts
-- The websites we host
+- The websites we host ([ansible/group_vars/all/websites.yml])
 - Application-specific variables
-
-It might be worth splitting this file up, giving users and/or websites their
-own file, if more variables get added to the file.
+(`ansible/group_vars/all|production|staging/vars.yml`)
 
 ##### Secrets
 
-Our secrets are stored in [ansible/credentials/], per environment. The secrets
-that are shared between environments (because of third-party constraints), reside in
-[ansible/credentials/shared.yml]. These files are all encrypted using [Ansible
-Vault]. These secrets should all be cycled when someone's access to the
-corresponding passphrase is revoked.
+Our secrets are stored in `ansible/group_vars/all|production|staging/vault.yml`,
+per environment. These files are all encrypted using [Ansible Vault]. These
+secrets should all be cycled when someone's access to the corresponding
+passphrase is revoked.
 
 ### Documentation
 

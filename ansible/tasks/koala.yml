@@ -14,7 +14,7 @@
 
   - name: "ensure koala database user exists"
     command:
-      "mysql -NBe 'grant all privileges on `koala{% if koala.environment ==
+      "mysql -NBe 'grant all privileges on `koala{% if koala_env.environment ==
       'development' %}-development{% endif %}`.* to `koala`@`localhost`
       identified via mysql_native_password using
       \"{{ secret_mysql.koala.hash }}\";'"
@@ -208,7 +208,7 @@
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
-      version: "{{ koala.git_ref }}"
+      version: "{{ koala_env.git_ref }}"
     register: "koala_checkout_result"
     check_mode: true
 
@@ -224,14 +224,14 @@
   # Enables maintenance mode only when Koala was already running, and needs to
   # be updated
   - name: "start process of enabling koala's maintenance mode"
-    include_tasks: "playbooks/.koala-maintenance-on.yml"
+    include_tasks: "playbooks/koala/.maintenance-on.yml"
     when: koala_updated | default(false)
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
-      version: "{{ koala.git_ref }}"
+      version: "{{ koala_env.git_ref }}"
     when: koala_checkout_result.changed
     tags:
       - "koala"
@@ -303,7 +303,7 @@
       - name: "make database backup"
         mysql_db:
           db:
-            "koala{% if koala.environment == 'development' %}-development{%
+            "koala{% if koala_env.environment == 'development' %}-development{%
             endif %}"
           state: "dump"
           target: "{{ koala_backup_dest }}"
@@ -315,14 +315,14 @@
           src: "{{ koala_backup_dest }}"
           dest: "koala-backups/"
           flat: true
-        when: staging == 'false'
+        when: "'staging' not in group_names"
 
       - name: "run migration(s)"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell:
-          'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
-          db:migrate'
+          'eval "$(rbenv init - )"; bin/rails
+          RAILS_ENV={{ koala_env.environment }} db:migrate'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
@@ -333,7 +333,7 @@
   # Disables maintenance mode only when Koala had to be updated, and can now be
   # started again.
   - name: "start process of disabling koala's maintenance mode"
-    include_tasks: "playbooks/.koala-maintenance-off.yml"
+    include_tasks: "playbooks/koala/.maintenance-off.yml"
     when: koala_updated | default(false)
 
   become: true
@@ -357,8 +357,11 @@
 - name: "ensure koala's timers are started and enabled in production"
   service:
     name: "{{ item }}"
-    enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
-    state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
+    enabled:
+      "{% if 'staging' in group_names %}false{% else %}true\
+      {% endif %}"
+    state:
+      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
   with_items:
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"

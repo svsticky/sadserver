@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 '''
 Generate the resulting .ssh/authorized_keys for a given user present in
-vars.yml. If given multiple keys, will concatenate and deduplicate all keys.
+group_vars/all/users.yml. If given multiple users, will concatenate and
+deduplicate all keys.
 
 Requires libyaml, pip install pyyaml.
 '''
@@ -11,11 +12,11 @@ import os.path
 import yaml
 
 
-VARSFILE = 'vars.yml'
-KEYDIR = 'credentials/ssh'
+VARSFILE = 'group_vars/all/users.yml'
+KEYDIR = 'group_vars/all/ssh_keys'
 
 def load_vars() -> dict:
-    ''' Open and parse vars.yml. '''
+    ''' Open and parse users.yml. '''
     with open(VARSFILE, 'r') as varsfile:
         document = yaml.load(varsfile)
 

@@ -7,8 +7,8 @@ Description=Failure notification of the backup of %I
 Type=oneshot
 User=ansible
 Group=ansible
-ExecStart=/bin/sh -c "echo \"{% if staging == 'true' %}*_FROM STAGING:_*{% else
-%}@it-crowd-commissie{% endif %} *Backup of %I FAILED!*\
+ExecStart=/bin/sh -c "echo \"{% if 'staging' in group_names %}*_FROM \
+STAGING:_*{% else %}@it-crowd-commissie{% endif %} *Backup of %I FAILED!*\
 _($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username\
 'Backup service' --icon ':exclamation:' --attachment 'danger'\
 --channel 'alerts'"

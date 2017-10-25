@@ -36,8 +36,9 @@
 - name: "enable unattended-upgrades notification in production"
   service:
     name: "unattended-upgrades-output.timer"
-    enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
-    state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
+    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
+    state:
+      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
 # slacktee is the tool we use to let the server send notifications to Slack.
 # Replaces email.

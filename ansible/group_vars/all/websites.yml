@@ -1,0 +1,134 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+# Defines our websites. Important to note is that the "name" of a website should
+# always be a subdomain of the canonical hostname (using the
+# "canonical_hostname" variable). This has to do with the current state of our
+# DNS zones, and ensures that TLS certificates are set up correctly in the
+# staging environment. This could be improved perhaps.
+websites:
+  - name: "dgdarc.{{ canonical_hostname }}"
+    user: "dgdarc"
+    database: "dgdarc"
+    alternative_names:
+      - "dgdarc.nl"
+      - "www.dgdarc.nl"
+      - "dgdarc.com"
+      - "www.dgdarc.com"
+    state: "present"
+
+  - name: "digidecs.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names:
+      - "declaraties.{{ canonical_hostname }}"
+      - "declareren.{{ canonical_hostname }}"
+    # You have to remove the task include of digidecs.yml to remove this
+    # completely
+    state: "present"
+
+  - name: "indievelopment.{{ canonical_hostname }}"
+    user: "indievelopment"
+    database: "indievelopment"
+    alternative_names:
+      - "indievelopment.nl"
+      - "www.indievelopment.nl"
+      - "indiedevelopment.nl"
+      - "www.indiedevelopment.nl"
+    state: "present"
+
+  - name: "koala.{{ canonical_hostname }}"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "intro.{{ canonical_hostname }}"
+      - "leden.{{ canonical_hostname }}"
+      - "members.{{ canonical_hostname }}"
+    # You have to remove the task include of koala.yml to remove this completely
+    state: "present"
+
+  - name: "metrics.{{ canonical_hostname }}"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "status.{{ canonical_hostname }}"
+    # You have to remove the task include of monitoring.yml to remove this
+    # completely
+    state: "present"
+
+  - name: "phpmyadmin.{{ canonical_hostname }}"
+    custom_config: true
+    database: "phpmyadmin"
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "pma.{{ canonical_hostname }}"
+    # You have to remove the task include of phpmyadmin.yml to remove this
+    # completely
+    state: "present"
+
+  - name: "radio.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names: []
+    state: "present"
+
+  - name: "savadaba.{{ canonical_hostname }}"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "savadaba.nl"
+      - "www.savadaba.nl"
+    state: "present"
+
+  - name: "sodi.{{ canonical_hostname }}"
+    alternative_names:
+      - "sodi.nl"
+      - "www.sodi.nl"
+    # You have to remove the task include of sodi.yml to remove this completely
+    state: "present"
+
+  - name: "stichting.{{ canonical_hostname }}"
+    user: "stichting"
+    alternative_names:
+      - "stichtingsticky.nl"
+      - "www.stichtingsticky.nl"
+    state: "present"
+
+  - name: "studytrip.{{ canonical_hostname }}"
+    user: "studytrip"
+    database: "studytrip"
+    alternative_names:
+      - "studiereis.{{ canonical_hostname }}"
+    state: "present"
+
+  - name: "{{ canonical_hostname }}"
+    user: "commit"
+    database: "svsticky"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "www.{{ canonical_hostname }}"
+      - "stickyutrecht.nl"
+      - "www.stickyutrecht.nl"
+      - "studieverenigingsticky.nl"
+      - "www.studieverenigingsticky.nl"
+    state: "present"
+
+  - name: "symposium.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "idata.{{ canonical_hostname }}"
+    state: "present"
+
+  - name: "wintersport.{{ canonical_hostname }}"
+    user: "wintersport"
+    alternative_names: []
+    state: "present"
+
+  - name: "execut.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "execut.nl"
+      - "www.execut.nl"
+    state: "present"

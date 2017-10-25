@@ -17,7 +17,7 @@ CHECKOUT_TOKEN={{ secret_koala.checkout_token }}
 AWS_ACCESS={{ secret_koala.aws_access_key }}
 AWS_SECRET={{ secret_koala.aws_secret_key }}
 AWS_REGION=eu-west-1
-AWS_BUCKET={% if staging == 'true' %}staging-{% endif %}koala-images
+AWS_BUCKET={% if 'staging' in group_names %}staging-{% endif %}koala-images
 
 # Mollie
 MOLLIE_DOMAIN=https://api.mollie.nl
@@ -25,5 +25,5 @@ MOLLIE_TOKEN={{ secret_mollie_token }}
 MOLLIE_VERSION=v1
 
 # Other
-RAILS_ENV={{ koala.environment }}
+RAILS_ENV={{ koala_env.environment }}
 RAILS_MAX_THREADS={{ koala.threads }}

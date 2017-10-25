@@ -1,0 +1,57 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+# This is also used for the root user, but the "$" at the end is replaced by a
+# "#" through a regex in tasks/users.yml.
+bash_prompt:
+  "export PS1='\\n\\e[31m\\e[1mSTAGING\\e[0m \\e[33m\\e[1m`whoami`@`hostname \
+  --long`\\e[0m:`pwd`\\n$ '"
+
+koala_env:
+  environment: "staging"
+  git_ref: "development"
+
+secret_koala:
+  checkout_token: "{{ vault_secret_koala.checkout_token }}"
+  devise_secret: "{{ vault_secret_koala.devise_secret }}"
+  rails_secret: "{{ vault_secret_koala.rails_secret }}"
+  aws_access_key: "{{ vault_secret_koala.aws_access_key }}"
+  aws_secret_key: "{{ vault_secret_koala.aws_secret_key }}"
+
+secret_mysql:
+  dgdarc:
+    password: "{{ vault_secret_mysql.dgdarc.password }}"
+    hash: "{{ vault_secret_mysql.dgdarc.hash }}"
+  indievelopment:
+    password: "{{ vault_secret_mysql.indievelopment.password }}"
+    hash: "{{ vault_secret_mysql.indievelopment.hash }}"
+  koala:
+    # The mysql2 gem doesn't seem to handle (all) special chars in this
+    # password, so avoid those for now
+    password: "{{ vault_secret_mysql.koala.password }}"
+    hash: "{{ vault_secret_mysql.koala.hash }}"
+  phpmyadmin:
+    password: "{{ vault_secret_mysql.phpmyadmin.password }}"
+    hash: "{{ vault_secret_mysql.phpmyadmin.hash }}"
+  studytrip:
+    password: "{{ vault_secret_mysql.studytrip.password }}"
+    hash: "{{ vault_secret_mysql.studytrip.hash }}"
+  svsticky:
+    password: "{{ vault_secret_mysql.svsticky.password }}"
+    hash: "{{ vault_secret_mysql.svsticky.hash }}"
+
+# General secrets
+secret_backup_aws:
+  access_key: "{{ vault_secret_backup_aws.access_key }}"
+  secret_key: "{{ vault_secret_backup_aws.secret_key }}"
+
+secret_metrics:
+  password: "{{ vault_secret_metrics.password }}"
+  hash: "{{ vault_secret_metrics.hash }}"
+
+secret_mollie_token: "{{ vault_secret_mollie_token }}"
+
+secret_phpmyadmin_blowfish_secret: "{{ vault_secret_phpmyadmin_blowfish_secret }}"

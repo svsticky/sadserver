@@ -111,7 +111,7 @@
   # the renewal configuration of the certificate
   command: >-
     certbot certonly
-    {% if staging == 'true' and (item.real_certificate is not defined or
+    {% if 'staging' in group_names and (item.real_certificate is not defined or
     item.real_certificate == false) %}
     --staging
     {% endif %}
@@ -123,7 +123,7 @@
     --webroot
     --webroot-path /var/www/acme-challenges
     --domain {{ item.name }}
-    {% if staging != 'true' %}
+    {% if 'staging' not in group_names %}
     {% for hostname in item.alternative_names %}
     --domain {{ hostname }}
     {% endfor %}
@@ -139,8 +139,9 @@
 - name: "ensure certbot timer is started in production"
   service:
     name: "certbot.timer"
-    enabled: "{% if staging == 'true' %}false{% else %}true{% endif %}"
-    state: "{% if staging == 'true' %}stopped{% else %}started{% endif %}"
+    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
+    state:
+      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
 # This task is used for websites which use the default nginx config, and need
 # its webroot to be created.

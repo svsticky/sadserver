@@ -9,8 +9,8 @@ separately if needed.
    Crowd is at least aware of your actions, preferably by announcing it on
    Slack.
 1. Ensure that there is a tag at the revision that is to be deployed. Change the
-   tag used in `koala.git_ref` in `ansible/vars.yml` to this new tag, and commit
-   this change.
+   tag used in `koala.git_ref` in [/ansible/group_vars/production/vars.yml] to
+   this new tag, and commit this change.
 1. Run the playbook `main.yml`.
 1. Verify that you can log in, and that the [API] is responding.
 

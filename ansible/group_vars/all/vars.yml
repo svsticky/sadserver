@@ -1,0 +1,63 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+server_hostname: "sadserver"
+canonical_hostname: "{{ inventory_hostname }}"
+
+tmp_dir: "/tmp"
+
+unattended_upgrades:
+  security: true
+  all: true
+
+fail2ban:
+  loglevel: "WARNING"
+  ignoreip: "127.0.0.1/8 131.211.42.201"
+  bantime: 600
+  maxretry: 6
+  banaction: "iptables-multiport"
+
+  services:
+    - name: "sshd"
+      port: "ssh"
+      filter: "sshd"
+      logpath: "/var/log/auth.log"
+    - name: "pma"
+      port: "https"
+      filter: "phpmyadmin-syslog"
+      logpath: "/var/log/auth.log"
+    - name: "koala"
+      port: "https"
+      filter: "koala"
+      logpath:
+        "/var/www/koala.{{ canonical_hostname }}/log/\
+        {{ koala_env.environment }}.log"
+      maxretry: 10
+
+# the upload limit for php-fpm and nginx in megabytes
+upload_limit: 30
+
+slacktee:
+  repo: "https://github.com/course-hero/slacktee.git"
+  install_path: "/usr/local/src/slacktee"
+
+# Koala's environment-specific vars are defined in their respective file with
+# group_vars, in the dict "koala_env"
+koala:
+  server: "unicorn" # or webrick
+  ruby_version: "2.4.1"
+  threads: 6
+  dependencies:
+    - repo: "rbenv"
+      install_path: "~/.rbenv"
+    - repo: "ruby-build"
+      install_path: "~/.rbenv/plugins/ruby-build"
+    - repo: "rbenv-vars"
+      install_path: "~/.rbenv/plugins/rbenv-vars"
+
+secret_deploy_key: "{{ vault_secret_deploy_key }}"
+
+secret_mailgun_token: "{{ vault_secret_mailgun_token }}"

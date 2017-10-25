@@ -3,26 +3,18 @@
   user: "ansible"
   force_handlers: true
 
-  vars_files:
-    - "../vars.yml"
-
   vars_prompt:
-    - name: "admin_to_remove"
-      default: ""
-      prompt: "Please enter the username to remove: (Ctrl-C to cancel)"
+    - name: "rake_task"
+      prompt: "Enter task to execute:"
       private: false
 
   tasks:
-    - assert:
-        that:
-          - "admin_to_remove != ''"
-
-    - name: "remove admin"
+    - name: "custom rake task"
       environment:
         PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
       shell:
-        'eval "$(rbenv init - )"; bin/rails RAILS_ENV={{ koala.environment }}
-        "admin:delete[{{ admin_to_remove}}]"'
+        'eval "$(rbenv init - )"; bin/rails
+        RAILS_ENV={{ koala_env.environment }} {{ rake_task }}'
       args:
         chdir: "/var/www/koala.{{ canonical_hostname }}"
         executable: "/bin/bash"

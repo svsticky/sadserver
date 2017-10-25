@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+##
+## Sets up virtual env for the aws-cli tool.
+##
+## USAGE: aws <AWS-CLI PARAMETERS>
+##
+
+# Unofficial Bash strict mode
+set -eEfuo pipefail
+IFS=$'\n\t'
+
+source /opt/awscli/bin/activate
+aws "$@"

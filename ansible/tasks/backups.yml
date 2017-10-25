@@ -13,10 +13,13 @@
 
     - name: "create awscli virtualenv"
       shell: "python3 -m venv /opt/awscli"
-      creates: "/opt/awscli"
+      args:
+        creates: "/opt/awscli"
 
     - name: "install awscli"
       shell: "source /opt/awscli/bin/activate; pip install awscli"
+      register: "awscli_pip_result"
+      changed_when: "'installed' in awscli_pip_result.stdout"
 
     - name: "place aws wrapper"
       template:

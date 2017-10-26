@@ -32,6 +32,24 @@
     vars:
       aws_cli_path: "usr/local/bin/aws"
 
+  - name: "create awscli virtualenv"
+    shell: "python3 -m venv /opt/awscli"
+    args:
+      creates: "/opt/awscli"
+
+  - name: "install awscli"
+    shell: "source /opt/awscli/bin/activate; pip install awscli"
+    register: "awscli_pip_result"
+    changed_when: "'installed' in awscli_pip_result.stdout"
+
+  - name: "place aws wrapper"
+    template:
+      src: "templates/{{ aws_cli_path }}.j2"
+      dest: "/{{ aws_cli_path }}"
+      mode: "0755"
+    vars:
+      aws_cli_path: "usr/local/bin/aws"
+
   - name: "ensure aws cli configuration folders are present"
     file:
       path: "{{ item.path }}/.aws"

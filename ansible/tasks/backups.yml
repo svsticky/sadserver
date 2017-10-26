@@ -5,10 +5,14 @@
       pkg: "awscli"
       state: "absent"
 
-  - name: "install dependency"
+  - name: "install dependencies"
     apt:
-      pkg: "python3-venv"
+      pkg: "{{ item }}"
       state: "present"
+    with_items:
+      - "python3-venv"
+      - "python3-dev"
+      - "libyaml-dev"
 
   - name: "create awscli virtualenv"
     shell: "python3 -m venv /opt/awscli"

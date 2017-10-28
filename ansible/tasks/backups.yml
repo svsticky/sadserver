@@ -1,11 +1,6 @@
 ---
 - block:
-  - name: "remove awscli package"
-    apt:
-      pkg: "awscli"
-      state: "absent"
-
-  - name: "install dependencies"
+  - name: "install awscli dependencies"
     apt:
       pkg: "{{ item }}"
       state: "present"

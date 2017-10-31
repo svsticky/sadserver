@@ -13,7 +13,7 @@ bash_prompt:
 koala_env:
   environment: "production"
   # Change git-tag here to deploy new release in production
-  git_ref: "v1.6.11"
+  git_ref: "v1.7.0"
 
 secret_koala:
   checkout_token: "{{ vault_secret_koala.checkout_token }}"

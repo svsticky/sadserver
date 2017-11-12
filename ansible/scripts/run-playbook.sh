@@ -36,8 +36,6 @@ ARGS=( "${@:2}" )
 SLACKTEE="${GIT_ROOT}/ansible/scripts/slacktee.sh --config \
 ${GIT_ROOT}/ansible/templates/etc/slacktee.conf --plain-text --username Ansible"
 
-TARGET_HOST="dev.svsticky.nl"
-
 function abort_deploy() {
   echo "ABORTED DEPLOY"
   exit 0

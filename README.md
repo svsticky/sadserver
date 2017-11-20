@@ -11,7 +11,9 @@
 
 Deploy me:
 
+$ git submodule init && git submodule update --remote
 $ cd ansible
+$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml
 $ ./scripts/run-playbook.sh (production|staging) main.yml
 ```
 
@@ -105,20 +107,18 @@ information look at our [Ansible styleguide].
 
 #### Variables
 
-All variables we use are stored in a separate repository,
-[sadserver-secrets](../../../sadserver-secrets), because these include encrypted
-secrets. This repository is referenced as a submodule in
-[ansible/group_vars/](ansible/group_vars/), and an example of this structure can
-be found in [ansible/group_vars_example/](ansible/group_vars_example/). This
-folder utilizes a subfolder for each inventory group, in addition to the
-general `all`. The appropriate folders are automatically loaded by Ansible when
-running a playbook. In these folders are listed:
+All variables we use are stored in a separate repository, [sadserver-secrets],
+because these include encrypted secrets. This repository is referenced as a
+submodule in `ansible/group_vars/`, and an example of this structure can be
+found in [ansible/group_vars_example/]. This folder utilizes a subfolder for
+each inventory group, in addition to the general `all`. The appropriate folders
+are automatically loaded by Ansible when running a playbook. In these folders
+are listed:
 
 - The Linux users, either admins or committees
-([ansible/group_vars/all/users.yml](ansible/group_vars_example/all/users.yml))
+([ansible/group_vars/all/users.yml])
   - The SSH keys that can be used to SSH in with these accounts
-- The websites we host
-([ansible/group_vars/all/websites.yml](ansible/group_vars_example/all/websites.yml))
+- The websites we host ([ansible/group_vars/all/websites.yml])
 - Application-specific variables
 (`ansible/group_vars/all|production|staging/vars.yml`)
 
@@ -175,8 +175,10 @@ Godspeed!
   [sadserver]:https://twitter.com/sadserver
   [bootstrapping]:#how-to-set-up-the-staging-and-production-environment
   [Ansible styleguide]:docs/ansible-styleguide.md
-  [ansible/credentials/]:ansible/credentials
-  [ansible/credentials/shared.yml]:ansible/credentials/shared.yml
+  [sadserver-secrets]:../../../sadserver-secrets
+  [ansible/group_vars_example/]:ansible/group_vars_example/
+  [ansible/group_vars/all/users.yml]:ansible/group_vars_example/all/users.yml
+  [ansible/group_vars/all/websites.yml]:ansible/group_vars_example/all/websites.yml
   [Ansible Vault]:http://docs.ansible.com/ansible/playbooks_vault.html
   [inventory]:https://docs.ansible.com/ansible/intro_inventory.html
   [slacktee]:https://github.com/course-hero/slacktee

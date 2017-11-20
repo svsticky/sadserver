@@ -47,3 +47,4 @@ Do *not* use `db:migrate:down`, as this will only set a single revision to
 `down`, instead of migrating down to the specified version.
 
 [API]: https://koala.svsticky.nl/api/activities
+[/ansible/group_vars/production/vars.yml]: https://github.com/svsticky/sadserver-secrets/tree/master/production/vars.yml

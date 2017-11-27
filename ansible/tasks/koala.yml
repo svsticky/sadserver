@@ -72,7 +72,6 @@
     apt:
      name: "yarn"
      state: "present"
-     update_cache: true
     notify: "restart koala"
 
   - name: "ensure koala service file is present"

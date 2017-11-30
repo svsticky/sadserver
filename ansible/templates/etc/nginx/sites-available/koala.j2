@@ -28,8 +28,11 @@ server {
 	location ~* ^/assets/ {
 		expires 1y;
 		add_header Cache-Control public;
-
 		add_header ETag "";
+
+		# Do include security headers here because this block is served
+		# directly by nginx
+		include includes/security-headers.conf;
 	}
 
 	location ~* ^/api/ {

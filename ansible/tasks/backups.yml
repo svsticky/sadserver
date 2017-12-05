@@ -12,7 +12,7 @@
   - name: "create virtualenv if required, install awscli"
     pip:
       virtualenv: "/opt/awscli"
-      virtualenv_python: "python3"
+      virtualenv_command: "pyvenv"
       name: "awscli"
       state: "latest"
 

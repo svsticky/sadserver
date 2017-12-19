@@ -38,9 +38,12 @@ fail2ban:
 # the upload limit for php-fpm and nginx in megabytes
 upload_limit:
 
-slacktee:
-  repo:
-  install_path:
+slack_notifications:
+  default_channel:
+  slacktee:
+    repo:
+    install_path:
+  webhook_url:
 
 # Koala's environment-specific vars are defined in their respective file with
 # group_vars, in the dict "koala_env"

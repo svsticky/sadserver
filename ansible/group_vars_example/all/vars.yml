@@ -52,6 +52,12 @@ koala:
     - repo:
       install_path:
 
+# The key for our machine user on GitHub, which is used to clone private
+# projects.
+# To change, generate SSH key and replace it at https://github.com/settings/keys
+# when logged in as the machine user
 secret_deploy_key:
 
+# The API key for our Mailgun account.
+# Change? Refresh API key at https://app.mailgun.com/app/account/security
 secret_mailgun_token:

@@ -10,30 +10,48 @@ bash_prompt:
 
 koala_env:
   environment:
+
   # Change git-tag here to deploy new release in production
   git_ref:
 
 secret_koala:
+  # To change, generate new token using 'rake secret', and recompile + deploy
+  # Checkout client with the embedded token updated.
   checkout_token:
+
+  # To change, generate new token using 'rake secret'
   devise_secret:
+
+  # To change, generate new token using 'rake secret'
   rails_secret:
+
+  # To change, generate a new keypair for Koala's production user in AWS's IAM
+  # Management Console, and make the old key inactive
   aws_access_key:
   aws_secret_key:
 
 secret_mysql:
   example:
+    # To change, generate a new password using something like `pwgen -sy 32 1`
     password:
+    # To change, generate a new hash using the query `SELECT
+    # PASSWORD('example')` in MySQL to output the hash
     hash:
 
-# General secrets
 secret_backup_aws:
+  # To change, generate a new keypair for the user used for backups in AWS's
+  # IAM Management Console, and make the old key inactive
   access_key:
   secret_key:
 
 secret_metrics:
+  # To change, generate a new password using something like `pwgen -sy 32 1`
   password:
+  # To change this, generate a new hash using `htpasswd -in example`
   hash:
 
+# To change, regenerate the token in Mollie's web interface.
 secret_mollie_token:
 
+# To change, generate a new secret using something like `pwgen -sy 128 1`
 secret_phpmyadmin_blowfish_secret:

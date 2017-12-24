@@ -1,6 +1,6 @@
 ---
 # When defining a secret, define the value as a Jinja2 reference to the same
-# variable name, but prefixed with "_vault", and define that key in vault.yml.
+# variable name, but prefixed with "vault_", and define that key in vault.yml.
 # In that way there is an overview of what secrets are used, without everyone
 # having to have access to the values.
 
@@ -34,8 +34,8 @@ secret_mysql:
   example:
     # To change, generate a new password using something like `pwgen -sy 32 1`
     password:
-    # To change, generate a new hash using the query `SELECT
-    # PASSWORD('example')` in MySQL to output the hash
+    # To change, generate a new hash using the query
+    # `SELECT PASSWORD('example')` in MySQL to output the hash
     hash:
 
 secret_backup_aws:
@@ -47,7 +47,7 @@ secret_backup_aws:
 secret_metrics:
   # To change, generate a new password using something like `pwgen -sy 32 1`
   password:
-  # To change this, generate a new hash using `htpasswd -in example`
+  # To change, generate a new hash using `htpasswd -in example`
   hash:
 
 # To change, regenerate the token in Mollie's web interface.

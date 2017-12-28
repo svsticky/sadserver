@@ -1,0 +1,24 @@
+---
+# Contains tasks needed to set up Redis
+- block:
+  - name: "ensure Redis server and client are present"
+    apt:
+        name: "{{ item }}"
+        state: "present"
+    with_items:
+        - "redis-server"
+        - "redis-tools"
+    tags:
+        - "packages"
+
+  - name: "ensure Redis server is running and enabled"
+    service:
+        name: "redis-server"
+        enabled: true
+        state: "started"
+    tags:
+        - "service"
+
+# By default, Redis only binds to the loopback interface. This is specified in
+# the config file /etc/redis/redis.conf, which should probably be templated.
+# TODO.

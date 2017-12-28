@@ -19,6 +19,14 @@
     tags:
         - "service"
 
-# By default, Redis only binds to the loopback interface. This is specified in
-# the config file /etc/redis/redis.conf, which should probably be templated.
-# TODO.
+  - name: "place Redis config file"
+    template:
+      src: "templates/{{ path }}.j2"
+      dest: "/{{ path }}"
+      owner: "redis"
+      group: "redis"
+      mode: "0640"
+    vars:
+      path: "etc/redis/redis.conf"
+    notify:
+      - "restart redis"

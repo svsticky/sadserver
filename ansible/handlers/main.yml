@@ -19,6 +19,11 @@
     name: "fail2ban"
     state: "restarted"
 
+- name: "restart redis"
+  service:
+    name: "redis-server"
+    state: "restarted"
+
 - name: "reload nginx"
   service:
     name: "nginx"

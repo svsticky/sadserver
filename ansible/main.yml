@@ -37,6 +37,8 @@ users"
       include_tasks: "tasks/backups.yml"
     - name: "start process of configuring monitoring services"
       include_tasks: "tasks/monitoring.yml"
+    - name: "start process of configuring redis"
+      include_tasks: "tasks/redis.yml"
 
   post_tasks:
     # Included the last, so any service that fail2ban is applied to, already

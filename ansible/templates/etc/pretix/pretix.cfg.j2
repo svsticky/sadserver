@@ -1,0 +1,44 @@
+; {{ ansible_managed }}
+[pretix]
+instance_name=Sticky Tickets
+url=https://pretix.{{ canonical_hostname }}
+currency=EUR
+datadir=/var/pretix/data
+password_reset=on
+registration=on
+long_sessions=on
+ecb_rates=off
+
+[locale]
+default=en
+timezone=Europe/Amsterdam
+
+[database]
+backend=mysql
+name=pretix
+user=pretix
+password={{ secret_mysql.pretix.password }}
+; Replace with host IP address for PostgreSQL
+host=/var/run/mysqld/mysqld.sock
+
+[mail]
+; See config file documentation for more options
+from=Sticky Tickets <tickets@svsticky.nl>
+host=smtp.mailgun.org
+port=465
+user=tickets@svsticky.nl
+password={{ secret_pretix.email_password }}
+ssl=on
+admins=itcrowd@svsticky.nl
+
+[django]
+secret={{ secret_pretix.django_secret }}
+debug=off
+
+[redis]
+location=redis://127.0.0.1/0
+sessions=true
+
+[celery]
+backend=redis://127.0.0.1/1
+broker=redis://127.0.0.1/2

@@ -41,7 +41,9 @@
       - "drop database if exists test;"
 
   - name: "create website databases"
-    command: "mysql -NBe 'create database if not exists {{ item.database }};'"
+    command: "mysql -NBe 'create database if not exists {{ item.database }} {{ extra }};'"
+    vars:
+      extra: "{{ item.database_extra | default('') }}"
     with_items: "{{ websites }}"
     when:
       # List is evaluated as logical AND

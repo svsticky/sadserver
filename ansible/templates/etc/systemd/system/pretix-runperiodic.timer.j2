@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Clear expired pretix sessions hourly
+After=network.target
+
+[Timer]
+OnCalendar=hourly
+AccuracySec=5min
+
+[Install]
+WantedBy=timers.target

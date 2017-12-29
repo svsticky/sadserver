@@ -1,0 +1,43 @@
+# {{ ansible_managed }}
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name ~^(pretix|tickets)\.{{ canonical_hostname }};
+
+  ssl_certificate /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/privkey.pem;
+
+  add_header Referrer-Policy same-origin;
+  add_header X-Content-Type-Options nosniff;
+
+  location / {
+    proxy_pass http://localhost:8345/;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+  }
+
+  location /media/ {
+    alias /var/pretix/data/media/;
+    expires 7d;
+    access_log off;
+  }
+
+  location ^~ /media/cachedfiles {
+    deny all;
+    return 404;
+  }
+
+  location ^~ /media/invoices {
+    deny all;
+    return 404;
+  }
+
+  location /static/ {
+    alias /var/pretix/venv/lib/python3.5/site-packages/pretix/static.dist/;
+    access_log off;
+    expires 365d;
+    add_header Cache-Control "public";
+  }
+}

@@ -3,7 +3,6 @@
   user:
     name: "pretix"
     home: "/var/www/pretix"
-    move_home: "yes"
     system: "yes"
 
 - name: "ensure dependencies are present"

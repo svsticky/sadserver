@@ -5,7 +5,7 @@ url=https://pretix.{{ canonical_hostname }}
 currency=EUR
 datadir=/var/www/pretix/data
 password_reset=on
-registration=on
+registration=off
 long_sessions=on
 ecb_rates=off
 
@@ -23,7 +23,7 @@ host=/var/run/mysqld/mysqld.sock
 
 [mail]
 ; See config file documentation for more options
-from=Sticky Tickets <tickets@svsticky.nl>
+from=tickets@svsticky.nl
 host=smtp.mailgun.org
 port=465
 user=tickets@svsticky.nl

@@ -2,7 +2,8 @@
 - name: "ensure pretix user is present"
   user:
     name: "pretix"
-    home: "/var/pretix"
+    home: "/var/www/pretix"
+    move_home: "yes"
     system: "yes"
 
 - name: "ensure dependencies are present"
@@ -34,7 +35,7 @@
     group: "pretix"
   with_items:
     - "/etc/pretix"
-    - "/var/pretix/data/media"
+    - "/var/www/pretix/data/media"
 
 - name: "place pretix config file"
   template:
@@ -54,8 +55,10 @@
       - "setuptools"
       - "wheel"
     state: "latest"
-    virtualenv: "/var/pretix/venv"
+    virtualenv: "/var/www/pretix/venv"
     virtualenv_python: "python3.5"
+  become: true
+  become_user: "pretix"
 
 - name: "place pretix's service files"
   template:
@@ -67,6 +70,7 @@
     - "etc/systemd/system/pretix-runperiodic.service"
     - "etc/systemd/system/pretix-runperiodic.timer"
   notify: "systemctl daemon-reload"
+  register: "pretix_service_result"
 
 - meta: flush_handlers # Ensures daemon is reloaded
 
@@ -75,7 +79,7 @@
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     state: "present"
-    virtualenv: "/var/pretix/venv"
+    virtualenv: "/var/www/pretix/venv"
     virtualenv_python: "python3.5"
   with_items:
     - name: "gunicorn"
@@ -85,20 +89,27 @@
     - name: "pretix-pages"
       version: "1.2.2"
   register: "pretix_install_result"
+  become: true
+  become_user: "pretix"
 
 - name: "run pretix migration if package version changed"
-  command: "/var/pretix/venv/bin/python -m pretix {{ item }}"
+  command: "/var/www/pretix/venv/bin/python -m pretix {{ item }}"
   with_items:
     - "migrate"
     - "rebuild"
     - "updatestyles"
   when: "pretix_install_result.changed"
+  become: true
+  become_user: "pretix"
 
-- name: "ensure pretix is restarted if migration ran"
+- name: "ensure pretix is restarted if needed"
   service:
     name: "{{ item }}"
     state: "restarted"
-  when: "pretix_install_result.changed or pretix_config_file_result.changed"
+  when: >
+    pretix_install_result.changed or
+    pretix_config_file_result.changed or
+    pretix_service_result.changed
   with_items:
     - "pretix-web.service"
     - "pretix-worker.service"

@@ -19,7 +19,7 @@ server {
   }
 
   location /media/ {
-    alias /var/pretix/data/media/;
+    alias /var/www/pretix/data/media/;
     expires 7d;
     access_log off;
   }
@@ -35,7 +35,7 @@ server {
   }
 
   location /static/ {
-    alias /var/pretix/venv/lib/python3.5/site-packages/pretix/static.dist/;
+    alias /var/www/pretix/venv/lib/python3.5/site-packages/pretix/static.dist/;
     access_log off;
     expires 365d;
     add_header Cache-Control "public";

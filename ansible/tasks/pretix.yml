@@ -3,7 +3,7 @@
   user:
     name: "pretix"
     home: "/var/www/pretix"
-    system: "yes"
+    system: true
 
 - name: "ensure dependencies are present"
   apt:
@@ -42,7 +42,7 @@
     dest: "/{{ path }}"
     owner: "pretix"
     group: "pretix"
-    mode: 0600
+    mode: "0600"
   vars:
     path: "etc/pretix/pretix.cfg"
   register: "pretix_config_file_result"

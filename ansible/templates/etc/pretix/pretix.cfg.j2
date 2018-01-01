@@ -23,10 +23,10 @@ host=/var/run/mysqld/mysqld.sock
 
 [mail]
 ; See config file documentation for more options
-from=tickets@svsticky.nl
+from=tickets@{{ canonical_hostname }}
 host=smtp.mailgun.org
 port=465
-user=tickets@svsticky.nl
+user=tickets@{{ canonical_hostname }}
 password={{ secret_pretix.email_password }}
 ssl=on
 admins=itcrowd@svsticky.nl

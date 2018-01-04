@@ -119,7 +119,7 @@
     --agree-tos
     --email "domreg@svsticky.nl"
     --keep-until-expiring
-    --expand
+    --cert-name {{ item.name }}
     --webroot
     --webroot-path /var/www/acme-challenges
     --domain {{ item.name }}

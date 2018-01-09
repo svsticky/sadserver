@@ -27,4 +27,4 @@ MOLLIE_VERSION=v1
 # Other
 RAILS_ENV={{ koala_env.environment }}
 RAILS_MAX_THREADS={{ koala.threads }}
-SENTRY_DSN={{ secret_koala.sentry_dsn }}
+SENTRY_DSN={{ secret_koala.sentry_dsn | default('') }}

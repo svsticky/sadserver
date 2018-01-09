@@ -84,7 +84,7 @@
     - name: "gunicorn"
       version: "19.7.1"
     - name: "pretix[mysql]"
-      version: "1.10.1"
+      version: "1.11.0"
     - name: "pretix-pages"
       version: "1.2.2"
   register: "pretix_install_result"

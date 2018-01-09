@@ -68,8 +68,12 @@ case "${SOURCE}" in
           # phpMyAdmin and SODI directories excluded because no other
           # committee can write to these folders and they are deployed from \
           # git anyway.
-          tar --exclude='var/www/phpmyadmin.{{ canonical_hostname }}' \
-          --exclude='var/www/sodi.{{ canonical_hostname }}' -c -f - -C / \
+	  # Pretix's virtualenv is excluded as it only contains binaries.
+          tar \
+	    --exclude='var/www/phpmyadmin.{{ canonical_hostname }}' \
+            --exclude='var/www/sodi.{{ canonical_hostname }}' \
+	    --exclude='var/www/pretix/venv' \
+	    -c -f - -C / \
           var/www | gzip -9 > "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
           ;;
         databases)

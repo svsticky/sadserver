@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=pretix background worker
+After=network.target
+
+[Service]
+User=pretix
+Group=pretix
+Environment="VIRTUAL_ENV=/var/www/pretix/venv"
+Environment="PATH=/var/www/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/var/www/pretix/venv/bin/celery -A pretix.celery_app worker -l info
+WorkingDirectory=/var/www/pretix
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

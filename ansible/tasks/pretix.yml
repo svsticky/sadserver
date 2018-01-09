@@ -1,0 +1,141 @@
+---
+- name: "ensure pretix user is present"
+  user:
+    name: "pretix"
+    home: "/var/www/pretix"
+    system: true
+
+- name: "ensure dependencies are present"
+  apt:
+    name: "{{ item }}"
+    state: "present"
+  with_items:
+    - "git"
+    - "build-essential"
+    - "python-dev"
+    - "python-virtualenv"
+    - "python3"
+    - "python3-pip"
+    - "python3-dev"
+    - "libxml2-dev"
+    - "libxslt1-dev"
+    - "libffi-dev"
+    - "zlib1g-dev"
+    - "libssl-dev"
+    - "gettext"
+    - "libmysqlclient-dev"
+    - "libjpeg-dev"
+
+- name: "ensure pretix config directories are present"
+  file:
+    path: "{{ item }}"
+    state: "directory"
+    owner: "pretix"
+    group: "pretix"
+  with_items:
+    - "/etc/pretix"
+    - "/var/www/pretix/data/media"
+
+- name: "place pretix config file"
+  template:
+    src: "templates/{{ path }}.j2"
+    dest: "/{{ path }}"
+    owner: "pretix"
+    group: "pretix"
+    mode: "0600"
+  vars:
+    path: "etc/pretix/pretix.cfg"
+  register: "pretix_config_file_result"
+
+- name: "create virtualenv if not exists, update pip and tools"
+  pip:
+    name:
+      - "pip"
+      - "setuptools"
+      - "wheel"
+    state: "latest"
+    virtualenv: "/var/www/pretix/venv"
+    virtualenv_python: "python3.5"
+  become: true
+  become_user: "pretix"
+
+- name: "place pretix's service files"
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/{{ item }}"
+  with_items:
+    - "etc/systemd/system/pretix-web.service"
+    - "etc/systemd/system/pretix-worker.service"
+    - "etc/systemd/system/pretix-runperiodic.service"
+    - "etc/systemd/system/pretix-runperiodic.timer"
+  notify: "systemctl daemon-reload"
+  register: "pretix_service_result"
+
+- meta: flush_handlers # Ensures daemon is reloaded
+
+- name: "install pretix"
+  pip:
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
+    state: "present"
+    virtualenv: "/var/www/pretix/venv"
+    virtualenv_python: "python3.5"
+  with_items:
+    - name: "gunicorn"
+      version: "19.7.1"
+    - name: "pretix[mysql]"
+      version: "1.10.1"
+    - name: "pretix-pages"
+      version: "1.2.2"
+  register: "pretix_install_result"
+  become: true
+  become_user: "pretix"
+
+- name: "run pretix migration if package version changed"
+  command: "/var/www/pretix/venv/bin/python -m pretix {{ item }}"
+  with_items:
+    - "migrate"
+    - "rebuild"
+    - "updatestyles"
+  when: "pretix_install_result.changed"
+  become: true
+  become_user: "pretix"
+
+- name: "ensure pretix is restarted if needed"
+  service:
+    name: "{{ item }}"
+    state: "restarted"
+  when: >
+    pretix_install_result.changed or
+    pretix_config_file_result.changed or
+    pretix_service_result.changed
+  with_items:
+    - "pretix-web.service"
+    - "pretix-worker.service"
+
+- name: "ensure pretix services are running and enabled"
+  service:
+    name: "{{ item }}"
+    state: "started"
+    enabled: "yes"
+  with_items:
+    - "pretix-web.service"
+    - "pretix-worker.service"
+    - "pretix-runperiodic.timer"
+
+- name: "place pretix's nginx configuration"
+  template:
+    src: "templates/etc/nginx/sites-available/pretix.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ dest_filename }}"
+  vars:
+    dest_filename: "pretix.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable pretix's nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/{{ filename }}"
+    dest: "/etc/nginx/sites-enabled/{{ filename }}"
+    state: "link"
+  vars:
+    filename: "pretix.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"

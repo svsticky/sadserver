@@ -23,7 +23,7 @@
     - "zlib1g-dev"
     - "libssl-dev"
     - "gettext"
-    - "libmysqlclient-dev"
+    - "libmariadb-client-lgpl-dev-compat"
     - "libjpeg-dev"
 
 - name: "ensure pretix config directories are present"

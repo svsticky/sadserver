@@ -1,6 +1,6 @@
 ---
 - hosts: "all"
-  user: "ansible"
+  remote_user: "ansible"
   become: true
   become_user: "root"
   become_method: "sudo"

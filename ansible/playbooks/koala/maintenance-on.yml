@@ -1,6 +1,6 @@
 ---
 - hosts: "all"
-  user: "ansible"
+  remote_user: "ansible"
   force_handlers: true
 
   tasks:

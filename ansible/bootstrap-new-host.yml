@@ -1,6 +1,6 @@
 ---
 - hosts: "all"
-  user: "root"
+  remote_user: "root"
   gather_facts: false
   force_handlers: true
 
@@ -10,19 +10,25 @@
     ansible_home_dir: "/home/ansible"
     finish_msg: |
       Now you can run the main playbook in the same way as this playbook, which
-      will run under the ansible user we've just created. The user ansible has
-      the password:
+      will run under the ansible user we've just created.
+      The user ansible has the password:
       {{ ansible_user_password.stdout }}
       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       @@ ADD THE PASSWORD ABOVE TO THE IT-CROWD PASSWORD MANAGER @@
       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  vars_prompt:
-    - name: "new_host"
-      default: "dev.svsticky.nl"
-      prompt:
-        "Please enter the hostname or IP of the server that needs to be
-        bootstrapped"
+  pre_tasks:
+    # Checks if ansible user is already present
+    - name: "check if host is already bootstrapped"
+      command: "id -u ansible"
+      ignore_errors: true
+      no_log: true
+      register: "bootstrap_status"
+
+    - name: "exit if bootstrapping is not necessary"
+      fail:
+        msg: "Bootstrapping not necessary, host is already bootstrapped."
+      when: "bootstrap_status | succeeded"
 
   tasks:
     - name: "install python 2.7"
@@ -56,6 +62,7 @@
         src: "/root/.ssh/authorized_keys"
         dest: "{{ ansible_home_dir }}/.ssh/"
         remote_src: true
+        force: false
         mode: "0600"
         owner: "ansible"
         group: "ansible"

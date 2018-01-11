@@ -50,7 +50,6 @@ case ${ENVIRONMENT} in
     done
     case "${PROD_CHOICE}" in
       Y)
-        TARGET_HOST="svsticky.nl"
         ;;
       *)
         abort_deploy
@@ -73,7 +72,6 @@ case ${ENVIRONMENT} in
     fi
     ;;
   staging)
-    TARGET_HOST="dev.svsticky.nl"
     ;;
   *)
     echo "$USAGE"
@@ -128,7 +126,7 @@ ANSIBLE_SSH_PIPELINING=true \
   "${GIT_ROOT}/ansible/hosts" \
   --ask-become-pass \
   --ask-vault-pass \
-  --limit=${TARGET_HOST} \
+  --limit=${ENVIRONMENT} \
   --extra-vars \
   "playbook_revision=${GIT_REVISION}" \
   "${ARGS[@]}"

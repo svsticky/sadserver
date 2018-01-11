@@ -9,7 +9,7 @@ SECRET_KEY_BASE={{ secret_koala.rails_secret }}
 DEVISE_SECRET={{ secret_koala.devise_secret }}
 
 # API tokens
-MAILGUN_DOMAIN=svsticky.nl
+MAILGUN_DOMAIN={{ canonical_hostname }}
 MAILGUN_TOKEN={{ secret_mailgun_token }}
 CHECKOUT_TOKEN={{ secret_koala.checkout_token }}
 

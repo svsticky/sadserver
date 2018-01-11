@@ -13,7 +13,7 @@ define('EMAIL_FIRST_NAME', 'Robert');
 
 // Mailgun settings
 define('EMAIL_API_KEY', '{{ secret_mailgun_token }}');
-define('EMAIL_DOMAIN', 'svsticky.nl');
+define('EMAIL_DOMAIN', '{{ canonical_hostname }}');
 
 // Define upload restrictions
 define('FILE_MAX_FILESIZE', {{ 20 * 2**20|int }});

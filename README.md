@@ -11,7 +11,7 @@
 
 Deploy me:
 
-$ git submodule init && git submodule update --remote
+$ git submodule update --init
 $ cd ansible
 $ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml
 $ ./scripts/run-playbook.sh (production|staging) main.yml

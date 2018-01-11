@@ -62,5 +62,6 @@ koala:
 secret_deploy_key:
 
 # The API key for our Mailgun account.
-# Change? Refresh API key at https://app.mailgun.com/app/account/security
+# Change? Refresh API key at https://app.mailgun.com/app/account/security, but
+# then also update it at any "Zap" that uses Mailgun at Zapier.
 secret_mailgun_token:

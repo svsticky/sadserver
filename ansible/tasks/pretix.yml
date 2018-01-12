@@ -26,6 +26,12 @@
     - "libmariadb-client-lgpl-dev-compat"
     - "libjpeg-dev"
 
+- name: "ensure mysql_config symlink is present"
+  file:
+    src: "/usr/bin/mariadb_config"
+    dest: "/usr/bin/mysql_config"
+    state: "link"
+
 - name: "ensure pretix config directories are present"
   file:
     path: "{{ item }}"

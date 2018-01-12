@@ -57,6 +57,7 @@
       - "packages"
       - "ruby"
       - "koala"
+    notify: "restart koala"
 
   - name: "add apt key for yarn repository"
     apt_key:

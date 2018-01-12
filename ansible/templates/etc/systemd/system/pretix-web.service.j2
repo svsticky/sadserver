@@ -10,7 +10,7 @@ Group=pretix
 Environment="VIRTUAL_ENV=/var/www/pretix/venv"
 Environment="PATH=/var/www/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin"
 ExecStart=/var/www/pretix/venv/bin/gunicorn pretix.wsgi \
-                      --name pretix --workers 5 \
+                      --name pretix --workers 2 \
                       --max-requests 1200  --max-requests-jitter 50 \
                       --log-level=info --bind=127.0.0.1:8345
 WorkingDirectory=/var/www/pretix

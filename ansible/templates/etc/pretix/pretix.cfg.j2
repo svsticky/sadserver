@@ -29,7 +29,7 @@ port=465
 user=tickets@{{ canonical_hostname }}
 password={{ secret_pretix.email_password }}
 ssl=on
-admins=itcrowd@svsticky.nl
+admins={% if canonical_hostname == 'svsticky.nl' %}pretixspam@maartenberg.nl{% endif %}
 
 [django]
 secret={{ secret_pretix.django_secret }}

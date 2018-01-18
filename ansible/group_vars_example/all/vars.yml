@@ -14,6 +14,9 @@ unattended_upgrades:
   all:
 
 fail2ban:
+  repo:
+  install_path:
+
   loglevel:
   ignoreip:
   bantime:

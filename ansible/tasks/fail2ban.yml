@@ -4,29 +4,56 @@
     pkg: "python3-pyinotify"
     state: "present"
 
-- name: "clone fail2ban"
+# Only ensure repository is cloned, don't update yet
+- name: "clone repository of fail2ban"
   git:
-    repo: "https://github.com/fail2ban/fail2ban"
-    dest: "/home/ansible/fail2ban"
+    repo: "{{ fail2ban.repo }}"
+    dest: "{{ fail2ban.install_path }}"
     depth: 1
     force: true
-    version: "0.10"
-  register: "fail2ban_clone_result"
+    update: false
+
+- name: "retrieve all version numbers of fail2ban"
+  shell: "git fetch --tags"
+  args:
+    chdir: "{{ fail2ban.install_path }}"
+  register: "fail2ban_fetch"
+  changed_when: fail2ban_fetch.stdout != ""
+
+- name: "determine latest version number of fail2ban"
+  shell: "git describe --tags $(git rev-list --tags --max-count=1)"
+  args:
+    chdir: "{{ fail2ban.install_path }}"
+  register: "fail2ban_version"
+  # The next task already shows if there is actually a change
+  changed_when: false
+
+# Wrapped in block because otherwise templating is done before skipping task,
+# which will fail in check mode
+- block:
+  - name: "install newest release of fail2ban"
+    git:
+      repo: "{{ fail2ban.repo }}"
+      dest: "{{ fail2ban.install_path }}"
+      version: "{{ fail2ban_version.stdout }}"
+  # Don't run in check mode because previous "git fetch" task also can't be run
+  # in check mode
+  when: not ansible_check_mode
 
 - name: "install fail2ban"
   command: "python setup.py install"
   become: true
   args:
-    chdir: "/home/ansible/fail2ban"
-  when: "fail2ban_clone_result.changed"
+    chdir: "{{ fail2ban.install_path }}"
+  when: "fail2ban_fetch.changed"
 
 - name: "install fail2ban service file"
   copy:
-    src: "/home/ansible/fail2ban/build/fail2ban.service"
+    src: "{{ fail2ban.install_path }}/build/fail2ban.service"
     dest: "/etc/systemd/system/fail2ban.service"
     remote_src: true
   notify: "systemctl daemon-reload"
-  when: "fail2ban_clone_result.changed"
+  when: "fail2ban_fetch.changed"
 
 - name: "flush handlers"
   meta: "flush_handlers"

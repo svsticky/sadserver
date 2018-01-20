@@ -12,6 +12,7 @@
     depth: 1
     force: true
     update: false
+  register: "fail2ban_clone"
 
 - name: "retrieve all version numbers of fail2ban"
   shell: "git fetch --tags"
@@ -38,22 +39,21 @@
       version: "{{ fail2ban_version.stdout }}"
   # Don't run in check mode because previous "git fetch" task also can't be run
   # in check mode
-  when: not ansible_check_mode
+  when: "not ansible_check_mode"
 
-- name: "install fail2ban"
-  command: "python setup.py install"
-  become: true
-  args:
-    chdir: "{{ fail2ban.install_path }}"
-  when: "fail2ban_fetch.changed"
+- block:
+  - name: "install fail2ban"
+    command: "python setup.py install"
+    args:
+      chdir: "{{ fail2ban.install_path }}"
 
-- name: "install fail2ban service file"
-  copy:
-    src: "{{ fail2ban.install_path }}/build/fail2ban.service"
-    dest: "/etc/systemd/system/fail2ban.service"
-    remote_src: true
-  notify: "systemctl daemon-reload"
-  when: "fail2ban_fetch.changed"
+  - name: "install fail2ban service file"
+    copy:
+      src: "{{ fail2ban.install_path }}/build/fail2ban.service"
+      dest: "/etc/systemd/system/fail2ban.service"
+      remote_src: true
+    notify: "systemctl daemon-reload"
+  when: "fail2ban_clone.changed or fail2ban_fetch.changed"
 
 - name: "flush handlers"
   meta: "flush_handlers"
@@ -66,8 +66,7 @@
     - "etc/fail2ban/fail2ban.conf"
     - "etc/fail2ban/jail.conf"
     - "etc/fail2ban/filter.d/koala.conf"
-  notify:
-    - "restart fail2ban"
+  notify: "restart fail2ban"
 
 - name: "start and enable fail2ban"
   service:

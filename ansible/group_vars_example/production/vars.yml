@@ -30,6 +30,7 @@ secret_koala:
   aws_access_key:
   aws_secret_key:
 
+  # To change, use the web interface at https://sentry.io/
   sentry_dsn: "{{ vault_secret_koala.sentry_dsn }}"
 
 secret_mysql:

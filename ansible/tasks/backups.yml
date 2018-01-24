@@ -50,11 +50,11 @@
 
   - name: "ensure aws cli script is present, with correct permissions"
     template:
-      src: "templates/{{ item }}.j2"
-      dest: "/{{ item }}"
+      src: "templates/{{ backup_script_path }}.j2"
+      dest: "/{{ backup_script_path }}"
       mode: "0744"
-    with_items:
-      - "usr/local/bin/backup-to-s3.sh"
+    vars:
+      backup_script_path: "usr/local/bin/backup-to-s3.sh"
 
   - name: "ensure backup services and timers are present"
     template:

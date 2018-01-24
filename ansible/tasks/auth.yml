@@ -100,13 +100,14 @@
     - "root/.ssh/id"
     - "home/koala/.ssh/id"
 
-- name: "symlink deploy keys for root"
+- name: "symlink deploy key for root"
   file:
-    src: "/home/ansible/.ssh/{{ item.src }}"
-    path: "/root/.ssh/{{ item.dest }}"
+    src: "/home/ansible/.ssh/{{ deploy_key_name.src }}"
+    path: "/root/.ssh/{{ deploy_key_name.dest }}"
     state: link
-  with_items:
-    - src: "deploy_ed25519"
+  vars:
+    deploy_key_name:
+      src: "deploy_ed25519"
       dest: "id_ed25519"
 
 - name: "remove public keys for root account"

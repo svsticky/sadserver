@@ -81,7 +81,7 @@
       user: "{{ item.0.name }}"
       key: "{{ item.1.id }}"
 
-- name: "copy deploy key (private) for private projects on GitHub"
+- name: "copy deploy key for private projects on GitHub"
   copy:
     content: "{{ secret_deploy_key }}"
     dest: "/home/ansible/.ssh/deploy_ed25519"
@@ -89,15 +89,16 @@
     group: "ansible"
     mode: "0600"
 
-- name: "copy deploy key (public) for private projects on GitHub"
-  template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
-    owner: "ansible"
-    group: "ansible"
-    mode: "0600"
+- name:
+    "remove unneeded public part of deploy key for private projects on
+    GitHub"
+  file:
+    path: "/{{ item }}_ed25519.pub"
+    state: "absent"
   with_items:
-    - "home/ansible/.ssh/deploy_ed25519.pub"
+    - "home/ansible/.ssh/deploy"
+    - "root/.ssh/id"
+    - "home/koala/.ssh/id"
 
 - name: "symlink deploy keys for root"
   file:
@@ -107,8 +108,6 @@
   with_items:
     - src: "deploy_ed25519"
       dest: "id_ed25519"
-    - src: "deploy_ed25519.pub"
-      dest: "id_ed25519.pub"
 
 - name: "remove public keys for root account"
   file:

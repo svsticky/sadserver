@@ -193,15 +193,6 @@
       dest: "/home/koala/.ssh/id_ed25519"
       mode: "0600"
 
-  - name: "copy deploy key (public) for user koala"
-    template:
-      src: "templates/home/ansible/.ssh/{{ item.from }}.j2"
-      dest: "/home/koala/.ssh/{{ item.to }}"
-      mode: "0600"
-    with_items:
-      - from: "deploy_ed25519.pub"
-        to: "id_ed25519.pub"
-
   # This checks if Koala is already locally present, and if there is an update
   # on the remote
   - name: "check status of koala's local git repo"

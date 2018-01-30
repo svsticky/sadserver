@@ -187,11 +187,11 @@
 
 - name: "copy nginx include files"
   template:
-    src: "templates/etc/nginx/includes/{{ item }}.j2"
-    dest: "/etc/nginx/includes/{{ item }}"
-  with_items:
-    - "security-headers.conf"
-    - "php-parameters.conf"
+    src: "{{ item }}"
+    dest:
+      "/etc/nginx/includes/{{ item | basename | regex_replace('\\.j2$','') }}"
+  with_fileglob:
+    - "templates/etc/nginx/includes/*.j2"
   notify: "reload nginx"
 
 - name: "copy nginx configurations for regular websites"

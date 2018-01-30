@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+# Block paths that can be used to prove ownership of a domain in order to
+# obtain a TLS certificate. Doesn't break our own use of Let's Encrypt, because
+# that uses port 80
+location ~ /.well-known/(acme-challenge|pki-validation)/ {
+  return 404;
+}

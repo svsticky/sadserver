@@ -9,6 +9,7 @@
   vars_prompt:
     - name: "confirm"
       default: 'ABORT'
+      private: false
       prompt:
         "The playbook you are about to execute will DELETE ALL DATA OF
         ALL WEBSITES WHOSE \"STATE\" IS SET TO ABSENT. Are you CERTAIN that

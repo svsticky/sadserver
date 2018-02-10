@@ -6,6 +6,7 @@
   vars_prompt:
     - name: "confirm"
       default: 'ABORT'
+      private: false
       prompt:
         "The playbook you are about to execute will DELETE THE DATABASE if it
         exists, and rebuild it. Are you CERTAIN that you wish to continue? If

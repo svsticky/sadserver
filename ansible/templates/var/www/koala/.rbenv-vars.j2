@@ -17,7 +17,7 @@ SENTRY_DSN={{ secret_koala.sentry_dsn | default('') }}
 # AWS credentials
 AWS_ACCESS={{ secret_koala.aws_access_key }}
 AWS_SECRET={{ secret_koala.aws_secret_key }}
-AWS_REGION=eu-west-1
+AWS_REGION={{ aws_region }}
 AWS_BUCKET={% if 'staging' in group_names %}staging-{% endif %}koala-images
 
 # Mollie

@@ -14,8 +14,13 @@
     dest: "/{{ item }}"
   with_items:
     - "etc/nginx/nginx.conf"
-    - "etc/ssl/certs/letsencrypt-ocsp-chain.pem"
     - "etc/php/7.0/fpm/php.ini"
+  notify: "reload nginx"
+
+- name: "delete old configuration file for nginx"
+  file:
+    path: "/etc/ssl/certs/letsencrypt-ocsp-chain.pem"
+    state: "absent"
   notify: "reload nginx"
 
 - name: "ensure stock nginx configuration is not present"

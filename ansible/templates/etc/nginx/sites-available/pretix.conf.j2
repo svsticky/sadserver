@@ -7,6 +7,7 @@ server {
 
   ssl_certificate /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/chain.pem;
 
   add_header Referrer-Policy same-origin;
   add_header X-XSS-Protection "1; mode=block";

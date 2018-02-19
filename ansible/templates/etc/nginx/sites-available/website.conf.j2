@@ -11,6 +11,7 @@ server {
 
   ssl_certificate      /etc/letsencrypt/live/{{ item.name }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/{{ item.name }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ item.name }}/chain.pem;
 
   root /var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
 item.name }};

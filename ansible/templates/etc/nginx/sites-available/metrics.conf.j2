@@ -13,6 +13,7 @@ server {
 
   ssl_certificate      /etc/letsencrypt/live/metrics.{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/metrics.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/metrics.{{ canonical_hostname}}/chain.pem;
 
   include includes/security-headers.conf;
 

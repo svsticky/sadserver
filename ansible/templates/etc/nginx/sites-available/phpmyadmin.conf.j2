@@ -8,6 +8,7 @@ server {
 
   ssl_certificate      /etc/letsencrypt/live/phpmyadmin.{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/phpmyadmin.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/phpmyadmin.{{ canonical_hostname }}/chain.pem;
 
   root /var/www/phpmyadmin.{{ canonical_hostname }};
   index index.php index.html index.htm;

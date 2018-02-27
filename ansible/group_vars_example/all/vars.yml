@@ -48,6 +48,8 @@ slack_notifications:
     install_path:
   webhook_url:
 
+aws_region:
+
 # Koala's environment-specific vars are defined in their respective file with
 # group_vars, in the dict "koala_env"
 koala:

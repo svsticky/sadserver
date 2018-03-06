@@ -24,7 +24,7 @@ reconsider the way things are done!
 Quick links:
 
  1. [Updating SSH keys][ssh-keys]
- 1. [Deployment documentation][deployment-documentation]
+ 1. [Deployment guide][deployment-guide]
  1. [Other documentation][docs]
 
 ## Reasons for the current approach to Sticky's server management
@@ -207,4 +207,5 @@ Godspeed!
   [ansible]:https://github.com/ansible/ansible
   [deployment-new-production]:docs/deployment-new-production.md
   [IT Crowd]:mailto:itcrowd@svsticky.nl
-  [deployment-documentation]:https://github.com/svsticky/sadserver/blob/master/README.md#how-to-set-up-the-staging-and-production-environment
+  [deployment-guide]:https://github.com/svsticky/sadserver/blob/master/README.md#setting-up-the-staging-and-production-environment
+

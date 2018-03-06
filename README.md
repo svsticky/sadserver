@@ -7,14 +7,7 @@
 "Y8888b. .d888888 888  888 "Y8888b. 88888888 888     Y88  88P 88888888 888
      X88 888  888 Y88b 888      X88 Y8b.     888      Y8bd8P  Y8b.     888
  88888P' "Y888888  "Y88888  88888P'  "Y8888  888       Y88P    "Y8888  888
-
-
-Deploy me:
-
-$ git submodule update --init
-$ cd ansible
-$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml
-$ ./scripts/run-playbook.sh (production|staging) main.yml
+ 
 ```
 
 # Server workspace
@@ -31,7 +24,8 @@ reconsider the way things are done!
 Quick links:
 
  1. [Updating SSH keys][ssh-keys]
- 1. [Documentation][docs]
+ 1. [Deployment documentation][deployment-documentation]
+ 1. [Other documentation][docs]
 
 ## Reasons for the current approach to Sticky's server management
 
@@ -66,7 +60,7 @@ server to become Sticky's production server.
 
 The code in this repository depends on the following software:
 
- - Ansible >= 2.4
+ - [ansible] >= 2.4
  - [slacktee] (no config necessary)
  - bash
 
@@ -134,7 +128,7 @@ passphrase is revoked.
 In `docs/` you can find all documentation that has been written about this
 project, apart from this README, as well as styleguides and templates.
 
-## How to set up the staging and production environment
+## Setting up the staging and production environment
 
 There is currently one server, `sadserver.svsticky.nl`, used in production, and
 one server, `dev.svsticky.nl`, used as a staging server. The staging server
@@ -149,24 +143,52 @@ should be used that bootstraps the server. It installs Ansible's dependencies,
 and sets up a non-root user for Ansible to use. A playbook should be applied to
 a host by means of a wrapper script around `ansible-playbook`, that posts
 progress notifications to the committee's Slack team, among a few other things.
-To bootstrap the new server, the script should be run as follows:
-`$ ansible/scripts/run-playbook.sh <ENVIRONMENT>
-ansible/bootstrap-new-host.yml`, where `<ENVIRONMENT>` should be substituted by
-either `production` or `staging`.
 
 After the bootstrapping, the main playbook can be run to completely set up the
 server. The main playbook can be applied in the same way as the bootstrap
 playbook.
 
 When this has successfully finished, a server exists that matches one of the
-environments. When migrating the production server, a few more tasks should be
-performed, which is explained in detail in [this guide][deployment-new-production].
+environments. 
+
+### Step-by-step guide
+These are the steps to follow to set up a new development or production server. 
+Some of the steps require you to specify which of the two you are setting up.
+
+If you want to migrate from an existing server, a few additional tasks should be
+performed, which are explained in detail in [this guide][deployment-new-production].
+
+##### On Digital Ocean:
+1. Create a droplet named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production).
+1. Assign a floating IP to the new droplet. 
+
+
+##### On your local terminal:  
+1. Download the repository and enter the folder.  
+`$ git clone https://github.com/svsticky/sadserver`  
+`$ cd sadserver`
+
+1. Update the submodule and enter the ansible folder.  
+`$ git submodule update --init`  
+`$ cd ansible`  
+
+1. Bootstrap the host for either production or staging.  
+`$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`  
+You do not need to enter a SUDO password, but you do need to enter the correct Vault password.  
+At the end of the process you will receive a newly generated SUDO password, which you will need in the next step.
+
+1. Run the main playbook for either production or staging.  
+`$ ./scripts/run-playbook.sh (production|staging) main.yml`  
+
+1. If you are not migrating from a previous version of the server, you will need to run these two commands to enable Koala.  
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`  
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`  
+
 
 ## Contact
 
 For help and questions, contact the relevant committee -- at the time of
-writing, this is the [IT Crowd]. When you are reading this, these people are
-probably your fellow committee members.
+writing, this is the [IT Crowd].
 
 Godspeed!
 
@@ -182,5 +204,7 @@ Godspeed!
   [Ansible Vault]:http://docs.ansible.com/ansible/playbooks_vault.html
   [inventory]:https://docs.ansible.com/ansible/intro_inventory.html
   [slacktee]:https://github.com/course-hero/slacktee
+  [ansible]:https://github.com/ansible/ansible
   [deployment-new-production]:docs/deployment-new-production.md
   [IT Crowd]:mailto:itcrowd@svsticky.nl
+  [deployment-documentation]:https://github.com/svsticky/sadserver/blob/master/README.md#how-to-set-up-the-staging-and-production-environment

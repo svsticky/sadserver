@@ -38,16 +38,6 @@
       failed_when: false
       when: item.state == "absent"
 
-    - name: "delete certificate(s)"
-      command:
-        "certbot delete
-        --non-interactive
-        --cert-name {{ item.name }}"
-      with_items: "{{ websites }}"
-      # Added because Certbot will error if cert is already deleted
-      failed_when: false
-      when: item.state == "absent"
-
     - name: "delete webroot(s)"
       file:
         path:

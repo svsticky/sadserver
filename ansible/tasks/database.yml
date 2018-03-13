@@ -45,7 +45,7 @@
     vars:
       extra: "{{ item.database_extra | default('') }}"
     with_items: "{{ websites }}"
-    when:
+    when: &website_with_db
       # List is evaluated as logical AND
       - item.state == "present"
       - item.database is defined
@@ -63,10 +63,7 @@
       `{{ item.database }}`@`localhost` identified via mysql_native_password
       using "{{ secret_mysql[item.database]['hash'] }}";'
     with_items: "{{ websites }}"
-    when:
-      # List is evaluated as logical AND
-      - item.state == "present"
-      - item.database is defined
+    when: *website_with_db
     loop_control:
       label: "{{ item.name }}"
 

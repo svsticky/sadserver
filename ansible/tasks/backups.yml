@@ -67,6 +67,8 @@
     notify:
       - "systemctl daemon-reload"
     register: "backup_units"
+    loop_control:
+      label: "{{ item | basename }}"
 
   - name: "start and enable backup timers in production"
     service:
@@ -77,4 +79,6 @@
     with_items:
       "{{ backup_units.results }}"
     when: "item.path | basename | match('.+\\.timer')"
+    loop_control:
+      label: "{{ item.path | basename }}"
   tags: "backups"

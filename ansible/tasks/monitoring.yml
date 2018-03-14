@@ -20,39 +20,51 @@
     - "monitoring"
     - "packages"
 
-- name: "clone the netdata git repository"
-  git:
-    repo: "https://github.com/firehol/netdata.git"
-    dest: "/usr/local/src/netdata"
-    update: false
-  tags:
-    - "monitoring"
-    - "packages"
+- block:
+  # Only ensure repository is cloned, don't update yet
+  - name: "clone repository of netdata"
+    git:
+      repo: "{{ netdata.repo }}"
+      dest: "{{ netdata.src_path }}"
+      update: false
+    register: "netdata_checkout_result"
 
-- name: "build and install netdata"
-  command: "./netdata-installer.sh --dont-wait"
-  args:
-    chdir: "/usr/local/src/netdata"
-    creates: "/usr/sbin/netdata"
-  tags:
-    - "monitoring"
-    - "packages"
+  - name: "retrieve all version numbers of netdata"
+    shell: "git fetch --tags"
+    args:
+      chdir: "{{ netdata.src_path }}"
+    register: "netdata_fetch"
+    changed_when: "netdata_fetch.stdout != ''"
 
-# Checks if netdata is installed, so the next update task knows if it has to
-# check for updates.
-- name: "check if netdata is installed"
-  stat:
-    path: "/usr/sbin/netdata"
-  register: "netdata_path"
-  tags:
-    - "monitoring"
-    - "packages"
+  - name: "determine latest version number of netdata"
+    shell: "git describe --tags $(git rev-list --tags --max-count=1)"
+    args:
+      chdir: "{{ netdata.src_path }}"
+    register: "netdata_version"
+    # The next task already shows if there is actually a change
+    changed_when: false
 
-- name: "check for updates to netdata"
-  command: "./netdata-updater.sh"
-  args:
-    chdir: "/usr/local/src/netdata"
-  when: netdata_path.stat.exists == true
+  # Wrapped in block because otherwise templating is done before skipping task,
+  # which will fail in check mode
+  - block:
+    - name: "checkout newest release of netdata"
+      git:
+        repo: "{{ netdata.repo }}"
+        dest: "{{ netdata.src_path }}"
+        version: "{{ netdata_version.stdout }}"
+    # Don't run in check mode because previous "git fetch" task also can't be
+    # run in check mode
+    when: not ansible_check_mode
+
+  - name: "build and install/update netdata"
+    command: "./netdata-installer.sh --dont-wait"
+    args:
+      chdir: "{{ netdata.src_path }}"
+    when: "netdata_checkout_result.changed"
+  vars:
+    netdata:
+      repo: "https://github.com/firehol/netdata.git"
+      src_path: "/usr/local/src/netdata"
   tags:
     - "monitoring"
     - "packages"
@@ -69,7 +81,8 @@
     - regexp: "^SLACK_WEBHOOK_URL="
       line: "SLACK_WEBHOOK_URL=\"{{ slack_notifications.webhook_url }}\""
     - regexp: "^DEFAULT_RECIPIENT_SLACK="
-      line: "DEFAULT_RECIPIENT_SLACK=\"{{ slack_notifications.default_channel }}\""
+      line:
+        "DEFAULT_RECIPIENT_SLACK=\"{{ slack_notifications.default_channel }}\""
 
 - name: "copy nginx files for metrics site"
   template:

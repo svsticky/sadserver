@@ -8,13 +8,6 @@
      X88 888  888 Y88b 888      X88 Y8b.     888      Y8bd8P  Y8b.     888
  88888P' "Y888888  "Y88888  88888P'  "Y8888  888       Y88P    "Y8888  888
 
-
-Deploy me:
-
-$ git submodule update --init
-$ cd ansible
-$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml
-$ ./scripts/run-playbook.sh (production|staging) main.yml
 ```
 
 # Server workspace
@@ -31,31 +24,17 @@ reconsider the way things are done!
 Quick links:
 
  1. [Updating SSH keys][ssh-keys]
- 1. [Documentation][docs]
+ 1. [Deployment guide][deployment-guide]
+ 1. [Other documentation][docs]
 
 ## Reasons for the current approach to Sticky's server management
 
-There are a few reasons we chose for this approach, to manage Sticky's
-infrastructure. Historically, this was done by the one or two board members who
-possessed the relevant experience, regarding Linux and/or server management.
-Some domain-specific knowledge would be transfered from board to board, so this
-approach to Sticky's server management could be maintained. This approach
-worked, since there was an environment in place, which wouldn't be touched too
-much, as to not potentially break existing applications that were used in
-production.
-
-During the start of the 10th board of Sticky, halfway through 2015, it became
-apparent that there wasn't a sufficient baseline present to transfer the
-knowledge needed for the management of Sticky's infrastructure.  The idea arose
-of a committee that would be responsible for the management of Sticky's
-infrastructure, basically its IT Operations team: *The IT Crowd*. This enabled
-the board to delegate this task to a committee, that co-exists with the CommIT.
 It was important for this committee to make Sticky's infrastructure easy to
 convey to new members of this committee. This is so important, because the
 composition of committees often changes a lot from year to year, and at least
 some of the infrastructure is critical for the association to function. After a
-lot of discussion, we decided to use *configuration management* to set up a new
-server, which has replaced the previous "snowflake" *skyblue*. Because of
+lot of discussion, we decided to use *configuration management* to set up the
+current server, which replaced the previous "snowflake" *skyblue*. Because of
 experiences present in the committee, Ansible was chosen to do the trick. This
 makes it possible to script everything that is needed for a clean OS-imaged
 server to become Sticky's production server.
@@ -66,7 +45,7 @@ server to become Sticky's production server.
 
 The code in this repository depends on the following software:
 
- - Ansible >= 2.4
+ - [ansible] >= 2.4
  - [slacktee] (no config necessary)
  - bash
 
@@ -134,7 +113,7 @@ passphrase is revoked.
 In `docs/` you can find all documentation that has been written about this
 project, apart from this README, as well as styleguides and templates.
 
-## How to set up the staging and production environment
+## Setting up the staging and production environment
 
 There is currently one server, `sadserver.svsticky.nl`, used in production, and
 one server, `dev.svsticky.nl`, used as a staging server. The staging server
@@ -149,24 +128,54 @@ should be used that bootstraps the server. It installs Ansible's dependencies,
 and sets up a non-root user for Ansible to use. A playbook should be applied to
 a host by means of a wrapper script around `ansible-playbook`, that posts
 progress notifications to the committee's Slack team, among a few other things.
-To bootstrap the new server, the script should be run as follows:
-`$ ansible/scripts/run-playbook.sh <ENVIRONMENT>
-ansible/bootstrap-new-host.yml`, where `<ENVIRONMENT>` should be substituted by
-either `production` or `staging`.
 
 After the bootstrapping, the main playbook can be run to completely set up the
 server. The main playbook can be applied in the same way as the bootstrap
 playbook.
 
 When this has successfully finished, a server exists that matches one of the
-environments. When migrating the production server, a few more tasks should be
-performed, which is explained in detail in [this guide][deployment-new-production].
+environments.
+
+### Step-by-step guide
+These are the steps to follow to set up a new development or production server.
+Some of the steps require you to specify which of the two you are setting up.
+
+If you want to migrate from an existing server, a few additional tasks should be
+performed, which are explained in detail in [this guide][deployment-new-production].
+
+##### On Digital Ocean:
+1. Create a droplet named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production).
+1. Assign a floating IP to the new droplet. Floating IP's are already in DNS, which avoids DNS cache problems.  
+
+
+##### On your local terminal:
+1. Download the repository and enter the folder.  
+`$ git clone https://github.com/svsticky/sadserver`  
+`$ cd sadserver`
+
+1. Update the submodule and enter the ansible folder.  
+`$ git submodule update --init`  
+`$ cd ansible`
+
+1. Bootstrap the host for either production or staging.  
+`$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`  
+You do not need to enter a SUDO password, but you do need to enter the correct Vault password.
+At the end of the process you will receive a newly generated SUDO password, which you will need in the next step.
+
+1. Run the main playbook for either production or staging.  
+`$ ./scripts/run-playbook.sh (production|staging) main.yml`  
+Enter the password from the previous step when prompted for.
+
+
+1. To create a new database and start Koala, you will also need to run these two playbooks.  
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`  
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`  
+
 
 ## Contact
 
 For help and questions, contact the relevant committee -- at the time of
-writing, this is the [IT Crowd]. When you are reading this, these people are
-probably your fellow committee members.
+writing, this is the [IT Crowd].
 
 Godspeed!
 
@@ -182,5 +191,8 @@ Godspeed!
   [Ansible Vault]:http://docs.ansible.com/ansible/playbooks_vault.html
   [inventory]:https://docs.ansible.com/ansible/intro_inventory.html
   [slacktee]:https://github.com/course-hero/slacktee
+  [ansible]:https://github.com/ansible/ansible
   [deployment-new-production]:docs/deployment-new-production.md
   [IT Crowd]:mailto:itcrowd@svsticky.nl
+  [deployment-guide]:#setting-up-the-staging-and-production-environment
+

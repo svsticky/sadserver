@@ -84,6 +84,16 @@
       line:
         "DEFAULT_RECIPIENT_SLACK=\"{{ slack_notifications.default_channel }}\""
 
+- name: "raise alert threshold for tcp listen drops"
+  template:
+    src: "templates/{{ path }}.j2"
+    dest: "/{{ path }}"
+    owner: "netdata"
+    group: "netdata"
+    mode: "0660"
+  vars:
+    path: "etc/netdata/health.d/tcp_listen.conf"
+
 - name: "copy nginx files for metrics site"
   template:
     src: "templates/{{ item }}.conf.j2"

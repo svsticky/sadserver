@@ -27,6 +27,12 @@ server {
 	gzip_static on;
 	try_files $uri @unicorn;
 
+	# Deny access to original uploaded PDFs.
+	location ~* ^/public/images/activities/\d+/original\.pdf {
+		deny all;
+		return 403;
+	}
+
 	location ~* ^/assets/ {
 		expires 1y;
 		add_header Cache-Control public;

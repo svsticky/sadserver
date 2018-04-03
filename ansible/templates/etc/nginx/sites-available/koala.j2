@@ -28,7 +28,7 @@ server {
 	try_files $uri @unicorn;
 
 	# Deny access to original uploaded PDFs.
-	location ~* ^/public/images/activities/\d+/original\.pdf {
+	location ~* ^/images/activities/\d+/original\.pdf {
 		deny all;
 	}
 

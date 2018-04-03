@@ -30,7 +30,6 @@ server {
 	# Deny access to original uploaded PDFs.
 	location ~* ^/public/images/activities/\d+/original\.pdf {
 		deny all;
-		return 403;
 	}
 
 	location ~* ^/assets/ {

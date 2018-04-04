@@ -83,6 +83,7 @@
     - regexp: "^DEFAULT_RECIPIENT_SLACK="
       line:
         "DEFAULT_RECIPIENT_SLACK=\"{{ slack_notifications.default_channel }}\""
+  register: "netdata_slack_notifications"
 
 - name: "raise alert threshold for tcp listen drops"
   template:
@@ -93,6 +94,16 @@
     mode: "0660"
   vars:
     path: "etc/netdata/health.d/tcp_listen.conf"
+  register: "netdata_listen_drop_rules"
+
+# netdata service doesn't implement reloading
+- name: "restart netdata if config changed"
+  service:
+    name: "netdata"
+    status: "restarted"
+  when:
+    "netdata_slack_notifications.changed or
+    netdata_listen_drop_rules.changed"
 
 - name: "copy nginx files for metrics site"
   template:

@@ -100,7 +100,7 @@
 - name: "restart netdata if config changed"
   service:
     name: "netdata"
-    status: "restarted"
+    state: "restarted"
   when:
     "netdata_slack_notifications.changed or
     netdata_listen_drop_rules.changed"

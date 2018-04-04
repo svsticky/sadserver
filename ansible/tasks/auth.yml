@@ -89,17 +89,6 @@
     group: "ansible"
     mode: "0600"
 
-- name:
-    "remove unneeded public part of deploy key for private projects on
-    GitHub"
-  file:
-    path: "/{{ item }}_ed25519.pub"
-    state: "absent"
-  with_items:
-    - "home/ansible/.ssh/deploy"
-    - "root/.ssh/id"
-    - "home/koala/.ssh/id"
-
 - name: "symlink deploy key for root"
   file:
     src: "/home/ansible/.ssh/{{ deploy_key_name.src }}"

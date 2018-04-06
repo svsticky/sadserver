@@ -9,7 +9,7 @@ server {
   ssl_certificate      /etc/letsencrypt/live/old.{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/old.{{ canonical_hostname }}/privkey.pem;
 
-  root /var/www/svsticky-wordpress/old.{{ canonical_hostname }};
+  root /var/www/old.{{ canonical_hostname }};
   index index.php index.html index.htm;
 
   include includes/security-headers.conf;

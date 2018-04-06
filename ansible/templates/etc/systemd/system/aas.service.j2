@@ -11,13 +11,14 @@ User=aas
 Group=www-data
 Restart=always
 
-WorkingDirectory=/var/www/aas/aas.{{ canonical_hostname }}
+WorkingDirectory=/usr/local/src/aas
 
 RuntimeDirectory=aas
-RuntimeDirectoryMode=0770
+RuntimeDirectoryMode=0750
 
 ExecStart=/usr/local/bin/pipenv run gunicorn \
                                       --workers 4 \
+                                      --umask 007 \
                                       --bind unix:/run/aas/gunicorn.sock aas:aas
 
 [Install]

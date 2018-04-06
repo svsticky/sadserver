@@ -1,10 +1,4 @@
 ---
-- name: "ensure pretix user is present"
-  user:
-    name: "pretix"
-    home: "/var/www/pretix"
-    system: true
-
 - name: "ensure dependencies are present"
   apt:
     name:
@@ -31,15 +25,25 @@
     dest: "/usr/bin/mysql_config"
     state: "link"
 
-- name: "ensure pretix config directories are present"
+- name: "ensure pretix config directory is present"
   file:
-    path: "{{ item }}"
-    state: "directory"
+    path: "/etc/pretix"
     owner: "pretix"
     group: "pretix"
+    state: "directory"
+
+- name: "ensure pretix source and asset directories are present"
+  file:
+    path: "{{ item.path }}"
+    owner: "pretix"
+    group: "{{ item.group }}"
+    mode: "g+s"
+    state: "directory"
   with_items:
-    - "/etc/pretix"
-    - "/var/www/pretix/data/media"
+    - path: "/var/www/pretix"
+      group: "www-data"
+    - path: "/var/www/pretix/data/media"
+      group: "www-data"
 
 - name: "place pretix config file"
   template:

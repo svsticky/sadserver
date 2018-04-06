@@ -90,5 +90,6 @@
   template:
     src: "templates/{{ item }}"
     dest: "/{{ item }}"
+    mode: "0600"
   with_items:
     - "etc/slacktee.conf"

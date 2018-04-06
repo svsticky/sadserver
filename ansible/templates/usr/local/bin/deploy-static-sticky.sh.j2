@@ -5,6 +5,7 @@
 set -efuo pipefail
 IFS=$'\n\t'
 
+<<<<<<< HEAD
 GITHUB_USER="svsticky-deploy"
 GITHUB_PASSWORD="{{ secret_static_sticky.github_deployments_token }}"
 DEPLOY_ENV="{{ ('staging' in group_names) | ternary("staging", "production") }}"
@@ -27,7 +28,7 @@ fail_github_deploy_status() {
     "https://api.github.com/repos/svsticky/static-sticky/deployments/${DEPLOY_ID}/statuses"
 }
 
-cd /var/www/static-sticky/static-sticky
+cd ~/static-sticky
 
 git reset --hard HEAD
 
@@ -62,7 +63,7 @@ DEPLOY_ID="$(curl \
 
 trap fail_github_deploy_status ERR
 
-source /var/www/static-sticky/.nvm/nvm.sh
+source ~/.nvm/nvm.sh
 
 # Check if there are new commits, because this is not necessary if a deploy is
 # triggered by Contentful
@@ -76,8 +77,8 @@ npm run build || { rm -r ./.cache && npm run build; }
 
 # Copy website contents to webroot, replacing already existing target contents
 rsync --delete --recursive \
-  /var/www/static-sticky/static-sticky/public/ \
-  /var/www/static-sticky/static.{{ canonical_hostname }}/
+  ./static-sticky/public/ \
+  /var/www/{{ canonical_hostname }}/
 
 # Create a "deployment status" at GitHub: "success"
 curl \

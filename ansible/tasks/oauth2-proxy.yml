@@ -14,6 +14,7 @@
   template:
     src: "templates/etc/oauth2_proxy/config.cfg.j2"
     dest: "/etc/oauth2_proxy/config.cfg"
+    mode: "0600"
   notify: "restart oauth2-proxy"
 
 - name: "install systemd service"

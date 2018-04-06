@@ -1,15 +1,20 @@
 ---
-- name: "clone sodi website from git"
-  git:
-    repo: "git@github.com:svsticky/sodi.nl.git"
-    dest: "/var/www/sodi.{{ canonical_hostname }}"
-    version: "master"
-  diff: false
+- become_user: "sodi"
+  block:
+    - name: "create .ssh directory for sodi user"
+      file:
+        path: "/home/sodi/.ssh"
+        state: "directory"
 
-- name: "set permissions group on sodi files"
-  file:
-    path: "/var/www/sodi.{{ canonical_hostname }}"
-    owner: "www-data"
-    group: "www-data"
-    recurse: true
-    state: "directory"
+    - name: "copy deploy key (private) for sodi user"
+      copy:
+        content: "{{ secret_deploy_key }}"
+        dest: "/home/sodi/.ssh/id_ed25519"
+        mode: "0600"
+
+    - name: "clone sodi website from git"
+      git:
+        repo: "git@github.com:svsticky/sodi.nl.git"
+        dest: "/var/www/sodi.{{ canonical_hostname }}"
+        version: "master"
+      diff: false

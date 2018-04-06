@@ -47,11 +47,10 @@
 
 - name: "ensure .ssh-directory is present at all users"
   file:
-    path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh"
+    path: "/home/{{ item.0.name }}/.ssh"
     state: "directory"
     owner: "{{ item.0.name }}"
     group: "{{ item.0.name }}"
-    mode: "0755"
   when: item.0.state == 'present'
   with_subelements:
     - "{{ users }}"
@@ -66,7 +65,7 @@
     "ensure SSH keys for users are present, fetched from associated GitHub
     accounts"
   blockinfile:
-    path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
+    path: "/home/{{ item.0.name }}/.ssh/authorized_keys"
     block:
       "{{ lookup('url', 'https://github.com/' + item.1.username + '.keys',
       split_lines=False) }}"

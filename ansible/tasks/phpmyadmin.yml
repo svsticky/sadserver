@@ -1,9 +1,4 @@
 ---
-- name: "remove old phpmyadmin webroot"
-  file:
-    path: "/var/www/phpmyadmin.{{ canonical_hostname }}"
-    state: "absent"
-
 - name: "install phpmyadmin dependencies"
   apt:
     name:
@@ -15,27 +10,11 @@
       - "php7.2-curl"
     state: "present"
 
-- name: "create phpmyadmin user"
-  user:
-    name: "phpmyadmin"
-    home: "/var/www/phpmyadmin"
-    shell: "/usr/sbin/nologin"
-    system: true
-    state: "present"
-
-- name: "create phpmyadmin webroot"
-  file:
-    path: "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}"
-    owner: "www-data"
-    group: "phpmyadmin"
-    mode: "2775"
-    state: "directory"
-
 - block:
     - name: "clone phpmyadmin repository"
       git:
         repo: "https://github.com/phpmyadmin/phpmyadmin.git"
-        dest: "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}"
+        dest: "/var/www/phpmyadmin.{{ canonical_hostname }}"
         depth: 1
         force: true
         version: "STABLE"
@@ -45,15 +24,15 @@
       template:
         src: "templates/var/www/phpmyadmin/{{ filename }}.j2"
         dest:
-          "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}/\
+          "/var/www/phpmyadmin.{{ canonical_hostname }}/\
           {{ filename }}"
-        mode: "600"
+        mode: "0600"
       vars:
         filename: "config.inc.php"
 
     - name: "install phpmyadmin composer dependencies"
       composer:
-        working_dir: "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}"
+        working_dir: "/var/www/phpmyadmin.{{ canonical_hostname }}"
         no_dev: true
         command: "update"
   become_user: "phpmyadmin"
@@ -68,5 +47,5 @@
 
 - name: "create default tables in phpmyadmin database"
   command:
-    "mysql -NBe 'source /var/www/phpmyadmin/\
+    "mysql -NBe 'source /var/www/\
     phpmyadmin.{{ canonical_hostname }}/sql/create_tables.sql;'"

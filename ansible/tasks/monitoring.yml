@@ -40,7 +40,6 @@
     dest: "/{{ path }}"
     owner: "netdata"
     group: "netdata"
-    mode: "0660"
   vars:
     path: "etc/netdata/health.d/tcp_listen.conf"
   register: "netdata_listen_drop_rules"
@@ -64,7 +63,7 @@
     - path: "etc/nginx/sites-available/metrics"
     - path: "etc/nginx/htpasswd.d/metrics"
       group: "www-data"
-      mode: "640"
+      mode: "0640"
   notify: "reload nginx"
 
 - name: "enable nginx proxy config for metrics site"

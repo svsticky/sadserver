@@ -7,16 +7,17 @@
 - name: "create /var/www"
   file:
     path: "/var/www"
+    mode: "o=rx"
     state: "directory"
 
 # When users are deleted here, their home directory is not. Run
 # ../playbooks/purge-old-users.yml for that.
-- name: "create/delete users"
+- name: "create/delete human users"
   user:
     name: "{{ item.name }}"
-    groups: "{% if item.admin %}sudo,adm{% else %}committee{% endif %}"
-    shell: "{{ '/bin/bash' if item.admin else omit }}"
-    home: "{{ item.home_prefix }}/{{ item.name }}"
+    groups: "{% if item.admin %}sudo,adm,www-data{% else %}committee{% endif %}"
+    shell: "/bin/bash"
+    home: "/home/{{ item.name }}"
     move_home: true
     state: "{{ item.state }}"
   with_items:
@@ -24,23 +25,9 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: "fix permissions for chroot of committee users"
-  file:
-    path: "/var/www/{{ item.name }}"
-    owner: "root"
-    state: "directory"
-  when:
-    # List is evaluated as logical AND
-    - item.admin != true
-    - item.state == 'present'
-  with_items:
-    - "{{ users }}"
-  loop_control:
-    label: "{{ item.name }}"
-
 - name: "add environment to bash prompt of admins"
   lineinfile:
-    dest: "{{ item.home_prefix }}/{{ item.name }}/.bashrc"
+    dest: "/home/{{ item.name }}/.bashrc"
     regexp: "^export PS1="
     line: "{{ bash_prompt }}"
   when: item.admin == true and item.state == 'present'
@@ -55,3 +42,19 @@
     regexp: "^export PS1="
     line:
       "{{ bash_prompt | regex_replace('\\$ ', '# ') }}"
+
+- name: "create/delete machine users"
+  user:
+    name: "{{ item.name }}"
+    create_home: "{{ item.create_home | default(false) }}"
+    home:
+      "{{ ('/home/' + item.name) if (item.create_home is defined and
+      item.create_home) else omit }}"
+    move_home: true
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: "{{ item.state }}"
+  with_items:
+    - "{{ machine_users }}"
+  loop_control:
+    label: "{{ item.name }}"

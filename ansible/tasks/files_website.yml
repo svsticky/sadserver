@@ -1,17 +1,10 @@
 ---
 - name: "create site root Fancy Index & theme dir"
   file:
-    path: "/var/www/files.{{ canonical_hostname }}"
-    owner: "www-data"
-    group: "adm"
-    mode: "2775"
-    state: "directory"
-
-- name: "create site root Fancy Index & theme dir"
-  file:
     path: "/var/www/files.{{ canonical_hostname }}/theme"
     owner: "www-data"
-    group: "www-data"
+    group: "bestuur"
+    mode: "g+s"
     state: "directory"
 
 - name: "copy Fancy Index theme"
@@ -21,7 +14,7 @@
       "/var/www/files.{{ canonical_hostname }}/theme/\
       {{ item | basename | regex_replace('\\.j2$','') }}"
     owner: "www-data"
-    group: "www-data"
+    group: "bestuur"
   with_fileglob:
     - "../templates/var/www/files/theme/*"
 

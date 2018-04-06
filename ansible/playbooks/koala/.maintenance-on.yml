@@ -1,7 +1,8 @@
 - name: "enable Koala's maintenance mode"
   file:
-    state: "touch"
     path: "/var/www/koala.{{ canonical_hostname }}/MAINTENANCE_MODE"
+    group: "www-data"
+    state: "touch"
   become: true
   become_user: "koala"
 

@@ -27,6 +27,12 @@
       when: "bootstrap_status is not changed"
 
   tasks:
+    - name: "set restrictive umask"
+      lineinfile:
+        path: "/etc/login.defs"
+        regexp: "^UMASK\\s"
+        line: "UMASK\t\t027"
+
     - name: "create ansible user"
       user:
         name: "ansible"

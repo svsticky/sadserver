@@ -65,8 +65,7 @@
       mysql -NBe 'grant all privileges on {{ item.database.name }}.* to
       `{{ db_user }}`@`localhost` identified via unix_socket;'
     vars:
-      db_user:
-        "{{ item.user if item.user is defined else item.database.name }}"
+      db_user: "{{ item.user }}"
     with_items: "{{ websites }}"
     when: *website_with_db
     loop_control:

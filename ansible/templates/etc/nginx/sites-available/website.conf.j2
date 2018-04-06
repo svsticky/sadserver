@@ -13,8 +13,7 @@ server {
   ssl_certificate_key  /etc/letsencrypt/live/{{ item.name }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/{{ item.name }}/chain.pem;
 
-  root /var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
-item.name }};
+  root /var/www/{{ item.name }};
 
   index {{ 'index.php' if (item.php_enabled | default(false)) else '' }}
     index.html index.htm;

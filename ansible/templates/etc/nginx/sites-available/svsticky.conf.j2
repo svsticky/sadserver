@@ -26,7 +26,7 @@ server {
   ssl_certificate_key  /etc/letsencrypt/live/{{ canonical_hostname }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/{{ canonical_hostname }}/chain.pem;
 
-  root /var/www/static-sticky/static.{{ canonical_hostname }};
+  root /var/www/{{ canonical_hostname }};
   index index.html index.htm;
 
   include includes/security-headers.conf;

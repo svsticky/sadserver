@@ -40,9 +40,7 @@
 
     - name: "delete webroot(s)"
       file:
-        path:
-          "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif
-          %}{{ item.name }}"
+        path: "/var/www/{{ item.name }}"
         state: "absent"
       with_items: "{{ websites }}"
       when:

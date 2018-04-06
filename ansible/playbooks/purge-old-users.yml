@@ -21,24 +21,33 @@
         that:
           - "confirm == 'obliteration'"
 
-    - name: "delete absent users"
+    - name: "delete absent human users and their home directory"
       user:
         name: "{{ item.name }}"
+        remove: true
         state: "absent"
       with_items: "{{ users }}"
       when: "item.state == 'absent'"
 
-    - name: "delete home directory of absent users"
-      file:
-        path:
-          "{{ item.home_prefix }}/{{ item.name }}"
+    - name: "delete absent machine users"
+      user:
+        name: "{{ item.name }}"
         state: "absent"
-      with_items: "{{ users }}"
-      when: item.state == "absent"
+      with_items: "{{ machine_users }}"
+      when: "item.state == 'absent'"
+
+    - name: "delete home directory of absent machine users"
+      file:
+        path: "/home/{{ item.name }}"
+        state: "absent"
+      with_items: "{{ machine_users }}"
+      when:
+        "item.state == 'absent' and
+        item.create_home is defined"
       loop_control:
-        label: "{{ item.home_prefix }}/{{ item.name }}"
+        label: "{{ item.name }}"
 
     - debug:
         msg:
           "The home directories of all absent users are deleted. You are now
-          free to remove the entry of the user from the users list."
+          free to remove the entry of the user from the (machine) users list."

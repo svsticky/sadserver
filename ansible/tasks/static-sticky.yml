@@ -14,6 +14,14 @@
   with_items:
     - "/usr/local/bin/deploy-static-sticky.sh"
 
+- name: "create webroot"
+  file:
+    path: "/var/www/{{ canonical_hostname }}"
+    owner: "static-sticky"
+    group: "www-data"
+    mode: "g+s"
+    state: "directory"
+
 - name:
     "install systemd-journal-remote for accessing static-sticky's deploy logs
     remotely"
@@ -32,7 +40,7 @@
       "clone static-sticky repository"
     git:
       repo: "https://github.com/svsticky/static-sticky.git"
-      dest: "/var/www/static-sticky/static-sticky"
+      dest: "/home/static-sticky/static-sticky"
       version: "{{ static_sticky_env.git_ref }}"
       depth: 1
       force: true
@@ -44,33 +52,34 @@
     template:
       src: "templates{{ item }}.j2"
       dest: "{{ item }}"
+      mode: "0600"
     diff: false
     with_items:
-      - "/var/www/static-sticky/static-sticky/.env"
+      - "/home/static-sticky/static-sticky/.env"
 
   - name: "clone NVM"
     git:
       repo: "https://github.com/creationix/nvm.git"
-      dest: "/var/www/static-sticky/.nvm"
+      dest: "/home/static-sticky/.nvm"
       depth: 1
     diff: false
     when: "static_sticky_clone is changed"
 
   - name: "install node version"
     shell: |
-      . /var/www/static-sticky/.nvm/nvm.sh
+      . /home/static-sticky/.nvm/nvm.sh
       nvm install
     args:
-      chdir: "/var/www/static-sticky/static-sticky"
+      chdir: "/home/static-sticky/static-sticky"
       executable: "/bin/bash"
     when: "static_sticky_clone is changed"
 
   - name: "run npm install"
     shell: |
-      . /var/www/static-sticky/.nvm/nvm.sh
+      . /home/static-sticky/.nvm/nvm.sh
       npm install
     args:
-      chdir: "/var/www/static-sticky/static-sticky"
+      chdir: "/home/static-sticky/static-sticky"
       executable: "/bin/bash"
     when: "static_sticky_clone is changed"
 
@@ -81,19 +90,19 @@
           . /var/www/static-sticky/.nvm/nvm.sh
           npm run build
         args:
-          chdir: "/var/www/static-sticky/static-sticky"
+          chdir: "/home/static-sticky/static-sticky"
           executable: "/bin/bash"
     rescue:
       - name: "purge build cache to fix build failure"
         file:
-          path: "/var/www/static-sticky/static-sticky/.cache"
+          path: "/home/static-sticky/static-sticky/.cache"
           state: "absent"
       - name: "retry building website"
         shell: |
           . /var/www/static-sticky/.nvm/nvm.sh
           npm run build
         args:
-          chdir: "/var/www/static-sticky/static-sticky"
+          chdir: "/home/static-sticky/static-sticky"
           executable: "/bin/bash"
 
   # NOTE: The trailing slashes are significant!
@@ -101,10 +110,11 @@
   # See `man rsync`, section USAGE.
   - name: "copy website contents to webroot"
     synchronize:
-      src: "/var/www/static-sticky/static-sticky/public/"
-      dest: "/var/www/static-sticky/static.{{ canonical_hostname }}/"
+      src: "/home/static-sticky/static-sticky/public/"
+      dest: "/var/www/{{ canonical_hostname }}/"
       delete: true
       recursive: true
+      group: false
       perms: false
       times: false
     delegate_to: "{{ inventory_hostname }}"

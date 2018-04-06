@@ -171,17 +171,6 @@
     state:
       "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
-- name: "create system users for static-sticky and svsticky-wordpress"
-  user:
-    name: "{{ item }}"
-    home: "/var/www/{{ item }}"
-    shell: "/usr/sbin/nologin"
-    system: true
-    state: "present"
-  with_items:
-    - "static-sticky"
-    - "svsticky-wordpress"
-
 - name: "copy general configuration for php"
   template:
     src: "templates/{{ php_config }}.j2"
@@ -209,12 +198,10 @@
 # its webroot to be created.
 - name: "create directories for regular websites"
   file:
-    path:
-      "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
-      item.name }}"
-    owner: "www-data"
-    group: "{{ item.user | default(omit) }}"
-    mode: "2775"
+    path: "/var/www/{{ item.name }}"
+    owner: "{{ item.user }}"
+    group: "www-data"
+    mode: "g+s"
     state: "directory"
   with_items: "{{ websites }}"
   when:
@@ -228,21 +215,39 @@
 # still do need their webroot to be created.
 - name: "create directories for custom websites"
   file:
-    path:
-      "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
-      item.name }}"
-    owner: "www-data"
-    group: "{{ item.user | default(omit) }}"
-    mode: "2775"
+    path: "/var/www/{{ item.name }}"
+    owner: "{{ item.user }}"
+    group: "www-data"
+    mode: "g+s"
     state: "directory"
   with_items: "{{ websites }}"
   when:
     # When a website needs to be added, add a new condition to this list item
     # using "or"
     - item.name == 'old.' + canonical_hostname
-    - item.name == canonical_hostname
   loop_control:
     label: "{{ item.name }}"
+
+# A nicer (and probably more efficient) option would be using the json_query
+# filter instead of the nested loop, but that requires an extra dependency
+# (python3-jmespath).
+- name: "add symlinks to a user's webroots in their homedir"
+  file:
+    src: "/var/www/{{ item.0.name }}"
+    path: "/home/{{ item.0.user }}/{{ item.0.name }}"
+    follow: false
+    force: true
+    state: "link"
+  with_nested:
+    - "{{ websites }}"
+    - "{{ users }}"
+  when:
+    "item.0.state == 'present' and
+    item.0.user == item.1.name"
+  loop_control:
+    label:
+      website: "{{ item.0.name }}"
+      user: "{{ item.0.user }}"
 
 - name: "copy nginx configurations for regular websites"
   template:
@@ -308,6 +313,8 @@
 - name: "create htpasswd.d directory for basic auth files"
   file:
     path: "/etc/nginx/htpasswd.d"
+    group: "www-data"
+    mode: "2750"
     state: "directory"
 
 - name: "delete nginx configurations of absent websites"

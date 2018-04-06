@@ -1,15 +1,4 @@
 ---
-- name: "ensure koala system user exists"
-  user:
-    name: "koala"
-    state: "present"
-    system: true
-    shell: "/bin/bash"
-  notify: "restart koala"
-  tags:
-    - "ruby"
-    - "koala"
-
 - name: "ensure koala database user exists"
   command:
     "mysql -NBe 'grant all privileges on `koala{% if koala_env.environment ==
@@ -24,8 +13,8 @@
     path: "/var/www/koala.{{ canonical_hostname }}"
     state: "directory"
     owner: "koala"
-    group: "koala"
-    recurse: true
+    group: "www-data"
+    mode: "g+s"
   tags:
     - "koala"
 
@@ -228,7 +217,7 @@
     template:
       src: "templates/var/www/koala/.rbenv-vars.j2"
       dest: "/var/www/koala.{{ canonical_hostname }}/.rbenv-vars"
-      mode: "0700"
+      mode: "0600"
     notify: "restart koala"
     tags:
       - "koala"
@@ -259,8 +248,9 @@
   - name: "ensure log directory exists"
     file:
       path: "/var/www/koala.{{ canonical_hostname }}/log"
+      group: "www-data"
+      mode: "2770"
       state: "directory"
-      mode: "0775"
     notify: "restart koala"
     tags:
       - "koala"
@@ -351,11 +341,10 @@
   template:
     src: "templates/{{ path }}.j2"
     dest: "/{{ path }}"
-    mode: "0755"
-    owner: "koala"
-    group: "koala"
+    mode: "u+x"
   vars:
     path: "home/koala/webrick.sh"
+  become_user: "koala"
   when: koala.server == "webrick"
   tags:
     - "koala"
@@ -365,11 +354,10 @@
     template:
       src: "templates/{{ path }}.j2"
       dest: "/{{ path }}"
-      mode: "0755"
-      owner: "koala"
-      group: "koala"
+      mode: "u+x"
     vars:
       path: "home/koala/unicorn.sh"
+    become_user: "koala"
     notify: "restart koala"
 
   - name: "place koala's nginx configuration"

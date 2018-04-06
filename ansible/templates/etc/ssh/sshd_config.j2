@@ -76,10 +76,3 @@ Subsystem sftp /usr/lib/openssh/sftp-server -f AUTHPRIV -l INFO
 # PAM authentication, then enable this but set PasswordAuthentication
 # and ChallengeResponseAuthentication to 'no'.
 UsePAM yes
-
-Subsystem committee internal-sftp
-
-Match Group committee
-  ChrootDirectory %h
-  ForceCommand internal-sftp
-  AllowTcpForwarding no

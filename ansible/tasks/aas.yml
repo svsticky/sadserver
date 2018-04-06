@@ -2,13 +2,7 @@
 - name: "install pipenv"
   pip:
     name: "pipenv"
-
-- name: "add aas user"
-  user:
-    name: "aas"
-    shell: "/usr/sbin/nologin"
-    home: "/var/www/aas"
-    system: true
+    umask: "0022"
 
 - name: "permit aas user to start static-sticky deploy service"
   template:
@@ -17,12 +11,20 @@
     mode: "0440"
     validate: "/usr/sbin/visudo -cf %s"
 
+- name: "create aas directory"
+  file:
+    path: "/usr/local/src/aas"
+    owner: "aas"
+    group: "aas"
+    mode: "g+s"
+    state: "directory"
+
 - block:
   - name:
       "clone aas repository"
     git:
       repo: "https://github.com/svsticky/aas.git"
-      dest: "/var/www/aas/aas.{{ canonical_hostname }}"
+      dest: "/usr/local/src/aas"
       version: "master"
     diff: false
     register: "aas_clone"
@@ -30,14 +32,15 @@
   - name:
       "template environment file for aas"
     template:
-      src: "templates/var/www/aas/.env.j2"
-      dest: "/var/www/aas/aas.{{ canonical_hostname }}/.env"
+      src: "templates/usr/local/src/aas/.env.j2"
+      dest: "/usr/local/src/aas/.env"
+      mode: "0600"
     notify: "restart aas"
 
   - name: "pipenv create virtual env and install aas"
     command: "pipenv sync"
     args:
-      chdir: "/var/www/aas/aas.{{ canonical_hostname }}"
+      chdir: "/usr/local/src/aas"
     environment:
       PIPENV_VENV_IN_PROJECT: "1"
     when: "aas_clone is changed"

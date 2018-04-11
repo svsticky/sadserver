@@ -28,7 +28,7 @@
     - name: "exit if bootstrapping is not necessary"
       fail:
         msg: "Bootstrapping not necessary, host is already bootstrapped."
-      when: "bootstrap_status | succeeded"
+      when: "bootstrap_status is succeeded"
 
   tasks:
     - name: "install python 2.7"

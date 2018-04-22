@@ -20,11 +20,7 @@ set -eEfuo pipefail
 
 USAGE="USAGE: $0 <production | staging> <PLAYBOOK_PATH> [<ANSIBLE-PLAYBOOK \
 PARAMETERS>]"
-if [[ -z ${1+x} ]]; then
-  echo "$USAGE"
-  exit 1
-fi
-if [[ -z ${2+x} ]]; then
+if [[ -z ${1:-} || -z ${2:-} ]]; then
   echo "$USAGE"
   exit 1
 fi
@@ -43,8 +39,7 @@ function abort_deploy() {
 
 case ${ENVIRONMENT} in
   production)
-    while [[ -z ${PROD_CHOICE+x} || ${PROD_CHOICE} != "Y" && \
-    ${PROD_CHOICE} != "n" ]]; do
+    while [[ ${PROD_CHOICE:-} != "Y" && ${PROD_CHOICE:-} != "n" ]]; do
       read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [Y/n]: "\
       PROD_CHOICE
     done
@@ -56,8 +51,7 @@ case ${ENVIRONMENT} in
         ;;
     esac
     if [[ ${GIT_BRANCH} != "master" ]]; then
-      while [[ -z ${BRANCH_CHOICE+x} || ${BRANCH_CHOICE} != "Y" && \
-      ${BRANCH_CHOICE} != "n" ]]; do
+      while [[ ${BRANCH_CHOICE:-} != "Y" && ${BRANCH_CHOICE:-} != "n" ]]; do
         read -p "You are deploying to production from a branch other than \
 'master', are you sure? [Y/n]: " \
         BRANCH_CHOICE

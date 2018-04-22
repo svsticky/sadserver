@@ -13,7 +13,7 @@ IFS=$'\n\t'
 SADSERVER_DIR="$(git rev-parse --show-toplevel)"
 
 # Check if a minimum of 1 GH username was given
-if [[ -z "${1+x}" ]]; then
+if [[ -z "${1:-}" ]]; then
   >&2 echo "USAGE: fetch-keys-for-gh-user.sh [GITHUB_USERNAME]..."
   exit 1
 fi

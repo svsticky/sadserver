@@ -14,6 +14,8 @@ MAILGUN_TOKEN={{ secret_mailgun_token }}
 CHECKOUT_TOKEN={{ secret_koala.checkout_token }}
 SENTRY_DSN={{ secret_koala.sentry_dsn | default('') }}
 
+KOALA_DOMAIN=https://koala.{{ canonical_hostname }}
+
 # Mollie
 MOLLIE_DOMAIN=https://api.mollie.nl
 MOLLIE_TOKEN={{ secret_mollie_token }}

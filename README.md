@@ -45,7 +45,7 @@ server to become Sticky's production server.
 
 The code in this repository depends on the following software:
 
- - [ansible] >= 2.4
+ - [ansible] >= 2.5
  - [slacktee] (no config necessary)
  - bash
 
@@ -145,31 +145,31 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 
 ##### On Digital Ocean:
 1. Create a droplet named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production).
-1. Assign a floating IP to the new droplet. Floating IP's are already in DNS, which avoids DNS cache problems.  
+1. Assign a floating IP to the new droplet. Floating IP's are already in DNS, which avoids DNS cache problems.
 
 
 ##### On your local terminal:
-1. Download the repository and enter the folder.  
-`$ git clone https://github.com/svsticky/sadserver`  
+1. Download the repository and enter the folder.
+`$ git clone https://github.com/svsticky/sadserver`
 `$ cd sadserver`
 
-1. Update the submodule and enter the ansible folder.  
-`$ git submodule update --init`  
+1. Update the submodule and enter the ansible folder.
+`$ git submodule update --init`
 `$ cd ansible`
 
-1. Bootstrap the host for either production or staging.  
-`$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`  
+1. Bootstrap the host for either production or staging.
+`$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`
 You do not need to enter a SUDO password, but you do need to enter the correct Vault password.
 At the end of the process you will receive a newly generated SUDO password, which you will need in the next step.
 
-1. Run the main playbook for either production or staging.  
-`$ ./scripts/run-playbook.sh (production|staging) main.yml`  
+1. Run the main playbook for either production or staging.
+`$ ./scripts/run-playbook.sh (production|staging) main.yml`
 Enter the password from the previous step when prompted for.
 
 
-1. To create a new database and start Koala, you will also need to run these two playbooks.  
-`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`  
-`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`  
+1. To create a new database and start Koala, you will also need to run these two playbooks.
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`
 
 
 ## Contact

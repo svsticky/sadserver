@@ -23,7 +23,7 @@ print_to_stderr() {
   echo >&2 "${1}"
 }
 
-if [[ -z ${1+x} ]]; then
+if [[ -z ${1:-} ]]; then
   print_to_stderr "${USAGE}"
   exit 1
 fi
@@ -40,7 +40,7 @@ cleanup() {
 
   # Check because file extension is only set when a valid backup source is
   # passed
-  if [[ -n ${FILE_EXT+x} ]]; then
+  if [[ -n ${FILE_EXT:-} ]]; then
     {
       rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}"
       rm -rf "{{ tmp_dir }}/${FILE}.${FILE_EXT}.${HASH}"

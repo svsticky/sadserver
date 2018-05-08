@@ -24,6 +24,11 @@
     name: "redis-server"
     state: "restarted"
 
+- name: "restart mariadb"
+  service:
+    name: "mysql"
+    state: "restarted"
+
 - name: "reload nginx"
   service:
     name: "nginx"

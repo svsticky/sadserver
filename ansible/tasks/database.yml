@@ -25,6 +25,14 @@
       override_path: "etc/systemd/system/mysql.service.d/override.conf"
     notify: "systemctl daemon-reload"
 
+  - name: "enable extra configuration"
+    template:
+      src: "templates/{{ config_file }}.j2"
+      dest: "/{{ config_file }}"
+    vars:
+      config_file: "etc/mysql/conf.d/mysqld.cnf"
+    notify: "restart mariadb"
+
   - name: "ensure database is enabled and running"
     service:
         name: "mysql"

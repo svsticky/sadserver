@@ -7,73 +7,75 @@ running.
 important: it ensures [reverse DNS] lookups for the droplet IP receive the
 correct values.
 
-**Stop Koala** on the old production environment.
+**Stop Koala** on the old production environment:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
 $ ./scripts/run-playbook.sh production playbooks/koala/stop.yml
 ```
 
-**Export the databases** that are relevant to the new server:
+**Run backups** of the data that should be migrated to the new server:
 
+<!-- The backup script should be changed to take multiple sources -->
 ```bash
 $ ssh <user>@svsticky.nl
-
-# Dump all databases to a file databases.sql
-$ sudo mysqldump --databases dgdarc indievelopment koala studytrip svsticky > \
-databases.sql
-
+$ for SOURCE in admins databases websites; do
+> sudo backup-to-s3.sh ${SOURCE}
+> done
 $ exit
-
-# Download databases.sql to the current working directory on your local machine
-$ scp <user>@svsticky.nl:~/databases.sql .
 ```
 
 **Redirect requests for ACME challenges** from the old server to the new server.
 This allows us to prove ownership of the domains we need to request TLS
-certificates for, during the deployment of the new server.
+certificates for, during the deployment of the new server. This is possible by
+changing the [relevant location
+block](../ansible/templates/etc/nginx/sites-available/default.conf.j2#L20) in
+the nginx configuration to the following (where `<new_IP>` should be changed to
+the IP address of the new server):
 
-**Bootstrap the new production server**
+```
+location /.well-known/acme-challenge {
+  return 302 http://<new_IP>$request_uri;
+}
+```
+
+**Temporarily update your inventory** with the IP address of the new production
+server (where <new_IP> should be substituted by the new IP address):
+
+```
+# On your local machine, whilst in sadserver/ansible
+sed -i 's/^svsticky.nl/<new_IP>/' hosts
+```
+
+**Bootstrap** the new production server:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
 $ scripts/run-playbook.sh production bootstrap-new-host.yml
 ```
 
-**Run the playbook** on the new production server
+**Run the playbook** on the new production server:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
 $ ./scripts/run-playbook.sh production main.yml
 ```
 
-**Copy over the old databases**.
+**Restore the backups** that were made earlier:
 
-```bash
-$ scp databases.sql <user>@svsticky.nl:~/databases.sql
-$ ssh user@svsticky.nl
-$ sudo mysql < databases.sql
+```
+# On your local machine, whilst in sadserver/ansible
+$ scripts/run-playbook.sh production playbook/restore-backup.yml \
+--vault-id production@prompt
 ```
 
-**Start koala on the new server**
+**Start koala on the new server:**
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
 $ ./scripts/run-playbook.sh production \
 playbooks/koala/maintenance-off.yml
 ```
-
-**Migrate the websites** The following is not part of the playbook and needs to
-be done manually:
-
- - Sticky's WordPress site - here be dragons
- - RADIO
- - Symposium
- - Indievelopment
- - Stichting
- - Wintersport
- - Studiereis
- - DGDARC
 
 **Update the DNS zones** at DigitalOcean of all of Sticky's domains with the IP
 addresses of the new droplet. These are the following:

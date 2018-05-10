@@ -66,6 +66,13 @@ case ${ENVIRONMENT} in
     fi
     ;;
   staging)
+    # Special scenario: When restore-backup.yml is run on staging, it needs to
+    # access the production Vault secrets, so this adds the prompt for that to
+    # the CLI arguments passed to ansible-playbook
+    if [[ ${ARGS[0]} == "playbooks/restore-backup.yml" ]]; then
+      ARGS[${#ARGS[@]}]="--vault-id"
+      ARGS[${#ARGS[@]}]="production@prompt"
+    fi
     ;;
   *)
     echo "$USAGE"

@@ -1,8 +1,13 @@
 ---
-# This playbook can be run on staging to test the integrity of the backup, and
+# Prerequisites to run this playbook: A staging or production server which is
+# set up using the main playbook.
+#
+# This playbook can be run on staging to test the integrity of the backup, or
 # in production to set up a new production environment. Because it always needs
-# access to the production AWS bucket, when running on staging you need to add
-# "--vault-id production@prompt" to the run-playbook.sh call!
+# access to the production AWS bucket, run-playbook.sh will always prompt for
+# the production Vault passphrase when running this playbook, also when it's
+# done on staging.
+
 - hosts: "all"
   user: "ansible"
   become: true
@@ -39,12 +44,15 @@
 
     - name: "create temporary directory to store backup archives"
       tempfile:
-          prefix: "backup-restore-test."
+          prefix: "prod-backup-restore."
           state: "directory"
       register: "backup_restore_tmp_dir"
 
     - name: "find latest backups"
       shell:
+        # This parses the output of awscli to get the filenames of the backups
+        # that are present, sorts them alphabetically (which means by date
+        # because of our naming system), and takes the top one (so most recent)
         "aws s3 ls s3://sticky-automatic-backups/{{ item }}/
         | awk -F' ' '{print $NF}'
         | sort -r
@@ -56,7 +64,7 @@
         - "websites/databases"
 
     - name: "download latest backups"
-      shell:
+      command:
         "aws s3 cp s3://sticky-automatic-backups/\
         {{ item.item }}/{{ item.stdout }}
         {{ backup_restore_tmp_dir.path }}/{{ item.stdout }}"
@@ -78,11 +86,11 @@
       loop_control:
         label: "{{ item.stdout }}"
 
-    - name: "remove all existing databases"
+    - name: "remove all existing databases on target server"
       shell:
-        "mysql -e "show databases"
+        "mysql -e \"show databases\"
         | grep -v -e Database -e mysql -e information_schema
-        | gawk '{print "drop database " $1 ";select sleep(0.1);"}'
+        | awk '{print \"drop database \" $1 \";select sleep(0.1);\"}'
         | mysql"
 
     - name: "restore production databases"
@@ -97,7 +105,8 @@
         path: "{{ backup_restore_tmp_dir.path }}"
         state: "absent"
 
-    - debug:
+    - name: "print success message"
+      debug:
         msg:
           "The backup has been restored. Check the target folders, the
           databases and the operation of the server to determine its

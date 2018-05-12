@@ -72,13 +72,13 @@
 
   - name: "start and enable backup timers in production"
     service:
-      name: "{{ item.path | basename }}"
+      name: "{{ item.dest | basename }}"
       enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
       state:
         "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
     with_items:
       "{{ backup_units.results }}"
-    when: "item.path | basename is match('.+\\.timer')"
+    when: "item.dest | basename is match('.+\\.timer')"
     loop_control:
-      label: "{{ item.path | basename }}"
+      label: "{{ item.dest | basename }}"
   tags: "backups"

@@ -36,17 +36,22 @@ FILE_TITLE="${SOURCE}-$(date +'%Y%m%d-%H%M%S')"
 S3BUCKET="{% if 'staging' in group_names %}staging-{% endif
 %}sticky-automatic-backups"
 
-cleanup() {
-  # Ensure files are deleted, in case script crashes
+# This function takes the data to backup on its stdin. Don't pipe to it though,
+# because bash then runs the function in a subshell which makes BACKUP_SIZE
+# unknown to the outer shell. Use "process substitution" as below instead.
+#
+# Note that the docs mention that the size of the stream should be passed to
+# awscli using `--expected-size` whe piping streams of >5GB. This would be hard
+# to achieve, because we don't the know the size of the stream beforehand.
+# People mentioned that this limit was inaccurate though, and I tested streams
+# of 50+ GB without problems, so this shouldn't be problematic.
+upload_backup_to_s3() {
+  FULL_S3_BACKUP_URL="s3://${S3BUCKET}/${S3PATH}/${FILE_NAME}"
+  aws s3 cp - "${FULL_S3_BACKUP_URL}"
 
-  # Check because complete file name is only set when a valid backup source is
-  # passed
-  if [[ -n ${FILE_NAME:-} ]]; then
-    rm -rf "{{ tmp_dir }}/${FILE_NAME}" 1> /dev/null
-  fi
-}
-
-trap cleanup EXIT
+  BACKUP_SIZE=$(aws s3 ls "${FULL_S3_BACKUP_URL}" | awk -F' ' '{print $3}' \
+    | numfmt --to=iec --suffix=B --format="%.2f")
+} 1>/dev/null
 
 # Save time of backup in local timezone, for use in notification
 BACKUP_DATE=$(TZ='Europe/Amsterdam' date +'%F %R %:z')
@@ -58,9 +63,12 @@ case "${SOURCE}" in
 
           # Some directories excluded to save space, since they only contain
           # binaries/cache anyway.
-          tar --exclude='home/koala/.rbenv' --exclude='home/koala/.bundle' \
-          --exclude='home/koala/.cache' -c -f - -C / home | \
-          gzip -9 > "{{ tmp_dir }}/${FILE_NAME}"
+          upload_backup_to_s3 < <(tar \
+            --exclude='home/koala/.rbenv' \
+            --exclude='home/koala/.bundle' \
+            --exclude='home/koala/.cache' \
+            -c -f - -C / home \
+            | gzip -9)
           ;;
         websites)
           S3PATH="${SOURCE}"
@@ -70,38 +78,33 @@ case "${SOURCE}" in
           # committee can write to these folders and they are deployed from \
           # git anyway.
           # Pretix's virtualenv is excluded as it only contains binaries.
-          tar \
+          upload_backup_to_s3 < <(tar \
             --exclude='var/www/phpmyadmin.{{ canonical_hostname }}' \
             --exclude='var/www/sodi.{{ canonical_hostname }}' \
             --exclude='var/www/pretix/venv' \
-            -c -f - -C / var/www | gzip -9 > "{{ tmp_dir }}/${FILE_NAME}"
+            -c -f - -C / var/www \
+            | gzip -9)
           ;;
         databases)
           S3PATH="websites/${SOURCE}"
           FILE_NAME="${FILE_TITLE}.sql.gz"
 
           # Uses root's unix socket for authentication
-          mysqldump --all-databases | gzip -9 > "{{ tmp_dir }}/${FILE_NAME}"
+          upload_backup_to_s3 < <(mysqldump \
+            --all-databases \
+            | gzip -9)
           ;;
         *)
           print_to_stderr "${USAGE}"
           exit 1
 esac
 
-BACKUP_SIZE=$(stat --printf="%s" "{{ tmp_dir }}/${FILE_NAME}" | \
-numfmt --to=iec --suffix=B --format="%.2f")
-
 SUCCESS_MESSAGE="*{% if 'staging' in group_names %}_FROM STAGING:_ {% endif
 %}Backup of ${SOURCE} completed* _(${BACKUP_DATE})_\n_(Backup size: \
 ${BACKUP_SIZE})_"
 
-{
-  aws s3 cp "{{ tmp_dir }}/${FILE_NAME}" "s3://${S3BUCKET}/${S3PATH}/"
-
-  rm "{{ tmp_dir }}/${FILE_NAME}"
-
-  echo -e "${SUCCESS_MESSAGE}" | /usr/local/bin/slacktee --plain-text \
-  --username 'Backup service' --icon ':floppy_disk:' --attachment 'good'
-} 1> /dev/null
+echo -e "${SUCCESS_MESSAGE}" | /usr/local/bin/slacktee --plain-text \
+--username 'Backup service' --icon ':floppy_disk:' --attachment 'good' \
+>/dev/null
 
 echo "Backup of ${SOURCE} successful!"

@@ -25,11 +25,6 @@ secret_koala:
   # To change, generate new token using 'rake secret'
   rails_secret:
 
-  # To change, generate a new keypair for Koala's production user in AWS's IAM
-  # Management Console, and make the old key inactive
-  aws_access_key:
-  aws_secret_key:
-
 secret_mysql:
   example:
     # To change, generate a new password using something like `pwgen -sy 32 1`

@@ -25,13 +25,8 @@ secret_koala:
   # To change, generate new token using 'rake secret'
   rails_secret:
 
-  # To change, generate a new keypair for Koala's production user in AWS's IAM
-  # Management Console, and make the old key inactive
-  aws_access_key:
-  aws_secret_key:
-
   # To change, use the web interface at https://sentry.io/
-  sentry_dsn: "{{ vault_secret_koala.sentry_dsn }}"
+  sentry_dsn:
 
 secret_mysql:
   example:

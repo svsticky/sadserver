@@ -27,6 +27,7 @@
       repo: "{{ netdata.repo }}"
       dest: "{{ netdata.src_path }}"
       update: false
+    diff: false
     register: "netdata_checkout_result"
 
   - name: "retrieve all version numbers of netdata"
@@ -52,6 +53,7 @@
         repo: "{{ netdata.repo }}"
         dest: "{{ netdata.src_path }}"
         version: "{{ netdata_version.stdout }}"
+      diff: false
     # Don't run in check mode because previous "git fetch" task also can't be
     # run in check mode
     when: not ansible_check_mode

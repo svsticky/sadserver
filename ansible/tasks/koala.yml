@@ -91,6 +91,7 @@
       repo: "https://github.com/rbenv/{{ item.repo }}.git"
       dest: "{{ item.install_path }}"
       update: false
+    diff: false
     with_items: "{{ koala.dependencies }}"
 
   - name: "retrieve all version numbers of rbenv + plugins"
@@ -122,6 +123,7 @@
         repo: "https://github.com/rbenv/{{ item.0.repo }}"
         dest: "{{ item.0.install_path }}"
         version: "{{ item.1.stdout }}"
+      diff: false
       when:
       # List is evaluated as logical AND
       # Don't run in check mode because previous "git fetch" task also can't be
@@ -196,6 +198,7 @@
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
       version: "{{ koala_env.git_ref }}"
+    diff: false
     register: "koala_checkout_result"
     check_mode: true
 
@@ -219,6 +222,7 @@
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
       version: "{{ koala_env.git_ref }}"
+    diff: false
     when: koala_checkout_result.changed
     tags:
       - "koala"

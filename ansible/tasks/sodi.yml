@@ -4,6 +4,7 @@
     repo: "git@github.com:svsticky/sodi.nl.git"
     dest: "/var/www/sodi.{{ canonical_hostname }}"
     version: "master"
+  diff: false
 
 - name: "set permissions group on sodi files"
   file:

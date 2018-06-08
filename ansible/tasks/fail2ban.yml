@@ -12,6 +12,7 @@
     depth: 1
     force: true
     update: false
+  diff: false
   register: "fail2ban_clone"
 
 - name: "retrieve all version numbers of fail2ban"
@@ -37,6 +38,7 @@
       repo: "{{ fail2ban.repo }}"
       dest: "{{ fail2ban.install_path }}"
       version: "{{ fail2ban_version.stdout }}"
+  diff: false
   # Don't run in check mode because previous "git fetch" task also can't be run
   # in check mode
   when: "not ansible_check_mode"

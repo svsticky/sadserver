@@ -14,6 +14,7 @@
     repo: "https://github.com/svsticky/digidecs.git"
     dest: "/var/www/commit/digidecs.{{ canonical_hostname }}"
     version: "master"
+  diff: false
 
 - name: "place config file"
   template:

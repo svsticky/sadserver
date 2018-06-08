@@ -48,6 +48,7 @@
     repo: "{{ slack_notifications.slacktee.repo }}"
     dest: "{{ slack_notifications.slacktee.install_path }}"
     update: false
+  diff: false
 
 - name: "retrieve all version numbers of slacktee"
   shell: "git fetch --tags"
@@ -72,6 +73,7 @@
       repo: "{{ slack_notifications.slacktee.repo }}"
       dest: "{{ slack_notifications.slacktee.install_path }}"
       version: "{{ slacktee_version.stdout }}"
+    diff: false
   # Don't run in check mode because previous "git fetch" task also can't be run
   # in check mode
   when: not ansible_check_mode

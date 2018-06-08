@@ -17,6 +17,7 @@
     depth: 1
     force: true
     version: "STABLE"
+  diff: false
 
 - name: "place phpmyadmin config.inc.php"
   template:

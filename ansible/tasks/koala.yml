@@ -1,91 +1,87 @@
 ---
-# Contains all koala-specific tasks
-- block:
-  - name: "ensure koala system user exists"
-    user:
-      name: "koala"
-      state: "present"
-      system: true
-      shell: "/bin/bash"
-    notify: "restart koala"
-    tags:
-      - "ruby"
-      - "koala"
+- name: "ensure koala system user exists"
+  user:
+    name: "koala"
+    state: "present"
+    system: true
+    shell: "/bin/bash"
+  notify: "restart koala"
+  tags:
+    - "ruby"
+    - "koala"
 
-  - name: "ensure koala database user exists"
-    command:
-      "mysql -NBe 'grant all privileges on `koala{% if koala_env.environment ==
-      'development' %}-development{% endif %}`.* to `koala`@`localhost`
-      identified via mysql_native_password using
-      \"{{ secret_mysql.koala.hash }}\";'"
-    tags:
-      - "database"
-      - "koala"
+- name: "ensure koala database user exists"
+  command:
+    "mysql -NBe 'grant all privileges on `koala{% if koala_env.environment ==
+    'development' %}-development{% endif %}`.* to `koala`@`localhost`
+    identified via mysql_native_password using
+    \"{{ secret_mysql.koala.hash }}\";'"
+  tags:
+    - "database"
+    - "koala"
 
-  - name: "ensure clone location exists and is owned by koala"
-    file:
-      path: "/var/www/koala.{{ canonical_hostname }}"
-      state: "directory"
-      owner: "koala"
-      group: "koala"
-      recurse: true
-    tags:
-      - "koala"
+- name: "ensure clone location exists and is owned by koala"
+  file:
+    path: "/var/www/koala.{{ canonical_hostname }}"
+    state: "directory"
+    owner: "koala"
+    group: "koala"
+    recurse: true
+  tags:
+    - "koala"
 
-  - name: "ensure ruby compilation dependencies are installed"
-    apt:
-      name: "{{ item }}"
-      state: "present"
-    with_items:
-      - "autoconf"
-      - "bison"
-      - "build-essential"
-      - "libssl-dev"
-      - "libyaml-dev"
-      - "libreadline-dev"
-      - "libncurses5-dev"
-      - "libffi-dev"
-      - "libgdbm3"
-      - "libgdbm-dev"
-      - "nodejs"
-      - "zlib1g-dev"
-      - "imagemagick"
-      - "libmariadb-client-lgpl-dev-compat"
-      - "acl"
-      - "git"
-    tags:
-      - "packages"
-      - "ruby"
-      - "koala"
-    notify: "restart koala"
+- name: "ensure ruby compilation dependencies are installed"
+  apt:
+    name: "{{ item }}"
+    state: "present"
+  with_items:
+    - "autoconf"
+    - "bison"
+    - "build-essential"
+    - "libssl-dev"
+    - "libyaml-dev"
+    - "libreadline-dev"
+    - "libncurses5-dev"
+    - "libffi-dev"
+    - "libgdbm3"
+    - "libgdbm-dev"
+    - "nodejs"
+    - "zlib1g-dev"
+    - "imagemagick"
+    - "libmariadb-client-lgpl-dev-compat"
+    - "acl"
+    - "git"
+  tags:
+    - "packages"
+    - "ruby"
+    - "koala"
+  notify: "restart koala"
 
-  - name: "add apt key for yarn repository"
-    apt_key:
-      url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
-      state: "present"
+- name: "add apt key for yarn repository"
+  apt_key:
+    url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
+    state: "present"
 
-  - name: "add yarn repository"
-    apt_repository:
-      repo: "deb https://dl.yarnpkg.com/debian/ stable main"
-      state: "present"
+- name: "add yarn repository"
+  apt_repository:
+    repo: "deb https://dl.yarnpkg.com/debian/ stable main"
+    state: "present"
 
-  - name: "install yarn"
-    apt:
-     name: "yarn"
-     state: "present"
-    notify: "restart koala"
+- name: "install yarn"
+  apt:
+   name: "yarn"
+   state: "present"
+  notify: "restart koala"
 
-  - name: "ensure koala service file is present"
-    template:
-      src: "templates/{{ path }}.j2"
-      dest: "/{{ path }}"
-    vars:
-      path: "etc/systemd/system/koala.service"
-    notify:
-      - "systemctl daemon-reload"
-      - "restart koala"
-
-  become: true
+- name: "ensure koala service file is present"
+  template:
+    src: "templates/{{ path }}.j2"
+    dest: "/{{ path }}"
+  vars:
+    path: "etc/systemd/system/koala.service"
+  notify:
+    - "systemctl daemon-reload"
+    - "restart koala"
 
 # As koala:
 - block:

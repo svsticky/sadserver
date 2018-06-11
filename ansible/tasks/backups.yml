@@ -2,12 +2,11 @@
 - block:
   - name: "install awscli dependencies"
     apt:
-      pkg: "{{ item }}"
+      name:
+        - "python3-venv"
+        - "python3-dev"
+        - "libyaml-dev"
       state: "present"
-    with_items:
-      - "python3-venv"
-      - "python3-dev"
-      - "libyaml-dev"
 
   - name: "create virtualenv if required, install awscli"
     pip:

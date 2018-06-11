@@ -1,14 +1,13 @@
 ---
 - name: "install phpmyadmin dependencies"
   apt:
-    name: "{{ item }}"
+    name:
+      - "php7.0-zip"
+      - "php7.0-xml"
+      - "php7.0-mbstring"
+      - "php7.0-mysqli"
+      - "composer"
     state: "present"
-  with_items:
-    - "php7.0-zip"
-    - "php7.0-xml"
-    - "php7.0-mbstring"
-    - "php7.0-mysqli"
-    - "composer"
 
 - name: "clone phpmyadmin repository"
   git:

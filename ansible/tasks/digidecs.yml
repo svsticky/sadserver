@@ -1,13 +1,12 @@
 ---
 - name: "install composer"
   apt:
-    name: "{{ item }}"
+    name:
+      - "composer"
+      - "php7.0-curl"
+      - "php7.0-bcmath"
     state: "present"
   become: true
-  with_items:
-    - "composer"
-    - "php7.0-curl"
-    - "php7.0-bcmath"
 
 - name: "clone digidecs repository"
   git:

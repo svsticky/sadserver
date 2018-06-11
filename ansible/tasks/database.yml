@@ -3,11 +3,10 @@
 - block:
   - name: "ensure mariadb is installed and manageable"
     apt:
-        name: "{{ item }}"
-        state: "present"
-    with_items:
+      name:
         - "mariadb-server"
         - "python-mysqldb"
+      state: "present"
     tags:
         - "packages"
 

@@ -1,7 +1,7 @@
 ---
 - name: "install fail2ban dependencies"
   apt:
-    pkg: "python3-pyinotify"
+    name: "python3-pyinotify"
     state: "present"
 
 # Only ensure repository is cloned, don't update yet

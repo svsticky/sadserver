@@ -10,7 +10,7 @@
 # This tool outputs our beautiful hostname header.
 - name: "install toilet"
   apt:
-    pkg: "toilet"
+    name: "toilet"
     state: "present"
 
 - name: "copy motd templates"

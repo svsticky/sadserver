@@ -1,12 +1,11 @@
 ---
 - name: "install nginx, php-fpm and openssl"
   apt:
-    name: "{{ item }}"
+    name:
+      - "nginx"
+      - "php-fpm"
+      - "openssl"
     state: "present"
-  with_items:
-    - "nginx"
-    - "php-fpm"
-    - "openssl"
 
 - name: "copy configuration files for nginx and php"
   template:

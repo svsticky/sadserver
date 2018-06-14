@@ -13,7 +13,7 @@
     dest: "/{{ item }}"
   with_items:
     - "etc/nginx/nginx.conf"
-    - "etc/php/7.0/fpm/php.ini"
+    - "etc/php/7.2/fpm/php.ini"
   notify: "reload nginx"
 
 - name: "ensure stock nginx configuration is not present"

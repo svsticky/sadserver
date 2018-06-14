@@ -60,7 +60,7 @@
       - "wheel"
     state: "latest"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.5"
+    virtualenv_python: "python3.6"
   become: true
   become_user: "pretix"
 
@@ -84,7 +84,7 @@
     version: "{{ item.version }}"
     state: "present"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.5"
+    virtualenv_python: "python3.6"
   with_items:
     - name: "gunicorn"
       version: "19.8.1"

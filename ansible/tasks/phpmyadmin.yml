@@ -2,10 +2,10 @@
 - name: "install phpmyadmin dependencies"
   apt:
     name:
-      - "php7.0-zip"
-      - "php7.0-xml"
-      - "php7.0-mbstring"
-      - "php7.0-mysqli"
+      - "php7.2-zip"
+      - "php7.2-xml"
+      - "php7.2-mbstring"
+      - "php7.2-mysqli"
       - "composer"
     state: "present"
 

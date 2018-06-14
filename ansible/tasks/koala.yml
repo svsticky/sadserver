@@ -41,7 +41,7 @@
       - "libreadline-dev"
       - "libncurses5-dev"
       - "libffi-dev"
-      - "libgdbm3"
+      - "libgdbm5"
       - "libgdbm-dev"
       - "nodejs"
       - "zlib1g-dev"

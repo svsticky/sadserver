@@ -1,5 +1,5 @@
 [production]
-svsticky.nl ansible_python_interpreter=/usr/bin/python2.7
+svsticky.nl ansible_python_interpreter=/usr/bin/python3.6
 
 [staging]
-dev.svsticky.nl ansible_python_interpreter=/usr/bin/python2.7
+dev.svsticky.nl ansible_python_interpreter=/usr/bin/python3.6

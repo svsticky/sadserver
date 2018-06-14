@@ -31,11 +31,6 @@
       when: "bootstrap_status is succeeded"
 
   tasks:
-    - name: "install python 2.7"
-      raw:
-        "apt-get update && apt-get install -y --no-install-recommends
-        python2.7"
-
     - name: "generate random password"
       shell: "openssl rand -base64 32"
       register: "ansible_user_password"

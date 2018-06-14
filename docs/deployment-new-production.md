@@ -20,10 +20,11 @@ $ ./scripts/run-playbook.sh production playbooks/koala/stop.yml
 ```bash
 $ ssh <user>@svsticky.nl
 $ for SOURCE in admins databases websites; do
-> sudo backup-to-s3.sh ${SOURCE}
+> sudo -H backup-to-s3.sh ${SOURCE}
 > done
 $ exit
 ```
+Be aware that the backup process may take about 15 minutes.
 
 **Redirect requests for ACME challenges** from the old server to the new server.
 This allows us to prove ownership of the domains we need to request TLS

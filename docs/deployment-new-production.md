@@ -63,8 +63,7 @@ $ ./scripts/run-playbook.sh production main.yml
 
 ```
 # On your local machine, whilst in sadserver/ansible
-$ scripts/run-playbook.sh production playbook/restore-backup.yml \
---vault-id production@prompt
+$ scripts/run-playbook.sh production playbook/restore-backup.yml
 ```
 
 **Start koala on the new server:**

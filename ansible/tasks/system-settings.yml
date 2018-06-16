@@ -11,6 +11,7 @@
 - name: "install toilet"
   apt:
     name: "toilet"
+    update_cache: true
     state: "present"
 
 - name: "copy motd templates"

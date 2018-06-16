@@ -1,0 +1,24 @@
+---
+- hosts: "all"
+  user: "ansible"
+  become: true
+  become_user: "root"
+  become_method: "sudo"
+  force_handlers: true
+
+  vars_prompt:
+    - name: "backup_sources"
+      default: 'NONE'
+      private: false
+      prompt:
+        "Enter the comma-delimited source(s) you want to back up
+        (possibilities: admins/databases/websites)"
+
+  tasks:
+    - name: "assert that input has been entered"
+      assert:
+        that: "backup_sources != 'NONE'"
+
+    - name: "start backup of requested source(s)"
+      command: "/usr/local/bin/backup-to-s3.sh {{ item | quote }}"
+      with_items: "{{ backup_sources.split(',') }}"

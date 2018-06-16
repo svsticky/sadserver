@@ -1,4 +1,4 @@
-# Checklist new server release
+# Server migration guide
 
 This guide details the steps needed to get a new production environment up and
 running.
@@ -18,11 +18,8 @@ $ ./scripts/run-playbook.sh production playbooks/koala/stop.yml
 
 <!-- The backup script should be changed to take multiple sources -->
 ```bash
-$ ssh <user>@svsticky.nl
-$ for SOURCE in admins databases websites; do
-> sudo -H backup-to-s3.sh ${SOURCE}
-> done
-$ exit
+# On your local machine, whilst in sadserver/ansible
+$ ./scripts/run-playbook.sh production playbooks/create-backup.yml
 ```
 Be aware that the backup process may take about 15 minutes.
 

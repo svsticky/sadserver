@@ -1,3 +1,4 @@
 *.retry
 *.log
 koala-backups
+.slack-webhook

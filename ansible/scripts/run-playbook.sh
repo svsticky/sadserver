@@ -24,6 +24,14 @@ if [[ -z ${1:-} || -z ${2:-} ]]; then
   echo "$USAGE"
   exit 1
 fi
+
+if [ ! -f .slack-webhook ]; then
+  echo "Please create .slack-webhook with a webhook URL for deploy notifications"
+  exit 1
+fi
+
+export SLACK_WEBHOOK=$(cat .slack-webhook)
+
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
@@ -36,6 +44,8 @@ function abort_deploy() {
   echo "ABORTED DEPLOY"
   exit 0
 }
+
+
 
 case ${ENVIRONMENT} in
   production)

@@ -12,7 +12,7 @@ the new IP.
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ ./scripts/run-playbook.sh production playbooks/koala/stop.yml
+$ ./scripts/run-playbook.sh production playbooks/koala/maintenance-on.yml
 ```
 
 **Run backups** of the data that should be migrated to the new server:
@@ -63,7 +63,7 @@ $ ./scripts/run-playbook.sh production main.yml
 
 ```
 # On your local machine, whilst in sadserver/ansible
-$ scripts/run-playbook.sh production playbook/restore-backup.yml
+$ scripts/run-playbook.sh production playbooks/restore-backup.yml
 ```
 
 **Start koala on the new server:**

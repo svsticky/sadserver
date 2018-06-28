@@ -46,7 +46,8 @@ server to become Sticky's production server.
 The code in this repository depends on the following software:
 
  - [ansible] >= 2.5
- - [slacktee] (no config necessary)
+ - [slacktee] -- create the `ansible/.slack-webhook` file with a Slack webhook
+   in order to run the provisioning script.
  - bash
 
 Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 18.04 host** to be

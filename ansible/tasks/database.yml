@@ -5,7 +5,7 @@
     apt:
       name:
         - "mariadb-server"
-        - "python-mysqldb"
+        - "python3-mysqldb"
       state: "present"
     tags:
         - "packages"

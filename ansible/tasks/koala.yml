@@ -344,6 +344,9 @@
   notify:
     - "systemctl daemon-reload"
 
+- name: "flush handlers"
+  meta: "flush_handlers"
+
 - name: "ensure koala's timers are started and enabled in production"
   service:
     name: "{{ item }}"

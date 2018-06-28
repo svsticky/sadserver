@@ -30,7 +30,7 @@ if [ ! -f .slack-webhook ]; then
   exit 1
 fi
 
-export SLACK_WEBHOOK=$(cat .slack-webhook)
+export SLACKTEE_WEBHOOK=$(cat .slack-webhook)
 
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"

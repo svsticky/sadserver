@@ -9,6 +9,6 @@ User=ansible
 Group=ansible
 ExecStart=/bin/sh -c "echo \"{% if 'staging' in group_names %}*_FROM \
 STAGING:_*{% else %}@it-crowd-commissie{% endif %} *Backup of %I FAILED!*\
-_($(date +'%F %T %:z'))_\" | /usr/local/bin/slacktee --plain-text --username\
+_($(date +'%%F %%T %%:z'))_\" | /usr/local/bin/slacktee --plain-text --username\
 'Backup service' --icon ':exclamation:' --attachment 'danger'\
 --channel 'alerts'"

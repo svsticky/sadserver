@@ -43,6 +43,10 @@ server {
     return 301 https://sticky.itdepartment.nl/;
   }
 
+  location ~* /doos {
+    return 301 https://docs.google.com/forms/d/e/1FAIpQLSeNQwEjtW3SVYOauxIMxjwAkxJycHtmspNoQ7TlNClg7Vmq0w/viewform;
+  }
+
   location ~* /declaraties {
     return 301 https://digidecs.{{ canonical_hostname }}/;
    }

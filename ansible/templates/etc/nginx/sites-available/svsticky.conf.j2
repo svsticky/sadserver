@@ -55,6 +55,10 @@ server {
     return 301 https://www.facebook.com/groups/814759978565158/;
   }
 
+  location ~* /(liftwedstrijd|hetwordtzolift) {
+    return 301 https://goo.gl/forms/tqTZMeJjdtk29is53;
+  }
+
   location ~* /panda {
     return 301 https://www.youtube.com/watch?v=AC3Ejf7vPEY;
   }

@@ -158,6 +158,11 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 `$ git submodule update --init`
 `$ cd ansible`
 
+1. Create a file `.slack-webhook` containing the webhook to be used for Slack
+notifications. If unsure, read it via the command `$ ansible-vault view
+group_vars/production/vault.yml` (search for
+`vault_slack_notifications_webhook_url`).
+
 1. Bootstrap the host for either production or staging.
 `$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`
 You do not need to enter a SUDO password, but you do need to enter the correct Vault password.

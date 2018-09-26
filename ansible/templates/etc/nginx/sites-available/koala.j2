@@ -32,6 +32,11 @@ server {
 		deny all;
 	}
 
+	# Add redirect because calendar URL changed in Koala v1.8.2
+	location = /calendarfeed.ics {
+		return 301 /api/calendar.ics;
+	}
+
 	location ~* ^/assets/ {
 		expires 1y;
 		add_header Cache-Control public;

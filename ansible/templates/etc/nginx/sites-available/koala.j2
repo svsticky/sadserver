@@ -32,9 +32,13 @@ server {
 		deny all;
 	}
 
-	# Add redirect because calendar URL changed in Koala v1.8.2
+	# Add redirect to Google Calendar for removed calendar.
 	location = /calendarfeed.ics {
-		return 301 /api/calendar.ics;
+		return 301 https://calendar.google.com/calendar/ical/stickyutrecht.nl_thvhicj5ijouaacp1elsv1hceo%40group.calendar.google.com/public/basic.ics;
+	}
+
+	location = /api/calendar.ics {
+		return 301 https://calendar.google.com/calendar/ical/stickyutrecht.nl_thvhicj5ijouaacp1elsv1hceo%40group.calendar.google.com/public/basic.ics;
 	}
 
 	location ~* ^/assets/ {

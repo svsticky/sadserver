@@ -1,27 +1,19 @@
 ---
+- name:
+    "remove old awscli virtualenv + wrapper script (can be removed after having
+    run once)"
+  file:
+    path: "{{ item }}"
+    state: "absent"
+  with_items:
+    - "/opt/awscli"
+    - "/usr/local/bin/aws"
+
 - block:
-  - name: "install awscli dependencies"
+  - name: "install awscli"
     apt:
-      name:
-        - "python3-venv"
-        - "python3-dev"
-        - "libyaml-dev"
-      state: "present"
-
-  - name: "create virtualenv if required, install awscli"
-    pip:
-      virtualenv: "/opt/awscli"
-      virtualenv_command: "pyvenv"
       name: "awscli"
-      state: "latest"
-
-  - name: "place aws wrapper"
-    template:
-      src: "templates/{{ aws_cli_path }}.j2"
-      dest: "/{{ aws_cli_path }}"
-      mode: "0755"
-    vars:
-      aws_cli_path: "usr/local/bin/aws"
+      state: "present"
 
   - name: "ensure aws cli configuration folders are present"
     file:

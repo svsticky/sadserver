@@ -1,63 +1,48 @@
 ---
-- name: "install fail2ban dependencies"
+- name: "block that can be removed after having run once"
+  block:
+  - name: "check if old fail2ban installation is present"
+    stat:
+      path: "{{ fail2ban.install_path }}"
+    register: "old_fail2ban"
+
+  - block:
+    - name: "install fail2ban once more manually to record the installed files"
+      command: "python setup.py install --record {{ old_fail2ban_file_listing }}"
+      args:
+        chdir: "{{ fail2ban.install_path }}"
+
+    - name: "remove old fail2ban service file"
+      file:
+        path: "/etc/systemd/system/fail2ban.service"
+        state: "absent"
+      notify: "systemctl daemon-reload"
+
+    - name:
+        "read generated file with listing of fail2ban files from manual
+        installation"
+      slurp:
+        src: "{{ old_fail2ban_file_listing }}"
+      register: "fail2ban_files"
+
+    - name: "remove the installed fail2ban files from manual installation"
+      file:
+        path: "{{ item }}"
+        state: "absent"
+      with_items:
+        - "{{ (fail2ban_files['content'] | b64decode).split('\n') }}"
+        - "/etc/fail2ban"
+        - "{{ fail2ban.install_path }}"
+    vars:
+      old_fail2ban_file_listing: "/tmp/old-fail2ban-files.txt"
+    when: "old_fail2ban.stat.exists"
+
+- name: "install fail2ban"
   apt:
-    name: "python3-pyinotify"
+    name: "fail2ban"
     state: "present"
 
-# Only ensure repository is cloned, don't update yet
-- name: "clone repository of fail2ban"
-  git:
-    repo: "{{ fail2ban.repo }}"
-    dest: "{{ fail2ban.install_path }}"
-    depth: 1
-    force: true
-    update: false
-  diff: false
-  register: "fail2ban_clone"
-
-- name: "retrieve all version numbers of fail2ban"
-  shell: "git fetch --tags"
-  args:
-    chdir: "{{ fail2ban.install_path }}"
-  register: "fail2ban_fetch"
-  changed_when: fail2ban_fetch.stdout != ""
-
-- name: "determine latest version number of fail2ban"
-  shell: "git describe --tags $(git rev-list --tags --max-count=1)"
-  args:
-    chdir: "{{ fail2ban.install_path }}"
-  register: "fail2ban_version"
-  # The next task already shows if there is actually a change
-  changed_when: false
-
-# Wrapped in block because otherwise templating is done before skipping task,
-# which will fail in check mode
-- block:
-  - name: "install newest release of fail2ban"
-    git:
-      repo: "{{ fail2ban.repo }}"
-      dest: "{{ fail2ban.install_path }}"
-      version: "{{ fail2ban_version.stdout }}"
-  diff: false
-  # Don't run in check mode because previous "git fetch" task also can't be run
-  # in check mode
-  when: "not ansible_check_mode"
-
-- block:
-  - name: "install fail2ban"
-    command: "python setup.py install"
-    args:
-      chdir: "{{ fail2ban.install_path }}"
-
-  - name: "install fail2ban service file"
-    copy:
-      src: "{{ fail2ban.install_path }}/build/fail2ban.service"
-      dest: "/etc/systemd/system/fail2ban.service"
-      remote_src: true
-    notify: "systemctl daemon-reload"
-  when: "fail2ban_clone.changed or fail2ban_fetch.changed"
-
-- name: "flush handlers"
+- name: "flush handlers so the files exist that fail2ban monitors"
   meta: "flush_handlers"
 
 - name: "configure fail2ban"
@@ -65,8 +50,8 @@
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
   with_items:
-    - "etc/fail2ban/fail2ban.conf"
-    - "etc/fail2ban/jail.conf"
+    - "etc/fail2ban/fail2ban.local"
+    - "etc/fail2ban/jail.local"
     - "etc/fail2ban/filter.d/koala.conf"
   notify: "restart fail2ban"
 

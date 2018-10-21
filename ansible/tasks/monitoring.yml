@@ -1,71 +1,28 @@
 ---
-- name: "install netdata build dependencies"
-  apt:
-    name:
-      - "autoconf"
-      - "autoconf-archive"
-      - "autogen"
-      - "automake"
-      - "curl"
-      - "gcc"
-      - "git"
-      - "libmnl-dev"
-      - "make"
-      - "pkg-config"
-      - "uuid-dev"
-      - "zlib1g-dev"
-    state: "present"
-  tags:
-    - "monitoring"
-    - "packages"
-
-- block:
-  # Only ensure repository is cloned, don't update yet
-  - name: "clone repository of netdata"
-    git:
-      repo: "{{ netdata.repo }}"
-      dest: "{{ netdata.src_path }}"
-      update: false
-    diff: false
-    register: "netdata_checkout_result"
-
-  - name: "retrieve all version numbers of netdata"
-    shell: "git fetch --tags"
+- name: "block that can be removed after having run once"
+  block:
+  - name: "uninstall netdata instance installed from git"
+    command: "{{ netdata.src_path }}/netdata-uninstaller.sh --force"
     args:
-      chdir: "{{ netdata.src_path }}"
-    register: "netdata_fetch"
-    changed_when: "netdata_fetch.stdout != ''"
+      removes: "{{ netdata.src_path }}"
 
-  - name: "determine latest version number of netdata"
-    shell: "git describe --tags $(git rev-list --tags --max-count=1)"
+  - name: "remove netdata webroot because of bug netdata#3896"
+    command: "rm -f /usr/share/netdata"
     args:
-      chdir: "{{ netdata.src_path }}"
-    register: "netdata_version"
-    # The next task already shows if there is actually a change
-    changed_when: false
+      removes: "{{ netdata.src_path }}"
 
-  # Wrapped in block because otherwise templating is done before skipping task,
-  # which will fail in check mode
-  - block:
-    - name: "checkout newest release of netdata"
-      git:
-        repo: "{{ netdata.repo }}"
-        dest: "{{ netdata.src_path }}"
-        version: "{{ netdata_version.stdout }}"
-      diff: false
-    # Don't run in check mode because previous "git fetch" task also can't be
-    # run in check mode
-    when: not ansible_check_mode
-
-  - name: "build and install/update netdata"
-    command: "./netdata-installer.sh --dont-wait"
-    args:
-      chdir: "{{ netdata.src_path }}"
-    when: "netdata_checkout_result.changed"
+  - name: "remove local netdata git repository"
+    file:
+      path: "{{ netdata.src_path }}"
+      state: "absent"
   vars:
     netdata:
-      repo: "https://github.com/firehol/netdata.git"
       src_path: "/usr/local/src/netdata"
+
+- name: "install netdata"
+  apt:
+    name: "netdata"
+    state: "present"
   tags:
     - "monitoring"
     - "packages"

@@ -57,15 +57,17 @@ server {
 		    return 503;
 		}
 
-		# No wildcards allowed, allow all '*' or specific uri, can be multiple
-		set $cors_allowed "https://radio.{{ canonical_hostname }}";
-		if ( $request_method !~ ^(GET|OPTIONS|HEAD)$ ) {
-		    set $cors_allowed "*";
-		}
-		add_header Access-Control-Allow-Origin $cors_allowed;
-		add_header Access-Control-Allow-Methods 'HEAD, GET, POST, PUT, PATCH, DELETE';
-		add_header Access-Control-Allow-Headers 'Origin, Content-Type, Accept, Authorization';
+		# Add CORS headers if Origin is set
+		if ($http_origin) {
+		    set $cors_methods "HEAD, GET, OPTIONS";
+		    if ( $http_origin ~* "https://(\S+\.)*svsticky.nl" ) {
+		        set $cors_methods 'HEAD, GET, POST, PUT, PATCH, DELETE';
+		    }
 
+		    add_header Access-Control-Allow-Origin $http_origin;
+		    add_header Access-Control-Allow-Methods $cors_methods;
+		    add_header Access-Control-Allow-Headers 'Origin, Content-Type, Accept, Authorization';
+		}
 
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		proxy_set_header Host $http_host;

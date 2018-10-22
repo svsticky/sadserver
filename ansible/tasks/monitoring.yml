@@ -1,24 +1,4 @@
 ---
-- name: "block that can be removed after having run once"
-  block:
-  - name: "uninstall netdata instance installed from git"
-    command: "{{ netdata.src_path }}/netdata-uninstaller.sh --force"
-    args:
-      removes: "{{ netdata.src_path }}"
-
-  - name: "remove netdata webroot because of bug netdata#3896"
-    command: "rm -rf /usr/share/netdata"
-    args:
-      removes: "{{ netdata.src_path }}"
-
-  - name: "remove local netdata git repository"
-    file:
-      path: "{{ netdata.src_path }}"
-      state: "absent"
-  vars:
-    netdata:
-      src_path: "/usr/local/src/netdata"
-
 - name: "install netdata"
   apt:
     name: "netdata"

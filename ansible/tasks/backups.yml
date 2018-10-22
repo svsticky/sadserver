@@ -1,14 +1,4 @@
 ---
-- name:
-    "remove old awscli virtualenv + wrapper script (can be removed after having
-    run once)"
-  file:
-    path: "{{ item }}"
-    state: "absent"
-  with_items:
-    - "/opt/awscli"
-    - "/usr/local/bin/aws"
-
 - block:
   - name: "install awscli"
     apt:

@@ -7,7 +7,7 @@
       removes: "{{ netdata.src_path }}"
 
   - name: "remove netdata webroot because of bug netdata#3896"
-    command: "rm -f /usr/share/netdata"
+    command: "rm -rf /usr/share/netdata"
     args:
       removes: "{{ netdata.src_path }}"
 

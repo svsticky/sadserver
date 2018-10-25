@@ -6,6 +6,7 @@ DATABASE_SOCKET=/var/run/mysqld/mysqld.sock
 
 SECRET_KEY_BASE={{ secret_koala.rails_secret }}
 DEVISE_SECRET={{ secret_koala.devise_secret }}
+{% if secret_koala.oidc_signing_key_location is defined %}OIDC_SIGNING_KEY={{ secret_koala.oidc_signing_key_location }}{% endif %}
 
 # API tokens
 MAILGUN_DOMAIN={{ canonical_hostname }}

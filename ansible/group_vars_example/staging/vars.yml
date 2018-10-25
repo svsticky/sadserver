@@ -8,6 +8,11 @@
 # "#" through a regex in tasks/users.yml.
 bash_prompt:
 
+secret_oauth2_proxy:
+  client_id:
+  client_secret:
+  cookie_secret:
+
 koala_env:
   environment:
 

@@ -43,18 +43,3 @@
   command:
     "mysql -NBe 'source /var/www/phpmyadmin.{{ canonical_hostname
     }}/sql/create_tables.sql;'"
-
-- name: "place phpmyadmin nginx config"
-  template:
-    src: "templates/etc/nginx/sites-available/phpmyadmin.conf.j2"
-    dest: "/etc/nginx/sites-available/phpmyadmin.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
-
-- name: "symlink phpmyadmin nginx config"
-  file:
-    src: "/etc/nginx/sites-available/{{ filename }}"
-    path: "/etc/nginx/sites-enabled/{{ filename }}"
-    state: link
-  vars:
-    filename: "phpmyadmin.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"

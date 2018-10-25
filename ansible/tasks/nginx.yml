@@ -251,6 +251,7 @@
 - name: "delete nginx configurations of absent websites"
   file:
     path: "/etc/nginx/{{ item[0] }}/{{ item[1].name }}.conf"
+    state: "absent"
   with_nested:
     -
       - "sites-available"

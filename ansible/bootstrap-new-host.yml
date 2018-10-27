@@ -20,15 +20,16 @@
   pre_tasks:
     # Checks if ansible user is already present
     - name: "check if host is already bootstrapped"
-      command: "id -u ansible"
-      ignore_errors: true
-      no_log: true
+      user:
+        name: "ansible"
+        state: "present"
+      check_mode: true
       register: "bootstrap_status"
 
     - name: "exit if bootstrapping is not necessary"
       fail:
         msg: "Bootstrapping not necessary, host is already bootstrapped."
-      when: "bootstrap_status is succeeded"
+      when: "bootstrap_status is not changed"
 
   tasks:
     - name: "generate random password"

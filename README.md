@@ -45,10 +45,13 @@ server to become Sticky's production server.
 
 The code in this repository depends on the following software:
 
- - [ansible] >= 2.5
- - [slacktee] -- create the `ansible/.slack-webhook` file with a Slack webhook
-   in order to run the provisioning script.
- - bash
+- [ansible] >= 2.5
+- [slacktee] (vendored) -- create the `ansible/.slack-webhook` file with a
+  Slack webhook in order to run the provisioning script.
+- optionally:
+  - [Bitwarden CLI] (`bw` being available in your `$PATH`)
+  - jq (`jq` being available in your `$PATH`)
+- bash
 
 Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 18.04 host** to be
 deployed on.
@@ -198,6 +201,7 @@ Godspeed!
   [inventory]:https://docs.ansible.com/ansible/intro_inventory.html
   [slacktee]:https://github.com/course-hero/slacktee
   [ansible]:https://github.com/ansible/ansible
+  [Bitwarden CLI]:https://help.bitwarden.com/article/cli/#download--install
   [deployment-new-production]:docs/deployment-new-production.md
   [IT Crowd]:mailto:itcrowd@svsticky.nl
   [deployment-guide]:#setting-up-the-staging-and-production-environment

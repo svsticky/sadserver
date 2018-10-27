@@ -45,7 +45,11 @@ function abort_deploy() {
   exit 0
 }
 
-
+if [[ -n ${BW_SESSION:-} ]]; then
+  VAULT_PASS_SRC="./scripts/get-vault-pass-from-bitwarden-client.sh"
+else
+  VAULT_PASS_SRC="prompt"
+fi
 
 case ${ENVIRONMENT} in
   production)
@@ -77,11 +81,11 @@ case ${ENVIRONMENT} in
     ;;
   staging)
     # Special scenario: When restore-backup.yml is run on staging, it needs to
-    # access the production Vault secrets, so this adds the prompt for that to
+    # access the production Vault secrets, so this adds the call for that to
     # the CLI arguments passed to ansible-playbook
     if [[ ${ARGS[0]} == "playbooks/restore-backup.yml" ]]; then
       ARGS[${#ARGS[@]}]="--vault-id"
-      ARGS[${#ARGS[@]}]="production@prompt"
+      ARGS[${#ARGS[@]}]="production@${VAULT_PASS_SRC}"
     fi
     ;;
   *)
@@ -134,11 +138,11 @@ trap deploy_end EXIT
 ANSIBLE_SSH_PIPELINING=true \
   ansible-playbook \
   --inventory \
-  "${GIT_ROOT}/ansible/hosts" \
+    "${GIT_ROOT}/ansible/hosts" \
   --ask-become-pass \
   --diff \
-  --vault-id ${ENVIRONMENT}@prompt \
-  --limit=${ENVIRONMENT} \
+  --vault-id "${ENVIRONMENT}@${VAULT_PASS_SRC}" \
+  --limit="${ENVIRONMENT}" \
   --extra-vars \
-  "playbook_revision=${GIT_REVISION}" \
+    "playbook_revision=${GIT_REVISION}" \
   "${ARGS[@]}"

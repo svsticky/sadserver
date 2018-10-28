@@ -55,19 +55,24 @@
   when: item.0.state == 'present'
   with_subelements:
     - "{{ users }}"
-    # "Keys" is added to the loop, so the directory is not created if there are
-    # no keys
-    - "keys"
+    # "github_accounts" is added to the loop, so the directory is not created
+    # if there are no keys
+    - "github_accounts"
+    - skip_missing: true
   loop_control:
     label: "{{ item.0.name }}"
 
-- name: "ensure SSH keys for users are present"
+- name:
+    "ensure SSH keys for users are present, fetched from associated GitHub
+    accounts"
   blockinfile:
     path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
-    block: "{{ lookup('file', 'group_vars/all/ssh_keys/' + item.1.id) }}"
+    block:
+      "{{ lookup('url', 'https://github.com/' + item.1.username + '.keys',
+      split_lines=False) }}"
     state: "{{ item.1.state }}"
     # When changing value of marker, also update it in task down below
-    marker: "# {mark} SSH key for {{ item.1.id }}"
+    marker: "# {mark} SSH keys for https://github.com/{{ item.1.username }}"
     owner: "{{ item.0.name }}"
     group: "{{ item.0.name }}"
     create: true
@@ -75,11 +80,12 @@
   when: item.0.state == 'present'
   with_subelements:
     - "{{ users }}"
-    - "keys"
+    - "github_accounts"
+    - skip_missing: true
   loop_control:
     label:
       user: "{{ item.0.name }}"
-      key: "{{ item.1.id }}"
+      key: "{{ item.1.username }}"
 
 - name: "copy deploy key for private projects on GitHub"
   copy:

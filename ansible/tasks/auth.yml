@@ -62,6 +62,16 @@
   loop_control:
     label: "{{ item.0.name }}"
 
+- name: "rename markers in authorized_key files because of keyfile removal"
+  replace:
+    path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
+    regexp: "^# ((?:BEGIN)|(?:END)) SSH key for (.+)\\.github\\.pub$"
+    replace: "# \\1 SSH keys for https://github.com/\\2"
+  with_subelements:
+    - "{{ users }}"
+    - "github_accounts"
+    - skip_missing: true
+
 - name:
     "ensure SSH keys for users are present, fetched from associated GitHub
     accounts"

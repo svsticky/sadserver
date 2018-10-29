@@ -139,7 +139,6 @@ ANSIBLE_SSH_PIPELINING=true \
   ansible-playbook \
   --inventory \
     "${GIT_ROOT}/ansible/hosts" \
-  --ask-become-pass \
   --diff \
   --vault-id "${ENVIRONMENT}@${VAULT_PASS_SRC}" \
   --limit="${ENVIRONMENT}" \

@@ -53,6 +53,7 @@
       - "imagemagick"
       - "git"
       - "nodejs"
+      - "libmariadb-client-lgpl-dev-compat"
     state: "present"
   notify: "restart koala"
 

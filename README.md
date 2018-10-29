@@ -148,8 +148,11 @@ If you want to migrate from an existing server, a few additional tasks should be
 performed, which are explained in detail in [this guide][deployment-new-production].
 
 ##### On Digital Ocean:
-1. Create a droplet named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production).
+1. Create a droplet (ansible assumes Ubuntu 18.04) named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production).
 1. Assign a floating IP to the new droplet. Floating IP's are already in DNS, which avoids DNS cache problems.
+    - In the side bar click Networking
+    - Click on Floating IPs
+    - Next to the Floating ip click assign a droplet (if you didn't delete the droplet: click More > Reassign)
 
 
 ##### On your local terminal:
@@ -168,8 +171,8 @@ group_vars/production/vault.yml` (search for
 
 1. Bootstrap the host for either production or staging.
 `$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`
-You do not need to enter a SUDO password, but you do need to enter the correct Vault password.
-At the end of the process you will receive a newly generated SUDO password, which you will need in the next step.
+You do not need to enter a SUDO password, but you do need to enter the correct Vault password. (Can usually be found in bitwarden).
+At the end of the process you will receive a newly generated SUDO password, which you will need in the next step. (Save this in bitwarden for future reference).
 
 1. Run the main playbook for either production or staging.
 `$ ./scripts/run-playbook.sh (production|staging) main.yml`

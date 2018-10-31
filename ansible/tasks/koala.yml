@@ -35,12 +35,11 @@
     name:
       - "autoconf"
       - "bison"
+      - "acl"
+      - "libncurses5-dev"
+      - "libgdbm-dev"
       - "libyaml-dev"
       - "libreadline-dev"
-      - "libncurses5-dev"
-      - "libgdbm5"
-      - "libgdbm-dev"
-      - "acl"
     state: "absent"
   tags:
     - "packages"
@@ -53,7 +52,7 @@
       - "imagemagick"
       - "git"
       - "nodejs"
-      - "libmariadb-client-lgpl-dev-compat"
+      - "libgdbm5"
     state: "present"
   notify: "restart koala"
 

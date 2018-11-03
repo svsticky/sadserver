@@ -11,11 +11,6 @@
     finish_msg: |
       Now you can run the main playbook in the same way as this playbook, which
       will run under the ansible user we've just created.
-      The user ansible has the password:
-      {{ ansible_user_password.stdout }}
-      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      @@ ADD THE PASSWORD ABOVE TO THE IT-CROWD PASSWORD MANAGER @@
-      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   pre_tasks:
     # Checks if ansible user is already present
@@ -32,17 +27,13 @@
       when: "bootstrap_status is not changed"
 
   tasks:
-    - name: "generate random password"
-      shell: "openssl rand -base64 32"
-      register: "ansible_user_password"
-
     - name: "create ansible user"
       user:
         name: "ansible"
         groups: "sudo,adm"
         home: "{{ ansible_home_dir }}"
         shell: "/bin/bash"
-        password: "{{ ansible_user_password.stdout | password_hash('sha256') }}"
+        password: "{{ ansible_become_password | password_hash('sha256') }}"
         state: "present"
 
     - name: "create directory for ansible user's ssh keys"
@@ -63,5 +54,6 @@
         owner: "ansible"
         group: "ansible"
 
-    - debug:
+    - name: "print finish message"
+      debug:
         msg: "{{ finish_msg.split('\n') }}"

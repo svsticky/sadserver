@@ -89,7 +89,7 @@
     - name: "gunicorn"
       version: "19.9.0"
     - name: "pretix[mysql]"
-      version: "2.2.0"
+      version: "2.1.0"
     - name: "pretix-pages"
       version: "1.2.4"
     - name: "pretix-mollie"

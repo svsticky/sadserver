@@ -7,7 +7,7 @@ After=mysql.service
 OnFailure=backup-fail@all\x20MariaDB\x20databases.service
 
 [Service]
-Type=simple
+Type=oneshot
 User=root
 Group=root
 PrivateTmp=true

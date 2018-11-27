@@ -5,7 +5,7 @@ Description=Backup of the contents of all websites to AWS S3
 OnFailure=backup-fail@the\x20contents\x20of\x20all\x20websites.service
 
 [Service]
-Type=simple
+Type=oneshot
 User=root
 Group=root
 PrivateTmp=true

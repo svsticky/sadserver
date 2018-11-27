@@ -281,31 +281,11 @@
     # updated. Makes a backup of Koala's db before performing any operations on
     # the db.
   - block:
-      - name: "determine backup destination"
-        set_fact:
-          koala_backup_dest:
-            "/home/koala/koala-database-preupgrade-{{
-            ansible_date_time.date }}T{{ ansible_date_time.hour
-            }}{{ ansible_date_time.minute }}.sql"
-
-        # /home/koala/koala-database-upgrade-YYYY-MM-DDTHHmm.sql
-
-      - name: "make database backup"
-        mysql_db:
-          db:
-            "koala{% if koala_env.environment == 'development' %}-development{%
-            endif %}"
-          state: "dump"
-          target: "{{ koala_backup_dest }}"
-          login_user: "koala"
-          login_password: "{{ secret_mysql.koala.password }}"
-
-      - name: "download the backup"
-        fetch:
-          src: "{{ koala_backup_dest }}"
-          dest: "koala-backups/"
-          flat: true
-        when: "'staging' not in group_names"
+      - name: "make pre-upgrade database backup to S3"
+        systemd:
+          name: "backup-databases.service"
+          state: "started"
+        become_user: "root"
 
       - name: "run migration(s)"
         environment:

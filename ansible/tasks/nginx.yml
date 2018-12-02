@@ -21,13 +21,10 @@
     - "templates/etc/nginx/includes/*.j2"
   notify: "reload nginx"
 
-- name: "copy configuration files for nginx and php"
+- name: "copy general configuration file for nginx"
   template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
-  with_items:
-    - "etc/nginx/nginx.conf"
-    - "etc/php/7.2/fpm/php.ini"
+    src: "templates/etc/nginx/nginx.conf.j2"
+    dest: "/etc/nginx/nginx.conf"
   notify: "reload nginx"
 
 - name: "ensure stock nginx configuration is not present"
@@ -155,6 +152,37 @@
     state:
       "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
+- name: "create user for svsticky.nl (wordpress)"
+  user:
+    name: "svsticky-wordpress"
+    home: "/var/www/svsticky-wordpress"
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: "present"
+
+- name: "copy general configuration for php"
+  template:
+    src: "templates/{{ php_config }}.j2"
+    dest: "/{{ php_config }}"
+  vars:
+    php_config: "etc/php/7.2/fpm/php.ini"
+  notify: "reload php"
+
+- name: "delete default php-fpm pool"
+  file:
+    path: "/etc/php/7.2/fpm/pool.d/www.conf"
+    state: "absent"
+
+- name: "template php-fpm pool configurations"
+  template:
+    src: "templates/etc/php/7.2/fpm/pool.d/pool-template.conf.j2"
+    dest: "/etc/php/7.2/fpm/pool.d/pool-{{ item.name }}.conf"
+  with_items: "{{ websites }}"
+  when: "item.php_enabled | default(false)"
+  notify: "reload php"
+  loop_control:
+    label: "{{ item.name }}"
+
 # This task is used for websites which use the default nginx config, and need
 # its webroot to be created.
 - name: "create directories for regular websites"
@@ -192,6 +220,49 @@
     - item.name == canonical_hostname
   loop_control:
     label: "{{ item.name }}"
+
+- name: "temporary tasks for migrating svsticky's wordpress webroot"
+  block:
+    - name: "check if old webroot still exists"
+      stat:
+        path: "/var/www/commit/{{ canonical_hostname }}"
+      register: "svsticky_old_webroot"
+
+    - name:
+        "check if svsticky's wordpress data is already migrated"
+      stat:
+        path:
+          "/var/www/svsticky-wordpress/{{ canonical_hostname }}/wp-config.php"
+      register: "svsticky_new_webroot"
+
+    - name: "perform actual webroot migration, if not done already"
+      block:
+        - name: "migrate webroot of svsticky wordpress"
+          synchronize:
+            src: "/var/www/commit/{{ canonical_hostname }}"
+            dest: "/var/www/svsticky-wordpress/"
+            archive: true
+          delegate_to: "{{ inventory_hostname }}"
+
+        - name: "make svsticky wordpress use new database user"
+          lineinfile:
+            path:
+              "/var/www/svsticky-wordpress/\
+              {{ canonical_hostname }}/wp-config.php"
+            regexp: "^define\\('DB_USER', '.+'\\);"
+            line: "define('DB_USER', 'svsticky-wordpress');"
+            state: "present"
+
+        - name: "fix permissions on new svsticky wordpress webroot"
+          file:
+            path: "/var/www/svsticky-wordpress/{{ canonical_hostname }}"
+            owner: "www-data"
+            group: "svsticky-wordpress"
+            recurse: true
+            state: "directory"
+      when:
+        "svsticky_old_webroot.stat.exists and
+        not svsticky_new_webroot.stat.exists"
 
 - name: "copy nginx configurations for regular websites"
   template:

@@ -12,6 +12,7 @@
 websites:
   - name:
     user:
+    php_enabled:
     database:
     alternative_names:
     state:

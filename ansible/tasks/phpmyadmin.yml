@@ -19,7 +19,7 @@
   user:
     name: "phpmyadmin"
     home: "/var/www/phpmyadmin"
-    shell: "/bin/bash"
+    shell: "/usr/sbin/nologin"
     system: true
     state: "present"
 

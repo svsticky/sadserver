@@ -15,10 +15,14 @@ server {
 
   root /var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
 item.name }};
-  index index.php index.html index.htm;
+
+  index {{ 'index.php' if (item.php_enabled | default(false)) else '' }}
+    index.html index.htm;
 
   include includes/security-headers.conf;
-  include includes/php-parameters.conf;
+{{ '  include includes/php-parameters.conf;' if (item.php_enabled |
+default(false)) else '' }}
+
   {% if item.extra_includes is defined -%}
   {% for include in item.extra_includes %}include includes/{{ include }}.conf;
   {% endfor %}
@@ -38,6 +42,7 @@ item.name }};
   }
 
   location / {
-    try_files $uri $uri/ /index.php?q=$uri&$args;
+    try_files $uri $uri/{{ ' /index.php?q=$uri&$args' if (item.php_enabled |
+default(false)) else '' }} =404;
   }
 }

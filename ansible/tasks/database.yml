@@ -66,7 +66,8 @@
     # template
     command: >-
       mysql -NBe 'grant all privileges on {{ item.database }}.* to
-      `{{ item.database }}`@`localhost` identified via unix_socket;'
+      `{{ item.user | default(item.database) }}`@`localhost`
+      identified via unix_socket;'
     with_items: "{{ websites }}"
     when: *website_with_db
     loop_control:

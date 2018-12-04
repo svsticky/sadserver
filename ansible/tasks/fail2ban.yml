@@ -15,6 +15,7 @@
     - "etc/fail2ban/fail2ban.local"
     - "etc/fail2ban/jail.local"
     - "etc/fail2ban/filter.d/koala.conf"
+    - "etc/fail2ban/filter.d/koala404.conf"
   notify: "restart fail2ban"
 
 - name: "start and enable fail2ban"

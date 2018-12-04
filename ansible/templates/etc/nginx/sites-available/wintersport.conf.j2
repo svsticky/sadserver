@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+
+  server_name wintersport.{{ canonical_hostname }};
+
+  ssl_certificate      /etc/letsencrypt/live/wintersport.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/wintersport.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/wintersport.{{ canonical_hostname }}/chain.pem;
+
+  include includes/security-headers.conf;
+
+  return 301 https://docs.google.com/forms/d/14cd9a_dBpQ1GX4O0LK8Z8C8TZ7LhsFRkhN1ZIqN4hOk/edit;
+}

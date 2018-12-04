@@ -215,6 +215,8 @@
       dest: "savadaba.{{ canonical_hostname }}"
     - src: "svsticky"
       dest: "{{ canonical_hostname }}"
+    - src: "wintersport"
+      dest: "wintersport.{{ canonical_hostname }}"
   notify: "reload nginx"
   loop_control:
     label: "{{ item.dest }}"
@@ -241,6 +243,7 @@
   with_items:
     - "{{ canonical_hostname }}"
     - "savadaba.{{ canonical_hostname }}"
+    - "wintersport.{{ canonical_hostname }}"
   notify: "reload nginx"
 
 - name: "create htpasswd.d directory for basic auth files"

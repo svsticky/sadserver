@@ -45,14 +45,15 @@
 
 - name: "copy nginx files for metrics site"
   template:
-    src: "templates/{{ item }}.conf.j2"
-    dest: "/{{ item }}.{{ canonical_hostname }}.conf"
+    src: "templates/{{ item.path }}.conf.j2"
+    dest: "/{{ item.path }}.{{ canonical_hostname }}.conf"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
   with_items:
-    - "etc/nginx/sites-available/metrics"
-    - "etc/nginx/htpasswd.d/metrics"
-  tags:
-    - "monitoring"
-    - "nginx"
+    - path: "etc/nginx/sites-available/metrics"
+    - path: "etc/nginx/htpasswd.d/metrics"
+      group: "www-data"
+      mode: "640"
   notify: "reload nginx"
 
 - name: "enable nginx proxy config for metrics site"

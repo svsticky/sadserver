@@ -23,6 +23,7 @@
   template:
     src: "templates/var/www/phpmyadmin/{{ filename }}.j2"
     dest: "/var/www/phpmyadmin.{{ canonical_hostname }}/{{ filename }}"
+    mode: "600"
   vars:
     filename: "config.inc.php"
 

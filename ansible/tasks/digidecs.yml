@@ -21,7 +21,7 @@
     dest: "/var/www/commit/digidecs.{{ canonical_hostname }}/config.php"
     owner: "www-data"
     group: "commit"
-    mode: "0744"
+    mode: "660"
 
 - name: "run composer"
   composer:

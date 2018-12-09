@@ -14,10 +14,11 @@
 - name: "create/delete users"
   user:
     name: "{{ item.name }}"
-    groups: "{%if item.admin %}sudo,adm{% else %}committee{% endif %}"
-    state: "{{ item.state }}"
+    groups: "{% if item.admin %}sudo,adm{% else %}committee{% endif %}"
+    shell: "{{ '/bin/bash' if item.admin else omit }}"
     home: "{{ item.home_prefix }}/{{ item.name }}"
     move_home: true
+    state: "{{ item.state }}"
   with_items:
     - "{{ users }}"
   loop_control:
@@ -31,22 +32,6 @@
   when:
     # List is evaluated as logical AND
     - item.admin != true
-    - item.state == 'present'
-  with_items:
-    - "{{ users }}"
-  loop_control:
-    label: "{{ item.name }}"
-
-# This is set separately, so it's not enabled for committee users, who should be
-# only able to use SFTP.
-- name: "set shell for admins"
-  user:
-    name: "{{ item.name }}"
-    shell: "/bin/bash"
-    state: "{{ item.state }}"
-  when:
-    # List is evaluated as logical AND
-    - item.admin == true
     - item.state == 'present'
   with_items:
     - "{{ users }}"

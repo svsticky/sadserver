@@ -51,24 +51,42 @@
         - item.custom_config is undefined
 
     - name: "delete database(s)"
-      command: "mysql -NBe 'DROP DATABASE IF EXISTS {{ item.database }};'"
+      command: "mysql -NBe 'DROP DATABASE IF EXISTS {{ item.database.name }};'"
       with_items: "{{ websites }}"
       when:
         # List is evaluated as logical AND
-        - item.state == "absent"
-        - item.database is defined
+        - "item.database is defined"
+        - "item.state == 'absent' or item.database.state == 'absent'"
+      loop_control:
+        label: "{{ item.database | default(item.name) }}"
 
     - name: "delete database user(s)"
-      command: "mysql -NBe 'DROP USER {{ item.database }}@localhost;'"
+      command: "mysql -NBe 'DROP USER IF EXISTS {{ db_user }}@localhost;'"
+      vars:
+        db_user: "{{ item.user | default(item.database.name) }}"
       with_items: "{{ websites }}"
-      # Added because MySQL will error if user is already deleted. "DROP USER
-      # IF EXISTS" is added in MariaDB 10.1.3, but we're not on that version
-      # yet.
-      failed_when: false
       when:
         # List is evaluated as logical AND
-        - item.state == "absent"
-        - item.database is defined
+        - "item.database is defined"
+        - "item.state == 'absent' or item.database.state == 'absent'"
+      loop_control:
+        label:
+          website: "{{ item.name }}"
+
+    - name: "delete extra manual database user(s)"
+      command:
+        "mysql -NBe 'DROP USER IF EXISTS {{ item.1.name }}@localhost;'"
+      with_subelements:
+        - "{{ websites }}"
+        - "database.extra_manual_users"
+        - skip_missing: true
+      when:
+        "item.0.state == 'absent' or item.0.database.state == 'absent' or
+        item.1.state == 'absent'"
+      loop_control:
+        label:
+          website: "{{ item.0.name }}"
+          database_user: "{{ item.1 }}"
 
     - debug:
         msg:

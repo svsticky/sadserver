@@ -48,30 +48,45 @@
       - "drop database if exists test;"
 
   - name: "create website databases"
-    command: "mysql -NBe 'create database if not exists {{ item.database }} {{ extra }};'"
+    command:
+      "mysql -NBe 'create database if not exists
+      {{ item.database.name }} {{ extra }};'"
     vars:
-      extra: "{{ item.database_extra | default('') }}"
+      extra: "{{ item.database.extra_creation_params | default('') }}"
     with_items: "{{ websites }}"
     when: &website_with_db
-      # List is evaluated as logical AND
-      - item.state == "present"
-      - item.database is defined
+      "item.database is defined and item.database.state == 'present' and
+      item.state == 'present'"
     loop_control:
-      label: "{{ item.name }}"
+      label: "{{ item.database if item.database is defined else item.name }}"
 
-  - name: "create website database users"
-    # Using the bracket syntax to refer to the dict, in order to dynamically
-    # construct variable names. Link:
-    # https://stackoverflow.com/questions/40774205/ansible-nested-variables-in-
-    # template
+  - name: "create default users for website databases"
     command: >-
-      mysql -NBe 'grant all privileges on {{ item.database }}.* to
-      `{{ item.user | default(item.database) }}`@`localhost`
-      identified via unix_socket;'
+      mysql -NBe 'grant all privileges on {{ item.database.name }}.* to
+      `{{ db_user }}`@`localhost` identified via unix_socket;'
+    vars:
+      db_user:
+        "{{ item.user if item.user is defined else item.database.name }}"
     with_items: "{{ websites }}"
     when: *website_with_db
     loop_control:
-      label: "{{ item.name }}"
+      label:
+        website: "{{ item.name }}"
+
+  - name: "create extra users for manual use of website databases"
+    command: >-
+      mysql -NBe 'grant all privileges on {{ item.0.database.name }}.* to
+      `{{ item.1.name }}`@`localhost` identified via mysql_native_password
+      using "{{ secret_mysql[item.1.name]['hash'] }}";'
+    with_subelements:
+      - "{{ websites }}"
+      - "database.extra_manual_users"
+      - skip_missing: true
+    when: "item.0.state == 'present' and item.1.state == 'present'"
+    loop_control:
+      label:
+        website: "{{ item.0.name }}"
+        database_user: "{{ item.1 }}"
 
   tags:
     - "database"

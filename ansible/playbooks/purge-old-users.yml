@@ -21,6 +21,13 @@
         that:
           - "confirm == 'obliteration'"
 
+    - name: "delete absent users"
+      user:
+        name: "{{ item.name }}"
+        state: "absent"
+      with_items: "{{ users }}"
+      when: "item.state == 'absent'"
+
     - name: "delete home directory of absent users"
       file:
         path:

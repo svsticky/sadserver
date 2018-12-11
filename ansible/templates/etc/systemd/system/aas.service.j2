@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Run aas server (webhook listener)
+# OnFailure=TODO
+
+[Service]
+Type=simple
+User=aas
+Group=aas
+PrivateTmp=true
+ExecStart=/var/www/aas/{{ canonical_hostname }}/.venv/bin/python \
+    /var/www/aas/{{ canonical_hostname }}/main.py

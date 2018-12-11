@@ -1,9 +1,16 @@
 --- 
-- name: "make sure dependencies are present"
-  apt:
-    name:
-      - "python-virtualenv"
+- name: "create aas user"
+  user:
+    name: "aas"
     state: "present"
+    system: true
+    home: "/var/www/aas"
+    shell: "/bin/bash"
+
+- name: "make sure dependencies are present"
+  pip:
+    name: "pipenv"
+    args: "--user"
 
 - name:
     "clone aas repository"
@@ -19,4 +26,9 @@
     src: "templates/var/www/aas/.env.j2"
     dest: "/var/www/aas/{{ canonical_hostname }}/.env"
 
-# TODO: do pipenv install
+- name: "pipenv create virtual env and install aas"
+  command: "/var/www/aas/.local/bin/pipenv install"
+  args:
+    chdir: "/var/www/aas/{{ canonical_hostname }}"
+  environment:
+    PIPENV_VENV_IN_PROJECT: "1"

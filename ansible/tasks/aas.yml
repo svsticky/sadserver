@@ -32,3 +32,10 @@
     chdir: "/var/www/aas/{{ canonical_hostname }}"
   environment:
     PIPENV_VENV_IN_PROJECT: "1"
+
+- name: "run aas service"
+  systemd:
+    unit: "aas.service"
+    state: "running"
+    enabled: true
+    daemon-reload: true

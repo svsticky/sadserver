@@ -9,9 +9,14 @@
     "clone aas repository"
   git:
     repo: "https://github.com/svsticky/aas.git"
-    # TODO: deploy directory
-    dest: "" 
+    dest: "/var/www/aas/{{ canonical_hostname }}" 
     version: "master"
-  diff: false  
+  diff: false
+
+- name:
+    "template environment file for aas"
+  template:
+    src: "templates/var/www/aas/.env.j2"
+    dest: "/var/www/aas/{{ canonical_hostname }}/.env"
 
 # TODO: do pipenv install

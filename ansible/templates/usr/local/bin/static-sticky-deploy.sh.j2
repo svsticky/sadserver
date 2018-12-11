@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+#!/bin/sh
+
+deploy_path="/var/www/static-sticky/{{ canonical_hostname }}"
+
+cd $deploy_path
+
+git pull
+
+npm install
+npm run build

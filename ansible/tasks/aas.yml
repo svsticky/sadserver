@@ -4,17 +4,14 @@
     name:
       - "python-virtualenv"
     state: "present"
-  become: true
 
 - name:
     "clone aas repository"
   git:
     repo: "https://github.com/svsticky/aas.git"
-    # TODO: which directory should aas be deployed in?
-    dest: "/var/www/itcrowd/aas.{{ canonical_hostname }}"
+    # TODO: deploy directory
+    dest: "" 
     version: "master"
-  diff: false
-
-# TODO: fill environment
+  diff: false  
 
 # TODO: do pipenv install

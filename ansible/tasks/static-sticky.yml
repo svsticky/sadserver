@@ -1,0 +1,14 @@
+---
+- name:
+    "clone static-sticky repository"
+  git:
+    repo: "https://github.com/svsticky/static-sticky.git"
+    dest: "/var/www/static-sticky/{{ canonical_hostname }}"
+    version: "master"
+  diff: false  
+
+- name:
+    "template environment file for static-sticky"
+  template:
+    src: "templates/var/www/static-sticky/static-sticky/.env.j2"
+    dest: "/var/www/static-sticky/{{ canonical_hostname }}/.env"

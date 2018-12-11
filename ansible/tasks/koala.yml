@@ -30,6 +30,7 @@
   tags:
     - "koala"
 
+# This task can be deleted after it has been run once.
 - name: "ensure ruby compilation dependencies are installed"
   apt:
     name:
@@ -45,10 +46,10 @@
     - "packages"
     - "ruby"
     - "koala"
- 
+
 - name: "ensure koala dependencies are installed"
   apt:
-    name: 
+    name:
       - "imagemagick"
       - "git"
       - "nodejs"
@@ -72,6 +73,17 @@
    state: "present"
   notify: "restart koala"
 
+- name: "ensure ruby is installed"
+  apt:
+    name:
+      - "ruby=1:{{ koala.ruby_version }}"
+      - "ruby-dev=1:{{ koala.ruby_version }}"
+    state: "present"
+  notify: "restart koala"
+  tags:
+    - "ruby"
+    - "koala"
+
 - name: "ensure koala service file is present"
   template:
     src: "templates/{{ path }}.j2"
@@ -82,94 +94,37 @@
     - "systemctl daemon-reload"
     - "restart koala"
 
-- name: "ensure ruby is installed"
-  apt:
-    name: "ruby=1:{{ koala.ruby_version }}"
-    state: "present"
-  notify: "restart koala"
-  tags:
-    - "ruby"
-    - "koala"
+# This task van be deleted after running once
+- name: "delete rbenv specific files"
+  file:
+    path: "{{ item }}"
+    state: "absent"
+  with_items:
+    - "/home/koala/.rbenv"
+    - "/var/www/koala.{{ canonical_hostname }}/.rbenv-vars"
 
-# As koala:
+# Wrapped in block because otherwise templating is done before skipping task,
+# which will fail in check mode
 - block:
-  # Only ensure repository is cloned, don't checkout yet
-  - name: "clone repository of rbenv + plugins"
-    git:
-      repo: "https://github.com/rbenv/{{ item.repo }}.git"
-      dest: "{{ item.install_path }}"
-      update: false
-    diff: false
-    with_items: "{{ koala.dependencies }}"
-
-  - name: "retrieve all version numbers of rbenv + plugins"
-    shell: "git fetch --tags"
-    args:
-      chdir: "{{ item.install_path }}"
-    register: "rbenv_fetch"
-    changed_when: rbenv_fetch.stdout != ""
-    with_items: "{{ koala.dependencies }}"
-    loop_control:
-      label: "{{ item.repo }}"
-
-  - name: "determine latest version number of rbenv + plugins"
-    shell: "git describe --tags $(git rev-list --tags --max-count=1)"
-    args:
-      chdir: "{{ item.install_path }}"
-    register: "rbenv_versions"
-    # The next task already shows if there is actually a change
-    changed_when: false
-    with_items: "{{ koala.dependencies }}"
-    loop_control:
-      label: "{{ item.repo }}"
-
-  # Wrapped in block because otherwise templating is done before skipping task,
-  # which will fail in check mode
-  - block:
-    - name: "install newest release of rbenv + plugins"
-      git:
-        repo: "https://github.com/rbenv/{{ item.0.repo }}"
-        dest: "{{ item.0.install_path }}"
-        version: "{{ item.1.stdout }}"
-      diff: false
-      when:
-      # List is evaluated as logical AND
-      # Don't run in check mode because previous "git fetch" task also can't be
-      # run in check mode
-      - not ansible_check_mode
-      - item.1.item.repo == item.0.repo
-      with_nested:
-        - "{{ koala.dependencies }}"
-        - "{{ rbenv_versions.results }}"
-      loop_control:
-        label: "{{ item.0.repo }}"
-      notify: "restart koala"
-
   - name: "ensure environment variables are set in .bashrc"
     blockinfile:
       dest: "/home/koala/.bashrc"
       insertafter: "EOF"
       create: true
-      block: |
-        export PATH="$HOME/.rbenv/bin:$PATH"
-        eval "$(rbenv init -)"
+      block: 'PATH="$HOME/.gem/ruby/{{ koala.ruby_version }}/bin:$PATH"'
     notify: "restart koala"
     tags:
       - "koala"
       - "ruby"
 
   - name: "ensure bundler is installed"
-    environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell:
-      'eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem install
-      bundler'
+      'gem install --user-install bundler'
     args:
       executable: "/bin/bash"
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates:
-        "/home/koala/.rbenv/versions/{{ koala.ruby_version }}/lib/ruby/gems/{{
-        koala.ruby_version }}/gems/bundler-*"
+        "/home/koala/.gem/ruby/{{ koala.ruby_version }}/gems/bundler-*"
     tags:
       - "ruby"
       - "koala"
@@ -223,19 +178,10 @@
     tags:
       - "koala"
 
-  - name: "ensure .rbenv-vars is present"
-    template:
-      src: "templates/var/www/koala/.rbenv-vars.j2"
-      dest: "/var/www/koala.{{ canonical_hostname }}/.rbenv-vars"
-      mode: "0700"
-    notify: "restart koala"
-    tags:
-      - "koala"
-
   - name: "ensure gem dependencies are installed"
     environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; bundle install'
+      RAILS_ENV: "{{ koala_env.environment }}"
+    shell: 'bundle install --path ~/.gem/ruby/{{ koala.ruby_version }}/gems'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_gem_result"
@@ -246,8 +192,8 @@
 
   - name: "ensure tmp directories exist"
     environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rails tmp:create'
+      RAILS_ENV: "{{ koala_env.environment }}"
+    shell: 'rails tmp:create'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
@@ -266,8 +212,8 @@
 
   - name: "ensure assets are precompiled"
     environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rails assets:precompile'
+      RAILS_ENV: "{{ koala_env.environment }}"
+    shell: 'rails assets:precompile'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_assets_result"
@@ -285,11 +231,8 @@
         become_user: "root"
 
       - name: "run migration(s)"
-        environment:
-          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell:
-          'eval "$(rbenv init - )"; bin/rails
-          RAILS_ENV={{ koala_env.environment }} db:migrate'
+          'bin/rails RAILS_ENV={{ koala_env.environment }} db:migrate'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
@@ -305,6 +248,18 @@
 
   become: true
   become_user: "koala"
+
+- name: "ensure environment vars file is present"
+  template:
+    src: "templates/var/www/koala/.env.j2"
+    dest: "/var/www/koala.{{ canonical_hostname }}/.env"
+    mode: "0700"
+    owner: "koala"
+    group: "koala"
+  notify: "restart koala"
+  tags:
+    - "koala"
+
 
 - name: "ensure koala's recurring services+timers are present"
   template:

@@ -1,0 +1,20 @@
+--- 
+- name: "make sure dependencies are present"
+  apt:
+    name:
+      - "python-virtualenv"
+    state: "present"
+  become: true
+
+- name:
+    "clone aas repository"
+  git:
+    repo: "https://github.com/svsticky/aas.git"
+    # TODO: which directory should aas be deployed in?
+    dest: "/var/www/itcrowd/aas.{{ canonical_hostname }}"
+    version: "master"
+  diff: false
+
+# TODO: fill environment
+
+# TODO: do pipenv install

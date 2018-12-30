@@ -62,11 +62,13 @@ case "${SOURCE}" in
           FILE_NAME="${FILE_TITLE}.tar.gz"
 
           # Some directories excluded to save space, since they only contain
-          # binaries/cache anyway.
+          # binaries/cache anyway. The awscli config directory is excluded so
+          # we can never restore production credentials to staging.
           upload_backup_to_s3 < <(tar \
             --exclude='home/koala/.rbenv' \
             --exclude='home/koala/.bundle' \
             --exclude='home/koala/.cache' \
+            --exclude='/home/ansible/.aws' \
             -c -f - -C / home \
             | gzip -9)
           ;;

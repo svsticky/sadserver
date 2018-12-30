@@ -31,8 +31,7 @@
   tasks:
     - name: "check that confirmation is given"
       assert:
-        that:
-          - "confirm == 'obliteration'"
+        that: "confirm == 'obliteration'"
 
     # We only need this when running on staging, to access
     # the AWS bucket later that has the production backups
@@ -48,30 +47,41 @@
           state: "directory"
       register: "backup_restore_tmp_dir"
 
-    - name: "find latest backups"
-      shell:
-        # This parses the output of awscli to get the filenames of the backups
-        # that are present, sorts them alphabetically (which means by date
-        # because of our naming system), and takes the top one (so most recent)
-        "aws s3 ls s3://sticky-automatic-backups/{{ item }}/
-        | awk -F' ' '{print $NF}'
-        | sort -r
-        | head -n1"
-      register: "backup_filenames"
-      with_items:
-        - "admins"
-        - "websites"
-        - "websites/databases"
+    - name: "connect to S3 using appropriate credentials"
+      environment:
+        AWS_ACCESS_KEY_ID:
+          "{{ production.vault_secret_backup_aws.access_key if 'staging' in
+          group_names else omit }}"
+        AWS_SECRET_ACCESS_KEY:
+          "{{ production.vault_secret_backup_aws.secret_key if 'staging' in
+          group_names else omit }}"
+      block:
+        - name: "find latest backups"
+          shell:
+            # This parses the output of awscli to get the filenames of the backups
+            # that are present, sorts them alphabetically (which means by date
+            # because of our naming system), and takes the top one (so most recent)
+            "aws s3 ls s3://sticky-automatic-backups/{{ item }}/
+            | awk -F' ' '{print $NF}'
+            | sort -r
+            | head -n1"
+          changed_when: false
+          check_mode: false
+          register: "backup_filenames"
+          with_items:
+            - "admins"
+            - "websites"
+            - "websites/databases"
 
-    - name: "download latest backups"
-      command:
-        "aws s3 cp s3://sticky-automatic-backups/\
-        {{ item.item }}/{{ item.stdout }}
-        {{ backup_restore_tmp_dir.path }}/{{ item.stdout }}"
-      register: "downloaded_items"
-      with_items: "{{ backup_filenames.results }}"
-      loop_control:
-        label: "/{{ item.item }}/{{ item.stdout }}"
+        - name: "download latest backups"
+          command:
+            "aws s3 cp s3://sticky-automatic-backups/\
+            {{ item.item }}/{{ item.stdout }}
+            {{ backup_restore_tmp_dir.path }}/{{ item.stdout }}"
+          register: "downloaded_items"
+          with_items: "{{ backup_filenames.results }}"
+          loop_control:
+            label: "/{{ item.item }}/{{ item.stdout }}"
 
     - name: "unpack admins and website backups"
       unarchive:

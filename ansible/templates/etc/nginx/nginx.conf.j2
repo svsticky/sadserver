@@ -72,6 +72,27 @@ http {
   error_log /var/log/nginx/error.log crit;
 
   ##
+  # Execut referer tracking
+  ##
+
+  # Enables logging Referer header to a separate logfile, if the Referer is not
+  # under *.execut.nl AND the HTTP Do-not-track header is absent or set to
+  # allow tracking (0).
+  # Adapted from the docs at:
+  # http://nginx.org/en/docs/http/ngx_http_log_module.html#access_log
+  # Note that this value is only evaluated if the execut-referer-tracking
+  # include is used.
+
+  map $http_dnt$http_referer $do_log_referer {
+      ~^1 0;
+      ~^0?https?:\/\/(.+\.)*execut\.nl 0;
+      default 1;
+  }
+
+  log_format referer_tracking escape=json
+      '$http_referer\t$scheme://$host$request_uri\t$time_iso8601\t$remote_addr';
+
+  ##
   # GZip Settings
   ##
   gzip on;

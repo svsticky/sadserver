@@ -19,6 +19,10 @@ item.name }};
 
   include includes/security-headers.conf;
   include includes/php-parameters.conf;
+  {% if item.extra_includes is defined -%}
+  {% for include in item.extra_includes %}include includes/{{ include }}.conf;
+  {% endfor %}
+  {% endif %}
 
   location ~* /.git/ {
     deny all;

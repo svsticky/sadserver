@@ -48,7 +48,7 @@
       when:
         # List is evaluated as logical AND
         - item.state == "absent"
-        - item.custom_config is undefined
+        - "item.custom_config is undefined or not item.custom_config"
 
     - name: "delete database(s)"
       command: "mysql -NBe 'DROP DATABASE IF EXISTS {{ item.database.name }};'"

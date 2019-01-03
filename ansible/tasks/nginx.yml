@@ -198,7 +198,7 @@
   when:
     # List is evaluated as logical AND
     - item.state == "present"
-    - item.custom_config is undefined
+    - "item.custom_config is undefined or not item.custom_config"
   loop_control:
     label: "{{ item.name }}"
 
@@ -272,7 +272,7 @@
   when:
     # List is evaluated as logical AND
     - item.state == "present"
-    - item.custom_config is undefined
+    - "item.custom_config is undefined or not item.custom_config"
   notify: "reload nginx"
   loop_control:
     label: "{{ item.name }}"
@@ -301,7 +301,7 @@
   when:
     # List is evaluated as logical AND
     - item.state == "present"
-    - item.custom_config is undefined
+    - "item.custom_config is undefined or not item.custom_config"
   notify: "reload nginx"
   loop_control:
     label: "{{ item.name }}"

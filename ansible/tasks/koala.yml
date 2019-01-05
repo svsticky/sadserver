@@ -161,21 +161,19 @@
       - "ruby"
       - "koala"
 
-  - name: "ensure bundler is installed"
+  - name: "ensure rubygems is updated"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell:
-      'eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem install
-      bundler'
+      'eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem update
+      --system'
     args:
       executable: "/bin/bash"
       chdir: "/var/www/koala.{{ canonical_hostname }}"
-      creates:
-        "/home/koala/.rbenv/versions/{{ koala.ruby_version }}/lib/ruby/gems/{{
-        koala.ruby_version }}/gems/bundler-*"
-    tags:
-      - "ruby"
-      - "koala"
+    register: "rubygems_update"
+    changed_when:
+      "'Latest version already installed.' not in
+      rubygems_update.stdout"
 
   - name: "ensure koala has a ssh directory"
     file:

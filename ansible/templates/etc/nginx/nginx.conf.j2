@@ -86,6 +86,7 @@ http {
   map $http_dnt$http_referer $do_log_referer {
       ~^1 0;
       ~^0?https?:\/\/(.+\.)*execut\.nl 0;
+      ~^0?$ 0;
       default 1;
   }
 

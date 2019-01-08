@@ -89,8 +89,16 @@ http {
       default 1;
   }
 
+  map $http_dnt $tracking_optout {
+      1 1;
+      0 0;
+      default 0;
+  }
+
   log_format referer_tracking escape=json
-      '$http_referer\t$scheme://$host$request_uri\t$time_iso8601\t$remote_addr';
+      '$http_referer\t$scheme://$host$request_uri\t$time_iso8601\t$remote_addr$http_user_agent';
+
+  log_format ip_address '$remote_addr$http_user_agent';
 
   ##
   # GZip Settings

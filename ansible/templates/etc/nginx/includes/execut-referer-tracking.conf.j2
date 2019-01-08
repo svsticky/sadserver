@@ -4,3 +4,6 @@
 
 access_log /var/log/nginx/execut_referer_tracking referer_tracking
     if=$do_log_referer;
+
+access_log /var/log/nginx/execut_referer_tracking_optout ip_address
+    if=$tracking_optout;

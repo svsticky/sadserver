@@ -76,30 +76,20 @@ http {
   ##
 
   # Enables logging Referer header to a separate logfile, if the Referer is not
-  # under *.execut.nl AND the HTTP Do-not-track header is absent or set to
-  # allow tracking (0).
+  # under *.execut.nl.
   # Adapted from the docs at:
   # http://nginx.org/en/docs/http/ngx_http_log_module.html#access_log
   # Note that this value is only evaluated if the execut-referer-tracking
   # include is used.
 
-  map $http_dnt$http_referer $do_log_referer {
-      ~^1 0;
-      ~^0?https?:\/\/(.+\.)*execut\.nl 0;
-      ~^0?$ 0;
+  map $http_referer $do_log_referer {
+      ~^$ 0;
+      ~^https?:\/\/(.+\.)*execut\.nl 0;
       default 1;
   }
 
-  map $http_dnt $tracking_optout {
-      1 1;
-      0 0;
-      default 0;
-  }
-
   log_format referer_tracking escape=json
-      '$http_referer\t$scheme://$host$request_uri\t$time_iso8601\t$remote_addr$http_user_agent';
-
-  log_format ip_address '$remote_addr$http_user_agent';
+      '$http_referer\t$scheme://$host$request_uri\t$time_iso8601';
 
   ##
   # GZip Settings

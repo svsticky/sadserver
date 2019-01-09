@@ -1,0 +1,72 @@
+---
+- hosts: "all"
+  remote_user: "ansible"
+  force_handlers: true
+  become: true
+  become_user: "root"
+
+  vars_prompt:
+    - name: "confirmation"
+      default: "n"
+      prompt: "Are you sure? 'Yes' to continue."
+      private: false
+
+  tasks:
+    - assert:
+      that:
+        - "confirmation == 'Yes'"
+
+    - name: "enable koala's maintenance mode"
+      include_tasks: "playbooks/koala/.maintenance-on.yml"
+
+    - name: "make pre-upgrade database backup to S3"
+      systemd:
+        name: "backup-databases.service"
+        state: "started"
+
+    - name: "make pre-upgrade file backup to S3"
+      systemd:
+        name: "backup-websites.service"
+        state: "started"
+
+    - name: "update Koala code"
+      git:
+        repo: "git@github.com:svsticky/constipated-koala.git"
+        dest: "/var/www/koala.{{ canonical_hostname }}"
+        version: "{{ koala_env.git_ref }}"
+      diff: false
+
+    - block:
+      - name: "install dependencies"
+        environment:
+          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+        shell: 'eval "$(rbenv init - )"; bundle install'
+        args:
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+        register: "koala_gem_result"
+        changed_when: "'Installing' in koala_gem_result.stdout"
+
+      - name: "run Koala migration"
+        environment:
+          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+        shell:
+          'eval "$(rbenv init - )"; bin/rails
+          RAILS_ENV={{ koala_env.environment }} db:migrate'
+        args:
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+          executable: "/bin/bash"
+
+      - name: "parse Paperclip files"
+        environment:
+          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+        shell:
+          'eval "$(rbenv init - )"; bin/rails
+          RAILS_ENV={{ koala_env.environment }} storage:parse'
+        args:
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+          executable: "/bin/bash"
+
+      become_user: "koala"
+
+    - name: "disable koala's maintenance mode"
+      include_tasks: "playbooks/koala/.maintenance-off.yml"

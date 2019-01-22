@@ -24,3 +24,8 @@ MOLLIE_VERSION=v1
 # Other
 RAILS_ENV={{ koala_env.environment }}
 RAILS_MAX_THREADS={{ koala.threads }}
+
+# PXL
+PXL_UID={{ secret_oauth2_proxy.client_id }}
+PXL_SECRET={{ secret_oauth2_proxy.client_secret }}
+PXL_REDIRECT_URI=https://photos.{{ canonical_hostname }}/oauth2/callback

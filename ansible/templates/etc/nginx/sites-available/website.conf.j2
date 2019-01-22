@@ -24,6 +24,15 @@ item.name }};
   {% endfor %}
   {% endif %}
 
+  {% if item.custom_404 is defined and item.custom_404 and item.user is defined -%}
+  error_page 404 /404.html;
+  location = /404.html {
+    root /var/www/{{ item.user }}/custom-errors;
+    internal;
+  }
+
+  {% endif -%}
+
   location ~* /.git/ {
     deny all;
   }

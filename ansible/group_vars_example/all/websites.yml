@@ -15,3 +15,5 @@ websites:
     database:
     alternative_names:
     state:
+    extra_includes:
+    custom_404:

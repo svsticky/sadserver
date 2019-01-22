@@ -275,6 +275,13 @@
     changed_when: koala_assets_result.stdout.find("Already up-to-date.") == -1
     notify: "restart koala"
 
+  - name: "add credentials for pxl:create_application"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: 'eval "$(rbenv init - )"; rails pxl:precompile'
+    args:
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+
     # This block only runs when Koala was already present, and needs to be
     # updated. Makes a backup of Koala's db before performing any operations on
     # the db.

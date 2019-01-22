@@ -1,30 +1,30 @@
 --- 
-- name: "make sure dependencies are present"
+- name: "install pipenv"
   pip:
     name: "pipenv"
-    args: "--user"
-  become_user: "commit"
 
-- name:
-    "clone aas repository"
-  git:
-    repo: "https://github.com/svsticky/aas.git"
-    dest: "/var/www/commit/aas.{{ canonical_hostname }}" 
-    version: "master"
-  diff: false
+- block:
+  - name:
+      "clone aas repository"
+    git:
+      repo: "https://github.com/svsticky/aas.git"
+      dest: "/var/www/commit/aas.{{ canonical_hostname }}" 
+      version: "master"
+    diff: false
 
-- name:
-    "template environment file for aas"
-  template:
-    src: "templates/var/www/aas/.env.j2"
-    dest: "/var/www/commit/aas.{{ canonical_hostname }}/.env"
+  - name:
+      "template environment file for aas"
+    template:
+      src: "templates/var/www/aas/.env.j2"
+      dest: "/var/www/commit/aas.{{ canonical_hostname }}/.env"
 
-- name: "pipenv create virtual env and install aas"
-  command: "/var/www/commit/.local/bin/pipenv install"
-  args:
-    chdir: "/var/www/commit/aas.{{ canonical_hostname }}"
-  environment:
-    PIPENV_VENV_IN_PROJECT: "1"
+  - name: "pipenv create virtual env and install aas"
+    command: "pipenv install"
+    args:
+      chdir: "/var/www/commit/aas.{{ canonical_hostname }}"
+    environment:
+      PIPENV_VENV_IN_PROJECT: "1"
+  become_user: commit
 
 - name:
     "copy systemd unit"
@@ -35,6 +35,6 @@
 - name: "run aas service"
   systemd:
     unit: "aas.service"
-    state: "running"
+    state: "started"
     enabled: true
     daemon-reload: true

@@ -1,14 +1,41 @@
 ---
-- name:
-    "clone static-sticky repository"
-  git:
-    repo: "https://github.com/svsticky/static-sticky.git"
-    dest: "/var/www/commit/alpha.{{ canonical_hostname }}"
-    version: "master"
-  diff: false  
 
-- name:
-    "template environment file for static-sticky"
-  template:
-    src: "templates/var/www/static-sticky/static-sticky/.env.j2"
-    dest: "/var/www/commit/alpha.{{ canonical_hostname }}/.env"
+- block:
+
+  - name:
+      "clone static-sticky repository"
+    git:
+      repo: "https://github.com/svsticky/static-sticky.git"
+      dest: "/var/www/commit/alpha.{{ canonical_hostname }}"
+      version: "master"
+    diff: false  
+
+  - name:
+      "template environment file for static-sticky"
+    template:
+      src: "templates/var/www/static-sticky/static-sticky/.env.j2"
+      dest: "/var/www/commit/alpha.{{ canonical_hostname }}/.env"
+
+  - name: "clone NVM"
+    git:
+      repo: "https://github.com/creationix/nvm.git"
+      dest: "/var/www/commit/.nvm"
+      depth: 1
+
+  - name: "install node version"
+    shell: |
+      . /var/www/commit/.nvm/nvm.sh
+      nvm install
+    args:
+      chdir: "/var/www/commit/alpha.{{ canonical_hostname }}"
+      executable: "/bin/bash"
+
+  - name: "run npm install"
+    shell: |
+      . /var/www/commit/.nvm/nvm.sh
+      npm install
+    args:
+      chdir: "/var/www/commit/alpha.{{ canonical_hostname }}"
+      executable: "/bin/bash"
+
+  become_user: "commit"

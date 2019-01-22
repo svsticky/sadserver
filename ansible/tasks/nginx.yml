@@ -221,49 +221,6 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: "temporary tasks for migrating svsticky's wordpress webroot"
-  block:
-    - name: "check if old webroot still exists"
-      stat:
-        path: "/var/www/commit/{{ canonical_hostname }}"
-      register: "svsticky_old_webroot"
-
-    - name:
-        "check if svsticky's wordpress data is already migrated"
-      stat:
-        path:
-          "/var/www/svsticky-wordpress/{{ canonical_hostname }}/wp-config.php"
-      register: "svsticky_new_webroot"
-
-    - name: "perform actual webroot migration, if not done already"
-      block:
-        - name: "migrate webroot of svsticky wordpress"
-          synchronize:
-            src: "/var/www/commit/{{ canonical_hostname }}"
-            dest: "/var/www/svsticky-wordpress/"
-            archive: true
-          delegate_to: "{{ inventory_hostname }}"
-
-        - name: "make svsticky wordpress use new database user"
-          lineinfile:
-            path:
-              "/var/www/svsticky-wordpress/\
-              {{ canonical_hostname }}/wp-config.php"
-            regexp: "^define\\('DB_USER', '.+'\\);"
-            line: "define('DB_USER', 'svsticky-wordpress');"
-            state: "present"
-
-        - name: "fix permissions on new svsticky wordpress webroot"
-          file:
-            path: "/var/www/svsticky-wordpress/{{ canonical_hostname }}"
-            owner: "www-data"
-            group: "svsticky-wordpress"
-            recurse: true
-            state: "directory"
-      when:
-        "svsticky_old_webroot.stat.exists and
-        not svsticky_new_webroot.stat.exists"
-
 - name: "copy nginx configurations for regular websites"
   template:
     src: "templates/etc/nginx/sites-available/website.conf.j2"

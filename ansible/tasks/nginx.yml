@@ -152,13 +152,16 @@
     state:
       "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
-- name: "create user for svsticky.nl (wordpress)"
+- name: "create system users for pxl and svsticky-wordpress"
   user:
-    name: "svsticky-wordpress"
-    home: "/var/www/svsticky-wordpress"
+    name: "{{ item }}"
+    home: "/var/www/{{ item }}"
     shell: "/usr/sbin/nologin"
     system: true
     state: "present"
+  with_items:
+    - "pxl"
+    - "svsticky-wordpress"
 
 - name: "copy general configuration for php"
   template:

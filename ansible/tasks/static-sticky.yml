@@ -7,20 +7,23 @@
     git:
       repo: "https://github.com/svsticky/static-sticky.git"
       dest: "/var/www/commit/static-sticky"
-      version: "master"
-    diff: false  
+      version: "development"
+      force: true
+    diff: false
 
   - name:
       "template environment file for static-sticky"
     template:
       src: "templates/var/www/static-sticky/static-sticky/.env.j2"
       dest: "/var/www/commit/static-sticky/.env"
+    diff: false
 
   - name: "clone NVM"
     git:
       repo: "https://github.com/creationix/nvm.git"
       dest: "/var/www/commit/.nvm"
       depth: 1
+    diff: false
 
   - name: "install node version"
     shell: |
@@ -38,12 +41,22 @@
       chdir: "/var/www/commit/static-sticky"
       executable: "/bin/bash"
 
-  - name: "run npm install"
+  - name: "build website"
     shell: |
       . /var/www/commit/.nvm/nvm.sh
       npm run build
     args:
       chdir: "/var/www/commit/static-sticky"
       executable: "/bin/bash"
+
+  - name: "copy website contents to webroot"
+    command: |
+      rsync --delete --archive
+        /var/www/commit/static-sticky/public/
+        /var/www/commit/alpha.{{ canonical_hostname }}/
+
+    # NOTE: The trailing slashes are significant!
+    # Omitting it will create a `public` subdirectory and break stuff.
+    # See `man rsync`, section USAGE.
 
   become_user: "commit"

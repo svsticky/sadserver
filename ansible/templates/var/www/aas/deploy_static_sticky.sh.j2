@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# {{ ansible_managed }}
+
+# get latest version of website sourcecode
+cd /var/www/commit/static-sticky
+git pull
+
+# install npm packages
+. /var/www/commit/static-sticky
+
+# copy website contents to webroot
+rsync -- delete --archive ./public/ /var/www/commit/alpha.{{ canonical_hostname }}/

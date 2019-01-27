@@ -6,8 +6,8 @@ Description=Run aas server (webhook listener)
 
 [Service]
 Type=simple
-User=aas
-Group=aas
+User=commit
+Group=commit
 PrivateTmp=true
 ExecStart=/var/www/aas/{{ canonical_hostname }}/.venv/bin/python \
     /var/www/aas/{{ canonical_hostname }}/main.py

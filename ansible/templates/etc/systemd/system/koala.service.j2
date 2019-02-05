@@ -16,7 +16,6 @@ ExecStart=/home/koala/webrick.sh
 {% endif %}
 User=koala
 Group=koala
-EnvironmentFile=/var/www/koala.{{ canonical_hostname }}/.env
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
 Restart=always
 

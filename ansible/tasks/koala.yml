@@ -219,8 +219,6 @@
 
   - name: "ensure gem dependencies are installed"
     become_user: "koala"
-    environment:
-      RAILS_ENV: "{{ koala_env.environment }}"
     shell: 'bundle install --path ~/.gem/ruby/{{ koala.ruby_version.full }}/gems'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
@@ -233,8 +231,6 @@
 
   - name: "ensure tmp directories exist"
     become_user: "koala"
-    environment:
-      RAILS_ENV: "{{ koala_env.environment }}"
     shell: 'bin/rails tmp:create'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
@@ -256,8 +252,6 @@
 
   - name: "ensure assets are precompiled"
     become_user: "koala"
-    environment:
-      RAILS_ENV: "{{ koala_env.environment }}"
     shell: 'bin/rails assets:precompile'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
@@ -277,7 +271,7 @@
 
       - name: "run migration(s)"
         shell:
-          'bin/rails RAILS_ENV={{ koala_env.environment }} db:migrate'
+          'bin/rails db:migrate'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"

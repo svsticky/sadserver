@@ -64,7 +64,7 @@ case "${SOURCE}" in
           # Some directories excluded to save space, since they only contain
           # binaries/cache anyway.
           upload_backup_to_s3 < <(tar \
-            --exclude='home/koala/.rbenv' \
+            --exclude='home/koala/.gem' \
             --exclude='home/koala/.bundle' \
             --exclude='home/koala/.cache' \
             -c -f - -C / home \

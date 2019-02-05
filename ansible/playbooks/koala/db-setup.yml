@@ -18,11 +18,9 @@
           - "confirm == 'obliteration'"
 
     - name: "create database"
-      environment:
-        PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
       shell:
-        'eval "$(rbenv init - )"; bin/rails
-        RAILS_ENV={{ koala_env.environment }} db:setup'
+        'source ./.env && \
+        bin/rails db:setup'
       args:
         chdir: "/var/www/koala.{{ canonical_hostname }}"
         executable: "/bin/bash"

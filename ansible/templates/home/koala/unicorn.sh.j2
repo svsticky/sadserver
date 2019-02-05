@@ -15,4 +15,5 @@ set -eEfuo pipefail
 IFS=$'\n\t'
 
 cd /var/www/koala.{{ canonical_hostname }}
+source ./.env
 bundle exec unicorn -c config/unicorn.rb -E {{ koala_env.environment }} -D

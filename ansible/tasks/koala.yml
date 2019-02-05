@@ -73,16 +73,48 @@
    state: "present"
   notify: "restart koala"
 
+- name: "add brightbox repository for ruby"
+  apt_repository:
+    repo: "ppa:brightbox/ruby-ng"
+    state: "present"
+
 - name: "ensure ruby is installed"
   apt:
     name:
-      - "ruby=1:{{ koala.ruby_version }}"
-      - "ruby-dev=1:{{ koala.ruby_version }}"
+      - "ruby{{ koala.ruby_version.major }}={{ koala.ruby_version.package }}"
+      - "ruby{{ koala.ruby_version.major }}-dev={{ koala.ruby_version.package }}"
     state: "present"
   notify: "restart koala"
   tags:
     - "ruby"
     - "koala"
+
+- name: "ensure gem build dependencies are installed"
+  apt:
+    name:
+      - "build-essential"
+      - "zlib1g-dev"
+      - "liblzma-dev"
+      - "libmysqlclient-dev"
+    state: "present"
+
+- name: "add symlink for ruby"
+  file:
+    path: "/usr/bin/ruby"
+    src: "/usr/bin/ruby{{ koala.ruby_version.major }}"
+    state: "link"
+
+- name: "add symlink for bundler"
+  file:
+    path: "/usr/bin/bundle"
+    src: "/usr/bin/bundle{{ koala.ruby_version.major }}"
+    state: "link"
+
+- name: "add symlink for gem"
+  file:
+    path: "/usr/bin/gem"
+    src: "/usr/bin/gem{{ koala.ruby_version.major }}"
+    state: "link"
 
 - name: "ensure koala service file is present"
   template:
@@ -93,7 +125,6 @@
   notify:
     - "systemctl daemon-reload"
     - "restart koala"
-
 # This task van be deleted after running once
 - name: "delete rbenv specific files"
   file:
@@ -111,27 +142,14 @@
       dest: "/home/koala/.bashrc"
       insertafter: "EOF"
       create: true
-      block: 'PATH="$HOME/.gem/ruby/{{ koala.ruby_version }}/bin:$PATH"'
+      block: 'PATH="$HOME/.gem/ruby/{{ koala.ruby_version.full }}/bin:$PATH"'
     notify: "restart koala"
-    tags:
-      - "koala"
-      - "ruby"
-
-  - name: "ensure bundler is installed"
-    shell:
-      'gem install --user-install bundler'
-    args:
-      executable: "/bin/bash"
-      chdir: "/var/www/koala.{{ canonical_hostname }}"
-      creates:
-        "/home/koala/.gem/ruby/{{ koala.ruby_version }}/gems/bundler-*"
-    tags:
-      - "ruby"
-      - "koala"
 
   - name: "ensure koala has a ssh directory"
     file:
-      path: "~/.ssh"
+      path: "/home/koala/.ssh"
+      owner: "koala"
+      group: "koala"
       state: "directory"
     tags:
       - "koala"
@@ -140,11 +158,14 @@
     copy:
       content: "{{ secret_deploy_key }}"
       dest: "/home/koala/.ssh/id_ed25519"
+      owner: "koala"
+      group: "koala"
       mode: "0600"
 
   # This checks if Koala is already locally present, and if there is an update
   # on the remote
   - name: "check status of koala's local git repo"
+    become_user: "koala"
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
@@ -169,6 +190,7 @@
     when: koala_updated | default(false)
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
+    become_user: "koala"
     git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
@@ -178,12 +200,31 @@
     tags:
       - "koala"
 
+  - name: "ensure koala environment vars are present"
+    template:
+      src: "templates/var/www/koala/.env.j2"
+      dest: "/var/www/koala.{{ canonical_hostname }}/.env"
+      owner: "koala"
+      group: "koala"
+      mode: "0600"
+    notify: "restart koala"
+
+  - name: "source environment variables for koala user"
+    lineinfile:
+      path: "/home/koala/.bashrc"
+      insertafter: "EOF"
+      create: true
+      line: "source /var/www/koala.{{ canonical_hostname }}/.env"
+    notify: "restart koala"
+
   - name: "ensure gem dependencies are installed"
+    become_user: "koala"
     environment:
       RAILS_ENV: "{{ koala_env.environment }}"
-    shell: 'bundle install --path ~/.gem/ruby/{{ koala.ruby_version }}/gems'
+    shell: 'bundle install --path ~/.gem/ruby/{{ koala.ruby_version.full }}/gems'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
+      executable: "/bin/bash"
     register: "koala_gem_result"
     changed_when: "'Installing' in koala_gem_result.stdout"
     notify: "restart koala"
@@ -191,9 +232,10 @@
       - "koala"
 
   - name: "ensure tmp directories exist"
+    become_user: "koala"
     environment:
       RAILS_ENV: "{{ koala_env.environment }}"
-    shell: 'rails tmp:create'
+    shell: 'bin/rails tmp:create'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
@@ -205,15 +247,18 @@
     file:
       path: "/var/www/koala.{{ canonical_hostname }}/log"
       state: "directory"
+      owner: "koala"
+      group: "koala"
       mode: "0775"
     notify: "restart koala"
     tags:
       - "koala"
 
   - name: "ensure assets are precompiled"
+    become_user: "koala"
     environment:
       RAILS_ENV: "{{ koala_env.environment }}"
-    shell: 'rails assets:precompile'
+    shell: 'bin/rails assets:precompile'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_assets_result"
@@ -245,9 +290,6 @@
   - name: "start process of disabling koala's maintenance mode"
     include_tasks: "playbooks/koala/.maintenance-off.yml"
     when: koala_updated | default(false)
-
-  become: true
-  become_user: "koala"
 
 - name: "ensure environment vars file is present"
   template:

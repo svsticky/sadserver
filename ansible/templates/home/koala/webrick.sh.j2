@@ -14,7 +14,4 @@
 set -eEfuo pipefail
 IFS=$'\n\t'
 
-PATH="/home/koala/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-
 bundle exec rails server -b 0.0.0.0

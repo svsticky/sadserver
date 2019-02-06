@@ -24,11 +24,8 @@
           - "new_admins_password == password_confirm"
 
     - name: "create admin"
-      environment:
-        PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
       shell:
-        'eval "$(rbenv init - )"; bin/rails
-        RAILS_ENV={{ koala_env.environment }}
+        'bin/rails
         "admin:create[{{ new_admins_username }}, {{ new_admins_password }}]"'
       args:
         chdir: "/var/www/koala.{{ canonical_hostname }}"

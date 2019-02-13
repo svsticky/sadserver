@@ -388,4 +388,9 @@ ldap.max_links = -1
 [mcrypt]
 [dba]
 [opcache]
+; Prevent leaking data between php-fpm pools
+; https://ma.ttias.be/mitigating-phps-long-standing-issue-opcache-leaking-sensitive-data/
+opcache.validate_permission = 1
+opcache.validate_root = 1
+
 [openssl]

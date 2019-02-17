@@ -1,17 +1,17 @@
 ---
 - name: "check if koala is running"
-  command: "systemctl is-active koala"
+  systemd:
+    name: "koala.service"
+    state: "started"
+  check_mode: true
   register: "koala_running"
-  failed_when:
-    - koala_running.rc != 0
-    - koala_running.rc != 3
   listen: "restart koala"
 
 - name: "restart koala service"
   service:
     name: "koala"
     state: "restarted"
-  when: koala_running.rc == 0
+  when: "koala_running is not changed"
   listen: "restart koala"
 
 - name: "restart fail2ban"

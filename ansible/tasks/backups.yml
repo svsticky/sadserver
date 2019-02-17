@@ -54,13 +54,12 @@
 
   - name: "start and enable backup timers in production"
     service:
-      name: "{{ item.dest | basename }}"
+      name: "{{ item | basename | regex_replace('\\.j2$','') }}"
       enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
       state:
         "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
-    with_items:
-      "{{ backup_units.results }}"
-    when: "item.dest | basename is match('.+\\.timer')"
+    with_fileglob: "../templates/etc/systemd/system/backup-*"
+    when: "item | basename is match('.+\\.timer\\.j2$')"
     loop_control:
-      label: "{{ item.dest | basename }}"
+      label: "{{ item | basename | regex_replace('\\.j2$','') }}"
   tags: "backups"

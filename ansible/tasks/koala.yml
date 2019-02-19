@@ -42,6 +42,7 @@
       - "libffi-dev"
       - "libgdbm5"
       - "libgdbm-dev"
+      - "mupdf-tools"
       - "nodejs"
       - "zlib1g-dev"
       - "imagemagick"

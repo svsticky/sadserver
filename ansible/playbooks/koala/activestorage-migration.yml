@@ -34,14 +34,14 @@
         name: "backup-websites.service"
         state: "started"
 
-    - name: "update Koala code"
-      git:
-        repo: "git@github.com:svsticky/constipated-koala.git"
-        dest: "/var/www/koala.{{ canonical_hostname }}"
-        version: "{{ koala.git_ref }}"
-      diff: false
-
     - block:
+      - name: "update Koala code"
+        git:
+          repo: "git@github.com:svsticky/constipated-koala.git"
+          dest: "/var/www/koala.{{ canonical_hostname }}"
+          version: "{{ koala.git_ref }}"
+        diff: false
+
       - name: "ensure correct ruby version is installed"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"

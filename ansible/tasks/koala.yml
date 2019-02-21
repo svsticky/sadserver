@@ -278,7 +278,7 @@
   - name: "add credentials for pxl:create_application"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rails pxl:precompile'
+    shell: 'eval "$(rbenv init - )"; rails pxl:create_application'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
 

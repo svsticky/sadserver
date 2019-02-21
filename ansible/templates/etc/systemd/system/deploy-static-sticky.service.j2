@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Deploy static-sticky
+
+[Service]
+Type=oneshot
+User=static-sticky
+Group=static-sticky
+ExecStart="/var/www/static-sticky/deploy-static-sticky.sh"

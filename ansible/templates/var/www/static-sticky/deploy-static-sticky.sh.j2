@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# {{ ansible_managed }}
+
+# get latest version of website sourcecode
+cd /var/www/static-sticky/static-sticky
+git reset --hard HEAD
+git pull
+
+# install npm packages
+. /var/www/static-sticky/.nvm/nvm.sh
+npm run build
+
+# copy website contents to webroot
+rsync --delete --archive \
+    /var/www/static-sticky/static-sticky/public/ \
+    /var/www/static-sticky/alpha.{{ canonical_hostname }}/

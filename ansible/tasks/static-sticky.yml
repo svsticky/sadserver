@@ -14,6 +14,11 @@
   with_items:
     - "/etc/systemd/system/deploy-static-sticky.service"
 
+- name: "ensure polkit rules dir exists"
+  file:
+    path: "/etc/polit-1/rules.d"
+    state: "directory"
+
 - name: "copy polkit rules"
   template:
     src: "templates{{ item }}.j2"

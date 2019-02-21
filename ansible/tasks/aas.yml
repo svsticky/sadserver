@@ -1,4 +1,4 @@
---- 
+---
 - name: "install pipenv"
   pip:
     name: "pipenv"
@@ -8,7 +8,7 @@
       "clone aas repository"
     git:
       repo: "https://github.com/svsticky/aas.git"
-      dest: "/var/www/commit/aas.{{ canonical_hostname }}" 
+      dest: "/var/www/commit/aas.{{ canonical_hostname }}"
       version: "master"
     diff: false
 

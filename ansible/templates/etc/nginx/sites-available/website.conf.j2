@@ -64,7 +64,7 @@ default(false)) else '' }}
     # Makes nginx check whether the user is logged in already
     auth_request /oauth2/auth;
     # If the user isn't logged in, redirect to the login page
-    error_page 401 = /oauth2/sign_in;
+    error_page 401 = /oauth2/start;
 
     # pass information via X-User and X-Email headers to backend,
     # requires running with --set-xauthrequest flag

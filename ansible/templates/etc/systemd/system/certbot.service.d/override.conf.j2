@@ -1,8 +1,5 @@
 # {{ ansible_managed }}
 
-[Unit]
-OnFailure=certbot-fail.service
-
 [Service]
 ExecStartPre=/usr/bin/certbot renew --quiet --agree-tos
 ExecStart=/bin/sh -c "echo \"*Renewal check of certificates completed* _($(date\

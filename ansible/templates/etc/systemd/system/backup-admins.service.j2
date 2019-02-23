@@ -2,7 +2,7 @@
 
 [Unit]
 Description=Backup of the contents of the admins' home directories to AWS S3
-OnFailure=backup-fail@the\x20admins\x27\x20home\x20directories.service
+OnFailure=failure-notificator@%n.service
 
 [Service]
 Type=oneshot

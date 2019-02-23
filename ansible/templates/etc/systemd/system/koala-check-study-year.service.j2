@@ -2,7 +2,7 @@
 
 [Unit]
 Description=Check for creation of new study year for Constipated Koala
-OnFailure=koala-rake-fail@Check\x20for\x20creation\x20of\x20new\x20study\x20year.service
+OnFailure=failure-notificator@%n.service
 
 [Service]
 Type=simple

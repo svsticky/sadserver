@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Failure notification of %i
+
+[Service]
+Type=oneshot
+User=ansible
+Group=ansible
+{% if 'staging' in group_names %}
+ExecStart=/bin/sh -c "echo \"*_FROM STAGING:_ Unit \`%i\` FAILED!*\
+_($(date +'%%F %%T %%:z'))_\" | \
+  /usr/local/bin/slacktee \
+  --plain-text \
+  --username 'sadserver-dev' \
+  --icon ':exclamation:' \
+  --attachment 'danger' \
+  --channel 'notifications'"
+{% else %}
+ExecStart=/bin/sh -c "echo \"@it-crowd-commissie *Unit \`%i\` FAILED!*\
+_($(date +'%%F %%T %%:z'))_\" | \
+  /usr/local/bin/slacktee \
+  --plain-text \
+  --username 'sadserver' \
+  --icon ':exclamation:' \
+  --attachment 'danger' \
+  --channel 'alerts'"
+{% endif %}

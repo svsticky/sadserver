@@ -4,6 +4,7 @@
 Description=Run koala {{ koala_env.environment }} service
 Wants=mysql.service
 After=network.target
+OnFailure=failure-notificator@%n.service
 
 [Service]
 {% if koala.server == "unicorn" %}

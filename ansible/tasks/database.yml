@@ -14,14 +14,14 @@
     file:
       path: "/etc/systemd/system/mysql.service.d"
       state: "directory"
-    notify: "systemctl daemon-reload"
 
   - name: "override parameters of mariadb service"
     template:
-      src: "templates/{{ override_path }}.j2"
-      dest: "/{{ override_path }}"
-    vars:
-      override_path: "etc/systemd/system/mysql.service.d/override.conf"
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
+    with_items:
+      - "etc/systemd/system/mysql.service.d/override.conf"
+      - "etc/systemd/system/mysql.service.d/onfailure.conf"
     notify: "systemctl daemon-reload"
 
   - name: "enable extra configuration"

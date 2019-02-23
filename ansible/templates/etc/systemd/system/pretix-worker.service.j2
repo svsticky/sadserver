@@ -3,6 +3,7 @@
 [Unit]
 Description=pretix background worker
 After=network.target
+OnFailure=failure-notificator@%n.service
 
 [Service]
 User=pretix

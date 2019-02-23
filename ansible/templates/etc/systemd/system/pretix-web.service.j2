@@ -3,6 +3,7 @@
 [Unit]
 Description=pretix web service
 After=network.target
+OnFailure=failure-notificator@%n.service
 
 [Service]
 User=pretix

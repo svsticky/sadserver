@@ -3,6 +3,7 @@
 [Unit]
 Description=Clear expired pretix sessions
 Requires=mysql.service
+OnFailure=failure-notificator@%n.service
 
 [Service]
 User=pretix

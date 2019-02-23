@@ -2,6 +2,7 @@
 Description=The Koala authentication daemon
 Wants=koala.service
 After=koala.service
+OnFailure=failure-notificator@%n.service
 
 [Service]
 Restart=always

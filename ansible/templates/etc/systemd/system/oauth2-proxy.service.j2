@@ -1,5 +1,11 @@
 [Unit]
 Description=The Koala authentication daemon
+Wants=koala.service
+After=koala.service
+
 [Service]
 Restart=always
 ExecStart=/usr/local/bin/oauth2_proxy -config /etc/oauth2_proxy/config.cfg
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,4 @@
 ---
-
 - name: "Add user static-sticky"
   user:
     name: "static-sticky"
@@ -7,7 +6,7 @@
     home: "/var/www/static-sticky"
     system: true
 
-- name: "copy systemd unit"
+- name: "copy systemd service for deploying static-sticky"
   template:
     src: "templates{{ item }}.j2"
     dest: "{{ item }}"
@@ -16,9 +15,10 @@
 
 - name: "ensure polkit rules dir exists"
   file:
-    path: "/etc/polit-1/rules.d"
+    path: "/etc/polkit-1/rules.d"
     state: "directory"
 
+# a polkit rule is needed to grant aas access to the deploy-static-sticky.service
 - name: "copy polkit rules"
   template:
     src: "templates{{ item }}.j2"
@@ -33,7 +33,7 @@
       dest: "{{ item }}"
       mode: "u+rwx"
     with_items:
-      - "/var/www/static-sticky/deploy_static_sticky.sh"
+      - "/usr/local/bin/deploy-static-sticky.sh"
 
   - name:
       "clone static-sticky repository"
@@ -44,6 +44,7 @@
       depth: 1
       force: true
     diff: false
+    register: "new static-sticky version detected"
 
   - name:
       "template environment file for static-sticky"
@@ -60,6 +61,7 @@
       dest: "/var/www/static-sticky/.nvm"
       depth: 1
     diff: false
+    when: "new static-sticky version detected"
 
   - name: "install node version"
     shell: |
@@ -68,6 +70,7 @@
     args:
       chdir: "/var/www/static-sticky/static-sticky"
       executable: "/bin/bash"
+    when: "new static-sticky version detected"
 
   - name: "run npm install"
     shell: |
@@ -76,6 +79,7 @@
     args:
       chdir: "/var/www/static-sticky/static-sticky"
       executable: "/bin/bash"
+    when: "new static-sticky version detected"
 
   - name: "build website"
     shell: |
@@ -85,15 +89,14 @@
       chdir: "/var/www/static-sticky/static-sticky"
       executable: "/bin/bash"
 
+  # NOTE: The trailing slashes are significant!
+  # Omitting it will create a `public` subdirectory and break stuff.
+  # See `man rsync`, section USAGE.
   - name: "copy website contents to webroot"
     synchronize:
       src: "/var/www/static-sticky/static-sticky/public/"
       dest: "/var/www/static-sticky/alpha.{{ canonical_hostname }}/"
       delete: true
       archive: true
-
-    # NOTE: The trailing slashes are significant!
-    # Omitting it will create a `public` subdirectory and break stuff.
-    # See `man rsync`, section USAGE.
 
   become_user: "static-sticky"

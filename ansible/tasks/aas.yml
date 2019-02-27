@@ -3,7 +3,7 @@
   pip:
     name: "pipenv"
 
-- name: "Add user aas"
+- name: "add aas user"
   user:
     name: "aas"
     shell: "/usr/sbin/nologin"
@@ -18,27 +18,32 @@
       dest: "/var/www/aas/aas.{{ canonical_hostname }}"
       version: "master"
     diff: false
+    register: "new aas version detected"
 
   - name:
       "template environment file for aas"
     template:
       src: "templates/var/www/aas/.env.j2"
       dest: "/var/www/aas/aas.{{ canonical_hostname }}/.env"
+    notify: "restart aas"
 
   - name: "pipenv create virtual env and install aas"
-    command: "pipenv install"
+    command: "pipenv install --deploy"
     args:
       chdir: "/var/www/aas/aas.{{ canonical_hostname }}"
     environment:
       PIPENV_VENV_IN_PROJECT: "1"
+    when: "new aas version detected"
+    notify: "restart aas"
 
   become_user: aas
 
 - name:
-    "copy systemd unit"
+    "copy systemd service of aas"
   template:
     src: "templates/etc/systemd/system/aas.service.j2"
     dest: "/etc/systemd/system/aas.service"
+  notify: "restart aas"
 
 - name: "run aas service"
   systemd:

@@ -9,5 +9,5 @@ Type=simple
 User=commit
 Group=commit
 PrivateTmp=true
-ExecStart=/var/www/aas/{{ canonical_hostname }}/.venv/bin/python \
-    /var/www/aas/{{ canonical_hostname }}/main.py
+ExecStart=/var/www/aas.{{ canonical_hostname }}/.venv/bin/python \
+    /var/www/aas.{{ canonical_hostname }}/main.py

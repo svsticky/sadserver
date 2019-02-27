@@ -28,7 +28,6 @@
   file:
     path: "/var/www/{{ item.name }}"
     owner: "root"
-    mode: "g+w"
     state: "directory"
   when:
     # List is evaluated as logical AND

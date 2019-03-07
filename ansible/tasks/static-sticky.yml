@@ -98,5 +98,6 @@
       dest: "/var/www/static-sticky/alpha.{{ canonical_hostname }}/"
       delete: true
       archive: true
+    delegate_to: "{{ inventory_hostname }}"
 
   become_user: "static-sticky"

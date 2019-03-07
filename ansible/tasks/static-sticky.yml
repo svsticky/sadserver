@@ -26,15 +26,15 @@
   with_items:
     - "/etc/polkit-1/rules.d/00-deploy-static-sticky-service.rules"
 
-- block:
-  - name: "copy deploy script"
-    template:
-      src: "templates{{ item }}.j2"
-      dest: "{{ item }}"
-      mode: "u+rwx"
-    with_items:
-      - "/usr/local/bin/deploy-static-sticky.sh"
+- name: "copy deploy script"
+  template:
+    src: "templates{{ item }}.j2"
+    dest: "{{ item }}"
+    mode: "+x"
+  with_items:
+    - "/usr/local/bin/deploy-static-sticky.sh"
 
+- block:
   - name:
       "clone static-sticky repository"
     git:

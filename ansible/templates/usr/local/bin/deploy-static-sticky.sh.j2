@@ -12,6 +12,6 @@ git pull
 npm run build
 
 # copy website contents to webroot
-rsync --delete --archive \
+rsync --delete --recursive \
     /var/www/static-sticky/static-sticky/public/ \
     /var/www/static-sticky/static.{{ canonical_hostname }}/

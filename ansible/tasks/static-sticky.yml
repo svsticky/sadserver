@@ -97,7 +97,9 @@
       src: "/var/www/static-sticky/static-sticky/public/"
       dest: "/var/www/static-sticky/static.{{ canonical_hostname }}/"
       delete: true
-      archive: true
+      recursive: true
+      perms: false
+      times: false
     delegate_to: "{{ inventory_hostname }}"
 
   become_user: "static-sticky"

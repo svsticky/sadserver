@@ -40,7 +40,7 @@
     git:
       repo: "https://github.com/svsticky/static-sticky.git"
       dest: "/var/www/static-sticky/static-sticky"
-      version: "master"
+      version: "{{ static_sticky_env.git_ref }}"
       depth: 1
       force: true
     diff: false

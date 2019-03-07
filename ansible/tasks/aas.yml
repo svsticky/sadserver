@@ -18,7 +18,7 @@
       dest: "/var/www/aas/aas.{{ canonical_hostname }}"
       version: "master"
     diff: false
-    register: "new aas version detected"
+    register: "aas_clone"
 
   - name:
       "template environment file for aas"
@@ -28,12 +28,12 @@
     notify: "restart aas"
 
   - name: "pipenv create virtual env and install aas"
-    command: "pipenv install --deploy"
+    command: "pipenv sync"
     args:
       chdir: "/var/www/aas/aas.{{ canonical_hostname }}"
     environment:
       PIPENV_VENV_IN_PROJECT: "1"
-    when: "new aas version detected"
+    when: "aas_clone is changed"
     notify: "restart aas"
 
   become_user: aas

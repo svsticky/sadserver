@@ -44,7 +44,7 @@
       depth: 1
       force: true
     diff: false
-    register: "new static-sticky version detected"
+    register: "static_sticky_clone"
 
   - name:
       "template environment file for static-sticky"
@@ -61,7 +61,7 @@
       dest: "/var/www/static-sticky/.nvm"
       depth: 1
     diff: false
-    when: "new static-sticky version detected"
+    when: "static_sticky_clone is changed"
 
   - name: "install node version"
     shell: |
@@ -70,7 +70,7 @@
     args:
       chdir: "/var/www/static-sticky/static-sticky"
       executable: "/bin/bash"
-    when: "new static-sticky version detected"
+    when: "static_sticky_clone is changed"
 
   - name: "run npm install"
     shell: |
@@ -79,7 +79,7 @@
     args:
       chdir: "/var/www/static-sticky/static-sticky"
       executable: "/bin/bash"
-    when: "new static-sticky version detected"
+    when: "static_sticky_clone is changed"
 
   - name: "build website"
     shell: |

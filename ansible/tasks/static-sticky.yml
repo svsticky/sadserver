@@ -13,19 +13,6 @@
   with_items:
     - "/etc/systemd/system/deploy-static-sticky.service"
 
-- name: "ensure polkit rules dir exists"
-  file:
-    path: "/etc/polkit-1/rules.d"
-    state: "directory"
-
-# a polkit rule is needed to grant aas access to the deploy-static-sticky.service
-- name: "copy polkit rules"
-  template:
-    src: "templates{{ item }}.j2"
-    dest: "{{ item }}"
-  with_items:
-    - "/etc/polkit-1/rules.d/00-deploy-static-sticky-service.rules"
-
 - name: "copy deploy script"
   template:
     src: "templates{{ item }}.j2"

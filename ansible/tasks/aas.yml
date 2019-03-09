@@ -10,6 +10,13 @@
     home: "/var/www/aas"
     system: true
 
+- name: "permit aas user to start static-sticky deploy service"
+  template:
+    src: "templates/etc/sudoers.d/aas.j2"
+    dest: "/etc/sudoers.d/aas"
+    mode: "0440"
+    validate: "/usr/sbin/visudo -cf %s"
+
 - block:
   - name:
       "clone aas repository"

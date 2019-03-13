@@ -1,20 +1,32 @@
 #!/usr/bin/env bash
-
 # {{ ansible_managed }}
 
-# get latest version of website sourcecode
+# Unofficial Bash Strict Mode
+set -efuo pipefail
+IFS=$'\n\t'
+
 cd /var/www/static-sticky/static-sticky
+
 git reset --hard HEAD
-git pull
 
-# install npm packages
-. /var/www/static-sticky/.nvm/nvm.sh
-npm install
+PREV_GIT_REF="$(git rev-parse HEAD)"
+# Get latest version of website sourcecode
+git pull origin {{ static_sticky_env.git_ref }}
+NEW_GIT_REF="$(git rev-parse HEAD)"
 
-# build website
+source /var/www/static-sticky/.nvm/nvm.sh
+
+# Check if there are new commits, because this is not necessary if a deploy is
+# triggered by Contentful
+if [[ "${PREV_GIT_REF}" != "${NEW_GIT_REF}" ]]; then
+  nvm install
+  npm install
+fi
+
+# Build website
 npm run build
 
-# copy website contents to webroot
+# Copy website contents to webroot, replacing already existing target contents
 rsync --delete --recursive \
     /var/www/static-sticky/static-sticky/public/ \
     /var/www/static-sticky/static.{{ canonical_hostname }}/

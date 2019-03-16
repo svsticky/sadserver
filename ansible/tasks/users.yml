@@ -40,7 +40,7 @@
 
 - name: "add environment to bash prompt of admins"
   lineinfile:
-    dest: "/home/{{ item.name }}/.bashrc"
+    dest: "{{ item.home_prefix }}/{{ item.name }}/.bashrc"
     regexp: "^export PS1="
     line: "{{ bash_prompt }}"
   when: item.admin == true and item.state == 'present'

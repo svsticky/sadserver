@@ -152,7 +152,7 @@
     state:
       "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
-- name: "create system users for pxl and svsticky-wordpress"
+- name: "create system user for svsticky-wordpress"
   user:
     name: "{{ item }}"
     home: "/var/www/{{ item }}"
@@ -160,7 +160,6 @@
     system: true
     state: "present"
   with_items:
-    - "pxl"
     - "svsticky-wordpress"
 
 - name: "copy general configuration for php"

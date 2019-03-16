@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 upstream aas {
-  server 127.0.0.1:5000;
+  server unix:/run/aas/gunicorn.sock;
 }
 
 server {
@@ -18,5 +18,6 @@ server {
 
   location / {
     proxy_pass http://aas;
+    include proxy_params;
   }
 }

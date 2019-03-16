@@ -1,14 +1,26 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Run aas server (webhook listener)
-# OnFailure=TODO
+Description=Run the aas webhook listener using gunicorn
+After=network.target
+
+# Uncomment after #211 is merged
+# OnFailure=failure-notificator@%n.service
 
 [Service]
 Type=simple
 User=aas
-Group=aas
-PrivateTmp=true
+Group=www-data
 Restart=always
+
 WorkingDirectory=/var/www/aas/aas.{{ canonical_hostname }}
-ExecStart=/usr/local/bin/pipenv run server
+
+RuntimeDirectory=aas
+RuntimeDirectoryMode=0770
+
+ExecStart=/usr/local/bin/pipenv run gunicorn \
+                                      --workers 4 \
+                                      --bind unix:/run/aas/gunicorn.sock aas:aas
+
+[Install]
+WantedBy=multi-user.target

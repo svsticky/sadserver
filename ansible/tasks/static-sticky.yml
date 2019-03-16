@@ -1,11 +1,4 @@
 ---
-- name: "Add user static-sticky"
-  user:
-    name: "static-sticky"
-    shell: "/usr/sbin/nologin"
-    home: "/var/www/static-sticky"
-    system: true
-
 - name: "copy systemd service for deploying static-sticky"
   template:
     src: "templates{{ item }}.j2"

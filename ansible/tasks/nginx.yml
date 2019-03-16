@@ -170,7 +170,7 @@
     state:
       "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
-- name: "create system user for svsticky-wordpress"
+- name: "create system users for static-sticky and svsticky-wordpress"
   user:
     name: "{{ item }}"
     home: "/var/www/{{ item }}"
@@ -178,6 +178,7 @@
     system: true
     state: "present"
   with_items:
+    - "static-sticky"
     - "svsticky-wordpress"
 
 - name: "copy general configuration for php"

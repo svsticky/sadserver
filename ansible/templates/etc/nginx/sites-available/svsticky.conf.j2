@@ -1,22 +1,6 @@
 # {{ ansible_managed }}
 
 server {
-  listen 443 ssl http2;
-  listen [::]:443 ssl http2;
-
-  server_name ~^(www\.)?(stickyutrecht|studieverenigingsticky)\.nl$
-    ~^www\.{{ canonical_hostname }}$;
-
-  ssl_certificate      /etc/letsencrypt/live/{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/{{ canonical_hostname }}/chain.pem;
-
-  include includes/security-headers.conf;
-
-  return 301 https://{{ canonical_hostname }}$request_uri;
-}
-
-server {
   listen 443 ssl http2 default_server;
   listen [::]:443 ssl http2 default_server;
 
@@ -24,12 +8,12 @@ server {
 
   ssl_certificate      /etc/letsencrypt/live/{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ canonical_hostname }}/chain.pem;
 
-  root /var/www/svsticky-wordpress/{{ canonical_hostname }};
-  index index.php index.html index.htm;
+  root /var/www/static-sticky/static.{{ canonical_hostname }};
+  index index.html index.htm;
 
   include includes/security-headers.conf;
-  include includes/php-parameters.conf;
 
   location ~* /.git/ {
     deny all;
@@ -44,10 +28,6 @@ server {
     return 301 https://studystore.nl/sticky;
   }
 
-  location ~* /doos {
-    return 301 https://docs.google.com/forms/d/e/1FAIpQLSeNQwEjtW3SVYOauxIMxjwAkxJycHtmspNoQ7TlNClg7Vmq0w/viewform;
-  }
-
   location ~* /declaraties {
     return 301 https://digidecs.{{ canonical_hostname }}/;
    }
@@ -56,15 +36,11 @@ server {
     return 301 https://www.facebook.com/groups/814759978565158/;
   }
 
-  location ~* /(liftwedstrijd|hetwordtzolift) {
-    return 301 https://goo.gl/forms/tqTZMeJjdtk29is53;
-  }
-
   location ~* /panda {
     return 301 https://www.youtube.com/watch?v=AC3Ejf7vPEY;
   }
 
   location / {
-    try_files $uri $uri/ /index.php?q=$uri&$args;
+    try_files $uri $uri/ =404;
   }
 }

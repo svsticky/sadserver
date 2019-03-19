@@ -238,6 +238,7 @@
   when:
     # When a website needs to be added, add a new condition to this list item
     # using "or"
+    - item.name == 'old.' + canonical_hostname
     - item.name == canonical_hostname
   loop_control:
     label: "{{ item.name }}"
@@ -262,6 +263,8 @@
   with_items:
     - src: "aas"
       dest: "aas.{{ canonical_hostname }}"
+    - src: "old.svsticky"
+      dest: "old.{{ canonical_hostname }}"
     - src: "savadaba"
       dest: "savadaba.{{ canonical_hostname }}"
     - src: "svsticky"
@@ -293,6 +296,7 @@
     state: "link"
   with_items:
     - "aas.{{ canonical_hostname }}"
+    - "old.{{ canonical_hostname }}"
     - "{{ canonical_hostname }}"
     - "savadaba.{{ canonical_hostname }}"
     - "wintersport.{{ canonical_hostname }}"

@@ -35,6 +35,10 @@ server {
     deny all;
   }
 
+  location ~* /wp-content/ {
+    return 302 https://old.svsticky.nl$request_uri;
+  }
+
   # QR-Code naar http://stickyutrecht.nl/arduino staat op de Stickyduino's
   location = /arduino {
     return 301 http://herlaar.net/b3it/;

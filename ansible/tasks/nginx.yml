@@ -1,10 +1,11 @@
 ---
-- name: "install nginx, php-fpm and openssl"
+- name: "install nginx, php-fpm, openssl and fancyindex"
   apt:
     name:
       - "nginx"
       - "php-fpm"
       - "openssl"
+      - "libnginx-mod-http-fancyindex"
     state: "present"
 
 - name:

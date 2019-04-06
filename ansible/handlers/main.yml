@@ -37,13 +37,25 @@
 
 - name: "test nginx configuration"
   command: "nginx -t"
-  listen: "reload nginx"
+  register: "nginx_reload"
+  listen:
+    - "reload nginx"
+    - "restart nginx"
 
 - name: "reload nginx service"
   service:
     name: "nginx"
     state: "reloaded"
+  when: "nginx_reload is success"
   listen: "reload nginx"
+
+- name: "restart nginx service"
+  systemd:
+    name: "nginx"
+    daemon_reload: true
+    state: "restarted"
+  when: "nginx_reload is success"
+  listen: "restart nginx"
 
 - name: "reload php"
   service:

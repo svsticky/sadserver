@@ -7,11 +7,11 @@
   register: "koala_running"
   listen: "restart koala"
 
-- name: "restart oauth2-proxy"
+- name: "restart oauth2_proxy"
   service:
-    name: "oauth2-proxy"
+    name: "oauth2_proxy"
     state: "restarted"
-  listen: "restart oauth2-proxy"
+  listen: "restart oauth2_proxy"
 
 - name: "restart koala service"
   service:

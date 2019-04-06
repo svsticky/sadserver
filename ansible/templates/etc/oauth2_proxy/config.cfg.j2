@@ -1,5 +1,5 @@
 provider = "oidc"
-http_address = "http://127.0.0.1:4180"
+http_address = "unix:///run/oauth2_proxy/oauth2_proxy.sock"
 oidc_issuer_url = "https://koala.{{ canonical_hostname }}"
 client_id = "{{ secret_oauth2_proxy.client_id }}"
 client_secret = "{{ secret_oauth2_proxy.client_secret }}"

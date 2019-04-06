@@ -13,12 +13,23 @@
     mode: "o+rx"
     state: "directory"
 
-- name: "copy onfailure override for netdata service"
+- name: "copy overrides for netdata service"
   template:
-    src: "templates/etc/systemd/system/netdata.service.d/onfailure.conf.j2"
-    dest: "/etc/systemd/system/netdata.service.d/onfailure.conf"
+    src: "templates/{{ item }}.j2"
+    dest: "/{{ item }}"
     mode: "o+r"
-  notify: "systemctl daemon-reload"
+  with_items:
+    - "etc/systemd/system/netdata.service.d/onfailure.conf"
+    - "etc/systemd/system/netdata.service.d/permissions.conf"
+  register: "netdata_service_overrides"
+
+- name: "make netdata listen on domain socket"
+  lineinfile:
+    regexp: "^(\\s*)bind socket to IP ="
+    line: "\\1bind to = unix:/run/netdata/netdata.sock"
+    backrefs: true
+    path: "/etc/netdata/netdata.conf"
+  register: "netdata_conf"
 
 - name: "enable slack notifications for netdata's alarms"
   lineinfile:
@@ -49,12 +60,15 @@
 
 # netdata service doesn't implement reloading
 - name: "restart netdata if config changed"
-  service:
+  systemd:
     name: "netdata"
+    daemon_reload: true
     state: "restarted"
   when:
-    "netdata_slack_notifications.changed or
-    netdata_listen_drop_rules.changed"
+    "netdata_service_overrides is changed or
+    netdata_conf is changed or
+    netdata_slack_notifications is changed or
+    netdata_listen_drop_rules is changed"
 
 - name: "copy nginx files for metrics site"
   template:

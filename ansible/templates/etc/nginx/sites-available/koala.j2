@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 upstream unicorn {
-	server unix:/tmp/unicorn.sock fail_timeout=0;
+	server unix:/run/koala/unicorn.sock fail_timeout=0;
 }
 
 server {

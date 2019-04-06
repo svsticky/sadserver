@@ -24,6 +24,7 @@ MOLLIE_VERSION=v1
 # Other
 RAILS_ENV={{ koala_env.environment }}
 RAILS_MAX_THREADS={{ koala.threads }}
+UNICORN_SOCKET_PATH=/run/koala/unicorn.sock
 
 # PXL
 OAUTH_PROXY_UID={{ secret_oauth2_proxy.client_id }}

@@ -16,9 +16,12 @@ Type=simple
 ExecStart=/home/koala/webrick.sh
 {% endif %}
 User=koala
-Group=koala
+Group=www-data
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
 Restart=always
+
+RuntimeDirectory=koala
+RuntimeDirectoryMode=0750
 
 [Install]
 WantedBy=multi-user.target

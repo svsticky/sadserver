@@ -26,6 +26,7 @@
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
+    mode: "o+r"
   with_items:
     - "etc/apt/apt.conf.d/50unattended-upgrades"
     - "etc/systemd/system/unattended-upgrades-output.service"
@@ -42,11 +43,18 @@
 
 # slacktee is the tool we use to let the server send notifications to Slack.
 # Replaces email.
+- name: "create directory for slacktee"
+  file:
+    path: "{{ slack_notifications.slacktee.install_path }}"
+    mode: "o+rx"
+    state: "directory"
+
 # Only ensure repository is cloned, don't update yet
 - name: "clone repository of slacktee"
   git:
     repo: "{{ slack_notifications.slacktee.repo }}"
     dest: "{{ slack_notifications.slacktee.install_path }}"
+    umask: "022"
     update: false
   diff: false
 
@@ -73,6 +81,7 @@
       repo: "{{ slack_notifications.slacktee.repo }}"
       dest: "{{ slack_notifications.slacktee.install_path }}"
       version: "{{ slacktee_version.stdout }}"
+      umask: "022"
     diff: false
   # Don't run in check mode because previous "git fetch" task also can't be run
   # in check mode

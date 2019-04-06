@@ -12,6 +12,7 @@
     "create directories for onfailure overrides for nginx + php-fpm services"
   file:
     path: "{{ item }}"
+    mode: "o+rx"
     state: "directory"
   with_items:
     - "/etc/systemd/system/nginx.service.d"
@@ -21,6 +22,7 @@
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
+    mode: "o+r"
   with_items:
     - "etc/systemd/system/nginx.service.d/onfailure.conf"
     - "etc/systemd/system/php7.2-fpm.service.d/onfailure.conf"
@@ -29,6 +31,7 @@
 - name: "create nginx includes directory"
   file:
     path: "/etc/nginx/includes"
+    mode: "o+rx"
     state: "directory"
 
 - name: "copy nginx include files"
@@ -36,6 +39,7 @@
     src: "{{ item }}"
     dest:
       "/etc/nginx/includes/{{ item | basename | regex_replace('\\.j2$','') }}"
+    mode: "o+r"
   with_fileglob:
     - "templates/etc/nginx/includes/*.j2"
   notify: "reload nginx"
@@ -44,6 +48,7 @@
   template:
     src: "templates/etc/nginx/nginx.conf.j2"
     dest: "/etc/nginx/nginx.conf"
+    mode: "o+r"
   notify: "reload nginx"
 
 - name: "ensure stock nginx configuration is not present"
@@ -59,6 +64,7 @@
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
+    mode: "o+r"
   with_items:
     - "etc/nginx/dhparams.pem"
     - "etc/nginx/sites-available/default.conf"
@@ -68,6 +74,7 @@
   file:
     src: "/etc/nginx/sites-available/default.conf"
     path: "/etc/nginx/sites-enabled/default.conf"
+    mode: "o+r"
     state: "link"
   notify: "reload nginx"
 
@@ -109,6 +116,7 @@
 - name: "create folders for certbot renewal override"
   file:
     path: "/etc/systemd/system/{{ item }}"
+    mode: "o+rx"
     state: "directory"
   with_items:
     - "certbot.service.d"
@@ -118,6 +126,7 @@
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
+    mode: "o+r"
   with_items:
     - "etc/systemd/system/certbot.service.d/override.conf"
     - "etc/systemd/system/certbot.service.d/onfailure.conf"
@@ -175,6 +184,7 @@
   template:
     src: "templates/{{ php_config }}.j2"
     dest: "/{{ php_config }}"
+    mode: "o+r"
   vars:
     php_config: "etc/php/7.2/fpm/php.ini"
   notify: "reload php"
@@ -188,6 +198,7 @@
   template:
     src: "templates/etc/php/7.2/fpm/pool.d/pool-template.conf.j2"
     dest: "/etc/php/7.2/fpm/pool.d/pool-{{ item.name }}.conf"
+    mode: "o+r"
   with_items: "{{ websites }}"
   when: "item.php_enabled | default(false)"
   notify: "reload php"
@@ -253,6 +264,7 @@
   template:
     src: "templates/etc/nginx/sites-available/website.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
+    mode: "o+r"
   with_items: "{{ websites }}"
   when:
     # List is evaluated as logical AND
@@ -266,6 +278,7 @@
   template:
     src: "templates/etc/nginx/sites-available/{{ item.src }}.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.dest }}.conf"
+    mode: "o+r"
   with_items:
     - src: "aas"
       dest: "aas.{{ canonical_hostname }}"

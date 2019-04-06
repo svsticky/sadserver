@@ -30,6 +30,7 @@
     path: "/etc/pretix"
     owner: "pretix"
     group: "pretix"
+    mode: "o+rx"
     state: "directory"
 
 - name: "ensure pretix source and asset directories are present"
@@ -72,6 +73,7 @@
   template:
     src: "templates/{{ item }}.j2"
     dest: "/{{ item }}"
+    mode: "o+r"
   with_items:
     - "etc/systemd/system/pretix-web.service"
     - "etc/systemd/system/pretix-worker.service"
@@ -140,6 +142,7 @@
   template:
     src: "templates/etc/nginx/sites-available/pretix.conf.j2"
     dest: "/etc/nginx/sites-available/{{ dest_filename }}"
+    mode: "o+r"
   vars:
     dest_filename: "pretix.{{ canonical_hostname }}.conf"
   notify: "reload nginx"

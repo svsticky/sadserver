@@ -13,12 +13,14 @@
   - name: "create folder for mariadb override"
     file:
       path: "/etc/systemd/system/mysql.service.d"
+      mode: "o+rx"
       state: "directory"
 
   - name: "override parameters of mariadb service"
     template:
       src: "templates/{{ item }}.j2"
       dest: "/{{ item }}"
+      mode: "o+r"
     with_items:
       - "etc/systemd/system/mysql.service.d/override.conf"
       - "etc/systemd/system/mysql.service.d/onfailure.conf"
@@ -28,6 +30,7 @@
     template:
       src: "templates/{{ config_file }}.j2"
       dest: "/{{ config_file }}"
+      mode: "o+r"
     vars:
       config_file: "etc/mysql/conf.d/mysqld.cnf"
     notify: "restart mariadb"

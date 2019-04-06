@@ -44,6 +44,7 @@
       dest:
         "/etc/systemd/system/\
         {{ item | basename | regex_replace('\\.j2$','') }}"
+      mode: "o+r"
     with_fileglob:
       - "../templates/etc/systemd/system/backup-*"
     notify:

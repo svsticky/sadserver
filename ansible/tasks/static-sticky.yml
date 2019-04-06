@@ -3,6 +3,7 @@
   template:
     src: "templates{{ item }}.j2"
     dest: "{{ item }}"
+    mode: "o+r"
   with_items:
     - "/etc/systemd/system/deploy-static-sticky.service"
 
@@ -10,7 +11,7 @@
   template:
     src: "templates{{ item }}.j2"
     dest: "{{ item }}"
-    mode: "+x"
+    mode: "0744"
   with_items:
     - "/usr/local/bin/deploy-static-sticky.sh"
 

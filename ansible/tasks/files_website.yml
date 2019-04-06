@@ -22,12 +22,14 @@
   template:
     src: "etc/nginx/sites-available/files.conf.j2"
     dest: "/etc/nginx/sites-available/files.{{ canonical_hostname }}.conf"
+    mode: "o+r"
   notify: "reload nginx"
 
 - name: "enable NGiNX site config Fancy Index"
   file:
     src: "/etc/nginx/sites-available/{{ filename }}"
     path: "/etc/nginx/sites-enabled/{{ filename }}"
+    mode: "o+r"
     state: "link"
   vars:
     filename: "files.{{ canonical_hostname }}.conf"

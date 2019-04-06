@@ -25,12 +25,12 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: "add environment to bash prompt of admins"
+- name: "add environment to bash prompt of human users"
   lineinfile:
     dest: "/home/{{ item.name }}/.bashrc"
     regexp: "^export PS1="
     line: "{{ bash_prompt }}"
-  when: item.admin == true and item.state == 'present'
+  when: "item.state == 'present'"
   with_items:
     - "{{ users }}"
   loop_control:

@@ -3,7 +3,7 @@
     url: "https://github.com/svsticky/oauth2_proxy/releases/download/v2.3/oauth2_proxy"
     dest: "/usr/local/bin/oauth2_proxy"
     checksum: "sha256:82a76b75c6f5d7986c0f6a9836818d1dcd00bcf0bc2a7e36dafcbaf9e980b5df"
-    mode: "u+x"
+    mode: "0744"
 
 - name: "make directory"
   file:
@@ -21,6 +21,7 @@
   template:
     src: "templates/etc/systemd/system/oauth2-proxy.service.j2"
     dest: "/etc/systemd/system/oauth2-proxy.service"
+    mode: "o+r"
   notify: "systemctl daemon-reload"
 
 - name: "enable and start oauth2-proxy"

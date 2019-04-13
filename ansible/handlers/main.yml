@@ -8,31 +8,36 @@
   listen: "restart koala"
 
 - name: "restart oauth2_proxy"
-  service:
+  systemd:
     name: "oauth2_proxy"
+    daemon_reload: true
     state: "restarted"
   listen: "restart oauth2_proxy"
 
 - name: "restart koala service"
-  service:
+  systemd:
     name: "koala"
+    daemon_reload: true
     state: "restarted"
   when: "koala_running is not changed"
   listen: "restart koala"
 
 - name: "restart fail2ban"
-  service:
+  systemd:
     name: "fail2ban"
+    daemon_reload: true
     state: "restarted"
 
 - name: "restart redis"
-  service:
+  systemd:
     name: "redis-server"
+    daemon_reload: true
     state: "restarted"
 
 - name: "restart mariadb"
-  service:
+  systemd:
     name: "mysql"
+    daemon_reload: true
     state: "restarted"
 
 - name: "test nginx configuration"
@@ -43,8 +48,9 @@
     - "restart nginx"
 
 - name: "reload nginx service"
-  service:
+  systemd:
     name: "nginx"
+    daemon_reload: true
     state: "reloaded"
   when: "nginx_reload is success"
   listen: "reload nginx"
@@ -58,8 +64,9 @@
   listen: "restart nginx"
 
 - name: "reload php"
-  service:
+  systemd:
     name: "php7.2-fpm"
+    daemon_reload: true
     state: "reloaded"
 
 - name: "systemctl daemon-reload"
@@ -81,4 +88,5 @@
 - name: "restart aas"
   systemd:
     unit: "aas.service"
+    daemon_reload: true
     state: "restarted"

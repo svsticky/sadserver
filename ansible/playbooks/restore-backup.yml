@@ -28,6 +28,25 @@
         CERTAIN that you wish to continue? If so, enter "obliteration". Any
         other value will abort
 
+  vars:
+    unmoved_websites:
+      - name: "files.{{ canonical_hostname }}"
+        user: "bestuur"
+      - name: "koala.{{ canonical_hostname }}"
+        user: "koala"
+      - name: "pretix"
+        user: "pretix"
+
+    websites_without_state:
+      - "aas.{{ canonical_hostname }}"
+      - "digidecs.{{ canonical_hostname }}"
+      - "dgdarc.{{ canonical_hostname }}"
+      - "metrics.{{ canonical_hostname }}"
+      - "phpmyadmin.{{ canonical_hostname }}"
+      - "savadaba.{{ canonical_hostname }}"
+      - "sodi.{{ canonical_hostname }}"
+      - "{{ canonical_hostname }}"
+
   tasks:
     - name: "check that confirmation is given"
       assert:
@@ -88,7 +107,7 @@
         src: "{{ backup_restore_tmp_dir.path }}/{{ item.stdout }}"
         # The paths in the backup archives are relative to /, so this extracts
         # them to the right location.
-        dest: "/"
+        dest: "{{ backup_restore_tmp_dir.path }}/"
         remote_src: true
       with_items: "{{ backup_filenames.results }}"
       # Skip db backup here, because that's not an archive
@@ -110,7 +129,64 @@
       loop_control:
         label: "{{ item.stdout }}"
 
-    - name: "delete backup archives"
+    # The following steps are needed to correct the webroot
+    # locations/owners/groups/permissions.
+    - name: "restore webroots which have state and whose location has changed"
+      command:
+        "rsync
+        --copy-links
+        --delete
+        --recursive
+        --times
+        --no-perms
+        --chmod=ugo=rwX,Dg+s
+        --owner
+        --group
+        --chown={{ item.user }}:www-data
+        {{ backup_restore_tmp_dir.path }}/var/www/{{ item.user }}/{{ item.name }}/
+        /var/www/{{ item.name }}/"
+      with_items: "{{ websites }}"
+      when:
+        "item.name not in unmoved_websites and
+        item.name not in websites_without_state"
+
+    - name:
+        "restore webroots which have state but whose location has not
+        changed"
+      command:
+        "rsync
+        --copy-links
+        --recursive
+        --times
+        --no-perms
+        --chmod=ugo=rwX,Dg+s
+        --owner
+        --group
+        --chown={{ item.user }}:www-data
+        {{ backup_restore_tmp_dir.path }}/var/www/{{ item.name }}/
+        /var/www/{{ item.name }}/"
+      with_items: "{{ unmoved_websites }}"
+
+    - name: "move admin's home directories"
+      command:
+        "rsync
+        --copy-links
+        --recursive
+        --times
+        --no-perms
+        --chmod=ugo=rwX,Dg+s
+        --owner
+        --group
+        --chown={{ item.name }}:{{ item.name }}
+        {{ backup_restore_tmp_dir.path }}/home/{{ item.name }}/
+        /home/{{ item.name }}/"
+      with_items: "{{ users }}"
+      # Exclude pxl here because it was the only admin user with its homedir in
+      # /var/www instead of /home, which would fail this task. The 'pxl'
+      # condition can be removed after its deployment in production.
+      when: "item.admin and item.name != 'pxl'"
+
+    - name: "delete (extracted) backup archives"
       file:
         path: "{{ backup_restore_tmp_dir.path }}"
         state: "absent"

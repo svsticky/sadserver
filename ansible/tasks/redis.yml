@@ -16,29 +16,56 @@
       mode: "o+rx"
       state: "directory"
 
-  - name: "copy onfailure override for redis service"
+  - name: "copy overrides for redis service"
     template:
-      src: "templates/etc/systemd/system/redis-server.service.d/onfailure.conf.j2"
-      dest: "/etc/systemd/system/redis-server.service.d/onfailure.conf"
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
       mode: "o+r"
-    notify: "systemctl daemon-reload"
+    with_items:
+      - "etc/systemd/system/redis-server.service.d/onfailure.conf"
+      - "etc/systemd/system/redis-server.service.d/permissions.conf"
+    register: "redis_service"
+
+  # This explicit stop is needed, because of weird systemd behavior. We change
+  # the user + group of the service in the previous task, and systemd hangs when
+  # you then try to restart the unit, because it tries to stop the unit using
+  # the new user, while it's still running under the old user.
+  - name: "stop redis so service changes are properly applied"
+    systemd:
+      name: "redis-server"
+      state: "stopped"
+    when: "redis_service is changed"
+
+  # This is needed because we override the redis service to run under the pretix
+  # user + group, since we only use this redis instance for pretix.
+  - name: "make pretix owner and group of redis directories"
+    file:
+      path: "{{ item }}"
+      owner: "pretix"
+      group: "pretix"
+      recurse: true
+    with_items:
+      - "/etc/redis"
+      - "/var/lib/redis"
+      - "/var/log/redis"
+
+  - name: "place Redis config file"
+    template:
+      src: "templates/{{ path }}.j2"
+      dest: "/{{ path }}"
+      owner: "pretix"
+      group: "pretix"
+      mode: "o+r"
+    vars:
+      path: "etc/redis/redis.conf"
+    notify:
+      - "restart redis"
+
+  - name: "flush handlers so redis is restarted if needed"
+    meta: "flush_handlers"
 
   - name: "ensure Redis server is running and enabled"
     service:
         name: "redis-server"
         enabled: true
         state: "started"
-    tags:
-        - "service"
-
-  - name: "place Redis config file"
-    template:
-      src: "templates/{{ path }}.j2"
-      dest: "/{{ path }}"
-      owner: "redis"
-      group: "redis"
-      mode: "o+r"
-    vars:
-      path: "etc/redis/redis.conf"
-    notify:
-      - "restart redis"

@@ -34,9 +34,9 @@ secret={{ secret_pretix.django_secret }}
 debug=off
 
 [redis]
-location=redis://127.0.0.1/0
+location=unix:///run/redis/redis.sock?db=0
 sessions=true
 
 [celery]
-backend=redis://127.0.0.1/1
-broker=redis://127.0.0.1/2
+backend=redis+socket:///run/redis/redis.sock?virtual_host=1
+broker=redis+socket:///run/redis/redis.sock?virtual_host=2

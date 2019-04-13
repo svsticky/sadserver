@@ -7,15 +7,19 @@ OnFailure=failure-notificator@%n.service
 
 [Service]
 User=pretix
-Group=pretix
+Group=www-data
 Environment="VIRTUAL_ENV=/var/www/pretix/venv"
 Environment="PATH=/var/www/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin"
 ExecStart=/var/www/pretix/venv/bin/gunicorn pretix.wsgi \
                       --name pretix --workers 2 \
                       --max-requests 1200  --max-requests-jitter 50 \
-                      --log-level=info --bind=127.0.0.1:8345
+                      --log-level=info --umask 007 \
+                      --bind=unix:/run/pretix/gunicorn.sock
 WorkingDirectory=/var/www/pretix
 Restart=on-failure
+
+RuntimeDirectory=pretix
+RuntimeDirectoryMode=0750
 
 [Install]
 WantedBy=multi-user.target

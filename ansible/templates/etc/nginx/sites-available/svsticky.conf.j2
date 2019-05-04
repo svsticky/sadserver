@@ -64,6 +64,11 @@ server {
     return 301 https://docs.google.com/forms/d/e/1FAIpQLSdBPZtXKmqW8Pbo3M7cDyvxu0O-JInHxLF4Q3jXWrKnzAX8pA/viewform;
   }
 
+  location /logs {
+    rewrite /logs/(.+) /entries?_SYSTEMD_INVOCATION_ID=$1 break;
+    proxy_pass http://localhost:19531;
+  }
+
   location / {
     try_files $uri $uri/ =404;
   }

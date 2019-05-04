@@ -14,6 +14,19 @@
   with_items:
     - "/usr/local/bin/deploy-static-sticky.sh"
 
+- name:
+    "install systemd-journal-remote for accessing static-sticky's deploy logs
+    remotely"
+  apt:
+    name: "systemd-journal-remote"
+    state: "present"
+
+- name: "start and enable systemd-journal-gatewayd"
+  systemd:
+    name: "systemd-journal-gatewayd"
+    enabled: true
+    state: "started"
+
 - block:
   - name:
       "clone static-sticky repository"

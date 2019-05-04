@@ -13,6 +13,7 @@
       - "htop"
       - "unattended-upgrades"
       - "haveged"
+      - "jq"
     state: "present"
 
 - name: "update all packages"

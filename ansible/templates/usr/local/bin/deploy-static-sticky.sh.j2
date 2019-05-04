@@ -21,6 +21,7 @@ fail_github_deploy_status() {
     --request POST \
     --data \
       '{"state": "failure",
+        "environment_url": "https://{{ canonical_hostname }}/",
         "log_url": "https://{{ canonical_hostname }}/logs/'"${INVOCATION_ID}"'"
       }' \
     "https://api.github.com/repos/svsticky/static-sticky/deployments/${DEPLOY_ID}/statuses"
@@ -89,6 +90,7 @@ curl \
   --request POST \
   --data \
     '{"state": "success",
+      "environment_url": "https://{{ canonical_hostname }}/",
       "log_url": "https://{{ canonical_hostname }}/logs/'"${INVOCATION_ID}"'"
     }' \
   "https://api.github.com/repos/svsticky/static-sticky/deployments/${DEPLOY_ID}/statuses"

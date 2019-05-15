@@ -12,7 +12,7 @@ server {
 
   include includes/security-headers.conf;
 
-  root /var/www/files;
+  root /var/www/files.{{ canonical_hostname }};
 
   location / {
     fancyindex on;

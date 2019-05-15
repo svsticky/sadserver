@@ -14,7 +14,41 @@ server {
 
   root /var/www/files.{{ canonical_hostname }};
 
+  location /oauth2/ {
+    proxy_pass       http://127.0.0.1:4180;
+    proxy_set_header Host                    $host;
+    proxy_set_header X-Real-IP               $remote_addr;
+    proxy_set_header X-Scheme                $scheme;
+    proxy_set_header X-Auth-Request-Redirect $request_uri;
+  }
+
+  location = /oauth2/auth {
+    proxy_pass       http://127.0.0.1:4180;
+    proxy_set_header Host             $host;
+    proxy_set_header X-Real-IP        $remote_addr;
+    proxy_set_header X-Scheme         $scheme;
+    # nginx auth_request includes headers but not body
+    proxy_set_header Content-Length   "";
+    proxy_pass_request_body           off;
+  }
+
   location / {
+    # Makes nginx check whether the user is logged in already
+    auth_request /oauth2/auth;
+    # If the user isn't logged in, redirect to the login page
+    error_page 401 = /oauth2/start;
+
+    # pass information via X-User and X-Email headers to backend,
+    # requires running with --set-xauthrequest flag
+    auth_request_set $user   $upstream_http_x_auth_request_user;
+    auth_request_set $email  $upstream_http_x_auth_request_email;
+    proxy_set_header X-User  $user;
+    proxy_set_header X-Email $email;
+
+    # if you enabled --cookie-refresh, this is needed for it to work with auth_request
+    auth_request_set $auth_cookie $upstream_http_set_cookie;
+    add_header Set-Cookie $auth_cookie;
+
     fancyindex on;
     fancyindex_localtime on;
     fancyindex_exact_size off;
@@ -23,5 +57,4 @@ server {
     fancyindex_ignore "theme"; # Making sure the theme folder doesn't show up in the listing.
     fancyindex_name_length 255; # Maximum file name length in bytes
   }
-
 }

@@ -1,5 +1,8 @@
 # {{ ansible_managed }}
 
+
+load_module modules/ngx_http_fancyindex_module.so;
+
 user www-data;
 worker_processes 4;
 pid /run/nginx.pid;

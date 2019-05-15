@@ -1,0 +1,33 @@
+---
+- name: "create site root Fancy Index & theme dir"
+  file:
+    path: "/var/www/files.{{ canonical_hostname }}/theme"
+    owner: "www-data"
+    group: "www-data"
+    state: "directory"
+
+- name: "copy Fancy Index theme"
+  template:
+    src: "{{ item }}"
+    dest:
+      "/var/www/files.{{ canonical_hostname }}/theme/\
+      {{ item | basename | regex_replace('\\.j2$','') }}"
+    owner: "www-data"
+    group: "www-data"
+  with_fileglob:
+    - "../templates/var/www/files/theme/*"
+
+- name: "copy NGiNX site config Fancy Index"
+  template:
+    src: "etc/nginx/sites-available/files.conf.j2"
+    dest: "/etc/nginx/sites-available/files.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable NGiNX site config Fancy Index"
+  file:
+    src: "/etc/nginx/sites-available/{{ filename }}"
+    path: "/etc/nginx/sites-enabled/{{ filename }}"
+    state: "link"
+  vars:
+    filename: "files.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"

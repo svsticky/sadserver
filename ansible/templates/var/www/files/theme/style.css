@@ -1,0 +1,77 @@
+/* styles.css
+ * Better styling for of Nginx FancyIndex page
+ * © 2015-17, Lilian Besson (Naereen) and contributors,
+ * open-sourced under the MIT License, https://lbesson.mit-license.org/
+ * hosted on GitHub, https://GitHub.com/Naereen/Nginx-Fancyindex-Theme
+ */
+
+* {
+    font-family: 'Verdana', sans-serif;
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+html {
+	color: #61666c;
+	font-weight: 300;
+	font-size: 1em;
+	line-height: 2em;
+}
+
+body {
+	margin: 0 auto;
+	padding-top: 20px;
+	max-width: 800px;
+	background-color: #2f343f;
+	color: #FFFFFF
+}
+
+thead {
+	font-weight: 200;
+	font-size: 1.2em;
+}
+
+h1 {
+	font-weight: 200;
+	text-align: center;
+	font-size: 1.4em;
+	line-height: 3em;
+}
+
+a {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.clear, a.clear:link, a.clear:visited {
+	color: #666;
+	padding: 2px 0;
+	font-weight: 400;
+	font-size: 14px;
+	margin: 0 0 0 20px;
+	line-height: 14px;
+	display: inline-block;
+	border-bottom: transparent 1px solid;
+	vertical-align: -10px;
+	-webkit-transition: all 300ms ease-in;
+	-moz-transition: all 300ms ease-in;
+	-ms-transition: all 300ms ease-in;
+	-o-transition: all 300ms ease-in;
+	transition: all 300ms ease-in;
+}
+
+input {
+	margin: 0 auto;
+	font-size: 100%;
+	vertical-align: middle;
+	*overflow: visible;
+	line-height: normal;
+    font-family: 'Open Sans', sans-serif;
+	font-size: 12px;
+	font-weight: 300;
+	

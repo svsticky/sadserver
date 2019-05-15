@@ -2,8 +2,8 @@
 - name: "create site root Fancy Index & theme dir"
   file:
     path: "/var/www/files.{{ canonical_hostname }}"
-    owner: "bestuur"
-    group: "www-data"
+    owner: "www-data"
+    group: "adm"
     mode: "2775"
     state: "directory"
 

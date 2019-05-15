@@ -20,7 +20,7 @@
 - name: "copy NGiNX site config Fancy Index"
   template:
     src: "etc/nginx/sites-available/files.conf.j2"
-    dest: "/etc/nginx/sites-available/files.conf"
+    dest: "/etc/nginx/sites-available/files.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable NGiNX site config Fancy Index"

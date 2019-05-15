@@ -1,5 +1,5 @@
 ---
-- name: "create site root Fancy Index"
+- name: "create site root Fancy Index & theme dir"
   file:
     path: "/var/www/files.{{ canonical_hostname }}/theme"
     owner: "www-data"

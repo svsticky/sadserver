@@ -10,7 +10,7 @@
   template:
     src: "{{ item }}"
     dest:
-      "/var/www/files.{{ canonical_hostname }}/theme\
+      "/var/www/files.{{ canonical_hostname }}/theme/\
       {{ item | basename | regex_replace('\\.j2$','') }}"
     owner: "www-data"
     group: "www-data"

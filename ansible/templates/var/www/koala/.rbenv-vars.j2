@@ -26,6 +26,10 @@ RAILS_ENV={{ koala_env.environment }}
 RAILS_MAX_THREADS={{ koala.threads }}
 
 # PXL
-PXL_UID={{ secret_oauth2_proxy.client_id }}
-PXL_SECRET={{ secret_oauth2_proxy.client_secret }}
-PXL_REDIRECT_URI=https://photos.{{ canonical_hostname }}/oauth2/callback
+OAUTH_PROXY_UID={{ secret_oauth2_proxy.client_id }}
+OAUTH_PROXY_SECRET={{ secret_oauth2_proxy.client_secret }}
+OAUTH_PROXY_REDIRECTS={% for website in websites if
+  (website.authenticated | default(false)) -%}
+  https://{{ website.name }}/oauth2/callback;{% for
+  alternative_name in website.alternative_names -%}
+  https://{{ alternative_name }}/oauth2/callback;{% endfor %}{% endfor %}

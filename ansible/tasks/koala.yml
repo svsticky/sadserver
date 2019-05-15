@@ -275,10 +275,10 @@
     changed_when: koala_assets_result.stdout.find("Already up-to-date.") == -1
     notify: "restart koala"
 
-  - name: "add credentials for pxl:create_application"
+  - name: "add credentials for oauth application"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rails pxl:create_application'
+    shell: 'eval "$(rbenv init - )"; rails oauthproxy:create_application'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
 

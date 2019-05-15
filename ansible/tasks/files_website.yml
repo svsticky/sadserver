@@ -15,10 +15,10 @@
     owner: "www-data"
     group: "www-data"
   with_fileglob:
-    - "var/www/files/theme/*"
+    - "../templates/var/www/files/theme/*"
 
 - name: "copy NGiNX site config Fancy Index" 
   template:
-    src: "/etc/nginx/sites-available/files.conf.j2"
+    src: "etc/nginx/sites-available/files.conf.j2"
     dest: "/etc/nginx/sites-available/files.conf"
   notify: "reload nginx"

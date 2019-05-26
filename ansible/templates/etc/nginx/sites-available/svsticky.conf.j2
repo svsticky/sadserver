@@ -60,6 +60,10 @@ server {
     return 301 https://www.youtube.com/watch?v=AC3Ejf7vPEY;
   }
 
+  location ~* /interesselijst {
+    return 301 https://docs.google.com/forms/d/e/1FAIpQLSdBPZtXKmqW8Pbo3M7cDyvxu0O-JInHxLF4Q3jXWrKnzAX8pA/viewform;
+  }
+
   location / {
     try_files $uri $uri/ =404;
   }

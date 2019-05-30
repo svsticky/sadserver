@@ -35,8 +35,9 @@ server {
   location / {
     # Makes nginx check whether the user is logged in already
     auth_request /oauth2/auth;
-    # If the user isn't logged in, redirect to the login page
-    error_page 401 = /oauth2/start;
+    # If the user isn't logged in, redirect to Koala and provide original URL
+    # so we can be redirected back to the originally requested URL
+    error_page 401 = /oauth2/start?rd=$request_uri;
 
     # pass information via X-User and X-Email headers to backend,
     # requires running with --set-xauthrequest flag

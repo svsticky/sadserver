@@ -264,6 +264,8 @@
   with_items:
     - src: "aas"
       dest: "aas.{{ canonical_hostname }}"
+    - src: "dgdarc"
+      dest: "dgdarc.{{ canonical_hostname }}"
     - src: "old.svsticky"
       dest: "old.{{ canonical_hostname }}"
     - src: "savadaba"

@@ -33,6 +33,12 @@ server {
   }
 
   location / {
+    location /alv_stukken {
+      # We override the default ascending sorting,
+      # to make sure newest ALV is at the top
+      fancyindex_default_sort name_desc;
+    }
+
     # Makes nginx check whether the user is logged in already
     auth_request /oauth2/auth;
     # If the user isn't logged in, redirect to Koala and provide original URL

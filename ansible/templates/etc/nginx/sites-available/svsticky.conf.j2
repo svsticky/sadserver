@@ -64,8 +64,12 @@ server {
     return 301 https://docs.google.com/forms/d/e/1FAIpQLSdBPZtXKmqW8Pbo3M7cDyvxu0O-JInHxLF4Q3jXWrKnzAX8pA/viewform;
   }
 
-  location /logs {
-    rewrite /logs/(.+) /entries?_SYSTEMD_INVOCATION_ID=$1 break;
+  location /logs/ {
+    # Construct correct request URI for systemd-journald-gateway, while only
+    # allowing alphanumerics (to prevent exposing the other endpoints and
+    # parameters that systemd-journald-gateway supports
+    rewrite "^/logs/([\d\w]{32})$" /entries?_SYSTEMD_INVOCATION_ID=$1 break;
+    return 403;
     proxy_pass http://localhost:19531;
   }
 

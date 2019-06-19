@@ -74,13 +74,27 @@
       executable: "/bin/bash"
     when: "static_sticky_clone is changed"
 
-  - name: "build website"
-    shell: |
-      . /var/www/static-sticky/.nvm/nvm.sh
-      npm run build
-    args:
-      chdir: "/var/www/static-sticky/static-sticky"
-      executable: "/bin/bash"
+  - name: "try building website"
+    block:
+      - name: "build website"
+        shell: |
+          . /var/www/static-sticky/.nvm/nvm.sh
+          npm run build
+        args:
+          chdir: "/var/www/static-sticky/static-sticky"
+          executable: "/bin/bash"
+    rescue:
+      - name: "purge build cache to fix build failure"
+        file:
+          path: "/var/www/static-sticky/static-sticky/.cache"
+          state: "absent"
+      - name: "retry building website"
+        shell: |
+          . /var/www/static-sticky/.nvm/nvm.sh
+          npm run build
+        args:
+          chdir: "/var/www/static-sticky/static-sticky"
+          executable: "/bin/bash"
 
   # NOTE: The trailing slashes are significant!
   # Omitting it will create a `public` subdirectory and break stuff.

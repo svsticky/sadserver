@@ -1,0 +1,40 @@
+---
+- name: "ensure crazy88bot user is present"
+  user:
+    name: "crazy88bot"
+    shell: "/usr/sbin/nologin"
+    home: "/var/lib/crazy88bot"
+    system: true
+
+- name: "clone crazy88bot repo"
+  git:
+    repo: "git@github.com:svsticky/crazy88bot.git"
+    dest: "/var/lib/crazy88bot/crazy88bot"
+    key_file: "/home/ansible/.ssh/deploy_ed25519"
+    version: "master"
+  diff: false
+  notify: "restart crazy88bot"
+
+- name: "ensure dependencies are installed"
+  pip:
+    requirements: "/var/lib/crazy88bot/crazy88bot/requirements.txt"
+    virtualenv: "/var/lib/crazy88bot/crazy88bot/env"
+    virtualenv_python: "python3.6"
+  become_user: "crazy88bot"
+
+- name: "copy systemd service for crazy88bot"
+  template:
+    src: "templates/etc/systemd/system/crazy88bot.service.j2"
+    dest: "/etc/systemd/system/crazy88bot.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify: "restart crazy88bot"
+
+- name: "start and enable crazy88bot.service in production"
+  systemd:
+    unit: "crazy88bot.service"
+    state: "started"
+    enabled: true
+    daemon-reload: true
+  when: "'production' in group_names"

@@ -70,3 +70,10 @@
   systemd:
     unit: "aas.service"
     state: "restarted"
+
+- name: "restart crazy88bot"
+  systemd:
+    unit: "crazy88bot.service"
+    state: "restarted"
+  when: "'production' in group_names"
+

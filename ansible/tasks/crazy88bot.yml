@@ -6,20 +6,33 @@
     home: "/var/lib/crazy88bot"
     system: true
 
-- name: "clone crazy88bot repo"
-  git:
-    repo: "git@github.com:svsticky/crazy88bot.git"
-    dest: "/var/lib/crazy88bot/crazy88bot"
-    key_file: "/home/ansible/.ssh/deploy_ed25519"
-    version: "master"
-  diff: false
-  notify: "restart crazy88bot"
+- block:
+  - name: "ensure crazy88bot has a ssh directory"
+    file:
+      path: "~/.ssh"
+      state: "directory"
 
-- name: "ensure dependencies are installed"
-  pip:
-    requirements: "/var/lib/crazy88bot/crazy88bot/requirements.txt"
-    virtualenv: "/var/lib/crazy88bot/crazy88bot/env"
-    virtualenv_python: "python3.6"
+  - name: "copy deploy key (private) for user crazy88bot"
+    copy:
+      content: "{{ secret_deploy_key }}"
+      dest: "/var/lib/crazy88bot/.ssh/id_ed25519"
+      mode: "0600"
+
+  - name: "clone crazy88bot repo"
+    git:
+      repo: "git@github.com:svsticky/crazy88bot.git"
+      dest: "/var/lib/crazy88bot/crazy88bot"
+      key_file: "/var/lib/crazy88bot/.ssh/id_ed25519"
+      version: "master"
+    diff: false
+    notify: "restart crazy88bot"
+
+  - name: "ensure dependencies are installed"
+    pip:
+      requirements: "/var/lib/crazy88bot/crazy88bot/requirements.txt"
+      virtualenv: "/var/lib/crazy88bot/crazy88bot/env"
+      virtualenv_python: "python3.6"
+
   become_user: "crazy88bot"
 
 - name: "copy systemd service for crazy88bot"

@@ -1,4 +1,11 @@
 ---
+- name: "ensure clone destination exists"
+  file:
+    path: "/var/lib/crazy88bot/crazy88bot"
+    state: "directory"
+    owner: "crazy88bot"
+    group: "crazy88bot"
+
 - block:
   - name: "ensure crazy88bot has a ssh directory"
     file:

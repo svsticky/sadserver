@@ -1,11 +1,4 @@
 ---
-- name: "ensure crazy88bot user is present"
-  user:
-    name: "crazy88bot"
-    shell: "/usr/sbin/nologin"
-    home: "/var/lib/crazy88bot"
-    system: true
-
 - block:
   - name: "ensure crazy88bot has a ssh directory"
     file:

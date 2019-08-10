@@ -26,7 +26,7 @@
 
 - name: "fix permissions for chroot of committee users"
   file:
-    path: "/var/www/{{ item.name }}"
+    path: "{{ item.home_prefix }}/{{ item.name }}"
     owner: "root"
     state: "directory"
   when:

@@ -85,6 +85,8 @@ case "${SOURCE}" in
             --exclude='var/www/sodi.{{ canonical_hostname }}' \
             --exclude='var/www/pretix/venv' \
             -c -f - -C / var/www \
+            var/lib/crazy88bot/crazy88bot/data \
+            var/lib/crazy88bot/crazy88bot/submissions \
             | gzip -9)
           ;;
         databases)

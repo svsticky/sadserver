@@ -21,7 +21,7 @@
   lookup: sum -60s unaligned absolute of ListenDrops
    units: drops
    every: 10s
-    crit: $this > 1
+    crit: $this > 5
    delay: up 0 down 5m multiplier 1.5 max 1h
     info: the number of TCP listen socket drops during the last minute
       to: sysadmin

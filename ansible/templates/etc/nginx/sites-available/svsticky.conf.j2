@@ -48,6 +48,10 @@ server {
     return 301 https://studystore.nl/sticky;
   }
 
+  location ~* /(books) {
+    return 301 https://www.studystore.nl/en/instelling/sticky;
+  }
+
   location ~* /declaraties {
     return 301 https://digidecs.{{ canonical_hostname }}/;
    }

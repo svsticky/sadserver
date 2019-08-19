@@ -51,3 +51,10 @@
     enabled: true
     daemon-reload: true
   when: "'production' in group_names"
+
+- name: "allow crazy88bot to manage itself"
+  template:
+    src: "etc/sudoers.d/crazy88bot.j2"
+    dest: "/etc/sudoers.d/crazy88bot"
+    owner: "root"
+    group: "root"

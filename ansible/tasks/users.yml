@@ -4,6 +4,11 @@
     name: "committee"
     state: "present"
 
+- name: "create sudoless_ssh group"
+  group:
+    name: "sudoless_ssh"
+    state: "present"
+
 - name: "create /var/www"
   file:
     path: "/var/www"
@@ -14,8 +19,8 @@
 - name: "create/delete users"
   user:
     name: "{{ item.name }}"
-    groups: "{% if item.admin %}sudo,adm{% else %}committee{% endif %}"
-    shell: "{{ '/bin/bash' if item.admin else omit }}"
+    groups: "{% if item.admin %}sudo,adm{% elif item.sudoless_ssh | default(False) %}sudoless_ssh{% else %}committee{% endif %}"
+    shell: "{{ '/bin/bash' if item.admin or (item.sudoless_ssh | default(False)) else omit }}"
     home: "{{ item.home_prefix }}/{{ item.name }}"
     move_home: true
     state: "{{ item.state }}"

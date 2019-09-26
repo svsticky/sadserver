@@ -31,12 +31,12 @@ cd /var/www/static-sticky/static-sticky
 
 git reset --hard HEAD
 
-PREV_GIT_REF="$(git rev-parse --short HEAD)"
+OLD_GIT_REF="$(git rev-parse --short HEAD)"
 # Get latest version of website sourcecode
 git pull origin {{ static_sticky_env.git_ref }}
 NEW_GIT_REF="$(git rev-parse --short HEAD)"
 
-if [[ "${PREV_GIT_REF}" != "${NEW_GIT_REF}" ]]; then
+if [[ "${OLD_GIT_REF}" != "${NEW_GIT_REF}" ]]; then
   DEPLOY_DESCRIPTION="Deploying commit ${NEW_GIT_REF} on top of ${OLD_GIT_REF}."
 else
   DEPLOY_DESCRIPTION="Deploying new changes from Contentful."
@@ -66,7 +66,7 @@ source /var/www/static-sticky/.nvm/nvm.sh
 
 # Check if there are new commits, because this is not necessary if a deploy is
 # triggered by Contentful
-if [[ "${PREV_GIT_REF}" != "${NEW_GIT_REF}" ]]; then
+if [[ "${OLD_GIT_REF}" != "${NEW_GIT_REF}" ]]; then
   nvm install
   npm install
 fi

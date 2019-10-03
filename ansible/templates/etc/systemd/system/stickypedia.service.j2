@@ -13,10 +13,7 @@ Restart=always
 
 WorkingDirectory=/var/www/stickypedia/stickypedia.{{ canonical_hostname }}
 
-RuntimeDirectory=wiki
-RuntimeDirectoryMode=0770
-
-ExecStart=gollum
+ExecStart=/var/www/stickypedia/start-gollum.sh
 
 [Install]
 WantedBy=multi-user.target

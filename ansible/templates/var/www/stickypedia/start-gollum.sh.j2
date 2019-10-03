@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+# Unofficial Bash Strict Mode
+set -efuo pipefail
+IFS=$'\n\t'
+
+cd stickypedia.{{ canonical_hostname }}
+gollum --ref {{ stickypedia.git_content_branch }}

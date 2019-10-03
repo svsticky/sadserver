@@ -1,17 +1,8 @@
 ---
-- block:
-  - name: "ensure crazy88bot has a ssh directory"
-    file:
-      path: "~/.ssh"
-      state: "directory"
-
-  - name: "copy deploy key (private) for user crazy88bot"
-    copy:
-      content: "{{ secret_deploy_key }}"
-      dest: "/var/lib/crazy88bot/.ssh/id_ed25519"
-      mode: "0600"
-
-  become_user: "crazy88bot"
+- name: "remove crazy88bot ssh directory"
+  file:
+    path: "/var/lib/crazy88bot/.ssh"
+    state: "absent"
 
 - name: "remove crazy88bot repo"
   file:

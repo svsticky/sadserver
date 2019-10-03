@@ -1,11 +1,4 @@
 ---
-- name: "ensure clone destination exists"
-  file:
-    path: "/var/lib/crazy88bot/crazy88bot"
-    state: "directory"
-    owner: "crazy88bot"
-    group: "crazy88bot"
-
 - block:
   - name: "ensure crazy88bot has a ssh directory"
     file:
@@ -18,22 +11,12 @@
       dest: "/var/lib/crazy88bot/.ssh/id_ed25519"
       mode: "0600"
 
-  - name: "clone crazy88bot repo"
-    git:
-      repo: "git@github.com:svsticky/crazy88bot.git"
-      dest: "/var/lib/crazy88bot/crazy88bot"
-      key_file: "/var/lib/crazy88bot/.ssh/id_ed25519"
-      version: "master"
-    diff: false
-    notify: "restart crazy88bot"
-
-  - name: "ensure dependencies are installed"
-    pip:
-      requirements: "/var/lib/crazy88bot/crazy88bot/requirements.txt"
-      virtualenv: "/var/lib/crazy88bot/crazy88bot/env"
-      virtualenv_python: "python3.6"
-
   become_user: "crazy88bot"
+
+- name: "remove crazy88bot repo"
+  file:
+    dest: "/var/lib/crazy88bot/crazy88bot"
+    state: "absent"
 
 - name: "remove security override"
   file:

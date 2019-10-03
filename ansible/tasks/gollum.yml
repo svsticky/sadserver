@@ -1,0 +1,48 @@
+---
+- name: "create wiki user"
+  user:
+    name: "wiki"
+    shell: "usr/sbin/nologin"
+    home: "/var/www/wiki"
+    system: true
+
+block:
+  - name: "clone git with Stickypedia content"
+    git:
+      repo: TODO create repo
+      dest: "/var/www/wiki/wiki.{{ canonical_hostname }}"
+      version: "master"
+    diff: false
+
+  - name: "install prerequisites for gollum"
+    apt:
+      name:
+        - "ruby"
+        - "ruby-dev"
+        - "make"
+        - "zlib1g-dev"
+        - "libicu-dev"
+        - "build-essential"
+        - "git"
+        - "cmake"
+      state: "present"
+    become: true
+
+  - name: "install gem gollum"
+    gem:
+      name: gollum
+      state: latest
+
+  become_user: wiki
+
+- name: "copy systemd service for gollum"
+  template:
+    src: "templates/etc/systemd/system/gollum.service.j2"
+    dest: "/etc/systemd/system/golum.service"
+
+- name: "run gollum service"
+  systemd:
+    unit: "gollum.service"
+    state: "started"
+    enabled: true
+    daemon-reload: true

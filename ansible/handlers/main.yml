@@ -83,3 +83,7 @@
     state: "restarted"
   when: "'production' in group_names"
 
+- name: "restart stickypedia"
+  systemd:
+    unit: "stickypedia.service"
+    state: "restarted"

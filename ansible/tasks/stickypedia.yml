@@ -9,7 +9,7 @@
 block:
   - name: "clone git with Stickypedia content"
     git:
-      repo: TODO create repo
+      repo: {{ stickypedia.git_content }}
       dest: "/var/www/stickypedia/stickypedia.{{ canonical_hostname }}"
       version: "master"
     diff: false
@@ -32,6 +32,7 @@ block:
     gem:
       name: gollum
       state: latest
+    notify: "restart stickypedia"
 
   become_user: stickypedia
 

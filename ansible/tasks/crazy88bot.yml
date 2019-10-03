@@ -44,15 +44,16 @@
     mode: "0644"
   notify: "restart crazy88bot"
 
-- name: "start and enable crazy88bot.service in production"
-  systemd:
-    unit: "crazy88bot.service"
-    state: "started"
-    enabled: true
-    daemon-reload: true
-  when: "'production' in group_names"
-
 - name: "remove security override"
   file:
     path: "/etc/sudoers.d/crazy88bot"
     state: "absent"
+
+- name: "stop and disable crazy88bot.service in production"
+  systemd:
+    unit: "crazy88bot.service"
+    state: "stopped"
+    enabled: false
+    daemon-reload: true
+  when: "'production' in group_names"
+

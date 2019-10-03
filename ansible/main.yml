@@ -52,6 +52,8 @@
       include_tasks: "tasks/static-sticky.yml"
     - name: "start process of configuring aas"
       include_tasks: "tasks/aas.yml"
+    - name: "start process of configuring stickypedia"
+      include_tasks: "tasks/stickypedia.yml"
 
   post_tasks:
     # Included the last, so any service that fail2ban is applied to, already

@@ -1,14 +1,4 @@
 ---
-- name: "remove crazy88bot ssh directory"
-  file:
-    path: "/var/lib/crazy88bot/.ssh"
-    state: "absent"
-
-- name: "remove crazy88bot repo"
-  file:
-    dest: "/var/lib/crazy88bot/crazy88bot"
-    state: "absent"
-
 - name: "remove security override"
   file:
     path: "/etc/sudoers.d/crazy88bot"
@@ -25,4 +15,14 @@
 - name: "remove crazy88bot service file"
   file:
     path: "/etc/systemd/system/crazy88bot.service"
+    state: "absent"
+
+- name: "remove crazy88bot ssh directory"
+  file:
+    path: "/var/lib/crazy88bot/.ssh"
+    state: "absent"
+
+- name: "remove crazy88bot repo"
+  file:
+    dest: "/var/lib/crazy88bot/crazy88bot"
     state: "absent"

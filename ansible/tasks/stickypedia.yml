@@ -22,17 +22,30 @@
   become: true
 
 block:
+  - name: "ensure stickypedia has a ssh directory"
+    file:
+      path: "~/.ssh"
+      state: "directory"
+
+  - name: "copy deploy key (private) for user stickypedia"
+    copy:
+      content: "{{ stickypedia.deploy_key }}"
+      dest: "~/.ssh/id_ed25519"
+      mode: "0600"
+
   - name: "clone git with Stickypedia content"
     git:
       repo: "{{ stickypedia.git_content }}"
-      dest: "/var/www/stickypedia/stickypedia.{{ canonical_hostname }}"
+      dest: "~/stickypedia.{{ canonical_hostname }}"
+      key_file: "~/.ssh/id_ed25519"
       version: "master"
     diff: false
 
   - name: "copy gollum startup script"
     template:
       src: "templates/var/www/stickypedia/start-gollum.sh.j2"
-      dest: "templates/var/www/stickypedia/start-gollum.sh"
+      dest: "~/start-gollum.sh"
+      mode: "0755"
 
   - name: "install gem gollum"
     gem:
@@ -41,7 +54,7 @@ block:
       state: "present"
     notify: "restart stickypedia"
 
-  become_user: stickypedia
+  become_user: "stickypedia"
 
 - name: "copy systemd service for stickypedia"
   template:

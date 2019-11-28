@@ -1,0 +1,55 @@
+# {{ ansible_managed }}
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+
+  server_name wiki.{{ canonical_hostname }};
+
+  ssl_certificate      /etc/letsencrypt/live/files.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/files.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/sticky.{{ canonical_hostname }}/chain.pem;
+
+  include includes/security-headers.conf;
+
+  root /var/www/wiki.{{ canonical_hostname }};
+
+  location /oauth2/ {
+    proxy_pass       http://127.0.0.1:4180;
+    proxy_set_header Host                    $host;
+    proxy_set_header X-Real-IP               $remote_addr;
+    proxy_set_header X-Scheme                $scheme;
+    proxy_set_header X-Auth-Request-Redirect $request_uri;
+  }
+
+  location = /oauth2/auth {
+    proxy_pass       http://127.0.0.1:4180;
+    proxy_set_header Host             $host;
+    proxy_set_header X-Real-IP        $remote_addr;
+    proxy_set_header X-Scheme         $scheme;
+    # nginx auth_request includes headers but not body
+    proxy_set_header Content-Length   "";
+    proxy_pass_request_body           off;
+  }
+
+  location / {
+
+    # Makes nginx check whether the user is logged in already
+    auth_request /oauth2/auth;
+    # If the user isn't logged in, redirect to Koala and provide original URL
+    # so we can be redirected back to the originally requested URL
+    error_page 401 = /oauth2/start?rd=$request_uri;
+
+    # pass information via X-User and X-Email headers to backend,
+    # requires running with --set-xauthrequest flag
+    auth_request_set $user   $upstream_http_x_auth_request_user;
+    auth_request_set $email  $upstream_http_x_auth_request_email;
+    proxy_set_header X-User  $user;
+    proxy_set_header X-Email $email;
+
+    # if you enabled --cookie-refresh, this is needed for it to work with auth_request
+    auth_request_set $auth_cookie $upstream_http_set_cookie;
+    add_header Set-Cookie $auth_cookie;
+
+  }
+}

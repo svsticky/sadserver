@@ -68,6 +68,11 @@ block:
     dest: "/etc/systemd/system/stickypedia.service"
   notify: "restart stickypedia"
 
+- name: "copy nginx configuration for stickypedia"
+  template:
+    src: "templates/etc/nginx/sites-available/stickypedia.conf.j2"
+    dest: "/etc/nginx/sites-available/stickypedia.conf"
+
 - name: "run stickypedia service"
   systemd:
     unit: "stickypedia.service"

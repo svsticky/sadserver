@@ -3,6 +3,6 @@
 wiki = Gollum::Wiki.new(".")
 
 Gollum::Hook.register(:post_commit, :hook_id) do |committer, sha1|
-  wiki.repo.git.pull("origin", {{ stickypedia.git_content_branch }})
-  wiki.repo.git.push("origin", {{ stickypedia.git_content_branch }})
+  wiki.repo.git.pull("origin", {{ stickypedia.git_ref }})
+  wiki.repo.git.push("origin", {{ stickypedia.git_ref }})
 end

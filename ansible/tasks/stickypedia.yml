@@ -2,10 +2,9 @@
 - name: "create stickypedia user"
   user:
     name: "stickypedia"
-    shell: "usr/sbin/nologin"
+    shell: "/usr/sbin/nologin"
     home: "/var/www/stickypedia"
     system: true
-
 
 - name: "install prerequisites for gollum"
   apt:
@@ -21,44 +20,42 @@
     state: "present"
   become: true
 
-block:
-  - name: "ensure stickypedia has a ssh directory"
-    file:
-      path: "~/.ssh"
-      state: "directory"
+- block:
+    - name: "ensure stickypedia has a ssh directory"
+      file:
+        path: "~/.ssh"
+        state: "directory"
 
-  - name: "copy deploy key (private) for user stickypedia"
-    copy:
-      content: "{{ stickypedia.deploy_key }}"
-      dest: "~/.ssh/id_ed25519"
-      mode: "0600"
+    - name: "copy deploy key (private) for user stickypedia"
+      copy:
+        content: "{{ secret_deploy_key }}"
+        dest: "~/.ssh/id_ed25519"
+        mode: "0600"
 
-  - name: "clone git with Stickypedia content"
-    git:
-      repo: "{{ stickypedia.git_content }}"
-      dest: "~/stickypedia.{{ canonical_hostname }}"
-      key_file: "~/.ssh/id_ed25519"
-      version: "master"
-    diff: false
+    - name: "clone git with Stickypedia content"
+      git:
+        repo: "git@github.com:svsticky/stickypedia-content.git"
+        dest: "~/stickypedia.{{ canonical_hostname }}"
+        version: "{{ stickypedia.git_ref }}"
+      diff: false
 
-  - name: "copy gollum config file"
-    template:
-      src: "templates/var/www/stickypedia/config.rb"
-      dest: "~/config.rb"
-      mode: "0660"
+    - name: "copy gollum config file"
+      template:
+        src: "templates/var/www/stickypedia/config.rb.j2"
+        dest: "~/config.rb"
+        mode: "0660"
 
-  - name: "copy gollum startup script"
-    template:
-      src: "templates/var/www/stickypedia/start-gollum.sh.j2"
-      dest: "~/start-gollum.sh"
-      mode: "0770"
+    - name: "copy gollum startup script"
+      template:
+        src: "templates/var/www/stickypedia/start-gollum.sh.j2"
+        dest: "~/start-gollum.sh"
+        mode: "0770"
 
-  - name: "install gem gollum"
-    gem:
-      name: "gollum"
-      version:  "4.1.4"
-      state: "present"
-    notify: "restart stickypedia"
+    - name: "install gem gollum"
+      gem:
+        name: "gollum"
+        version: "4.1.4"
+        state: "present"
 
   become_user: "stickypedia"
 

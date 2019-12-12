@@ -6,4 +6,4 @@ set -efuo pipefail
 IFS=$'\n\t'
 
 cd stickypedia.{{ canonical_hostname }}
-gollum --ref {{ stickypedia.git_content_branch }} --config="/var/www/stickypedia/config.rb"
+/var/www/stickypedia/.gem/ruby/2.5.0/gems/gollum-4.1.4/bin/gollum --ref {{ stickypedia.git_ref }} --config="/var/www/stickypedia/config.rb" --host localhost

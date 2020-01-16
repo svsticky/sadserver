@@ -4,6 +4,16 @@
     path: "/var/www/phpmyadmin.{{ canonical_hostname }}"
     state: "absent"
 
+- name: "add apt key for yarn repository"
+  apt_key:
+    url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
+    state: "present"
+
+- name: "add yarn repository"
+  apt_repository:
+    repo: "deb https://dl.yarnpkg.com/debian/ stable main"
+    state: "present"
+
 - name: "install phpmyadmin dependencies"
   apt:
     name:
@@ -13,7 +23,13 @@
       - "php7.2-mysqli"
       - "composer"
       - "php7.2-curl"
+      - "yarn"
     state: "present"
+
+- name: "run yarn install"
+  shell: 
+    cmd: "yarn install --frozen-lockfile"
+    chdir: "/var/www/phpmyadmin.{{ canonical_hostname }}"
 
 - name: "create phpmyadmin user"
   user:

@@ -56,10 +56,6 @@ server {
     return 301 https://digidecs.{{ canonical_hostname }}/;
   }
 
-  location ~* /doos {
-    return 301 https://docs.google.com/forms/d/1QQqNB5vaxYl3OGwuxCAmgGO6F3uE0f1R3w1S-OuVeCY/viewform;
-  }
-
   location ~* /(fb|facebook) {
     return 301 https://www.facebook.com/groups/814759978565158/;
   }
@@ -72,8 +68,8 @@ server {
     return 301 https://docs.google.com/forms/d/e/1FAIpQLSfgdvZyyVJSSpQ6XQAjKMXa_NY6vwexA2SbwtbIKWLasF-w1w/viewform;
   }
 
-  location ~* /(helperworden|wordhelper) {
-    return 301 https://forms.gle/cqqi1hcu8v4NK1eQ8;
+  location ~* /(symposium) {
+    return 301 https://forms.gle/dGjoPHS6YH3WVSTh7;
   }
 
   location /logs/ {

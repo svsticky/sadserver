@@ -149,13 +149,19 @@
       - "koala"
       - "ruby"
 
+  - name: "get ruby version from repo"
+    command: 
+      cmd: "cat .ruby-version"
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "cat_ruby_version"
+
   - name: "ensure ruby is installed, compile if necessary"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rbenv install {{ koala.ruby_version }}'
+    shell: 'eval "$(rbenv init - )"; rbenv install {{ cat_ruby_version.stdout }}'
     args:
       executable: "/bin/bash"
-      creates: "/home/koala/.rbenv/versions/{{ koala.ruby_version }}"
+      creates: "/home/koala/.rbenv/versions/{{ cat_ruby_version.stdout }}"
     notify: "restart koala"
     tags:
       - "ruby"
@@ -165,7 +171,7 @@
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
     shell:
-      'eval "$(rbenv init -)"; rbenv shell {{ koala.ruby_version }}; gem update
+      'eval "$(rbenv init -)"; rbenv shell {{ cat_ruby_version.stdout }}; gem update
       --system'
     args:
       executable: "/bin/bash"
@@ -232,6 +238,22 @@
     notify: "restart koala"
     tags:
       - "koala"
+
+  - name: "get bundled_with bundler version"
+    shell: 
+      cmd: "tail -n 1 Gemfile.lock | awk '{$1=$1};1'"
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "koala_bundler_version"
+  
+  - name: "ensure the right bundler version is installed"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: 
+      'eval "$(rbenv init - )"; rbenv shell {{ cat_ruby_version.stdout }}; 
+       gem install bundler -v {{ koala_bundler_version.stdout }}'
+    args:
+      executable: "/bin/bash"
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
 
   - name: "ensure gem dependencies are installed"
     environment:

@@ -68,10 +68,6 @@ server {
     return 301 https://docs.google.com/forms/d/e/1FAIpQLSfgdvZyyVJSSpQ6XQAjKMXa_NY6vwexA2SbwtbIKWLasF-w1w/viewform;
   }
 
-  location ~* /(symposium) {
-    return 301 https://forms.gle/dGjoPHS6YH3WVSTh7;
-  }
-
   location /logs/ {
     # Construct correct request URI for systemd-journald-gateway, while only
     # allowing alphanumerics (to prevent exposing the other endpoints and

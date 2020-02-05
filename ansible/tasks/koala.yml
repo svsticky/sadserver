@@ -149,38 +149,6 @@
       - "koala"
       - "ruby"
 
-  - name: "get ruby version from repo"
-    command: 
-      cmd: "cat .ruby-version"
-      chdir: "/var/www/koala.{{ canonical_hostname }}"
-    register: "cat_ruby_version"
-
-  - name: "ensure ruby is installed, compile if necessary"
-    environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rbenv install {{ cat_ruby_version.stdout }}'
-    args:
-      executable: "/bin/bash"
-      creates: "/home/koala/.rbenv/versions/{{ cat_ruby_version.stdout }}"
-    notify: "restart koala"
-    tags:
-      - "ruby"
-      - "koala"
-
-  - name: "ensure rubygems is updated"
-    environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell:
-      'eval "$(rbenv init -)"; rbenv shell {{ cat_ruby_version.stdout }}; gem update
-      --system'
-    args:
-      executable: "/bin/bash"
-      chdir: "/var/www/koala.{{ canonical_hostname }}"
-    register: "rubygems_update"
-    changed_when:
-      "'Latest version already installed.' not in
-      rubygems_update.stdout"
-
   - name: "ensure koala has a ssh directory"
     file:
       path: "~/.ssh"
@@ -204,6 +172,31 @@
     diff: false
     register: "koala_checkout_result"
     check_mode: true
+
+  - name: "ensure ruby is installed, compile if necessary"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: 'eval "$(rbenv init - )"; rbenv install'
+    args:
+      executable: "/bin/bash"
+    notify: "restart koala"
+    tags:
+      - "ruby"
+      - "koala"
+
+  - name: "ensure rubygems is updated"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell:
+      'eval "$(rbenv init -)"; rbenv shell {{ cat_ruby_version.stdout }}; gem update
+      --system'
+    args:
+      executable: "/bin/bash"
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "rubygems_update"
+    changed_when:
+      "'Latest version already installed.' not in
+      rubygems_update.stdout"
 
   # This sets the information gained from the previous task in a fact
   - name: "set status of koala repo in fact"
@@ -240,16 +233,16 @@
       - "koala"
 
   - name: "get bundled_with bundler version"
-    shell: 
+    shell:
       cmd: "tail -n 1 Gemfile.lock | awk '{$1=$1};1'"
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_bundler_version"
-  
+
   - name: "ensure the right bundler version is installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 
-      'eval "$(rbenv init - )"; rbenv shell {{ cat_ruby_version.stdout }}; 
+    shell:
+      'eval "$(rbenv init - )"; rbenv shell {{ cat_ruby_version.stdout }};
        gem install bundler -v {{ koala_bundler_version.stdout }}'
     args:
       executable: "/bin/bash"

@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Send mail to certain members to request updating their information
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Type=simple
+User=koala
+WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
+ExecStartPre=/etc/systemd/system/koala-mail-update-info.sh
+ExecStart=/bin/sh -c "echo \"*Koala service \'Sent mails to request member info updates\'\
+completed* _($(date +'%%F %%T %%:z'))_\" | /usr/local/bin/slacktee\
+--plain-text --username 'Koala service' --icon '::' --attachment 'good'"

@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Send email requesting members to update their info yearly
+
+[Timer]
+OnCalendar=*-09-01 01:00 UTC
+RandomizedDelaySec=10800
+Persistent=true
+
+[Install]
+WantedBy=timers.target

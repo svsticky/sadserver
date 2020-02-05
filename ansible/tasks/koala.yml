@@ -198,31 +198,30 @@
     tags:
       - "koala"
 
-
   - name: "ensure ruby is installed, compile if necessary"
-  environment:
-    PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-  shell: 'eval "$(rbenv init - )"; rbenv install'
-  args:
-    executable: "/bin/bash"
-  notify: "restart koala"
-  tags:
-    - "ruby"
-    - "koala"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: 'eval "$(rbenv init - )"; rbenv install'
+    args:
+      executable: "/bin/bash"
+    notify: "restart koala"
+    tags:
+      - "ruby"
+      - "koala"
 
-- name: "ensure rubygems is updated"
-  environment:
-    PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-  shell:
-    'eval "$(rbenv init -)"; rbenv shell {{ cat_ruby_version.stdout }}; gem update
-    --system'
-  args:
-    executable: "/bin/bash"
-    chdir: "/var/www/koala.{{ canonical_hostname }}"
-  register: "rubygems_update"
-  changed_when:
-    "'Latest version already installed.' not in
-    rubygems_update.stdout"
+  - name: "ensure rubygems is updated"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell:
+      'eval "$(rbenv init -)"; rbenv shell {{ cat_ruby_version.stdout }}; gem update
+      --system'
+    args:
+      executable: "/bin/bash"
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "rubygems_update"
+    changed_when:
+      "'Latest version already installed.' not in
+      rubygems_update.stdout"
 
   - name: "ensure .rbenv-vars is present"
     template:

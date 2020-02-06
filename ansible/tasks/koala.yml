@@ -201,9 +201,14 @@
   - name: "ensure ruby is installed, compile if necessary"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rbenv install'
+    shell: >
+      eval "$(rbenv init - )";
+      rbenv install --skip-existing
     args:
       executable: "/bin/bash"
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+    register: "ruby_install_result"
+    changed_when: "ruby_install_result.stdout != ''"
     notify: "restart koala"
     tags:
       - "ruby"

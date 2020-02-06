@@ -217,9 +217,9 @@
   - name: "ensure rubygems is updated"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell:
-      'eval "$(rbenv init -)"; rbenv shell {{ cat_ruby_version.stdout }}; gem update
-      --system'
+    shell: >
+      eval "$(rbenv init -)";
+      gem update --system
     args:
       executable: "/bin/bash"
       chdir: "/var/www/koala.{{ canonical_hostname }}"

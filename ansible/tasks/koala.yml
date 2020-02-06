@@ -246,9 +246,9 @@
   - name: "ensure the right bundler version is installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell:
-      'eval "$(rbenv init - )"; rbenv shell {{ cat_ruby_version.stdout }};
-       gem install bundler -v {{ koala_bundler_version.stdout }}'
+    shell: >
+      eval "$(rbenv init - )";
+      gem install bundler -v {{ koala_bundler_version.stdout }}
     args:
       executable: "/bin/bash"
       chdir: "/var/www/koala.{{ canonical_hostname }}"

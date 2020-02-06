@@ -256,7 +256,9 @@
   - name: "ensure gem dependencies are installed"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; bundle install'
+    shell: >
+      eval "$(rbenv init - )";
+      bundle install
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_gem_result"
@@ -268,7 +270,9 @@
   - name: "ensure tmp directories exist"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rails tmp:create'
+    shell: >
+      eval "$(rbenv init - )";
+      rails tmp:create
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
@@ -288,7 +292,9 @@
   - name: "ensure assets are precompiled"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rails assets:precompile'
+    shell: >
+      eval "$(rbenv init - )";
+      rails assets:precompile
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
     register: "koala_assets_result"
@@ -298,7 +304,9 @@
   - name: "add credentials for oauth application"
     environment:
       PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: 'eval "$(rbenv init - )"; rails oauthproxy:create_application'
+    shell: >
+      eval "$(rbenv init - )";
+      rails oauthproxy:create_application
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
 
@@ -315,9 +323,9 @@
       - name: "run migration(s)"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-        shell:
-          'eval "$(rbenv init - )"; bin/rails
-          RAILS_ENV={{ koala_env.environment }} db:migrate'
+        shell: >
+          eval "$(rbenv init - )";
+          bin/rails RAILS_ENV={{ koala_env.environment }} db:migrate
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"

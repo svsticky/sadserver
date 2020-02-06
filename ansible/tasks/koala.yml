@@ -301,15 +301,6 @@
     changed_when: koala_assets_result.stdout.find("Already up-to-date.") == -1
     notify: "restart koala"
 
-  - name: "add credentials for oauth application"
-    environment:
-      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
-    shell: >
-      eval "$(rbenv init - )";
-      rails oauthproxy:create_application
-    args:
-      chdir: "/var/www/koala.{{ canonical_hostname }}"
-
     # This block only runs when Koala was already present, and needs to be
     # updated. Makes a backup of Koala's db before performing any operations on
     # the db.
@@ -332,6 +323,15 @@
     when: koala_updated | default(false)
     become: true
     become_user: "koala"
+
+  - name: "add credentials for oauth application"
+    environment:
+      PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+    shell: >
+      eval "$(rbenv init - )";
+      rails oauthproxy:create_application
+    args:
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
 
   # Disables maintenance mode only when Koala had to be updated, and can now be
   # started again.

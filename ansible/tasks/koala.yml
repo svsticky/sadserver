@@ -173,20 +173,32 @@
     register: "koala_checkout_result"
     check_mode: true
 
+  - name: "create marker file to trigger migration"
+    file:
+      path: "/home/koala/.KOALA_MIGRATION_PENDING"
+      state: "touch"
+      owner: "koala"
+      group: "koala"
+    when: "koala_checkout_result.changed"
+
+  - name: "check if migration marker file exists"
+    stat:
+      path: "/home/koala/.KOALA_MIGRATION_PENDING"
+      get_checksum: "no"
+      get_attributes: "no"
+      get_mime: "no"
+    register: "koala_update_marker"
+
   # This sets the information gained from the previous task in a fact
-  - name: "set status of koala repo in fact"
+  - name: "determine whether we need to update koala"
     set_fact:
-      koala_updated: true
-    when:
-      # List is evaluated as logical AND
-      - koala_checkout_result.changed
-      - koala_checkout_result.before != None
+      koala_updated: "{{ koala_update_marker.stat.exists }}"
 
   # Enables maintenance mode only when Koala was already running, and needs to
   # be updated
   - name: "start process of enabling koala's maintenance mode"
     include_tasks: "playbooks/koala/.maintenance-on.yml"
-    when: koala_updated | default(false)
+    when: koala_updated
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
     git:
@@ -346,7 +358,7 @@
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
         when: "koala_database_version.rc == 0"
-    when: koala_updated | default(false)
+    when: koala_updated
     become: true
     become_user: "koala"
 
@@ -363,7 +375,7 @@
   # started again.
   - name: "start process of disabling koala's maintenance mode"
     include_tasks: "playbooks/koala/.maintenance-off.yml"
-    when: koala_updated | default(false)
+    when: koala_updated
 
   become: true
   become_user: "koala"
@@ -444,3 +456,8 @@
   when: koala.server == "unicorn"
   tags:
     - "koala"
+
+- name: "ensure koala update marker is absent"
+  file:
+    path: "/home/koala/.KOALA_MIGRATION_PENDING"
+    state: "absent"

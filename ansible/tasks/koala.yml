@@ -371,44 +371,8 @@
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
 
-  # Disables maintenance mode only when Koala had to be updated, and can now be
-  # started again.
-  - name: "start process of disabling koala's maintenance mode"
-    include_tasks: "playbooks/koala/.maintenance-off.yml"
-    when: koala_updated
-
   become: true
   become_user: "koala"
-
-- name: "ensure koala's recurring services+timers are present"
-  template:
-    src: "templates/etc/systemd/system/{{ item }}.j2"
-    dest: "/etc/systemd/system/{{ item }}"
-  with_items:
-    - "koala-check-study-year.service"
-    - "koala-check-study-year.timer"
-    - "koala-clean-users-table.service"
-    - "koala-clean-users-table.timer"
-    - "koala-reindex-search.service"
-    - "koala-reindex-search.timer"
-  notify:
-    - "systemctl daemon-reload"
-
-- name: "flush handlers"
-  meta: "flush_handlers"
-
-- name: "ensure koala's timers are started and enabled in production"
-  service:
-    name: "{{ item }}"
-    enabled:
-      "{% if 'staging' in group_names %}false{% else %}true\
-      {% endif %}"
-    state:
-      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
-  with_items:
-    - "koala-check-study-year.timer"
-    - "koala-clean-users-table.timer"
-    - "koala-reindex-search.timer"
 
 # This task is used when you set koala.server to "webrick". Useful when you
 # want to use this playbook for a development server, instead of
@@ -456,6 +420,42 @@
   when: koala.server == "unicorn"
   tags:
     - "koala"
+
+- name: "ensure koala's recurring services+timers are present"
+  template:
+    src: "templates/etc/systemd/system/{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - "koala-check-study-year.service"
+    - "koala-check-study-year.timer"
+    - "koala-clean-users-table.service"
+    - "koala-clean-users-table.timer"
+    - "koala-reindex-search.service"
+    - "koala-reindex-search.timer"
+  notify:
+    - "systemctl daemon-reload"
+
+- name: "flush handlers"
+  meta: "flush_handlers"
+
+# Disables maintenance mode only when Koala had to be updated, and can now be
+# started again.
+- name: "start process of disabling koala's maintenance mode"
+  include_tasks: "playbooks/koala/.maintenance-off.yml"
+  when: koala_updated
+
+- name: "ensure koala's timers are started and enabled in production"
+  service:
+    name: "{{ item }}"
+    enabled:
+      "{% if 'staging' in group_names %}false{% else %}true\
+      {% endif %}"
+    state:
+      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
+  with_items:
+    - "koala-check-study-year.timer"
+    - "koala-clean-users-table.timer"
+    - "koala-reindex-search.timer"
 
 - name: "ensure koala update marker is absent"
   file:

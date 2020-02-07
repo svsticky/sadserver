@@ -311,7 +311,32 @@
           state: "started"
         become_user: "root"
 
-      - name: "run migration(s)"
+      - name: "check whether the database exists"
+        environment:
+          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+        shell: >
+          eval "$(rbenv init - )";
+          bin/rails RAILS_ENV={{ koala_env.environment }} db:version
+        args:
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+          executable: "/bin/bash"
+        # This fails with exit code 1 if the database does not exist, this is
+        # what we want to check
+        ignore_errors: "yes"
+        register: "koala_database_version"
+
+      - name: "run database setup if database does not exist"
+        environment:
+          PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
+        shell: >
+          eval "$(rbenv init - )";
+          bin/rails RAILS_ENV={{ koala_env.environment }} db:setup
+        args:
+          chdir: "/var/www/koala.{{ canonical_hostname }}"
+          executable: "/bin/bash"
+        when: "koala_database_version.rc == 1"
+
+      - name: "run migration(s) if database already exists"
         environment:
           PATH: "/home/koala/.rbenv/bin:{{ ansible_env.PATH }}"
         shell: >
@@ -320,6 +345,7 @@
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
+        when: "koala_database_version.rc == 0"
     when: koala_updated | default(false)
     become: true
     become_user: "koala"

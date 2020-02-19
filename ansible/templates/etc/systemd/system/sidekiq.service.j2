@@ -1,0 +1,23 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Start sidekiq
+OnFailure=failure-notificator@%n.service
+Requires=redis-server.service
+After=syslog.target network.target redis-server.service
+
+[Service]
+Type=simple
+User=koala
+WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
+ExecStart=/home/koala/.rbenv/shims/bundle exec sidekiq -e {{ koala_env.environment }}
+
+# if we crash, restart
+RestartSec=1
+Restart=on-failure
+
+# This will default to "bundler" if we don't specify it
+SyslogIdentifier=sidekiq
+
+[Install]
+WantedBy=multi-user.target

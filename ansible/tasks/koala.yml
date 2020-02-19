@@ -434,6 +434,7 @@
     - "koala-reindex-search.timer"
     - "koala-status-mail.service"
     - "koala-status-mail.timer"
+    - "sidekiq.service"
   notify:
     - "systemctl daemon-reload"
 
@@ -458,6 +459,7 @@
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
+    - "sidekiq.service"
 
 - name: "ensure koala update marker is absent"
   file:

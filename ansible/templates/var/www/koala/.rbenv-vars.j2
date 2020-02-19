@@ -33,3 +33,16 @@ OAUTH_PROXY_REDIRECTS={% for website in websites if
   https://{{ website.name }}/oauth2/callback;{% for
   alternative_name in website.alternative_names -%}
   https://{{ alternative_name }}/oauth2/callback;{% endfor %}{% endfor %}
+
+# Mailchimp integration using sidekiq which requires redis
+REDIS_URL=redis://127.0.0.1/3
+
+MAILCHIMP_TOKEN={{secret_mailchimp.token}}
+MAILCHIMP_SECRET={{secret_mailchimp.secret}}
+MAILCHIMP_DATACENTER={{secret_mailchimp.datacenter}}
+MAILCHIMP_LIST_ID={{secret_mailchimp.list_id}}
+# Mailchimp interest ids
+MAILCHIMP_ALV_ID={{secret_mailchimp.alv_id}}
+MAILCHIMP_BUSINESS_ID={{secret_mailchimp.business_id}}
+MAILCHIMP_MMM_ID={{secret_mailchimp.mmm_id}}
+MAILCHIMP_LECTURES_ID={{secret_mailchimp.lectures_id}}

@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Yearly mail to asks members if they are still enrolled to the university
+
+[Timer]
+OnCalendar=Sat *-9-1 01:00:00 UTC
+RandomizedDelaySec=18000
+Persistent=true
+
+[Install]
+WantedBy=timers.target

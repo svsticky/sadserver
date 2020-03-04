@@ -432,6 +432,8 @@
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.service"
     - "koala-reindex-search.timer"
+    - "koala-status-mail.service"
+    - "koala-status-mail.timer"
   notify:
     - "systemctl daemon-reload"
 

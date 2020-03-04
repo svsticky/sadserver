@@ -1,9 +1,25 @@
-- name: "download oauth2_proxy"
+---
+- set_fact:
+    oauthproxy_filename: "oauth2_proxy-v5.0.0.linux-amd64.go1.13.6"
+    oauthproxy_version: "v5.0.0"
+    oauthproxy_checksum: "sha256:8aa23a0635fe9ee5406e1cbef1fb86de44c660ff2269e05a04294989121c2408"
+
+- name: "download oauth2_proxy and verify checksum"
   get_url:
-    url: "https://github.com/svsticky/oauth2_proxy/releases/download/v2.3/oauth2_proxy"
-    dest: "/usr/local/bin/oauth2_proxy"
-    checksum: "sha256:82a76b75c6f5d7986c0f6a9836818d1dcd00bcf0bc2a7e36dafcbaf9e980b5df"
+    url: "https://github.com/pusher/oauth2_proxy/releases/download/{{ oauthproxy_version }}/{{ oauthproxy_filename }}.tar.gz"
+    dest: "/tmp"
     mode: "u+x"
+    checksum: "{{ oauthproxy_checksum }}"
+  check_mode: "no"
+
+- name: "unarchive oauth2_proxy to the right spot"
+  unarchive:
+    src: "/tmp/{{ oauthproxy_filename }}.tar.gz"
+    remote_src: "yes"
+    dest: "/usr/local/bin"
+    extra_opts:
+      - "--add-file"
+      - "{{ oauthproxy_filename }}/oauth2_proxy"
 
 - name: "make directory"
   file:

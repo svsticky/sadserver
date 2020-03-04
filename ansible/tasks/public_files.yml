@@ -24,3 +24,18 @@
     group: "www-data"
   with_fileglob:
     - "../templates/var/www/public/theme/*"
+
+- name: "copy NGiNX site config Fancy Index"
+  template:
+    src: "etc/nginx/sites-available/public.conf.j2"
+    dest: "/etc/nginx/sites-available/public.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable NGiNX site config Fancy Index"
+  file:
+    src: "/etc/nginx/sites-available/{{ filename }}"
+    path: "/etc/nginx/sites-enabled/{{ filename }}"
+    state: "link"
+  vars:
+    filename: "public.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"

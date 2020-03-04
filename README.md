@@ -48,9 +48,8 @@ The code in this repository depends on the following software:
 - [ansible] >= 2.5
 - [slacktee] (vendored) -- create the `ansible/.slack-webhook` file with a
   Slack webhook in order to run the provisioning script.
-- optionally:
-  - [Bitwarden CLI] (`bw` being available in your `$PATH`)
-  - jq (`jq` being available in your `$PATH`)
+- [Bitwarden CLI] (`bw` being available in your `$PATH`)
+- jq (`jq` being available in your `$PATH`)
 - bash
 
 Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 18.04 host** to be

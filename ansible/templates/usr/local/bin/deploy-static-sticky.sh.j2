@@ -53,7 +53,7 @@ DEPLOY_ID="$(curl \
   --data \
     '{"ref": "'"${NEW_GIT_REF}"'",
       "auto_merge": false,
-      "required_context": [],
+      "required_contexts": [],
       "description": "'"${DEPLOY_DESCRIPTION}"'",
       "environment": "'"${DEPLOY_ENV}"'"
     }' \

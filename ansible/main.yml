@@ -38,6 +38,8 @@
       include_tasks: "tasks/oauth2-proxy.yml"
     - name: "start process of installing files website"
       include_tasks: "tasks/files_website.yml"
+    - name: "start process of installing public files website"
+      include_tasks: "tasks/public_files.yml"
     - name: "start process of configuring monitoring services"
       include_tasks: "tasks/monitoring.yml"
     - name: "start process of configuring redis"

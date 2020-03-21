@@ -32,9 +32,11 @@ cd /var/www/static-sticky/static-sticky
 git reset --hard HEAD
 
 OLD_GIT_REF="$(git rev-parse --short HEAD)"
+OLD_NODE_VERSION="$(cat .nvmrc)"
 # Get latest version of website sourcecode
 git pull origin {{ static_sticky_env.git_ref }}
 NEW_GIT_REF="$(git rev-parse --short HEAD)"
+NEW_NODE_VERSION="$(cat .nvmrc)"
 
 if [[ "${OLD_GIT_REF}" != "${NEW_GIT_REF}" ]]; then
   DEPLOY_DESCRIPTION="Deploying commit ${NEW_GIT_REF} on top of ${OLD_GIT_REF}."
@@ -68,6 +70,11 @@ source /var/www/static-sticky/.nvm/nvm.sh
 # triggered by Contentful
 if [[ "${OLD_GIT_REF}" != "${NEW_GIT_REF}" ]]; then
   nvm install
+
+  if [[ "${OLD_NODE_VERSION}" != "${NEW_NODE_VERSION}" ]]; then
+    npm rebuild
+  fi
+
   npm install
 fi
 

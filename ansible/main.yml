@@ -54,6 +54,8 @@
       include_tasks: "tasks/aas.yml"
     - name: "start process of configuring stickypedia"
       include_tasks: "tasks/stickypedia.yml"
+    - name: "start process of configuring shiny-octopus"
+      include_tasks: "tasks/shiny.yml"
 
   post_tasks:
     # Included the last, so any service that fail2ban is applied to, already

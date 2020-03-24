@@ -87,3 +87,8 @@
   systemd:
     unit: "stickypedia.service"
     state: "restarted"
+
+- name: "restart shiny"
+  systemd:
+    unit: "shiny.service"
+    state: "restarted"

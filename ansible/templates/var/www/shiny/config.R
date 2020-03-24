@@ -1,4 +1,4 @@
 # {{ ansible_managed }}
 
-host <- "localhost",
+host <- "localhost"
 socket <- "/var/run/mysqld/mysqld.sock"

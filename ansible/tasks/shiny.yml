@@ -14,7 +14,7 @@
   become_user: root
   become_method: sudo
 
-- name: "install R and used packages"
+- name: "install R and other dependencies"
   apt:
     name:
       - "r-base"
@@ -25,7 +25,7 @@
       - "r-cran-stringr"
       - "r-cran-dbplyr"
       - "r-cran-dplyr"
-      - "r-cran-sqlite"
+      - "r-cran-rsqlite"
     state: "present"
 
 - name: "copy systemd service for shiny"
@@ -35,9 +35,20 @@
   notify: "restart shiny"
 
 - block:
+  - name: "ensure shiny has a ssh directory"
+    file:
+      path: "~/.ssh"
+      state: "directory"
+
+  - name: "copy deploy key for private projects on GitHub"
+    copy:
+      content: "{{ secret_deploy_key }}"
+      dest: "/var/www/shiny/.ssh/id_ed25519"
+      mode: "0600"
+
   - name: "clone shiny repository"
     git:
-      repo: "https://github.com/svsticky/shiny-octopus.git"
+      repo: "git@github.com:svsticky/shiny-octopus.git"
       dest: "/var/www/shiny/stats.{{ canonical_hostname }}"
       version: "master"
     diff: false

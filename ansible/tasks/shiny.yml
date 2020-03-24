@@ -6,6 +6,14 @@
     home: "/var/www/shiny"
     system: true
 
+- name: "give the shiny user read access on the koala database"
+  mysql_user:
+    name: "shiny"
+    priv: "koala.*:SELECT"
+    state: "present"
+  become_user: root
+  become_method: sudo
+
 - name: "install R and used packages"
   apt:
     name:

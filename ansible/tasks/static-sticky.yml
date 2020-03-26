@@ -64,6 +64,16 @@
       chdir: "/var/www/static-sticky/static-sticky"
       executable: "/bin/bash"
     when: "static_sticky_clone is changed"
+    register: "install_node_version"
+
+  - name: "run npm rebuild if needed"
+    shell: |
+      . /var/www/static-sticky/.nvm/nvm.sh
+      npm rebuild
+    args:
+      chdir: "/var/www/static-sticky/static-sticky"
+      executable: "/bin/bash"
+    when: "install_node_version is changed"
 
   - name: "run npm install"
     shell: |

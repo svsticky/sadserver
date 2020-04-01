@@ -1,0 +1,97 @@
+- name: "create radio user"
+  user:
+    name: "radio"
+    home: "/var/www/radio"
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: "present"
+
+- name: "create radio webroot"
+  file:
+    path: "/var/www/radio/radio.{{ canonical_hostname }}"
+    owner: "www-data"
+    group: "radio"
+    mode: "2775"
+    state: "directory"
+
+- block:
+  - name:
+      "clone radio repository"
+    git:
+      repo: "https://github.com/svsticky/radio.git"
+      dest: "/var/www/radio/radio"
+      depth: 1
+      force: true
+      version: "master"
+    diff: false
+    register: "radio_clone"
+
+  - name:
+      "template environment file for radio"
+    template:
+      src: "templates{{ item }}.j2"
+      dest: "{{ item }}"
+    diff: false
+    with_items:
+      - "/var/www/radio/radio/.env"
+
+  - name: "clone NVM"
+    git:
+      repo: "https://github.com/creationix/nvm.git"
+      dest: "/var/www/radio/.nvm"
+      depth: 1
+    diff: false
+    when: "radio_clone is changed"
+
+  - name: "install node version"
+    shell: |
+      . /var/www/radio/.nvm/nvm.sh
+      nvm install
+    args:
+      chdir: "/var/www/radio/radio"
+      executable: "/bin/bash"
+    when: "radio_clone is changed"
+    register: "install_node_version"
+
+  - name: "run npm rebuild if needed"
+    shell: |
+      . /var/www/radio/.nvm/nvm.sh
+      npm rebuild
+    args:
+      chdir: "/var/www/radio/radio"
+      executable: "/bin/bash"
+    when: "install_node_version is changed"
+
+  - name: "run npm install"
+    shell: |
+      . /var/www/radio/.nvm/nvm.sh
+      npm install
+    args:
+      chdir: "/var/www/radio/radio"
+      executable: "/bin/bash"
+    when: "radio_clone is changed"
+
+  - name: "try building website"
+    block:
+      - name: "build website"
+        shell: |
+          . /var/www/radio/.nvm/nvm.sh
+          npm run build
+        args:
+          chdir: "/var/www/radio/radio"
+          executable: "/bin/bash"
+
+  # NOTE: The trailing slashes are significant!
+  # Omitting it will create a `public` subdirectory and break stuff.
+  # See `man rsync`, section USAGE.
+  - name: "copy website contents to webroot"
+    synchronize:
+      src: "/var/www/radio/radio/dist/"
+      dest: "/var/www/radio/radio.{{ canonical_hostname }}/"
+      delete: true
+      recursive: true
+      perms: false
+      times: false
+    delegate_to: "{{ inventory_hostname }}"
+
+  become_user: "radio"

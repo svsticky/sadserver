@@ -46,6 +46,8 @@
       include_tasks: "tasks/redis.yml"
     - name: "start process of configuring pretix"
       include_tasks: "tasks/pretix.yml"
+    - name: "start process of configuring radio"
+      include_tasks: "tasks/radio.yml"
     - name: "start process of configuring static-sticky"
       include_tasks: "tasks/static-sticky.yml"
     - name: "start process of configuring aas"

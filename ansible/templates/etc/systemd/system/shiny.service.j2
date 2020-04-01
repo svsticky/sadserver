@@ -8,7 +8,7 @@ OnFailure=failure-notificator@%n.service
 [Service]
 User=shiny
 Group=shiny
-ExecStart=/usr/bin/R -e "shiny::runApp('dashboard.R', port = 26866)"
+ExecStart=/usr/bin/R -e "shiny::runApp('dashboard.R',port=26866)"
 WorkingDirectory=/var/www/shiny/stats.{{ canonical_hostname }}
 Restart=on-failure
 

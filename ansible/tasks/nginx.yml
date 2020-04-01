@@ -269,6 +269,7 @@
       dest: "dgdarc.{{ canonical_hostname }}"
     - src: "old.svsticky"
       dest: "old.{{ canonical_hostname }}"
+      state: "absent"
     - src: "savadaba"
       dest: "savadaba.{{ canonical_hostname }}"
     - src: "shiny"

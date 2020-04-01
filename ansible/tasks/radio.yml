@@ -9,7 +9,7 @@
 - name: "create radio webroot"
   file:
     path: "/var/www/radio/radio.{{ canonical_hostname }}"
-    owner: "www-data"
+    owner: "radio"
     group: "radio"
     mode: "2775"
     state: "directory"

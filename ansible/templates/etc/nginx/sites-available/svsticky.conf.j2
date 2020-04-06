@@ -68,6 +68,10 @@ server {
     return 301 https://discord.gg/ESZUrvm;
   }
 
+  location = /corona {
+    return 301 https://{{ canonical_hostname }}/studie/corona;
+  }
+
   location /logs/ {
     # Construct correct request URI for systemd-journald-gateway, while only
     # allowing alphanumerics (to prevent exposing the other endpoints and

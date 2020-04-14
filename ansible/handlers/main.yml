@@ -13,6 +13,12 @@
     state: "restarted"
   listen: "restart oauth2-proxy"
 
+- name: "restart oauth2-proxy (admin_"
+  service:
+    name: "oauth2-proxy"
+    state: "restarted"
+  listen: "restart oauth2-proxy-admin"
+
 - name: "restart koala service"
   service:
     name: "koala"

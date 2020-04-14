@@ -43,3 +43,28 @@
     name: "oauth2-proxy"
     enabled: true
     state:  "started"
+
+# Same thing but now for admin only oauth access
+
+- name: "copy allowed users file"
+  template:
+    src: "templates/etc/oauth2_proxy/allowed-users"
+    dest: "/etc/oauth2_proxy/allowed-users"
+
+- name: "copy oauth2_proxy admin config"
+  template:
+    src: "templates/etc/oauth2_proxy/admin-config.cfg.j2"
+    dest: "/etc/oauth2_proxy/admin-config.cfg"
+    notify: "restart oauth2-proxy-admin"
+
+- name: "install systemd service"
+  template:
+    src: "templates/etc/systemd/system/oauth2-proxy-admin.service.j2"
+    dest: "/etc/systemd/system/oauth2-proxy-admin.service"
+  notify: "systemctl daemon-reload"
+
+- name: "enable and start oauth2-proxy"
+  service:
+    name: "oauth2-proxy-admin"
+    enabled: true
+    state:  "started"

@@ -1,0 +1,12 @@
+[Unit]
+Description=The Koala authentication daemon, admin-only version
+Wants=koala.service
+After=koala.service
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Restart=always
+ExecStart=/usr/local/bin/oauth2_proxy -config /etc/oauth2_proxy/config-admin.cfg
+
+[Install]
+WantedBy=multi-user.target

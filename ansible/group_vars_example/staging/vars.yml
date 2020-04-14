@@ -12,6 +12,7 @@ secret_oauth2_proxy:
   client_id:
   client_secret:
   cookie_secret:
+  cookie_secret_admin:
 
 koala_env:
   environment:

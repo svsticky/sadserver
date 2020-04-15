@@ -70,7 +70,7 @@ server {
 	}
 
 	location @unicorn {
-		if (-f /var/www/koala.{{ canonical_hostname }}/MAINTENANCE_MODE) {
+		if (-f /home/koala/MAINTENANCE_MODE) {
 		    error_page 503 /503.html;
 		    return 503;
 		}

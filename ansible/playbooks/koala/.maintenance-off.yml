@@ -9,6 +9,6 @@
 - name: "disable Koala's maintenance mode"
   file:
     state: "absent"
-    path: "/var/www/koala.{{ canonical_hostname }}/MAINTENANCE_MODE"
+    path: "/home/koala/MAINTENANCE_MODE"
   become: true
   become_user: "koala"

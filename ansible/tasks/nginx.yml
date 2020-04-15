@@ -181,6 +181,7 @@
   with_items:
     - "static-sticky"
     - "svsticky-wordpress"
+    - "radio"
 
 - name: "copy general configuration for php"
   template:

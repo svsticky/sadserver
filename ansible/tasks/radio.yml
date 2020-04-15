@@ -1,11 +1,3 @@
-- name: "create radio user"
-  user:
-    name: "radio"
-    home: "/var/www/radio"
-    shell: "/usr/sbin/nologin"
-    system: true
-    state: "present"
-
 - name: "create radio webroot"
   file:
     path: "/var/www/radio/radio.{{ canonical_hostname }}"

@@ -50,12 +50,13 @@
   template:
     src: "templates/etc/oauth2_proxy/allowed-users"
     dest: "/etc/oauth2_proxy/allowed-users"
+  notify: "restart oauth2-proxy-admin"
 
 - name: "copy oauth2_proxy admin config"
   template:
     src: "templates/etc/oauth2_proxy/admin-config.cfg.j2"
     dest: "/etc/oauth2_proxy/admin-config.cfg"
-    notify: "restart oauth2-proxy-admin"
+  notify: "restart oauth2-proxy-admin"
 
 - name: "install systemd service"
   template:

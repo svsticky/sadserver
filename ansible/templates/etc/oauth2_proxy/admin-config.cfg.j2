@@ -1,5 +1,5 @@
 provider = "oidc"
-http_address = "http://127.0.0.1:4190"
+http_address = "http://127.0.0.1:13786"
 oidc_issuer_url = "https://koala.{{ canonical_hostname }}"
 client_id = "{{ secret_oauth2_proxy.client_id }}"
 client_secret = "{{ secret_oauth2_proxy.client_secret }}"
@@ -7,4 +7,4 @@ cookie_secret = "{{ secret_oauth2_proxy.cookie_secret_admin }}"
 email_domains = [ "*" ]
 scope =  "openid member-read email profile"
 ssl_insecure_skip_verify = {{ ('staging' in group_names) | ternary('true', 'false') }}
-authenticated-emails-file = "/etc/oauth2_proxy/allowed-users"
+authenticated-emails-file = "/etc/oauth2_proxy/authorized-users"

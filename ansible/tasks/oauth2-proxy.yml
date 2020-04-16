@@ -46,10 +46,10 @@
 
 # Same thing but now for admin only oauth access
 
-- name: "copy allowed users file"
+- name: "copy authorized users file"
   template:
-    src: "templates/etc/oauth2_proxy/allowed-users"
-    dest: "/etc/oauth2_proxy/allowed-users"
+    src: "templates/etc/oauth2_proxy/authorized-users"
+    dest: "/etc/oauth2_proxy/authorized-users"
   notify: "restart oauth2-proxy-admin"
 
 - name: "copy oauth2_proxy admin config"

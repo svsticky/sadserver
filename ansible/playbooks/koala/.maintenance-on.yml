@@ -5,6 +5,13 @@
   become: true
   become_user: "koala"
 
+- name: "ensure sidekiq background worker is not running"
+  service:
+    name: "sidekiq"
+    state: "stopped"
+  become: true
+  become_user: "root"
+
 - name: "ensure koala is not running"
   service:
     name: "koala"

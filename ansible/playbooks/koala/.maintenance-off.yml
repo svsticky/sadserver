@@ -6,6 +6,13 @@
   become: true
   become_user: "root"
 
+- name: "ensure sidekiq background worker is running"
+  service:
+    name: "sidekiq"
+    state: "started"
+  become: true
+  become_user: "root"
+
 - name: "disable Koala's maintenance mode"
   file:
     state: "absent"

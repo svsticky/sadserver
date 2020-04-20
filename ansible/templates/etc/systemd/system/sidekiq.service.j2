@@ -10,7 +10,7 @@ After=syslog.target network.target redis-server.service
 Type=simple
 User=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
-ExecStart=/home/koala/.rbenv/shims/bundle exec sidekiq -e {{ koala_env.environment }}
+ExecStart=/home/koala/.rbenv/shims/bundle exec sidekiq -e {{ koala_env.environment }} -q default -q mailers
 
 # if we crash, restart
 RestartSec=1

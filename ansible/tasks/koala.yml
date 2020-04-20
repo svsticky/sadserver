@@ -456,7 +456,6 @@
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
-    - "sidekiq.service"
 
 - name: "ensure koala update marker is absent"
   file:

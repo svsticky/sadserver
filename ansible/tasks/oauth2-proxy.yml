@@ -18,8 +18,7 @@
     remote_src: "yes"
     dest: "/usr/local/bin"
     extra_opts:
-      - "--add-file"
-      - "{{ oauthproxy_filename }}/oauth2_proxy"
+      - "--strip-components=1"
 
 - name: "make directory"
   file:

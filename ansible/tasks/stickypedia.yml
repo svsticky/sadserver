@@ -24,6 +24,12 @@
   shell: "gem update --system 3.0.6"
 
 - block:
+    - name: "create working directory"
+      file:
+        path: "/var/www/stickypedia/stickypedia.{{ canonical_hostname }}"
+        state: "directory"
+        mode: "0700"
+
     - name: "copy gollum startup script"
       template:
         src: "templates/var/www/stickypedia/start-gollum.sh.j2"

@@ -24,30 +24,6 @@
   shell: "gem update --system 3.0.6"
 
 - block:
-    - name: "ensure stickypedia has a ssh directory"
-      file:
-        path: "~/.ssh"
-        state: "directory"
-
-    - name: "copy deploy key (private) for user stickypedia"
-      copy:
-        content: "{{ secret_deploy_key }}"
-        dest: "~/.ssh/id_ed25519"
-        mode: "0600"
-
-    - name: "clone git with Stickypedia content"
-      git:
-        repo: "git@github.com:svsticky/stickypedia-content.git"
-        dest: "~/stickypedia.{{ canonical_hostname }}"
-        version: "{{ stickypedia.git_ref }}"
-      diff: false
-
-    - name: "copy gollum config file"
-      template:
-        src: "templates/var/www/stickypedia/config.rb.j2"
-        dest: "~/config.rb"
-        mode: "0660"
-
     - name: "copy gollum startup script"
       template:
         src: "templates/var/www/stickypedia/start-gollum.sh.j2"

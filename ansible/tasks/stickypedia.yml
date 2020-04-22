@@ -55,6 +55,13 @@
     src: "templates/etc/nginx/sites-available/stickypedia.conf.j2"
     dest: "/etc/nginx/sites-available/stickypedia.conf"
 
+- name: "enable nginx config"
+  file:
+    src: "/etc/nginx/sites-available/stickypedia.conf"
+    path: "/etc/nginx/sites-enabled/stickypedia.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
 - name: "run stickypedia service"
   systemd:
     unit: "stickypedia.service"

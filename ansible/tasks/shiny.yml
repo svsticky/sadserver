@@ -14,25 +14,53 @@
   become_user: root
   become_method: sudo
 
-- name: "install R and other dependencies"
+- name: "install R and dependencies"
   apt:
     name:
       - "r-base"
-      - "r-cran-shiny"
-      - "r-cran-shinydashboard"
-      - "r-cran-plotly"
-      - "r-cran-data.table"
-      - "r-cran-stringr"
-      - "r-cran-dbplyr"
-      - "r-cran-dplyr"
-      - "r-cran-rsqlite"
+      - "libcurl4-openssl-dev"
     state: "present"
 
-- name: "copy systemd service for shiny"
+- name: "download Shiny Server binary"
+  get_url:
+    url: "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.13.944-amd64.deb"
+    dest: "/tmp"
+    mode: "u+x"
+    checksum: "sha256:91faeaa20b42a29b89f3cb1ae78e52622685fd083ac51a0992510a9f52c04e47"
+  check_mode: "no"
+
+- name: "install Shiny Server"
+  apt:
+    deb: "/tmp/shiny-server-1.5.13.944-amd64.deb"
+    state: "present"
+
+- name: "copy shiny server config"
   template:
-    src: "templates/etc/systemd/system/shiny.service.j2"
-    dest: "/etc/systemd/system/shiny.service"
-  notify: "restart shiny"
+    src: "templates/etc/shiny-server/shiny-server.conf.j2"
+    dest: "/etc/shiny-server/shiny-server.conf"
+  notify: "restart shiny server"
+
+- name: "Install R packages"
+  command: >
+    Rscript --slave --no-save --no-restore-history -e
+    "if (! ('{{ item }}' %in% installed.packages()[,'Package']))
+    { install.packages(pkgs='{{ item }}', repos=c('https://cran.rstudio.com'));
+    print('Added'); }
+    else { print('Already installed'); }"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  with_items:
+    - shiny
+    - shinydashboard
+    - plotly
+    - data.table
+    - stringr
+    - dbplyr
+    - dplyr
+    - RMariaDB
+    - DBI
+    - bit64
 
 - block:
   - name: "ensure shiny has a ssh directory"
@@ -49,22 +77,22 @@
   - name: "clone shiny repository"
     git:
       repo: "git@github.com:svsticky/shiny-octopus.git"
-      dest: "/var/www/shiny/stats.{{ canonical_hostname }}"
+      dest: "/var/www/shiny/shiny.{{ canonical_hostname }}"
       version: "master"
     diff: false
-    notify: "restart shiny"
+    notify: "restart shiny server"
 
   - name: "put config file in place"
     template:
       src: "templates/var/www/shiny/config.R"
-      dest: "/var/www/shiny/stats.{{ canonical_hostname }}/config.R"
-    notify: "restart shiny"
+      dest: "/var/www/shiny/shiny.{{ canonical_hostname }}/config.R"
+    notify: "restart shiny server"
 
   become_user: shiny
 
 - name: "run the shiny app"
   systemd:
-    unit: "shiny.service"
+    unit: "shiny-server.service"
     state: "started"
     enabled: true
     daemon-reload: true

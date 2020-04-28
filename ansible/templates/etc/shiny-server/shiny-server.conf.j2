@@ -1,0 +1,13 @@
+run_as shiny;
+
+preserve_logs true;
+
+server {
+  listen 3838;
+
+  location / {
+    app_dir /var/www/shiny/shiny.{{ canonical_hostname }};
+
+    log_dir /var/log/shiny-server;
+  }
+}

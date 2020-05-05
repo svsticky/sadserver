@@ -35,12 +35,14 @@
         src: "templates/var/www/stickypedia/start-gollum.sh.j2"
         dest: "~/start-gollum.sh"
         mode: "0770"
+      notify: "restart stickypedia"
 
     - name: "install gem gollum"
       gem:
         name: "gollum"
-        version: "4.1.4"
+        version: "5.0.1"
         state: "present"
+      notify: "restart stickypedia"
 
   become_user: "stickypedia"
 

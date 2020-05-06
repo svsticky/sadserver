@@ -72,6 +72,10 @@ server {
     return 301 https://{{ canonical_hostname }}/studie/corona;
   }
 
+  location ~* /helperworden {
+    return 301 https://forms.gle/GpP3Rc3JQqg1zcFv6;
+  }
+
   location /logs/ {
     # Construct correct request URI for systemd-journald-gateway, while only
     # allowing alphanumerics (to prevent exposing the other endpoints and

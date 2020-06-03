@@ -13,6 +13,7 @@
     state: "present"
   become_user: root
   become_method: sudo
+  no_log: true
 
 - name: "install R and dependencies"
   apt:

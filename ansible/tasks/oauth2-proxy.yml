@@ -1,12 +1,12 @@
 ---
 - set_fact:
-    oauthproxy_filename: "oauth2_proxy-v5.0.0.linux-amd64.go1.13.6"
-    oauthproxy_version: "v5.0.0"
-    oauthproxy_checksum: "sha256:8aa23a0635fe9ee5406e1cbef1fb86de44c660ff2269e05a04294989121c2408"
+    oauthproxy_filename: "oauth2_proxy-v5.1.1.linux-amd64.go1.14.2"
+    oauthproxy_version: "v5.1.1"
+    oauthproxy_checksum: "sha256:5cbcec177b069b588bb6bd212a4e2a901c49a8a359590cbe669c74c267aa2e89"
 
 - name: "download oauth2_proxy and verify checksum"
   get_url:
-    url: "https://github.com/pusher/oauth2_proxy/releases/download/{{ oauthproxy_version }}/{{ oauthproxy_filename }}.tar.gz"
+    url: "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/{{ oauthproxy_version }}/{{ oauthproxy_filename }}.tar.gz"
     dest: "/tmp"
     mode: "u+x"
     checksum: "{{ oauthproxy_checksum }}"

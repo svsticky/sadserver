@@ -58,13 +58,8 @@
   template:
     src: "templates/{{ item.path }}.conf.j2"
     dest: "/{{ item.path }}.{{ canonical_hostname }}.conf"
-    group: "{{ item.group | default(omit) }}"
-    mode: "{{ item.mode | default(omit) }}"
   with_items:
     - path: "etc/nginx/sites-available/metrics"
-    - path: "etc/nginx/htpasswd.d/metrics"
-      group: "www-data"
-      mode: "640"
   notify: "reload nginx"
 
 - name: "enable nginx proxy config for metrics site"

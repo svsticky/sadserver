@@ -27,10 +27,6 @@
       command:
         "certbot revoke
         --non-interactive
-        {% if staging_certificates and (item.real_certificate is not defined
-        or item.real_certificate == false) %}
-        --staging
-        {% endif %}
         --cert-path /etc/letsencrypt/live/{{ item.name }}/cert.pem
         --reason cessationofoperation"
       with_items: "{{ websites }}"

@@ -9,7 +9,7 @@
   handlers:
     - import_tasks: "handlers/main.yml"
 
-  tasks: 
+  tasks:
     - name: "start process of managing general system settings"
       include_tasks: "tasks/system-settings.yml"
     - name: "start process of user management"

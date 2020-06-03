@@ -136,10 +136,6 @@
   # the renewal configuration of the certificate
   command: >-
     certbot certonly
-    {% if 'staging' in group_names and (item.real_certificate is not defined or
-    item.real_certificate == false) %}
-    --staging
-    {% endif %}
     --non-interactive
     --agree-tos
     --email "domreg@svsticky.nl"

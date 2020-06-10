@@ -88,6 +88,7 @@ addresses of the new droplet. These are the following:
  - dgdarc.nl
  - execut.nl
  - indievelopment.nl
+ - intro-cs.nl
  - savadaba.nl
  - sodi.nl
  - stichtingsticky.nl

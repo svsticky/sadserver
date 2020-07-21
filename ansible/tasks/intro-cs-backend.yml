@@ -1,0 +1,29 @@
+- name:
+    "ensure node is installed"
+  apt:
+    name: "node"
+    state: "present"
+
+- block:
+  - name:
+      "clone intro-backend repository"
+    git:
+      repo: "https://github.com/svsticky/intro-website.git"
+      dest: "/var/www/commit/intro-cs-backend.{{ canonical_hostname }}"
+      version: "master"
+    diff: false
+
+  become_user: commit
+
+- name:
+    "copy systemd service of intro-cs-backend"
+  template:
+    src: "templates/etc/systemd/system/intro-cs-backend.service.j2"
+    dest: "/etc/systemd/system/into-cs-backend.service"
+
+- name: "run intro-cs-backend service"
+  systemd:
+    unit: "intro-cs-backend.service"
+    state: "started"
+    enabled: true
+    daemon-reload: true

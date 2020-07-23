@@ -1,25 +1,45 @@
+---
+
+- name: "ensure intro-cs user exists"
+  user:
+    name: "intro-cs"
+    shell: "/usr/sbin/nologin"
+    home: "/var/www/intro-cs"
+    system: true
+
 - name:
     "ensure node is installed"
   apt:
-    name: "node"
+    name: "nodejs"
     state: "present"
 
 - block:
+  - name: "ensure intro-cs has a ssh directory"
+    file:
+      path: "~/.ssh"
+      state: "directory"
+
+  - name: "copy deploy key for private projects on GitHub"
+    copy:
+      content: "{{ secret_deploy_key }}"
+      dest: "/var/www/intro-cs/.ssh/id_ed25519"
+      mode: "0600"
+
   - name:
       "clone intro-backend repository"
     git:
-      repo: "https://github.com/svsticky/intro-backend.git"
-      dest: "/var/www/commit/intro-cs-backend.{{ canonical_hostname }}"
+      repo: "git@github.com:svsticky/intro-backend.git"
+      dest: "/var/www/intro-cs/intro-cs-backend.{{ canonical_hostname }}"
       version: "master"
     diff: false
 
   - name:
       "run npm install"
     npm:
-      path: "var/www/commit/intro-cs-backend.{{ canonical_hostname }}"
+      path: "var/www/intro-cs/intro-cs-backend.{{ canonical_hostname }}"
       state: latest
 
-  become_user: commit
+  become_user: intro-cs
 
 - name:
     "copy systemd service of intro-cs-backend"

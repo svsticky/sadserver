@@ -7,10 +7,10 @@ OnFailure=failure-notificator@%n.service
 
 [Service]
 Type=simple
-User=commit
-Group=commit
+User=intro-cs
+Group=www-data
 Restart=always
 
-WorkingDirectory=/var/www/commit/intro-cs-backend.{{ canonical_hostname }}
+WorkingDirectory=/var/www/intro-cs/intro-cs-backend.{{ canonical_hostname }}
 
 ExecStart=/usr/bin/node RegistrationBackend.js

@@ -8,10 +8,16 @@
   - name:
       "clone intro-backend repository"
     git:
-      repo: "https://github.com/svsticky/intro-website.git"
+      repo: "https://github.com/svsticky/intro-backend.git"
       dest: "/var/www/commit/intro-cs-backend.{{ canonical_hostname }}"
       version: "master"
     diff: false
+
+  - name:
+      "run npm install"
+    npm:
+      path: "var/www/commit/intro-cs-backend.{{ canonical_hostname }}"
+      state: latest
 
   become_user: commit
 

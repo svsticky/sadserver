@@ -7,12 +7,6 @@
     home: "/var/www/intro-cs"
     system: true
 
-- name:
-    "ensure node is installed"
-  apt:
-    name: "nodejs"
-    state: "present"
-
 - block:
   - name: "ensure intro-cs has a ssh directory"
     file:
@@ -29,15 +23,31 @@
       "clone intro-backend repository"
     git:
       repo: "git@github.com:svsticky/intro-backend.git"
-      dest: "/var/www/intro-cs/intro-cs-backend.{{ canonical_hostname }}"
+      dest: "/var/www/intro-cs/backend"
       version: "master"
     diff: false
 
-  - name:
-      "run npm install"
-    npm:
-      path: "var/www/intro-cs/intro-cs-backend.{{ canonical_hostname }}"
-      state: latest
+  - name: "clone NVM"
+    git:
+      repo: "https://github.com/creationix/nvm.git"
+      dest: "/var/www/intro-cs/.nvm"
+      depth: 1
+    diff: false
+
+  - name: "install node version"
+    shell: |
+      . /var/www/intro-cs/.nvm/nvm.sh
+      nvm install 14.6.0
+    args:
+      executable: "/bin/bash"
+
+  - name: "run npm install"
+    shell: |
+      . /var/www/intro-cs/.nvm/nvm.sh
+      npm install
+    args:
+      chdir: "/var/www/intro-cs/backend"
+      executable: "/bin/bash"
 
   become_user: intro-cs
 
@@ -45,7 +55,7 @@
     "copy systemd service of intro-cs-backend"
   template:
     src: "templates/etc/systemd/system/intro-cs-backend.service.j2"
-    dest: "/etc/systemd/system/into-cs-backend.service"
+    dest: "/etc/systemd/system/intro-cs-backend.service"
 
 - name: "run intro-cs-backend service"
   systemd:

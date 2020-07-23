@@ -11,6 +11,6 @@ User=intro-cs
 Group=www-data
 Restart=always
 
-WorkingDirectory=/var/www/intro-cs/intro-cs-backend.{{ canonical_hostname }}
+WorkingDirectory=/var/www/intro-cs/backend
 
-ExecStart=/usr/bin/node RegistrationBackend.js
+ExecStart=/var/www/intro-cs/.nvm/versions/node/v14.6.0/bin/node RegistrationBackend.js

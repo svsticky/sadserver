@@ -37,6 +37,16 @@
     diff: false
     with_items:
       - "/var/www/intro-bot/teams-bots/.env"
+    when: "intro_bot_clone is changed"
+  
+  - name: "copy google sheets token file"
+    copy:
+      src: "group_vars/all/token.pickle"
+      dest: "/var/www/intro-bot/teams-bots"
+      owner: "intro-bot"
+      mode: "0600"
+    diff: false
+    when: "intro_bot_clone is changed"
   
   - name: "pipenv create virtual env and install intro-bot"
     command: "pipenv sync"

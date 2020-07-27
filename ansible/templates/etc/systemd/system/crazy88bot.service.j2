@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=crazy88bot
+After=multi-user.target
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+User=crazy88bot
+WorkingDirectory=/var/www/crazy88bot/crazy88bot
+ExecStart=/usr/local/bin/pipenv run server
+
+[Install]
+WantedBy=multi-user.target

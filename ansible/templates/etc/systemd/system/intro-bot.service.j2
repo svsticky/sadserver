@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Intro Bot
+After=multi-user.target
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+User=intro-bot
+WorkingDirectory=/var/www/intro-bot/teams-bots
+ExecStart=/usr/local/bin/pipenv run server
+
+[Install]
+WantedBy=multi-user.target

@@ -3,7 +3,7 @@
   pip:
     name: "pipenv"
 
-- name: "ensure intro-bot user exists"
+- name: "ensure crazy88bot user exists"
   user:
     name: "crazy88bot"
     shell: "/usr/sbin/nologin"

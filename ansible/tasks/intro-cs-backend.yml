@@ -48,6 +48,14 @@
     args:
       chdir: "/var/www/intro-cs/backend"
       executable: "/bin/bash"
+  
+  - name: "copy template environment file for intro_backend"
+    template:
+      src: "templates{{ item }}.j2"
+      dest: "{{ item }}"
+    diff: false
+    with_items:
+      - "/var/www/intro-cs/backend/.env"
 
   become_user: intro-cs
 

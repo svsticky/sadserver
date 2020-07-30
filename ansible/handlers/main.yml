@@ -92,3 +92,8 @@
   systemd:
     unit: "shiny-server.service"
     state: "restarted"
+
+- name: "restart intro-cs-backend server"
+  systemd:
+    unit: "intro-cs-backend.service"
+    state: "restarted"

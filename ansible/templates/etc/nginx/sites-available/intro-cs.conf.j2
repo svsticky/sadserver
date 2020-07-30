@@ -20,6 +20,10 @@ server {
 
   include includes/security-headers.conf;
 
+  location = /submitRegistration {
+    proxy_pass http://localhost:25565/submitRegistration;
+  }
+
   location ~* /helperworden {
     return 302 https://forms.gle/XboCrsfwJrEbobux7;
   }

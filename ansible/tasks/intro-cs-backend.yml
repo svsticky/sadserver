@@ -1,0 +1,73 @@
+---
+
+- name: "ensure intro-cs user exists"
+  user:
+    name: "intro-cs"
+    shell: "/usr/sbin/nologin"
+    home: "/var/www/intro-cs"
+    system: true
+
+- block:
+  - name: "ensure intro-cs has a ssh directory"
+    file:
+      path: "~/.ssh"
+      state: "directory"
+
+  - name: "copy deploy key for private projects on GitHub"
+    copy:
+      content: "{{ secret_deploy_key }}"
+      dest: "/var/www/intro-cs/.ssh/id_ed25519"
+      mode: "0600"
+
+  - name:
+      "clone intro-backend repository"
+    git:
+      repo: "git@github.com:svsticky/intro-backend.git"
+      dest: "/var/www/intro-cs/backend"
+      version: "master"
+    diff: false
+
+  - name: "clone NVM"
+    git:
+      repo: "https://github.com/creationix/nvm.git"
+      dest: "/var/www/intro-cs/.nvm"
+      depth: 1
+    diff: false
+
+  - name: "install node version"
+    shell: |
+      . /var/www/intro-cs/.nvm/nvm.sh
+      nvm install 14.6.0
+    args:
+      executable: "/bin/bash"
+
+  - name: "run npm install"
+    shell: |
+      . /var/www/intro-cs/.nvm/nvm.sh
+      npm install
+    args:
+      chdir: "/var/www/intro-cs/backend"
+      executable: "/bin/bash"
+  
+  - name: "copy template environment file for intro_backend"
+    template:
+      src: "templates{{ item }}.j2"
+      dest: "{{ item }}"
+    diff: false
+    with_items:
+      - "/var/www/intro-cs/backend/.env"
+
+  become_user: intro-cs
+
+- name:
+    "copy systemd service of intro-cs-backend"
+  template:
+    src: "templates/etc/systemd/system/intro-cs-backend.service.j2"
+    dest: "/etc/systemd/system/intro-cs-backend.service"
+
+- name: "run intro-cs-backend service"
+  systemd:
+    unit: "intro-cs-backend.service"
+    state: "started"
+    enabled: true
+    daemon-reload: true

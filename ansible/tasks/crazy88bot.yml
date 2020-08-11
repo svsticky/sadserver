@@ -26,15 +26,17 @@
     git:
       repo: "git@github.com:svsticky/crazy88bot.git"
       dest: "/var/www/crazy88bot/crazy88bot"
-      version: "master"
+      version: "digital-crazy88"
     diff: false
     register: "crazy88_bot_clone"
+    notify: "restart crazy88bot"
   
   - name: "pipenv create virtual env and install crazy88bot"
     command: "pipenv sync"
     args:
       chdir: "/var/www/crazy88bot/crazy88bot"
     when: "crazy88_bot_clone is changed"
+    notify: "restart crazy88bot"
   
   become_user: crazy88bot
 

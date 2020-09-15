@@ -1,8 +1,10 @@
 {
-  pkgs ? import ./nix/pkgs.nix {},
+  sources ? import ./nix/sources.nix {},
 }:
 
 let
+  pkgs = import sources.nixpkgs {};
+
   python = pkgs.python37;
 
   ansible-mitogen = import ./nix/ansible-mitogen.nix {inherit python;};

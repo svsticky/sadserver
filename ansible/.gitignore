@@ -2,3 +2,4 @@
 *.log
 koala-backups
 .slack-webhook
+result

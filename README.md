@@ -147,7 +147,7 @@ If you want to migrate from an existing server, a few additional tasks should be
 performed, which are explained in detail in [this guide][deployment-new-production].
 
 ##### On Digital Ocean:
-1. Create a droplet (ansible assumes Ubuntu 18.04) named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production). 
+1. Create a droplet (ansible assumes Ubuntu 18.04) named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production).
     - for staging: 2GB RAM on 1CPU should suffice.
     - for production: 4GB RAM on 2CPUs is the standard. Make sure IPv6 in enabled.
     - Server should be run on AMS whenever possible.
@@ -159,6 +159,8 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 
 
 ##### On your local terminal:
+1. Install the Nix package manager via the steps on this page: https://nixos.org/download.html
+
 1. Download the repository and enter the folder.
 `$ git clone https://github.com/svsticky/sadserver`
 `$ cd sadserver`
@@ -173,21 +175,21 @@ group_vars/production/vault.yml` (search for
 `vault_slack_notifications_webhook_url`).
 
 1. Bootstrap the host for either production or staging.
-`$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`
+`$ nix run -c ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`
 You do not need to enter a SUDO password, but you do need to enter the correct Vault password. (Can usually be found in bitwarden).
 At the end of the process you will receive a newly generated SUDO password, which you will need in the next step. (Save this in bitwarden for future reference).
 On staging, if the playbook fails immediately, you might have an old ssh key. To solve this type:
-`$ ssh root@dev.svsticky.nl` 
+`$ ssh root@dev.svsticky.nl`
 SSH will guide you the rest of the way.
 
 1. Run the main playbook for either production or staging.
-`$ ./scripts/run-playbook.sh (production|staging) main.yml`
+`$ nix run -c ./scripts/run-playbook.sh (production|staging) main.yml`
 Enter the password from the previous step when prompted for.
 
 
 1. To create a new database and start Koala, you will also need to run these two playbooks.
-`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`
-`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`
+`$ nix run -c ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`
+`$ nix run -c ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`
 
 
 ## Contact

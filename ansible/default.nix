@@ -19,5 +19,6 @@ in pkgs.buildEnv {
   paths = [
     pythonEnvironment
     pkgs.bitwarden-cli
+    pkgs.jq
   ];
 }

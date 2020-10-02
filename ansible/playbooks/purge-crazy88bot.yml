@@ -1,0 +1,42 @@
+---
+- hosts: "all"
+  remote_user: "ansible"
+  become: true
+  become_user: "root"
+  become_method: "sudo"
+  force_handlers: true
+
+  vars_prompt:
+    - name: "confirm"
+      default: 'ABORT'
+      private: false
+      prompt:
+        "The playbook you are about to run will purge the crazy88bot. This will include all submissions!
+        Type \"obliterate-intro\" to confirm."
+  
+  tasks:
+    - assert:
+        that:
+          - "confirm == 'obliterate-intro'"
+    
+    - name: "stop systemd process and disable it"
+      systemd:
+        unit: "crazy88bot.service"
+        state: "stopped"
+        enabled: false
+        daemon-reload: true
+    
+    - name: "remove systemd file"
+      file:
+        path: "/etc/systemd/system/crazy88bot.service"
+        state: absent
+
+    - name: "delete crazy88 user"
+      user:
+        name: "crazy88bot"
+        state: "absent"
+    
+    - name: "delete home directory"
+      file:
+        path: "/var/www/crazy88bot"
+        state: "absent"

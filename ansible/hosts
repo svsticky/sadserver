@@ -2,4 +2,4 @@
 svsticky.nl ansible_python_interpreter=/usr/bin/python3.6
 
 [staging]
-dev.svsticky.nl ansible_python_interpreter=/usr/bin/python3.6
+188.166.57.41 ansible_python_interpreter=/usr/bin/python3.8

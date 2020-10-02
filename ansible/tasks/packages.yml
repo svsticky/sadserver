@@ -14,6 +14,7 @@
       - "unattended-upgrades"
       - "haveged"
       - "jq"
+      - "nginx"
     state: "present"
 
 - name: "update all packages"

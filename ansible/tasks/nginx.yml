@@ -15,7 +15,7 @@
     state: "directory"
   with_items:
     - "/etc/systemd/system/nginx.service.d"
-    - "/etc/systemd/system/php7.2-fpm.service.d"
+    - "/etc/systemd/system/php7.4-fpm.service.d"
 
 - name: "copy onfailure overrides for nginx + php-fpm services"
   template:
@@ -23,7 +23,7 @@
     dest: "/{{ item }}"
   with_items:
     - "etc/systemd/system/nginx.service.d/onfailure.conf"
-    - "etc/systemd/system/php7.2-fpm.service.d/onfailure.conf"
+    - "etc/systemd/system/php7.4-fpm.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 
 - name: "create nginx includes directory"
@@ -66,8 +66,8 @@
 
 - name: "enable default nginx config"
   file:
-    src: "/etc/nginx/sites-available/default.conf"
-    path: "/etc/nginx/sites-enabled/default.conf"
+    src: "/etc/nginx/sites-available/default"
+    path: "/etc/nginx/sites-enabled/default"
     state: "link"
   notify: "reload nginx"
 
@@ -260,7 +260,7 @@
   template:
     src: "templates/etc/nginx/sites-available/{{ item.src }}.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.dest }}.conf"
-  with_items:
+  with_items: "{{ websites }}"
     - src: "aas"
       dest: "aas.{{ canonical_hostname }}"
     - src: "dgdarc"

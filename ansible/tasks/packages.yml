@@ -22,6 +22,7 @@
       - "haveged"
       - "jq"
       - "nodejs"
+      - "nginx"
     state: "present"
 
 - name: "update all packages"

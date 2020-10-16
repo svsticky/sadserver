@@ -41,7 +41,7 @@
   service:
     name: "oauth2-proxy"
     enabled: true
-    state:  "started"
+    state: "started"
 
 # Same thing but now for admin only oauth access
 
@@ -66,4 +66,4 @@
   service:
     name: "oauth2-proxy-admin"
     enabled: true
-    state:  "started"
+    state: "started"

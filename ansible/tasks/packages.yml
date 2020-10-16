@@ -55,7 +55,7 @@
   args:
     chdir: "{{ slack_notifications.slacktee.install_path }}"
   register: "slacktee_fetch"
-  changed_when: slacktee_fetch.stdout != ""
+  changed_when: "slacktee_fetch.stdout != ''"
 
 - name: "determine latest version number of slacktee"
   shell: "git describe --tags $(git rev-list --tags --max-count=1)"
@@ -76,7 +76,7 @@
     diff: false
   # Don't run in check mode because previous "git fetch" task also can't be run
   # in check mode
-  when: not ansible_check_mode
+  when: "not ansible_check_mode"
 
 - name: "create symlink to slacktee in $PATH"
   file:

@@ -24,9 +24,9 @@
   when:
     # List is evaluated as logical AND
     - "'staging' not in group_names"
-    - item.admin
-    - item.state == "present"
-    - item.name != "ansible"
+    - "item.admin"
+    - "item.state == 'present'"
+    - "item.name != 'ansible'"
   changed_when: false
   loop_control:
     label: "{{ item.name }}"
@@ -39,8 +39,8 @@
   when:
     # List is evaluated as logical AND
     - "'staging' not in group_names"
-    - item.stdout is defined
-    - item.stdout == "L"
+    - "item.stdout is defined"
+    - "item.stdout == 'L'"
   loop_control:
     label:
       user: "{{ item.item.name }}"
@@ -52,7 +52,7 @@
     owner: "{{ item.0.name }}"
     group: "{{ item.0.name }}"
     mode: "0755"
-  when: item.0.state == 'present'
+  when: "item.0.state == 'present'"
   with_subelements:
     - "{{ users }}"
     # "github_accounts" is added to the loop, so the directory is not created
@@ -77,7 +77,7 @@
     group: "{{ item.0.name }}"
     create: true
   # Only run the above logic when we still want the user to exist.
-  when: item.0.state == 'present'
+  when: "item.0.state == 'present'"
   with_subelements:
     - "{{ users }}"
     - "github_accounts"
@@ -99,7 +99,7 @@
   file:
     src: "/home/ansible/.ssh/{{ deploy_key_name.src }}"
     path: "/root/.ssh/{{ deploy_key_name.dest }}"
-    state: link
+    state: "link"
   vars:
     deploy_key_name:
       src: "deploy_ed25519"

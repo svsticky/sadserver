@@ -68,8 +68,8 @@
 
 - name: "install yarn"
   apt:
-   name: "yarn"
-   state: "present"
+    name: "yarn"
+    state: "present"
   notify: "restart koala"
 
 - name: "ensure koala service file is present"
@@ -383,7 +383,7 @@
     group: "koala"
   vars:
     path: "home/koala/webrick.sh"
-  when: koala.server == "webrick"
+  when: "koala.server == 'webrick'"
   tags:
     - "koala"
 
@@ -414,7 +414,7 @@
       filename: "koala.{{ canonical_hostname }}.conf"
     notify: "reload nginx"
 
-  when: koala.server == "unicorn"
+  when: "koala.server == 'unicorn'"
   tags:
     - "koala"
 
@@ -442,7 +442,7 @@
 # started again.
 - name: "start process of disabling koala's maintenance mode"
   include_tasks: "playbooks/koala/.maintenance-off.yml"
-  when: koala_updated
+  when: "koala_updated"
 
 - name: "ensure koala's timers are started and enabled in production"
   service:

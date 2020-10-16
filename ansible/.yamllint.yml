@@ -1,0 +1,13 @@
+---
+
+extends: 'default'
+
+ignore: |
+  group_vars/
+
+
+rules:
+  indentation:
+    spaces: 2
+    indent-sequences: whatever
+  quoted-strings: 'enable'

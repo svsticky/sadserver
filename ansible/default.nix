@@ -20,5 +20,6 @@ in pkgs.buildEnv {
     pythonEnvironment
     pkgs.bitwarden-cli
     pkgs.jq
+    pkgs.yamllint
   ];
 }

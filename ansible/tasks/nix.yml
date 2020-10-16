@@ -1,0 +1,34 @@
+---
+- name: "Download Nix install script"
+  get_url:
+    url: "https://releases.nixos.org/nix/nix-2.3.7/install"
+    checksum: "sha256:ec6c65e46cc8f63b9cfd4df422087fa58fa9ebe823e566a885fc2a9778c721db"
+    dest: "/var/tmp/install-nix"
+
+- name: "Mark installer executable"
+  file:
+    path: "/var/tmp/install-nix"
+    mode: "u+x"
+
+- name: "Run Nix installer"
+  command: "/var/tmp/install-nix --daemon"
+  become: true
+  creates: "/nix"
+
+- name: "Make Nix programs available without sourcing shell stuff"
+  with_items:
+    - "nix"
+    - "nix-build"
+    - "nix-channel"
+    - "nix-collect-garbage"
+    - "nix-env"
+    - "nix-hash"
+    - "nix-instantiate"
+    - "nix-prefetch-url"
+    - "nix-shell"
+    - "nix-store"
+  file:
+    src: "/usr/local/bin/{{ item }}"
+    state: "link"
+    dest: "/nix/var/nix/profiles/default/bin/{{ item }}"
+  become: true

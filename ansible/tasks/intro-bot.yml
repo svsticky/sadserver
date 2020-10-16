@@ -21,7 +21,7 @@
       content: "{{ secret_deploy_key }}"
       dest: "/var/www/intro-bot/.ssh/id_ed25519"
       mode: "0600"
-  
+
   - name: "clone intro-bot repository"
     git:
       repo: "git@github.com:svsticky/Digital-Intro-Bot.git"
@@ -29,7 +29,7 @@
       version: "master"
     diff: false
     register: "intro_bot_clone"
-    
+
   - name: "copy template environment file for intro-bots"
     template:
       src: "templates{{ item }}.j2"
@@ -38,7 +38,7 @@
     with_items:
       - "/var/www/intro-bot/teams-bots/.env"
     when: "intro_bot_clone is changed"
-  
+
   - name: "copy google sheets token file"
     copy:
       src: "group_vars/all/token.pickle"
@@ -47,7 +47,7 @@
       mode: "0600"
     diff: false
     when: "intro_bot_clone is changed"
-  
+
   - name: "pipenv create virtual env and install intro-bot"
     command: "pipenv sync"
     args:
@@ -56,10 +56,10 @@
       PIPENV_VENV_IN_PROJECT: "1"
     when: "intro_bot_clone is changed"
 
-  become_user: intro-bot
+  become_user: "intro-bot"
 
 - name: "copy systemd service of intro-bots"
-  template: 
+  template:
     src: "templates/etc/systemd/system/intro-bot.service.j2"
     dest: "/etc/systemd/system/intro-bot.service"
 

@@ -15,13 +15,13 @@
     file:
       path: "~/.ssh"
       state: "directory"
-    
+
   - name: "copy deploy key for private projects on GitHub"
     copy:
       content: "{{ secret_deploy_key }}"
       dest: "/var/www/crazy88bot/.ssh/id_ed25519"
       mode: "0600"
-  
+
   - name: "clone crazy88bot repository"
     git:
       repo: "git@github.com:svsticky/crazy88bot.git"
@@ -30,18 +30,18 @@
     diff: false
     register: "crazy88_bot_clone"
     notify: "restart crazy88bot"
-  
+
   - name: "pipenv create virtual env and install crazy88bot"
     command: "pipenv sync"
     args:
       chdir: "/var/www/crazy88bot/crazy88bot"
     when: "crazy88_bot_clone is changed"
     notify: "restart crazy88bot"
-  
-  become_user: crazy88bot
+
+  become_user: "crazy88bot"
 
 - name: "copy systemd service of intro-bots"
-  template: 
+  template:
     src: "templates/etc/systemd/system/crazy88bot.service.j2"
     dest: "/etc/systemd/system/crazy88bot.service"
 

@@ -43,7 +43,7 @@
     when: "aas_clone is changed"
     notify: "restart aas"
 
-  become_user: aas
+  become_user: "aas"
 
 - name:
     "copy systemd service of aas"

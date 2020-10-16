@@ -43,8 +43,8 @@
 
     - name: "create temporary directory to store backup archives"
       tempfile:
-          prefix: "prod-backup-restore."
-          state: "directory"
+        prefix: "prod-backup-restore."
+        state: "directory"
       register: "backup_restore_tmp_dir"
 
     - name: "connect to S3 using appropriate credentials"

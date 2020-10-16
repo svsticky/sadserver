@@ -1,3 +1,4 @@
+---
 - name: "enable Koala's maintenance mode"
   file:
     state: "touch"

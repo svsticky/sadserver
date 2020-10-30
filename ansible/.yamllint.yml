@@ -1,0 +1,18 @@
+---
+extends: "default"
+
+ignore: "group_vars/"
+
+rules:
+  indentation:
+    spaces: 2
+    indent-sequences: "whatever"
+  quoted-strings:
+    quote-type: "double"
+    required: true
+    level: "warning"
+  line-length: "disable"
+  comments:
+    min-spaces-from-content: 1
+  document-start:
+    level: "error"

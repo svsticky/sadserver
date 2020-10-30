@@ -1,3 +1,4 @@
+---
 - name: "ensure koala is running"
   service:
     name: "koala"

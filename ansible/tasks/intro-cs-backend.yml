@@ -60,7 +60,7 @@
       - "/var/www/intro-cs/backend/.env"
     notify: "restart intro-cs-backend server"
 
-  become_user: intro-cs
+  become_user: "intro-cs"
 
 - name:
     "copy systemd service of intro-cs-backend"

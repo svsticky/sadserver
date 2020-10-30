@@ -68,8 +68,8 @@
 
 - name: "install yarn"
   apt:
-   name: "yarn"
-   state: "present"
+    name: "yarn"
+    state: "present"
   notify: "restart koala"
 
 - name: "ensure koala service file is present"

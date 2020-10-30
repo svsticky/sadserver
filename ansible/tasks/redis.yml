@@ -8,7 +8,7 @@
         - "redis-tools"
       state: "present"
     tags:
-        - "packages"
+      - "packages"
 
   - name: "create directory for onfailure override for redis service"
     file:
@@ -23,11 +23,11 @@
 
   - name: "ensure Redis server is running and enabled"
     service:
-        name: "redis-server"
-        enabled: true
-        state: "started"
+      name: "redis-server"
+      enabled: true
+      state: "started"
     tags:
-        - "service"
+      - "service"
 
   - name: "place Redis config file"
     template:

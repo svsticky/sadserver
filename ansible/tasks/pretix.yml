@@ -76,7 +76,7 @@
   notify: "systemctl daemon-reload"
   register: "pretix_service_result"
 
-- meta: flush_handlers # Ensures daemon is reloaded
+- meta: "flush_handlers" # Ensures daemon is reloaded
 
 - name: "install pretix"
   pip:

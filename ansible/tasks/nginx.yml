@@ -160,7 +160,7 @@
   with_items: "{{ websites }}"
   register: "certbot_output"
   changed_when: "'no action taken' not in certbot_output.stdout"
-  when: "item.state == 'present'"
+  when: item.state == "present"
   loop_control:
     label: "{{ item.name }}"
 
@@ -219,7 +219,7 @@
   with_items: "{{ websites }}"
   when:
     # List is evaluated as logical AND
-    - "item.state == 'present'"
+    - item.state == "present"
     - "item.custom_config is undefined or not item.custom_config"
   loop_control:
     label: "{{ item.name }}"
@@ -239,7 +239,7 @@
   when:
     # When a website needs to be added, add a new condition to this list item
     # using "or"
-    - "item.name == canonical_hostname"
+    - item.name == canonical_hostname
   loop_control:
     label: "{{ item.name }}"
 
@@ -250,7 +250,7 @@
   with_items: "{{ websites }}"
   when:
     # List is evaluated as logical AND
-    - "item.state == 'present'"
+    - item.state == "present"
     - "item.custom_config is undefined or not item.custom_config"
   notify: "reload nginx"
   loop_control:
@@ -290,7 +290,7 @@
   with_items: "{{ websites }}"
   when:
     # List is evaluated as logical AND
-    - "item.state == 'present'"
+    - item.state == "present"
     - "item.custom_config is undefined or not item.custom_config"
   notify: "reload nginx"
   loop_control:
@@ -325,7 +325,7 @@
       - "sites-available"
       - "sites-enabled"
     - "{{ websites }}"
-  when: "item[1].state == 'absent'"
+  when: item[1].state == "absent"
   notify: "reload nginx"
   loop_control:
     label: "{{ item[0] }}/{{ item[1].name }}.conf"

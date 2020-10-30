@@ -1,16 +1,16 @@
 ---
-name: 'Lint'
+name: "Lint"
 on:
-  'pull_request'
+  "pull_request"
 jobs:
   build:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
 
     steps:
-      - uses: 'actions/checkout@v2'
+      - uses: "actions/checkout@v2"
 
-      - name: 'install Nix'
-        uses: 'cachix/install-nix-action@v11'
+      - name: "install Nix"
+        uses: "cachix/install-nix-action@v11"
 
       - name: "Lint our yaml files"
-        run: 'cd ansible; nix run -c yamllint .'
+        run: "cd ansible; nix run -c yamllint ."

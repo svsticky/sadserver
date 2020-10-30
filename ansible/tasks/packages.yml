@@ -16,6 +16,7 @@
       - "jq"
       - "nginx"
       - "acl"
+      - "git"
     state: "present"
 
 - name: "update all packages"

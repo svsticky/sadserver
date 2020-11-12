@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash ../shell.nix
 
 ## This is a small wrapper script that exposes a local socket you can use to
 ## login to a remote MariaDB server. You need this, when:

@@ -98,6 +98,19 @@ case "${SOURCE}" in
             --all-databases \
             | gzip -9)
           ;;
+        contentful)
+          S3PATH="${SOURCE}"
+          FILE_NAME="${FILE_TITLE}.tar.gz"
+
+          mkdir -p /tmp/contentful-export
+          npx contentful space export --download-assets \
+            --space-id {{ secrets_contentful_export.space_id }} \
+            --export-dir /tmp/contentful-export
+          upload_backup_to_s3 < <(tar \
+            -c -f - -C /tmp contentful-export \
+            | gzip -9)
+          rm -r /tmp/contentful-export
+          ;;
         *)
           print_to_stderr "${USAGE}"
           exit 1

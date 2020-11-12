@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Backup of contentful
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+PrivateTmp=true
+ExecStart=/usr/local/bin/backup-to-s3.sh contentful

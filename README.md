@@ -175,7 +175,7 @@ group_vars/production/vault.yml` (search for
 `vault_slack_notifications_webhook_url`).
 
 1. Bootstrap the host for either production or staging.
-`$ nix run -c ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`
+`$ ./scripts/run-playbook.sh (production|staging) bootstrap-new-host.yml`
 You do not need to enter a SUDO password, but you do need to enter the correct Vault password. (Can usually be found in bitwarden).
 At the end of the process you will receive a newly generated SUDO password, which you will need in the next step. (Save this in bitwarden for future reference).
 On staging, if the playbook fails immediately, you might have an old ssh key. To solve this type:
@@ -183,13 +183,13 @@ On staging, if the playbook fails immediately, you might have an old ssh key. To
 SSH will guide you the rest of the way.
 
 1. Run the main playbook for either production or staging.
-`$ nix run -c ./scripts/run-playbook.sh (production|staging) main.yml`
+`$ ./scripts/run-playbook.sh (production|staging) main.yml`
 Enter the password from the previous step when prompted for.
 
 
 1. To create a new database and start Koala, you will also need to run these two playbooks.
-`$ nix run -c ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`
-`$ nix run -c ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/db-setup.yml`
+`$ ./scripts/run-playbook.sh (production|staging) playbooks/koala/start.yml`
 
 
 ## Contact

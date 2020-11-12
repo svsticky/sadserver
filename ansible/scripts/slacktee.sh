@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-
+# This file doesn't get the nix-shell shebang we have for the other scripts in
+# the Ansible repo, because we copy it to the server and run it there as well.
 
 # https://github.com/course-hero/slacktee
 # ------------------------------------------------------------

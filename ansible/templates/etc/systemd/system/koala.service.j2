@@ -7,14 +7,9 @@ After=network.target
 OnFailure=failure-notificator@%n.service
 
 [Service]
-{% if koala.server == "unicorn" %}
 Type=forking
 PIDFile=/var/www/koala.{{ canonical_hostname }}/tmp/pids/unicorn.pid
-ExecStart=/home/koala/unicorn.sh
-{% elif koala.server == "webrick" %}
-Type=simple
-ExecStart=/home/koala/webrick.sh
-{% endif %}
+ExecStart=/usr/local/bin/nix-shell --pure --run "dotenv bundle exec unicorn -c config/unicorn.rb -E {{ koala_env.environment }} -D"
 User=koala
 Group=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}

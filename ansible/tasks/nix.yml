@@ -14,6 +14,7 @@
   args:
     creates: "/nix"
 
+
 - name: "Make Nix programs available without sourcing shell stuff"
   with_items:
     - "nix"
@@ -29,5 +30,15 @@
   file:
     src: "/nix/var/nix/profiles/default/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
+    state: "link"
+  become: true
+
+- name: "install cachix"
+  shell: "nix-env -iA cachix -f https://cachix.org/api/v1/install"
+
+- name: "Make cachix available without sourcing shell stuff"
+  file:
+    src: "/nix/var/nix/profiles/default/bin/cachix"
+    dest: "/usr/local/bin/cachix"
     state: "link"
   become: true

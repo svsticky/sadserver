@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash ../shell.nix
 
 ##
 ## USAGE: ./scripts/run-playbook.sh <production | staging> <PLAYBOOK_PATH>

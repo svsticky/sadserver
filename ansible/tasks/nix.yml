@@ -1,53 +1,33 @@
-#!/usr/bin/env bash
-# {{ ansible_managed }}
 ---
 - name: "Download Nix install script"
   get_url:
     url: "https://releases.nixos.org/nix/nix-2.3.7/install"
     checksum: "sha256:ec6c65e46cc8f63b9cfd4df422087fa58fa9ebe823e566a885fc2a9778c721db"
     dest: "/var/tmp/install-nix"
+    mode: "0755"
 
-- name: "Mark installer executable"
-  file:
-    path: "/var/tmp/install-nix"
-    mode: "u+x"
 
-- name: "installer is mine"
-  command: "chown ansible /var/tmp/install-nix"
-
-- name: "Copy fucked up install script"
-  template:
-      src: "templates/usr/local/bin/lol_install_nix.sh.j2"
-      dest: "/tmp/lol_install_nix.sh"
-      mode: "u+x"
-
-- name: "Execute this disaster of a script"
-  shell: "/tmp/lol_install_nix.sh"
-  args:
-      creates: "/nix"
+- name: "Run Nix installer"
   become: true
+  become_user: "eindbaas"
+  command: "/var/tmp/install-nix --daemon"
+  args:
+    creates: "/nix"
 
-
-      #- name: "Run Nix installer"
-      #  become: true
-      #  command: "/var/tmp/install-nix --daemon"
-      #  args:
-      #    creates: "/nix"
-
-  #- name: "Make Nix programs available without sourcing shell stuff"
-  #  with_items:
-  #    - "nix"
-  #    - "nix-build"
-  #    - "nix-channel"
-  #    - "nix-collect-garbage"
-  #    - "nix-env"
-  #    - "nix-hash"
-  #    - "nix-instantiate"
-  #    - "nix-prefetch-url"
-  #    - "nix-shell"
-  #    - "nix-store"
-  #  file:
-  #    src: "/usr/local/bin/{{ item }}"
-  #    state: "link"
-  #    dest: "/nix/var/nix/profiles/default/bin/{{ item }}"
-  #  become: true
+- name: "Make Nix programs available without sourcing shell stuff"
+  with_items:
+    - "nix"
+    - "nix-build"
+    - "nix-channel"
+    - "nix-collect-garbage"
+    - "nix-env"
+    - "nix-hash"
+    - "nix-instantiate"
+    - "nix-prefetch-url"
+    - "nix-shell"
+    - "nix-store"
+  file:
+    src: "/nix/var/nix/profiles/default/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: "link"
+  become: true

@@ -9,6 +9,14 @@
     group: "root"
     mode: "0644"
 
+- name: "set auth for eindbaas user"
+  lineinfile:
+    dest: "/etc/sudoers.d/eindbaas"
+    line: "eindbaas ALL= NOPASSWD:ALL"
+    state: "present"
+    create: true
+    validate: "visudo -cf %s"
+
 - name: "set NOPASSWD for sudo group in staging"
   lineinfile:
     dest: "/etc/sudoers.d/ansible"

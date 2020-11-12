@@ -29,6 +29,18 @@
   loop_control:
     label: "{{ item.name }}"
 
+# This user is can do passwordless sudo, which is necessary from some
+# installation routines like nix
+- name: "create eindbaas user"
+  user:
+    name: "eindbaas"
+    state: "present"
+    shell: "/bin/false"
+    system: true
+    home: "/var/lib/eindbaas/"
+    password: "!"
+
+
 - name: "fix permissions for chroot of committee users"
   file:
     path: "{{ item.home_prefix }}/{{ item.name }}"

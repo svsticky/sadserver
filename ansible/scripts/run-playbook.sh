@@ -32,6 +32,7 @@ if [ ! -f .slack-webhook ]; then
 fi
 
 export SLACKTEE_WEBHOOK=$(cat .slack-webhook)
+export ANSIBLE_STDOUT_CALLBACK=yaml
 
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 GIT_REVISION="$(git rev-parse HEAD)"

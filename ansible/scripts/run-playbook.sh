@@ -47,11 +47,7 @@ function abort_deploy() {
   exit 0
 }
 
-if [[ -n ${BW_SESSION:-} ]]; then
-  VAULT_PASS_SRC="./scripts/get-vault-pass-from-bitwarden-client.sh"
-else
-  VAULT_PASS_SRC="prompt"
-fi
+VAULT_PASS_SRC="./scripts/bitwarden-vault-pass-client.py"
 
 case ${ENVIRONMENT} in
   production)

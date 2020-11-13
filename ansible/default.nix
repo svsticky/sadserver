@@ -11,6 +11,9 @@ let
 
   pythonEnvironment = python.withPackages (pkgs: [
     pkgs.ansible
+    pkgs.black
+    pkgs.click
+    pkgs.mypy
     ansible-mitogen
   ]);
 

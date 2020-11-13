@@ -1,11 +1,6 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i python3 ../shell.nix
 
-# NOTE: The filename (minus extension) of this script *HAS* to end with
-# "-client". This makes Ansible 2.5+ add the vault id to the invocation of
-# this script. (I did not make that up.) This is documented here:
-# https://docs.ansible.com/ansible/2.9/user_guide/vault.html#vault-password-client-scripts
-
 import enum
 import json
 import os
@@ -23,12 +18,21 @@ class BitwardenStatus(enum.Enum):
 
 
 @click.command()
-@click.option("--vault-id", type=click.Choice(["staging", "production"]), required=True)
+@click.option(
+    "--vault-id",
+    type=click.Choice(["staging", "production"]),
+    required=True,
+    envvar="ANSIBLE_VAULT_IDENTITY",
+)
 @click.pass_context
 def cli(ctx: click.Context, vault_id: str) -> None:
     """
     This script uses Bitwarden's CLI tool to print the Ansible Vault decryption
     key for the requested Vault ID to stdout.
+
+    The Ansible Vault ID to print the password for may be specified by either
+    passing the `--vault-id` parameter or by setting the ANSIBLE_VAULT_IDENTITY
+    environment variable.
 
     This script manages the Bitwarden unlocking process for you: after
     executing this script at least once the Bitwarden session key is cached in

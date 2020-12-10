@@ -10,7 +10,7 @@ jobs:
       - uses: "actions/checkout@v2"
 
       - name: "install Nix"
-        uses: "cachix/install-nix-action@v11"
+        uses: "cachix/install-nix-action@v12"
 
       - name: "Lint our yaml files"
         run: "cd ansible; nix run -c yamllint ."

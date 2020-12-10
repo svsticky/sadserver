@@ -8,10 +8,10 @@
 
 # The default NodeJS version shipped on 18.04 is NodeJS 8.10, this is very old
 # and we want a newer one.
-- name: "Add Nodesource repository for NodeJS 14"
-  apt_repo:
-    repo: "https://deb.nodesource.com/node_14.x/dists/{{ ansible_lsb.codename}}/"
-    update: "yes"
+# - name: "Add Nodesource repository for NodeJS 14"
+#   apt_repo:
+#     repo: "https://deb.nodesource.com/node_14.x/dists/{{ ansible_lsb.codename}}/"
+#     update: "yes"
 
 - name: "install common utilities and newer Node.js"
   apt:

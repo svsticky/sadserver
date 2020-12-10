@@ -10,6 +10,7 @@
   service:
     name: "sidekiq"
     state: "stopped"
+  ignore_errors: true
   become: true
   become_user: "root"
 

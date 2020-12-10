@@ -11,6 +11,11 @@ from typing import Any, Dict, List
 import click
 
 
+XDG_RUNTIME_DIR = pathlib.Path(os.getenv("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}"))
+SESSION_KEY_CACHE_DIR = XDG_RUNTIME_DIR / "sadserver-bitwarden"
+SESSION_KEY_CACHE_FILE = SESSION_KEY_CACHE_DIR / "cached-session-key"
+
+
 class BitwardenStatus(enum.Enum):
     Unauthenticated = "unauthenticated"
     Locked = "locked"
@@ -52,8 +57,25 @@ def cli(ctx: click.Context, vault_id: str) -> None:
         session_key = get_bitwarden_session_key()
         os.environ["BW_SESSION"] = session_key
 
-        new_bw_status = get_bitwarden_status()
-        assert new_bw_status == BitwardenStatus.Unlocked, "Failed to unlock!"
+        # Edge case: if the user kept their system running for so long that the session
+        # key is no longer valid we need to throw it away and rerun `bw unlock`.
+        # This can happen if we're running on a laptop.
+        if get_bitwarden_status() != BitwardenStatus.Unlocked:
+            click.echo(
+                "Failed to unlock using cached key, clearing cached session key.",
+                err=True,
+            )
+            SESSION_KEY_CACHE_FILE.unlink()
+            del os.environ["BW_SESSION"]
+
+            session_key = get_bitwarden_session_key()
+            os.environ["BW_SESSION"] = session_key
+
+            # This should never happen, if fetching a new session key fails
+            # get_bitwarden_session_key should throw an exception.
+            assert (
+                get_bitwarden_status() == BitwardenStatus.Unlocked
+            ), "Unable to unlock vault even after clearing cached session key."
 
     bw_data = run_bitwarden_json_command(
         ["get", "item", "caa7fb69-913a-4f08-9d0f-a87f013d39d2"]
@@ -70,17 +92,11 @@ def get_bitwarden_status() -> BitwardenStatus:
 
 
 def get_bitwarden_session_key() -> str:
-    cache_dir = (
-        pathlib.Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}"))
-        / "sadserver-bitwarden"
-    )
+    SESSION_KEY_CACHE_DIR.mkdir(mode=0o700, parents=False, exist_ok=True)
 
-    cache_dir.mkdir(mode=0o700, parents=False, exist_ok=True)
-    cache_file = cache_dir / "session_key"
-
-    if cache_file.is_file():
+    if SESSION_KEY_CACHE_FILE.is_file():
         click.echo("Reusing session key from cache.", err=True)
-        return cache_file.read_text()
+        return SESSION_KEY_CACHE_FILE.read_text()
     else:
         click.echo("Unlocking Vault to get a new session key.", err=True)
 
@@ -89,8 +105,8 @@ def get_bitwarden_session_key() -> str:
         session_key = run_bitwarden_command(["unlock", "--raw"])
 
         # Cache the key for next time
-        cache_file.touch(mode=0o600, exist_ok=True)
-        cache_file.write_text(session_key)
+        SESSION_KEY_CACHE_FILE.touch(mode=0o600, exist_ok=True)
+        SESSION_KEY_CACHE_FILE.write_text(session_key)
         return session_key
 
 

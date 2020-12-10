@@ -1,0 +1,11 @@
+# These settings are duplicated from the settings we set in
+# /etc/mysql/conf.d/mysqld.conf.d.
+# These must be enabled to have Koala's database migration work, but Mariadb
+# for some reason doesn't always read the settings from /etc/mysql/conf.d, so
+# we copy those to here.
+
+[mysqld]
+innodb_file_format_max=Barracuda
+innodb_file_format=Barracuda
+innodb_large_prefix=1
+innodb_file_per_table=1

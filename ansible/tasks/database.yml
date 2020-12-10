@@ -26,10 +26,13 @@
 
   - name: "enable extra configuration"
     template:
-      src: "templates/{{ config_file }}.j2"
-      dest: "/{{ config_file }}"
+      src: "templates/{{ item }}.j2"
+      dest: "/{{ item }}"
     vars:
       config_file: "etc/mysql/conf.d/mysqld.cnf"
+    with_items:
+      - "etc/mysql/conf.d/mysqld.cnf"
+      - "etc/mysql/mariadb.conf.d/60-koala-required-settings.cnf"
     notify: "restart mariadb"
 
   - name: "ensure database is enabled and running"

@@ -103,8 +103,10 @@ case "${SOURCE}" in
           FILE_NAME="${FILE_TITLE}.tar.gz"
 
           mkdir -p /tmp/contentful-export
-          npx contentful space export --download-assets \
-            --space-id {{ secrets_contentful_export.space_id }} \
+          npx contentful space export \
+            --management-token {{ secret_contentful_export.token }} \
+            --space-id {{ secret_contentful_export.space_id }} \
+            --download-assets \
             --export-dir /tmp/contentful-export
           upload_backup_to_s3 < <(tar \
             -c -f - -C /tmp contentful-export \

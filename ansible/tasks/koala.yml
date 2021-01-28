@@ -32,6 +32,16 @@
   tags:
     - "koala"
 
+- name: "ensure tmp directory exist (for nix-shell)"
+  file:
+    path: "/var/www/koala.{{ canonical_hostname }}/tmp/pids"
+    state: "directory"
+    owner: "koala"
+    group: "koala"
+  tags:
+    - "koala"
+
+
 - name: "ensure koala service file is present"
   template:
     src: "templates/{{ path }}.j2"
@@ -129,6 +139,15 @@
       src: "templates/var/www/koala/.rbenv-vars.j2"
       dest: "/var/www/koala.{{ canonical_hostname }}/.env"
       mode: "0700"
+    notify: "restart koala"
+    tags:
+      - "koala"
+
+  - name: "building nix environment (this might take a while)"
+    shell: nix-shell --run 'echo lol'
+    args:
+      chdir: "/var/www/koala.{{ canonical_hostname }}"
+      creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
     notify: "restart koala"
     tags:
       - "koala"

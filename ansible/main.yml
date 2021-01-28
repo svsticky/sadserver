@@ -60,6 +60,8 @@
       include_tasks: "tasks/intro-cs-backend.yml"
       # - name: "start process of configuring the telegram crazy88bot"
       #   include_tasks: "tasks/crazy88bot.yml"
+    - name: "start process of configuring polr"
+      include_tasks: "tasks/polr.yml"
 
   post_tasks:
     # Included the last, so any service that fail2ban is applied to, already

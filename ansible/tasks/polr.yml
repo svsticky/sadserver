@@ -1,0 +1,54 @@
+---
+- name: "ensure polr database user exists"
+  command:
+    "mysql -NBe 'grant all privileges on `polr{% if secret_polr.env ==
+    'staging' %}-staging{% endif %}`.* to `polr`@`localhost`
+    identified via unix_socket;'"
+
+- name: check if DB exists
+  command:
+    "mysql -e 'SHOW DATABASES;' | grep polr"
+  register: dbstatus
+  failed_when: dbstatus.rc == 2
+
+- name: create polr database
+  mysql_db:
+    name: polr
+    state: present
+  when: dbstatus.rc == 0
+
+- name: "install composer & dependencies"
+  apt:
+    name:
+      - "composer"
+      - "php7.2-fpm"
+      - "php7.2-mbstring"
+      - "php7.2-curl"
+    state: "present"
+  become: true
+
+- name: "ensure clone location exists"
+  file:
+    path: "/var/www/polr.{{ canonical_hostname }}"
+    state: "directory"
+    recurse: true
+
+- name: "clone polr repository"
+  git:
+    repo: "ttps://github.com/cydrobolt/polr.git"
+    dest: "/var/www/links.{{ canonical_hostname }}"
+    version: "master"
+    depth: 1
+  diff: false
+
+- name: "place config file"
+  template:
+    src: "templates/var/www/digidecs/.env.j2"
+    dest: "/var/www/links.{{ canonical_hostname }}/.env"
+    owner: "www-data"
+    mode: "660"
+
+- name: "run composer"
+  composer:
+    working_dir: "/var/www/links.{{ canonical_hostname }}"
+    command: "install --no-dev -o"

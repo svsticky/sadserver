@@ -19,19 +19,14 @@
   notify: "systemctl daemon-reload"
 
 - name: "enable slack notifications for netdata's alarms"
-  lineinfile:
-    path: "/etc/netdata/health_alarm_notify.conf"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: "present"
-  with_items:
-    - regexp: "^SEND_SLACK="
-      line: "SEND_SLACK=\"YES\""
-    - regexp: "^SLACK_WEBHOOK_URL="
-      line: "SLACK_WEBHOOK_URL=\"{{ slack_notifications.webhook_url }}\""
-    - regexp: "^DEFAULT_RECIPIENT_SLACK="
-      line:
-        "DEFAULT_RECIPIENT_SLACK=\"{{ slack_notifications.default_channel }}\""
+  template:
+      src: "templates/{{ path }}.j2"
+      dest: "/{{ path }}"
+      owner: "netdata"
+      group: "netdata"
+      mode: "0660"
+  vars:
+    path: "etc/netdata/health_alarm_notify.conf"
   register: "netdata_slack_notifications"
 
 - name: "raise alert threshold for tcp listen drops"

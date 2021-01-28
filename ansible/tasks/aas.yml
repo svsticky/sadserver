@@ -23,7 +23,7 @@
     git:
       repo: "https://github.com/svsticky/aas.git"
       dest: "/var/www/aas/aas.{{ canonical_hostname }}"
-      version: "master"
+      version: "ubuntu20"
     diff: false
     register: "aas_clone"
 

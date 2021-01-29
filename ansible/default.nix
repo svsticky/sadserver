@@ -14,7 +14,6 @@ let
     pkgs.black
     pkgs.click
     pkgs.mypy
-    pkgs.psycopg2
     ansible-mitogen
   ]);
 

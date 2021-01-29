@@ -2,7 +2,7 @@
 
 # Authenticates as Linux user with same name as DB user
 DATABASE_USER=koala
-DATABASE_SOCKET=/var/run/mysqld/mysqld.sock
+DATABASE_SOCKET=/var/run/postgresql/.s.PGSQL.5432
 
 SECRET_KEY_BASE={{ secret_koala.rails_secret }}
 DEVISE_SECRET={{ secret_koala.devise_secret }}

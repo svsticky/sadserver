@@ -19,6 +19,25 @@
     tags:
       - "packages"
 
+  - name: "ensure koala user exists"
+    postgresql_user:
+      name: "koala"
+    become_user: postgres
+
+  - name: "ensure koala database exists"
+    postgresql_db:
+      name: "koala"
+      owner: "koala"
+    become_user: postgres
+
+  - name: "ensure koala user exists"
+    postgresql_user:
+      db: "koala"
+      name: "koala"
+      priv: "ALL"
+      role_attr_flags: CREATEDB,LOGIN
+    become_user: postgres
+
   - name: "add apt key for mariadb repository"
     apt_key:
       url: "https://mariadb.org/mariadb_release_signing_key.asc"

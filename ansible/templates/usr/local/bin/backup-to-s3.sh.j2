@@ -102,8 +102,8 @@ case "${SOURCE}" in
           S3PATH="${SOURCE}"
           FILE_NAME="${FILE_TITLE}.tar.gz"
 
-          mkdir -p /tmp/contentful-export
-          npx contentful space export \
+          sudo -u backup mkdir -p /tmp/contentful-export
+          sudo -u backup -H npx contentful-cli space export \
             --management-token {{ secret_contentful_export.token }} \
             --space-id {{ secret_contentful_export.space_id }} \
             --download-assets \

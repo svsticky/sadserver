@@ -1,5 +1,12 @@
 ---
 - block:
+  - name: "add backup user"
+    user:
+      name: "backup"
+      shell: "/usr/sbin/nologin"
+      home: "/home/backup"
+      system: true
+
   - name: "install awscli"
     apt:
       name: "awscli"
@@ -34,7 +41,7 @@
     template:
       src: "templates/{{ backup_script_path }}.j2"
       dest: "/{{ backup_script_path }}"
-      mode: "0744"
+      mode: "0700"
     vars:
       backup_script_path: "usr/local/bin/backup-to-s3.sh"
 

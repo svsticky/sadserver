@@ -268,8 +268,6 @@
       state: "absent"
     - src: "savadaba"
       dest: "savadaba.{{ canonical_hostname }}"
-    - src: "shiny"
-      dest: "shiny.{{ canonical_hostname }}"
     - src: "svsticky"
       dest: "{{ canonical_hostname }}"
     - src: "wintersport"
@@ -303,7 +301,6 @@
     state: "link"
   with_items:
     - "aas.{{ canonical_hostname }}"
-    - "shiny.{{ canonical_hostname }}"
     - "{{ canonical_hostname }}"
     - "savadaba.{{ canonical_hostname }}"
     - "wintersport.{{ canonical_hostname }}"

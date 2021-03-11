@@ -1,0 +1,109 @@
+---
+- name: "add deadsnakes PPA"
+  apt_repository:
+    repo: "ppa:deadsnakes/ppa"
+
+- name: "install Python 3.9"
+  apt:
+    pkg:
+      - "python3.9"
+      - "python3.9-venv"
+      - "python3.9-dev"
+    state: "present"
+
+- name: "determine website folder"
+  set_fact:
+    execut_website_path: "/var/www/symposium/execut-2021.{{ canonical_hostname }}"
+
+- name: "make website directory"
+  file:
+    path: "{{ item }}"
+    owner: "symposium"
+    group: "symposium"
+    state: "directory"
+  with_items:
+    - "{{ execut_website_path }}"
+    - "/var/www/symposium/.local"
+    - "/var/www/symposium/.cache"
+
+- name: "perform stuff as `symposium`"
+  become_user: "symposium"
+  block:
+
+    - name: "create virtualenv if not exists, update pip and tools"
+      pip:
+        name:
+          - "pip"
+          - "setuptools"
+          - "wheel"
+          - "pipenv"
+          - "gunicorn==20.0.4"
+          - "mysqlclient==2.0.3"
+          - "python-dotenv[cli]==0.15.0"
+        virtualenv: "{{ execut_website_path }}/venv"
+        virtualenv_command: "/usr/bin/python3.9 -m venv"
+
+    - name: "clone website's repository"
+      git:
+        repo: "https://github.com/Tears/execut_www.git"
+        dest: "{{ execut_website_path }}/execut_www"
+        version: "master"
+
+    - name: "install environment file"
+      template:
+        src: "templates/var/www/symposium/execut-2021/execut_www.env.j2"
+        dest: "{{ execut_website_path }}/execut_www.env"
+        mode: "0600"
+
+    - name: "install dependencies"
+      command: "{{ execut_website_path }}/venv/bin/pipenv sync"
+      environment:
+        VIRTUAL_ENV: "{{ execut_website_path }}/venv"
+      args:
+        chdir: "{{ execut_website_path }}/execut_www"
+
+    - name: "run migrations, rebuild static files"
+      command: >
+        {{ execut_website_path }}/venv/bin/dotenv
+        -f "{{ execut_website_path }}/execut_www.env"
+        run "{{ execut_website_path }}/venv/bin/python"
+        manage.py {{ item }}
+      environment:
+        VIRTUAL_ENV: "{{ execut_website_path }}/venv"
+      args:
+        chdir: "{{ execut_website_path }}/execut_www"
+      with_items:
+        - "migrate"
+        - "collectstatic --no-input"
+
+- name: "install service file"
+  template:
+    src: "templates/etc/systemd/system/execut-django-website.service.j2"
+    dest: "/etc/systemd/system/execut-django-website.service"
+    mode: "0644"
+  notify: "systemctl daemon-reload"
+
+- name: "install Nginx config"
+  template:
+    src: "templates/etc/nginx/sites-available/execute-django-website.conf.j2"
+    dest: "/etc/nginx/sites-available/execut-django-website.conf"
+  notify: "reload nginx"
+
+- name: "enable Nginx config"
+  file:
+    src: "/etc/nginx/sites-available/execut-django-website.conf"
+    dest: "/etc/nginx/sites-enabled/execut-django-website.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- name: "test Nginx config"
+  command: "nginx -t"
+
+- name: "Reload Nginx, systemd if needed"
+  meta: "flush_handlers"
+
+- name: "Start and enable website service"
+  systemd:
+    name: "execut-django-website.service"
+    state: "restarted"
+    enabled: true

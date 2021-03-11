@@ -274,8 +274,6 @@
       dest: "wintersport.{{ canonical_hostname }}"
     - src: "intro-cs"
       dest: "intro-cs.{{ canonical_hostname }}"
-    - src: "intro-bot"
-      dest: "intro-bot.{{ canonical_hostname }}"
   notify: "reload nginx"
   loop_control:
     label: "{{ item.dest }}"
@@ -305,7 +303,6 @@
     - "savadaba.{{ canonical_hostname }}"
     - "wintersport.{{ canonical_hostname }}"
     - "intro-cs.{{ canonical_hostname }}"
-    - "intro-bot.{{ canonical_hostname }}"
   notify: "reload nginx"
 
 - name: "create htpasswd.d directory for basic auth files"

@@ -50,11 +50,9 @@
     - name: "connect to S3 using appropriate credentials"
       environment:
         AWS_ACCESS_KEY_ID:
-          "{{ production.vault_secret_backup_aws.access_key if 'staging' in
-          group_names else omit }}"
+          "{{ vault_secret_backup_aws.access_key }}"
         AWS_SECRET_ACCESS_KEY:
-          "{{ production.vault_secret_backup_aws.secret_key if 'staging' in
-          group_names else omit }}"
+          "{{ vault_secret_backup_aws.secret_key }}"
       block:
         - name: "find latest backups"
           shell:

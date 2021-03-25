@@ -32,16 +32,6 @@
   tags:
     - "koala"
 
-- name: "ensure tmp directory exist (for nix-shell)"
-  file:
-    path: "/var/www/koala.{{ canonical_hostname }}/tmp/pids"
-    state: "directory"
-    owner: "koala"
-    group: "koala"
-  tags:
-    - "koala"
-
-
 - name: "ensure koala service file is present"
   template:
     src: "templates/{{ path }}.j2"
@@ -131,6 +121,15 @@
       version: "{{ koala_env.git_ref }}"
     diff: false
     when: koala_checkout_result.changed
+    tags:
+      - "koala"
+  
+  - name: "ensure tmp directory exist (for nix-shell)"
+    file:
+      path: "/var/www/koala.{{ canonical_hostname }}/tmp/pids"
+      state: "directory"
+      owner: "koala"
+      group: "koala"
     tags:
       - "koala"
 

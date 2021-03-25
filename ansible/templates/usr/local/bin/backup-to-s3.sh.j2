@@ -98,6 +98,21 @@ case "${SOURCE}" in
             --all-databases \
             | gzip -9)
           ;;
+        contentful)
+          S3PATH="${SOURCE}"
+          FILE_NAME="${FILE_TITLE}.tar.gz"
+
+          sudo -u backup mkdir -p /tmp/contentful-export
+          sudo -u backup -H npx contentful-cli space export \
+            --management-token {{ secret_contentful_export.token }} \
+            --space-id {{ secret_contentful_export.space_id }} \
+            --download-assets \
+            --export-dir /tmp/contentful-export
+          upload_backup_to_s3 < <(tar \
+            -c -f - -C /tmp contentful-export \
+            | gzip -9)
+          rm -r /tmp/contentful-export
+          ;;
         *)
           print_to_stderr "${USAGE}"
           exit 1

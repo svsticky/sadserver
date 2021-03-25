@@ -14,8 +14,7 @@ _($(date +'%%F %%T %%:z'))_\" | \
   --plain-text \
   --username 'sadserver-dev' \
   --icon ':exclamation:' \
-  --attachment 'danger' \
-  --channel 'notifications'"
+  --attachment 'danger'"
 {% else %}
 ExecStart=/bin/sh -c "echo \"@it-crowd-commissie *Unit \`%i\` FAILED!*\
 _($(date +'%%F %%T %%:z'))_\" | \
@@ -23,6 +22,5 @@ _($(date +'%%F %%T %%:z'))_\" | \
   --plain-text \
   --username 'sadserver' \
   --icon ':exclamation:' \
-  --attachment 'danger' \
-  --channel 'alerts'"
+  --attachment 'danger'"
 {% endif %}

@@ -1,10 +1,19 @@
 ---
 # Contains application-agnostic database tasks
 - block:
+  - name: "add apt key for mariadb repository"
+    apt_key:
+      url: "https://mariadb.org/mariadb_release_signing_key.asc"
+      state: "present"
+
+  - name: "add mariadb apt repository"
+    apt_repository:
+      repo: "deb http://ams2.mirrors.digitalocean.com/mariadb/repo/10.5/ubuntu {{ ansible_lsb.codename }} main"
+
   - name: "ensure mariadb is installed and manageable"
     apt:
       name:
-        - "mariadb-server"
+        - "mariadb-server-10.5"
         - "python3-mysqldb"
       state: "present"
     tags:
@@ -46,6 +55,7 @@
       - "grant all privileges on *.* to `root`@`localhost` identified via
         unix_socket with grant option;"
       - "drop database if exists test;"
+    ignore_errors: true
 
   - name: "create website databases"
     command:

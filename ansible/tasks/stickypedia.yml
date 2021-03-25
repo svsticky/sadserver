@@ -17,6 +17,7 @@
       - "build-essential"
       - "git"
       - "cmake"
+      - "pkg-config"
     state: "present"
   become: true
 
@@ -40,8 +41,10 @@
     - name: "install gem gollum"
       gem:
         name: "gollum"
-        version: "5.0.1"
+        version: "5.1.2"
         state: "present"
+      environment: 
+        PATH: "/var/www/stickypedia/.gem/ruby/2.7.0/bin:{{ ansible_env.PATH }}"
       notify: "restart stickypedia"
 
   become_user: "stickypedia"

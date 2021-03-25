@@ -17,12 +17,12 @@
 - name: "install phpmyadmin dependencies"
   apt:
     name:
-      - "php7.2-zip"
-      - "php7.2-xml"
-      - "php7.2-mbstring"
-      - "php7.2-mysqli"
+      - "php7.4-zip"
+      - "php7.4-xml"
+      - "php7.4-mbstring"
+      - "php7.4-mysqli"
       - "composer"
-      - "php7.2-curl"
+      - "php7.4-curl"
       - "yarn"
     state: "present"
 
@@ -66,6 +66,7 @@
         mode: "600"
       vars:
         filename: "config.inc.php"
+      become: true
 
     - name: "install phpmyadmin composer dependencies"
       composer:

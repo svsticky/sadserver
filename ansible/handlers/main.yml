@@ -53,7 +53,7 @@
 
 - name: "reload php"
   service:
-    name: "php7.2-fpm"
+    name: "php7.4-fpm"
     state: "reloaded"
 
 - name: "systemctl daemon-reload"
@@ -86,11 +86,6 @@
 - name: "restart stickypedia"
   systemd:
     unit: "stickypedia.service"
-    state: "restarted"
-
-- name: "restart shiny server"
-  systemd:
-    unit: "shiny-server.service"
     state: "restarted"
 
 - name: "restart intro-cs-backend server"

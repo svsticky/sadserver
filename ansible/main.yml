@@ -9,7 +9,7 @@
   handlers:
     - import_tasks: "handlers/main.yml"
 
-  tasks:
+  tasks: 
     - name: "start process of managing general system settings"
       include_tasks: "tasks/system-settings.yml"
     - name: "start process of user management"
@@ -34,6 +34,8 @@
       include_tasks: "tasks/backups.yml"
     - name: "start process of configuring redis"
       include_tasks: "tasks/redis.yml"
+    - name: "start process of installing Nix"
+      include_tasks: "tasks/nix.yml"
     - name: "start process of installing koala"
       include_tasks: "tasks/koala.yml"
     - name: "start process of configuring oauth2_proxy"
@@ -54,14 +56,10 @@
       include_tasks: "tasks/aas.yml"
     - name: "start process of configuring stickypedia"
       include_tasks: "tasks/stickypedia.yml"
-    - name: "start process of configuring shiny-octopus"
-      include_tasks: "tasks/shiny.yml"
     - name: "start process of configuring the intro-cs backend"
       include_tasks: "tasks/intro-cs-backend.yml"
-    - name: "start process of configuring the teams intro-bots"
-      include_tasks: "tasks/intro-bot.yml"
-    - name: "start process of configuring the telegram crazy88bot"
-      include_tasks: "tasks/crazy88bot.yml"
+      # - name: "start process of configuring the telegram crazy88bot"
+      #   include_tasks: "tasks/crazy88bot.yml"
 
   post_tasks:
     # Included the last, so any service that fail2ban is applied to, already

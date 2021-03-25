@@ -25,6 +25,9 @@
       - "haveged"
       - "jq"
       - "nodejs"
+      - "nginx"
+      - "acl"
+      - "git"
     state: "present"
 
 - name: "update all packages"

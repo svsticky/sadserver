@@ -218,34 +218,7 @@
   become: true
   become_user: "koala"
 
-# This task is used when you set koala.server to "webrick". Useful when you
-# want to use this playbook for a development server, instead of
-# staging|production.
-- name: "ensure webrick script is present in development"
-  template:
-    src: "templates/{{ path }}.j2"
-    dest: "/{{ path }}"
-    mode: "0755"
-    owner: "koala"
-    group: "koala"
-  vars:
-    path: "home/koala/webrick.sh"
-  when: koala.server == "webrick"
-  tags:
-    - "koala"
-
 - block:
-  - name: "ensure unicorn script is present in production"
-    template:
-      src: "templates/{{ path }}.j2"
-      dest: "/{{ path }}"
-      mode: "0755"
-      owner: "koala"
-      group: "koala"
-    vars:
-      path: "home/koala/unicorn.sh"
-    notify: "restart koala"
-
   - name: "place koala's nginx configuration"
     template:
       src: "templates/etc/nginx/sites-available/koala.j2"

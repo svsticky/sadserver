@@ -16,6 +16,8 @@ WorkingDirectory=/var/www/aas/aas.{{ canonical_hostname }}
 RuntimeDirectory=aas
 RuntimeDirectoryMode=0770
 
+EnvironmentFile=/var/www/aas/aas.{{ canonical_hostname }}/.env
+
 ExecStart=/var/www/aas/aas.{{ canonical_hostname }}/.venv/bin/gunicorn \
   --workers 4 --bind unix:/run/aas/gunicorn.sock aas:aas
 

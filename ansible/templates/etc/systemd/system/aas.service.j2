@@ -16,9 +16,8 @@ WorkingDirectory=/var/www/aas/aas.{{ canonical_hostname }}
 RuntimeDirectory=aas
 RuntimeDirectoryMode=0770
 
-ExecStart=/usr/local/bin/pipenv run gunicorn \
-                                      --workers 4 \
-                                      --bind unix:/run/aas/gunicorn.sock aas:aas
+ExecStart=/var/www/aas/aas.{{ canonical_hostname }}/.venv/bin/gunicorn \
+  --workers 4 --bind unix:/run/aas/gunicorn.sock aas:aas
 
 [Install]
 WantedBy=multi-user.target

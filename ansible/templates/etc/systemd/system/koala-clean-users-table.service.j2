@@ -9,7 +9,7 @@ OnFailure=failure-notificator@%n.service
 Type=simple
 User=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
-ExecStart=/nix/var/nix/profiles/default/bin/nix-shell run --command "rails RAILS_ENV={{ koala_env.environment }}\
+ExecStart=/nix/var/nix/profiles/default/bin/nix-shell --command "rails RAILS_ENV={{ koala_env.environment }}\
 devise:clean_unconfirmed_emails devise:clean_reset_tokens"
 
 # No notification to Slack on success, because these jobs are not vital to

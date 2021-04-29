@@ -3,24 +3,18 @@
 ##
 ## nginx default vhost
 ##
-## The purpose of this host is to act as a catch-all for verification
-## requests from Let's Encrypt. It is the only vhost that listens on HTTP
-## on this server, as all other hosts just listen on HTTPS.
+## The purpose of this host is to redirect all HTTP requests to HTTPS.
+## It is the only vhost that listens on HTTP on this server, as all other hosts
+## just listen on HTTPS.
 ##
-## It serves requests for the URI '/.well-known/acme-challenge', from the
-## /var/www/acme_challenges directory. All other hosts/URIs are redirected
-## to the HTTPS version of the URI.
+## Handling Let's Encrypt requests is not necessary here, as this is handled
+## through the nginx plugin for certbot.
 ##
 
 server {
     listen       80;
     listen       [::]:80;
     server_name  _;
-
-    location '/.well-known/acme-challenge' {
-        default_type "text/plain";
-        root /var/www/acme-challenges;
-    }
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
@@ -30,4 +24,3 @@ server {
         return 301 https://$host$request_uri;
     }
 }
-

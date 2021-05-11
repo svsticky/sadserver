@@ -14,7 +14,7 @@ ExecStart=/nix/var/nix/profiles/default/bin/nix-shell --command "sidekiq -e {{ k
 
 # if we crash, restart
 RestartSec=1
-Restart=on-failure
+Restart=always
 
 # This will default to "bundler" if we don't specify it
 SyslogIdentifier=sidekiq

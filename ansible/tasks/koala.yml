@@ -260,6 +260,13 @@
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
     - "koala-reindex-search.timer"
+    - "koala-status-mail.timer"
+  
+- name: "ensure sidekiq service is started and enabled"
+  service:
+    name: "sidekiq.service"
+    enabled: "yes"
+    state: "started"
 
 - name: "ensure koala update marker is absent"
   file:

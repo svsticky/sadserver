@@ -13,14 +13,14 @@
 - name: "use koala cachix"
   shell: "cachix use svsticky-constipated-koala"
 
-# - name: "ensure koala database user exists"
-#   command:
-#     "mysql -NBe 'grant all privileges on `koala{% if koala_env.environment ==
-#     'development' %}-development{% endif %}`.* to `koala`@`localhost`
-#     identified via unix_socket;'"
-#   tags:
-#     - "database"
-#     - "koala"
+- name: "ensure koala database user exists"
+  command:
+    "mysql -NBe 'grant all privileges on `koala{% if koala_env.environment ==
+    'development' %}-development{% endif %}`.* to `koala`@`localhost`
+    identified via unix_socket;'"
+  tags:
+    - "database"
+    - "koala"
 
 - name: "ensure clone location exists and is owned by koala"
   file:

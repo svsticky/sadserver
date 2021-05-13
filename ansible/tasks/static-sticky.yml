@@ -10,7 +10,7 @@
   template:
     src: "templates{{ item }}.j2"
     dest: "{{ item }}"
-    mode: "+x"
+    mode: "0755"
   with_items:
     - "/usr/local/bin/deploy-static-sticky.sh"
 

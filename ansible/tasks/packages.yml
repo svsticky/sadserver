@@ -24,10 +24,10 @@
       - "unattended-upgrades"
       - "haveged"
       - "jq"
+      - "nodejs"
       - "nginx"
       - "acl"
       - "git"
-      - "nodejs"
     state: "present"
 
 - name: "update all packages"

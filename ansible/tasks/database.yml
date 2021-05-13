@@ -86,6 +86,7 @@
       - "grant all privileges on *.* to `root`@`localhost` identified via
         unix_socket with grant option;"
       - "drop database if exists test;"
+    ignore_errors: true
 
   - name: "create website databases"
     command:

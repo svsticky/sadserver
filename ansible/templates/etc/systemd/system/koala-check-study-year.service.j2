@@ -8,7 +8,7 @@ OnFailure=failure-notificator@%n.service
 Type=simple
 User=koala
 WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
-ExecStart=/home/koala/.rbenv/shims/rails RAILS_ENV={{ koala_env.environment }}\
-admin:start_year
+ExecStart=/nix/var/nix/profiles/default/bin/nix-shell --command "rails RAILS_ENV={{ koala_env.environment }}\
+admin:start_year"
 
 # No notification to Slack on success, because this has to run every night

@@ -99,7 +99,7 @@ case "${SOURCE}" in
             | gzip -9)
           ;;
         postgres)
-          S3PATH="websites/${SOURCE}"
+          S3PATH="postgres/${SOURCE}"
           FILE_NAME="${FILE_TITLE}.sql.gz"
 
           # Uses root's unix socket for authentication

@@ -70,8 +70,8 @@
           register: "backup_filenames"
           with_items:
             - "admins"
-            - "websites"
-            - "websites/databases"
+            # - "websites"
+            # - "websites/databases"
             - "postgres/postgres"
 
         - name: "download latest backups"
@@ -93,22 +93,19 @@
         remote_src: true
       with_items: "{{ backup_filenames.results }}"
       # Skip db backup here, because that's not an archive
-      when: "'websites/databases' != item.item"
+      when: "item.item not in ['websites/databases', 'postgres/postgres']"
       loop_control:
         label: "{{ item.stdout }}"
 
     - name: "remove all existing databases on target server"
-      become: true
-      become_user: "postgres"
-      shell: "pg_dropcluster 13 main"
+      shell: "pg_dropcluster --stop 13 main"
+      ignore_errors: true
 
     - name: "create pg cluster"
-      become: true
-      become_user: "postgres"
-      shell: "pg_createcluster 13 main"
+      shell: "pg_createcluster --start 13 main"
 
     - name: "restore production databases - postgres"
-      shell: "pg_restore {{ backup_restore_tmp_dir.path}}/{{item.stdout}}"
+      shell: "zcat {{ backup_restore_tmp_dir.path}}/{{item.stdout}} | sudo -u postgres psql"
       with_items: "{{ backup_filenames.results }}"
       when: "item.item == 'postgres/postgres'"
       loop_control:

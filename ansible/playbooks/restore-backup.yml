@@ -70,8 +70,8 @@
           register: "backup_filenames"
           with_items:
             - "admins"
-            # - "websites"
-            # - "websites/databases"
+            - "websites"
+            - "websites/databases"
             - "postgres/postgres"
 
         - name: "download latest backups"

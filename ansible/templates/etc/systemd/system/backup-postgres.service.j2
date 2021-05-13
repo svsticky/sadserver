@@ -2,8 +2,8 @@
 
 [Unit]
 Description=Backup of all Postgres databases to AWS S3
-BindsTo=mysql.service
-After=mysql.service
+BindsTo=postgres.service
+After=postgres.service
 OnFailure=failure-notificator@%n.service
 
 [Service]

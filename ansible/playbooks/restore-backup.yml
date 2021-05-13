@@ -100,12 +100,12 @@
     - name: "remove all existing databases on target server"
       become: true
       become_user: "postgres"
-      shell: "pg_dropcluster 12 main"
+      shell: "pg_dropcluster 13 main"
 
     - name: "create pg cluster"
       become: true
       become_user: "postgres"
-      shell: "pg_createcluster 12 main"
+      shell: "pg_createcluster 13 main"
 
     - name: "restore production databases - postgres"
       shell: "pg_restore {{ backup_restore_tmp_dir.path}}/{{item.stdout}}"

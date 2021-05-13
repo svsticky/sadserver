@@ -98,6 +98,14 @@ case "${SOURCE}" in
             --all-databases \
             | gzip -9)
           ;;
+        postgres)
+          S3PATH="postgres/${SOURCE}"
+          FILE_NAME="${FILE_TITLE}.sql.gz"
+
+          # Uses root's unix socket for authentication
+          upload_backup_to_s3 < <(sudo -u postgres pg_dumpall \
+            | gzip -9)
+          ;;
         contentful)
           S3PATH="${SOURCE}"
           FILE_NAME="${FILE_TITLE}.tar.gz"

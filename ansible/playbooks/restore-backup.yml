@@ -72,6 +72,7 @@
             - "admins"
             - "websites"
             - "websites/databases"
+            - "postgres/postgres"
 
         - name: "download latest backups"
           command:
@@ -92,18 +93,25 @@
         remote_src: true
       with_items: "{{ backup_filenames.results }}"
       # Skip db backup here, because that's not an archive
-      when: "'websites/databases' != item.item"
+      when: "item.item not in ['websites/databases', 'postgres/postgres']"
       loop_control:
         label: "{{ item.stdout }}"
 
     - name: "remove all existing databases on target server"
-      shell:
-        "mysql -e \"show databases\"
-        | grep -v -e Database -e mysql -e information_schema
-        | awk '{print \"drop database \" $1 \";select sleep(0.1);\"}'
-        | mysql"
+      shell: "pg_dropcluster --stop 13 main"
+      ignore_errors: true
 
-    - name: "restore production databases"
+    - name: "create pg cluster"
+      shell: "pg_createcluster --start 13 main"
+
+    - name: "restore production databases - postgres"
+      shell: "zcat {{ backup_restore_tmp_dir.path}}/{{item.stdout}} | sudo -u postgres psql"
+      with_items: "{{ backup_filenames.results }}"
+      when: "item.item == 'postgres/postgres'"
+      loop_control:
+        label: "{{ item.stdout }}"
+
+    - name: "restore production databases - MariaDB"
       shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | mysql"
       with_items: "{{ backup_filenames.results }}"
       when: "item.item == 'websites/databases'"

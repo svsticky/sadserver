@@ -1,6 +1,24 @@
 ---
 # Contains application-agnostic database tasks
 - block:
+  - name: "add apt key for postgresql"
+    apt_key:
+      url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+      state: "present"
+      id: "B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8"
+
+  - name: "add postgresql apt repository"
+    apt_repository:
+      repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_lsb.codename }}-pgdg main"
+
+  - name: "ensure postgresql is installed and manageable"
+    apt:
+      name:
+        - "postgresql-13"
+        - "python3-psycopg2"
+    tags:
+      - "packages"
+
   - name: "add apt key for mariadb repository"
     apt_key:
       url: "https://mariadb.org/mariadb_release_signing_key.asc"

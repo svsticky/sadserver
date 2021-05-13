@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Backup of all Postgres databases to AWS S3
+BindsTo=postgresql.service
+After=postgresql.service
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+PrivateTmp=true
+ExecStart=/usr/local/bin/backup-to-s3.sh postgres

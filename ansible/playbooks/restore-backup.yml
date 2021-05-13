@@ -107,10 +107,17 @@
       become_user: "postgres"
       shell: "pg_createcluster 12 main"
 
-    - name: "restore production databases"
+    - name: "restore production databases - postgres"
       shell: "pg_restore {{ backup_restore_tmp_dir.path}}/{{item.stdout}}"
       with_items: "{{ backup_filenames.results }}"
       when: "item.item == 'postgres/postgres'"
+      loop_control:
+        label: "{{ item.stdout }}"
+
+    - name: "restore production databases - MariaDB"
+      shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | mysql"
+      with_items: "{{ backup_filenames.results }}"
+      when: "item.item == 'websites/databases'"
       loop_control:
         label: "{{ item.stdout }}"
 

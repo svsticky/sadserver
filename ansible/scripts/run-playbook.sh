@@ -83,7 +83,8 @@ case ${ENVIRONMENT} in
     # access the production Vault secrets, so this adds the call for that to
     # the environment passed to ansible-playbook
     if [[ ${ARGS[0]} == "playbooks/restore-backup.yml" ]]; then
-      export ANSIBLE_VAULT_IDENTITY=production
+      export ANSIBLE_VAULT_IDENTITY=staging
+      VAULT_ID_AMEND="--vault-id production@prompt" 
     else
       export ANSIBLE_VAULT_IDENTITY=staging
     fi
@@ -140,6 +141,7 @@ ANSIBLE_SSH_PIPELINING=true \
   --inventory \
     "${GIT_ROOT}/ansible/hosts" \
   --diff \
+  ${VAULT_ID_AMEND:-} \
   --limit="${ENVIRONMENT}" \
   --extra-vars \
     "playbook_revision=${GIT_REVISION}" \

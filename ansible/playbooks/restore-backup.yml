@@ -72,6 +72,7 @@
             - "admins"
             - "websites"
             - "websites/databases"
+            - "postgres/postgres"
 
         - name: "download latest backups"
           command:
@@ -97,16 +98,19 @@
         label: "{{ item.stdout }}"
 
     - name: "remove all existing databases on target server"
-      shell:
-        "mysql -e \"show databases\"
-        | grep -v -e Database -e mysql -e information_schema
-        | awk '{print \"drop database \" $1 \";select sleep(0.1);\"}'
-        | mysql"
+      become: true
+      become_user: "postgres"
+      shell: "pg_dropcluster 12 main"
+
+    - name: "create pg cluster"
+      become: true
+      become_user: "postgres"
+      shell: "pg_createcluster 12 main"
 
     - name: "restore production databases"
-      shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | mysql"
+      shell: "pg_restore {{ backup_restore_tmp_dir.path}}/{{item.stdout}}"
       with_items: "{{ backup_filenames.results }}"
-      when: "item.item == 'websites/databases'"
+      when: "item.item == 'postgres/postgres'"
       loop_control:
         label: "{{ item.stdout }}"
 

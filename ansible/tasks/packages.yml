@@ -86,7 +86,7 @@
     git:
       repo: "{{ slack_notifications.slacktee.repo }}"
       dest: "{{ slack_notifications.slacktee.install_path }}"
-      version: "{{ slacktee_version.stdout }}"
+      version: "v1.5.1"
     diff: false
   # Don't run in check mode because previous "git fetch" task also can't be run
   # in check mode

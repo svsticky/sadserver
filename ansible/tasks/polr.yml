@@ -1,22 +1,4 @@
 ---
-- name: "ensure polr database user exists"
-  command:
-    "mysql -NBe 'grant all privileges on `polr{% if secret_polr.env ==
-    'staging' %}-staging{% endif %}`.* to `polr`@`localhost`
-    identified via unix_socket;'"
-
-- name: check if DB exists
-  command:
-    "mysql -e 'SHOW DATABASES;' | grep polr"
-  register: dbstatus
-  failed_when: dbstatus.rc == 2
-
-- name: create polr database
-  mysql_db:
-    name: polr
-    state: present
-  when: dbstatus.rc == 0
-
 - name: "install composer & dependencies"
   apt:
     name:

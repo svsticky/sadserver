@@ -159,9 +159,8 @@
 - name: "ensure certbot timer is started in production"
   service:
     name: "certbot.timer"
-    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
-    state:
-      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
+    enabled: true
+    state: "started"
 
 - name: "create system users for static-sticky"
   user:

@@ -9,7 +9,6 @@ server {
   ssl_certificate_key /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/chain.pem;
 
-  include includes/block-cert-validation-path.conf;
   add_header Referrer-Policy same-origin;
   add_header X-XSS-Protection "1; mode=block";
   add_header X-Content-Type-Options "nosniff";

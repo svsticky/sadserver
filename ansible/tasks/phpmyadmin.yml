@@ -4,16 +4,6 @@
     path: "/var/www/phpmyadmin.{{ canonical_hostname }}"
     state: "absent"
 
-- name: "add apt key for yarn repository"
-  apt_key:
-    url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
-    state: "present"
-
-- name: "add yarn repository"
-  apt_repository:
-    repo: "deb https://dl.yarnpkg.com/debian/ stable main"
-    state: "present"
-
 - name: "install phpmyadmin dependencies"
   apt:
     name:
@@ -21,10 +11,7 @@
       - "php7.4-xml"
       - "php7.4-mbstring"
       - "php7.4-mysqli"
-      - "composer"
-      - "php7.4-curl"
-      - "yarn"
-    state: "present"
+    state: "absent"
 
 - name: "create phpmyadmin user"
   user:
@@ -32,7 +19,7 @@
     home: "/var/www/phpmyadmin"
     shell: "/usr/sbin/nologin"
     system: true
-    state: "present"
+    state: "absent"
 
 - name: "create phpmyadmin webroot"
   file:
@@ -40,50 +27,9 @@
     owner: "www-data"
     group: "phpmyadmin"
     mode: "2775"
-    state: "directory"
+    state: "absent"
 
-- block:
-    - name: "clone phpmyadmin repository"
-      git:
-        repo: "https://github.com/phpmyadmin/phpmyadmin.git"
-        dest: "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}"
-        depth: 1
-        force: true
-        version: "STABLE"
-      diff: false
-
-    - name: "run yarn install"
-      shell:
-        cmd: "yarn install --frozen-lockfile"
-        chdir: "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}"
-
-    - name: "place phpmyadmin config.inc.php"
-      template:
-        src: "templates/var/www/phpmyadmin/{{ filename }}.j2"
-        dest:
-          "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}/\
-          {{ filename }}"
-        mode: "600"
-      vars:
-        filename: "config.inc.php"
-      become: true
-
-    - name: "install phpmyadmin composer dependencies"
-      composer:
-        working_dir: "/var/www/phpmyadmin/phpmyadmin.{{ canonical_hostname }}"
-        no_dev: true
-        command: "update"
-  become_user: "phpmyadmin"
-
-# This account can't use socket authentication, because the web interface is
-# public and would not require any password to login in that case.
-- name: "create phpmyadmin database user"
-  command:
-    "mysql -NBe 'grant all privileges on phpmyadmin.* to
-    `phpmyadmin`@`localhost` identified via mysql_native_password
-    using \"{{ secret_mysql.phpmyadmin.hash }}\";'"
-
-- name: "create default tables in phpmyadmin database"
-  command:
-    "mysql -NBe 'source /var/www/phpmyadmin/\
-    phpmyadmin.{{ canonical_hostname }}/sql/create_tables.sql;'"
+- name: "remove fpm file"
+  file:
+    path: "/etc/php/7.4/fpm/pool.d/pool-phpmyadmin.{{ canonical_hostname }}.conf"
+    state: "absent"

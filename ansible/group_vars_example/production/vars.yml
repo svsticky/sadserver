@@ -60,9 +60,6 @@ secret_metrics:
 # To change, regenerate the token in Mollie's web interface.
 secret_mollie_token:
 
-# To change, generate a new secret using something like `pwgen -sy 128 1`
-secret_phpmyadmin_blowfish_secret:
-
 secret_pretix:
   # To change, generate a new password and set it in the Mailgun interface.
   # Note: Mailgun limits the password length to 32 characters.

@@ -35,6 +35,7 @@ export SLACKTEE_WEBHOOK=$(cat .slack-webhook)
 export ANSIBLE_STDOUT_CALLBACK=yaml
 
 GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+GIT_SECRETS_BRANCH="$(git submodule foreach 'git status')"
 GIT_REVISION="$(git rev-parse HEAD)"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 ENVIRONMENT="${1}"
@@ -51,6 +52,10 @@ export ANSIBLE_VAULT_PASSWORD_FILE="./scripts/bitwarden-vault-pass.py"
 
 case ${ENVIRONMENT} in
   production)
+    if [[ ${GIT_SECRETS_BRANCH} != *"origin/master"* ]]; then
+      echo "PRODUCTION DEPLOY NOT ALLOWED WHEN group_vars SUBMODULE IS NOT ON origin/master"
+      exit 1
+    fi
     export ANSIBLE_VAULT_IDENTITY=production
     while [[ ${PROD_CHOICE:-} != "Y" && ${PROD_CHOICE:-} != "n" ]]; do
       read -p "DO YOU REALLY PLAN TO DEPLOY TO PRODUCTION? [Y/n]: "\

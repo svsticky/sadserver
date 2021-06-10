@@ -15,13 +15,24 @@
     owner: "outline"
     group: "outline"
 
-- name: "clone Outline"
-  become_user: "outline"
-  git:
-    repo: "https://github.com/svsticky/Sticky-Compendium.git"
-    dest: "/var/www/outline/outline"
-    version: "master"
-  register: "_outline_checkout"
+- name: "do database setup"
+  become_user: "postgres"
+  block:
+  - name: "ensure Postgres role exists"
+    postgresql_user:
+      name: "outline"
+      state: "present"
+
+  - name: "ensure database exists"
+    postgresql_db:
+      name: "outline"
+      owner: "outline"
+      state: "present"
+
+- name: "ensure config directory exists"
+  file:
+    path: "/etc/outline"
+    state: "directory"
 
 - name: "create environment file"
   template:
@@ -32,15 +43,26 @@
   register: "_outline_env_file"
 
 - name: "do Yarn stuff"
-  args:
-    chdir: "/var/lib/outline/outline"
   become_user: "outline"
   block:
+    - name: "clone repo"
+      git:
+        repo: "https://github.com/svsticky/Sticky-Compendium.git"
+        dest: "/var/www/outline/outline"
+        version: "main"
+      register: "_outline_checkout"
+
     - name: "install dependencies"
-      command: "yarn install"
+      when: "_outline_checkout is changed"
+      command: "yarn install --frozen-lockfile"
+      args:
+        chdir: "/var/www/outline/outline"
 
     - name: "build outline"
+      when: "_outline_checkout is changed"
       command: "yarn build"
+      args:
+        chdir: "/var/www/outline/outline"
 
 - name: "install Systemd service"
   template:

@@ -84,11 +84,15 @@
     path: "/var/www/html"
     state: "absent"
 
-- name: "install certbot and certbot nginx plugin"
+# We need this, because certbot is still at 0.4.x in the xenial repo as of
+# 2017-09-15
+# - name: "add certbot apt repository"
+#  apt_repository:
+#    repo: "ppa:certbot/certbot"
+
+- name: "install certbot"
   apt:
-    name:
-      - "certbot"
-      - "python3-certbot-nginx"
+    name: "certbot"
     state: "latest"
 
 # This directory will be used to validate all websites that need a certificate
@@ -128,8 +132,7 @@
   # --keep-until-expiring makes sure cert only gets renewed when cert is
   # actually close to expiring
   # --expand enables adding more SAN's to the same cert lineage later on
-  # --nginx to automate obtaining a certificate with nginx, nginx config files
-  # won't be changed when using certonly
+  # --webroot sets domain validation method
   # --domain adds main hostname of a website as CN and SAN, and all alternative
   # hostnames as SAN's
   # --deploy-hook reloads nginx after a successful issuance, and adds this in
@@ -141,7 +144,8 @@
     --email "domreg@svsticky.nl"
     --keep-until-expiring
     --cert-name {{ item.name }}
-    --nginx
+    --webroot
+    --webroot-path /var/www/acme-challenges
     --domain {{ item.name }}
     {% if 'staging' not in group_names %}
     {% for hostname in item.alternative_names %}

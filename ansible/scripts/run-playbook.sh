@@ -53,8 +53,18 @@ export ANSIBLE_VAULT_PASSWORD_FILE="./scripts/bitwarden-vault-pass.py"
 case ${ENVIRONMENT} in
   production)
     if [[ ${GIT_SECRETS_BRANCH} != *"origin/master"* ]]; then
-      echo "PRODUCTION DEPLOY NOT ALLOWED WHEN group_vars SUBMODULE IS NOT ON origin/master"
-      exit 1
+      while [[ ${BRANCH_CHOICE:-} != "Y" && ${BRANCH_CHOICE:-} != "n" ]]; do
+        read -p "You are deploying to production from a group_vars branch other than \
+'master', are you sure? [Y/n]: " \
+        BRANCH_CHOICE
+      done
+      case "${BRANCH_CHOICE}" in
+        Y)
+          ;;
+        *)
+          abort_deploy
+          ;;
+      esac
     fi
     export ANSIBLE_VAULT_IDENTITY=production
     while [[ ${PROD_CHOICE:-} != "Y" && ${PROD_CHOICE:-} != "n" ]]; do

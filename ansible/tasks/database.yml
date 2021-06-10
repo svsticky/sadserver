@@ -37,6 +37,23 @@
       priv: "ALL"
       role_attr_flags: CREATEDB,LOGIN
     become_user: postgres
+  
+  - name: "ensure dbeaver koala user exists"
+    postgresql_user:
+      db: "koala"
+      name: "koala_manual"
+      password: "{{ secret_koala_manual.password }}"
+      priv: "CONNECT"
+      role_attr_flags: "NOSUPERUSER"
+    become_user: postgres
+  
+  - name: "ensure dbeaver koala user has the right privs"
+    postgresql_privs:
+      db: "koala"
+      role: "koala_manual"
+      objs: "ALL_IN_SCHEMA"
+      privs: "SELECT"
+    become_user: postgres
 
   - name: "add apt key for mariadb repository"
     apt_key:

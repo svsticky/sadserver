@@ -3,34 +3,38 @@
   apt:
     name:
       - "composer"
-      - "php7.2-fpm"
-      - "php7.2-mbstring"
-      - "php7.2-curl"
+      - "php7.4-fpm"
+      - "php7.4-mbstring"
+      - "php7.4-curl"
     state: "present"
   become: true
 
-- name: "ensure clone location exists"
-  file:
-    path: "/var/www/polr.{{ canonical_hostname }}"
-    state: "directory"
-    recurse: true
+- name: "add polr user"
+  user:
+    name: "polr"
+    shell: "/usr/sbin/nologin"
+    home: "/var/www/links"
+    system: true
 
-- name: "clone polr repository"
-  git:
-    repo: "ttps://github.com/cydrobolt/polr.git"
-    dest: "/var/www/links.{{ canonical_hostname }}"
-    version: "master"
-    depth: 1
-  diff: false
+- block:
+  - name: "clone polr repository"
+    git:
+      repo: "https://github.com/cydrobolt/polr.git"
+      dest: "/var/www/links.{{ canonical_hostname }}"
+      version: "master"
+      depth: 1
+    diff: false
 
-- name: "place config file"
-  template:
-    src: "templates/var/www/digidecs/.env.j2"
-    dest: "/var/www/links.{{ canonical_hostname }}/.env"
-    owner: "www-data"
-    mode: "660"
+  - name: "place config file"
+    template:
+      src: "templates/var/www/polr/.env.j2"
+      dest: "/var/www/links.{{ canonical_hostname }}/.env"
+      owner: "www-data"
+      mode: "660"
 
-- name: "run composer"
-  composer:
-    working_dir: "/var/www/links.{{ canonical_hostname }}"
-    command: "install --no-dev -o"
+  - name: "run composer"
+    composer:
+      working_dir: "/var/www/links.{{ canonical_hostname }}"
+      command: "install"
+
+  become_user: "polr"

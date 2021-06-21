@@ -55,6 +55,25 @@
       privs: "SELECT"
     become_user: postgres
 
+  - name: "ensure polr user exists"
+    postgresql_user:
+      name: "polr"
+    become_user: postgres
+
+  - name: "ensure polr database exists"
+    postgresql_db:
+      name: "polr"
+      owner: "polr"
+    become_user: postgres
+
+  - name: "ensure polr user has access rigths to database"
+    postgresql_user:
+      db: "polr"
+      name: "polr"
+      priv: "ALL"
+      role_attr_flags: CREATEDB,LOGIN
+    become_user: postgres
+
   - name: "add apt key for mariadb repository"
     apt_key:
       url: "https://mariadb.org/mariadb_release_signing_key.asc"

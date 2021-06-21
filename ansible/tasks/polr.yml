@@ -1,0 +1,40 @@
+---
+- name: "install composer & dependencies"
+  apt:
+    name:
+      - "composer"
+      - "php7.4-fpm"
+      - "php7.4-mbstring"
+      - "php7.4-curl"
+    state: "present"
+  become: true
+
+- name: "add polr user"
+  user:
+    name: "polr"
+    shell: "/usr/sbin/nologin"
+    home: "/var/www/links"
+    system: true
+
+- block:
+  - name: "clone polr repository"
+    git:
+      repo: "https://github.com/cydrobolt/polr.git"
+      dest: "/var/www/links.{{ canonical_hostname }}"
+      version: "master"
+      depth: 1
+    diff: false
+
+  - name: "place config file"
+    template:
+      src: "templates/var/www/polr/.env.j2"
+      dest: "/var/www/links.{{ canonical_hostname }}/.env"
+      owner: "www-data"
+      mode: "660"
+
+  - name: "run composer"
+    composer:
+      working_dir: "/var/www/links.{{ canonical_hostname }}"
+      command: "install"
+
+  become_user: "polr"

@@ -1,7 +1,4 @@
 ---
-- name: "install pipenv"
-  pip:
-    name: "pipenv"
 
 - name: "add aas user"
   user:
@@ -23,7 +20,7 @@
     git:
       repo: "https://github.com/svsticky/aas.git"
       dest: "/var/www/aas/aas.{{ canonical_hostname }}"
-      version: "ubuntu20"
+      version: "master"
     diff: false
     register: "aas_clone"
 
@@ -34,12 +31,10 @@
       dest: "/var/www/aas/aas.{{ canonical_hostname }}/.env"
     notify: "restart aas"
 
-  - name: "pipenv create virtual env and install aas"
-    command: "pipenv sync"
+  - name: "Ensure nix environment is built"
+    command: "nix-build"
     args:
       chdir: "/var/www/aas/aas.{{ canonical_hostname }}"
-    environment:
-      PIPENV_VENV_IN_PROJECT: "1"
     when: "aas_clone is changed"
     notify: "restart aas"
 

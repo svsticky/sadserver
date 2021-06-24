@@ -16,7 +16,8 @@ WorkingDirectory=/var/www/aas/aas.{{ canonical_hostname }}
 RuntimeDirectory=aas
 RuntimeDirectoryMode=0770
 
-ExecStart=/usr/local/bin/pipenv run gunicorn \
+EnvironmentFile=/var/www/aas/aas.{{ canonical_hostname }}/.env 
+ExecStart=/usr/local/bin/nix run -c gunicorn \
                                       --workers 4 \
                                       --bind unix:/run/aas/gunicorn.sock aas:aas
 

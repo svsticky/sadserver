@@ -86,3 +86,9 @@
     name: "outline.service"
     state: "started"
     enabled: true
+
+- name: "install nginx config"
+  template:
+    src: "etc/nginx/sites-available/outline.conf.j2"
+    dest: "/etc/nginx/sites-enabled/outline.conf"
+  notify: "reload nginx"

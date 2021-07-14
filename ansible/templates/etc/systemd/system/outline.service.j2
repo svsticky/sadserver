@@ -1,0 +1,18 @@
+[Unit]
+Description=Outline Wiki server
+Wants=redis.service postgresql.service
+
+[Service]
+ExecStartPre=/usr/bin/yarn db:migrate
+ExecStart=/usr/bin/yarn start
+WorkingDirectory=/var/www/outline/outline
+
+EnvironmentFile=/etc/outline/outline.env
+
+PrivateTmp=yes
+
+User=outline
+Group=outline
+
+[Install]
+WantedBy=multi-user.target

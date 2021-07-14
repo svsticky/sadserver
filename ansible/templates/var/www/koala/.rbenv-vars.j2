@@ -30,9 +30,9 @@ OAUTH_PROXY_UID={{ secret_oauth2_proxy.client_id }}
 OAUTH_PROXY_SECRET={{ secret_oauth2_proxy.client_secret }}
 OAUTH_PROXY_REDIRECTS={% for website in websites if
   (website.authenticated | default(false)) -%}
-  https://{{ website.name }}/oauth2/callback;{% for
+  https://{{ website.name }}{{ website.oauth2_callback_url | default("/oauth2/callback") }};{% for
   alternative_name in website.alternative_names -%}
-  https://{{ alternative_name }}/oauth2/callback;{% endfor %}{% endfor %}
+  https://{{ alternative_name }}{{ website.oauth2_callback_url | default("/oauth2/callback") }};{% endfor %}{% endfor %}
 
 # Mailchimp integration using sidekiq which requires redis
 REDIS_URL=redis://127.0.0.1/3

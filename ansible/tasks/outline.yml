@@ -1,0 +1,94 @@
+---
+- name: "create outline user"
+  user:
+    name: "outline"
+    state: "present"
+    shell: "/bin/false"
+    system: true
+    home: "/var/www/outline"
+    password: "!"
+
+- name: "create outline directory"
+  file:
+    path: "/var/www/outline/outline"
+    state: "directory"
+    owner: "outline"
+    group: "outline"
+
+- name: "do database setup"
+  become_user: "postgres"
+  block:
+  - name: "ensure Postgres role exists"
+    postgresql_user:
+      name: "outline"
+      state: "present"
+
+  - name: "ensure database exists"
+    postgresql_db:
+      name: "outline"
+      owner: "outline"
+      state: "present"
+
+- name: "ensure config directory exists"
+  file:
+    path: "/etc/outline"
+    state: "directory"
+
+- name: "create environment file"
+  template:
+    src: "etc/outline/outline.env.j2"
+    dest: "/etc/outline/outline.env"
+    owner: "root"
+    mode: "0600"
+  register: "_outline_env_file"
+
+- name: "do Yarn stuff"
+  become_user: "outline"
+  block:
+    - name: "clone repo"
+      git:
+        repo: "https://github.com/svsticky/Sticky-Compendium.git"
+        dest: "/var/www/outline/outline"
+        version: "main"
+      register: "_outline_checkout"
+
+    - name: "install dependencies"
+      when: "_outline_checkout is changed"
+      command: "yarn install --frozen-lockfile"
+      args:
+        chdir: "/var/www/outline/outline"
+
+    - name: "build outline"
+      when: "_outline_checkout is changed"
+      command: "yarn build"
+      args:
+        chdir: "/var/www/outline/outline"
+
+- name: "install Systemd service"
+  template:
+    src: "etc/systemd/system/outline.service.j2"
+    dest: "/etc/systemd/system/outline.service"
+    owner: "root"
+    mode: "0644"
+  register: "_outline_service_file"
+
+- name: "restart outline if config changed"
+  when: "_outline_checkout is changed
+      or _outline_service_file is changed
+      or _outline_env_file is changed"
+  systemd:
+    name: "outline.service"
+    state: "restarted"
+    daemon_reload: true
+
+- name: "ensure outline service is started and enabled"
+  systemd:
+    name: "outline.service"
+    state: "started"
+    enabled: true
+
+- name: "install nginx config"
+  template:
+    src: "etc/nginx/sites-available/outline.conf.j2"
+    dest: "/etc/nginx/sites-enabled/outline.conf"
+  notify: "reload nginx"

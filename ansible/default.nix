@@ -14,6 +14,7 @@ let
     pkgs.black
     pkgs.click
     pkgs.mypy
+    pkgs.GitPython
     ansible-mitogen
   ]);
 

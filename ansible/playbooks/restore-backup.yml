@@ -4,7 +4,7 @@
 #
 # This playbook can be run on staging to test the integrity of the backup, or
 # in production to set up a new production environment. Because it always needs
-# access to the production AWS bucket, run-playbook.sh will always prompt for
+# access to the production AWS bucket, deploy.py will always prompt for
 # the production Vault passphrase when running this playbook, also when it's
 # done on staging.
 

@@ -2,6 +2,8 @@ import click
 import git
 import os
 import subprocess
+import requests
+import json
 
 
 @click.command()
@@ -13,30 +15,102 @@ def deploy(host, playbook, check):
 
   # in the original script we doublecheck if production deploy is intended. Should we do that here?
 
-  # TODO: send discord messages with discordtee or equivalent
-
   # TODO: add the special casing for restore-backup.yml
+  # TODO: pass check flag
+
+  user = os.environ['USER']
+  branch = current_branch_name()
+  revision = current_git_revision()[:8]
 
   env = os.environ
-  env['SLACKTEE_WEBHOOK'] = get_slack_webhook()
   env['ANSIBLE_STDOUT_CALLBACK'] = 'yaml'
   env['ANSIBLE_VAULT_IDENTITY'] = host
   env['ANSIBLE_SSH_PIPELINING'] = 'true'
   env['ANSIBLE_VAULT_PASSWORD_FILE'] = './scripts/bitwarden-vault-pass.py'
 
-  subprocess.run([
-    'ansible-playbook',
-    '--inventory',
-    './hosts',
-    '--diff',
-    "--limit",
-    host,
-    '--check',
-    playbook,
-    # TODO: add playbook revision
-    ],
-    env=env)
+  notify_deploy_start(playbook, host, user, branch, revision)
 
+  try:
+    subprocess.run([
+        'ansible-playbook',
+        '--inventory',
+        './hosts',
+        '--diff',
+        "--limit",
+        host,
+        '--check',
+        '--extra-vars',
+        f"playbook_revision={revision}",
+        playbook,
+      ],
+      check=True,
+      env=env
+    )
+    notify_deploy_succes(playbook, host, branch, revision)
+
+  except CalledProcessError:
+    notify_deploy_fail(playbook, host, branch, revision)
+
+
+def current_branch_name():
+  repo = git.Repo('..')
+  return repo.active_branch
+
+
+def current_git_revision():
+  repo = git.Repo('..')
+  return repo.commit().hexsha
+
+
+def notify_deploy_start(playbook, host, user, git_branch, git_revision):
+  discord_notify(
+    f"*Deployment of playbook {playbook} in {host} environment started by {user}*\n" +
+    f"_(branch: {git_branch} - revision \"{git_revision}\")_",
+    ':construction:',
+    '#46c4ff'
+  )
+
+def notify_deploy_succes(playbook, host, git_branch, git_revision):
+  discord_notify(
+    f"*Deployment of playbook {playbook} in {host} environment succesfully completed*\n" +
+    f"_(branch: {git_branch} - revision \"{git_revision}\")_",
+    ':construction:',
+    'good'
+  )
+
+def notify_deploy_failure(playbook, host, git_branch, git_revision):
+  discord_notify(
+    f"*Deployment of playbook {playbook} in {host} environment FAILED!*\n" +
+    f"_(branch: {git_branch} - revision \"{git_revision}\")_",
+    ':exclamation:',
+    'danger'
+  )
+
+def discord_notify(message, icon, color):
+  url = get_slack_webhook().strip()
+
+  data = {
+    'username': 'Ansible',
+    'attachments': [
+      {
+        'color': color,
+        'mrkdwn_in': [
+          'text',
+          'fields',
+        ],
+        'text': message,
+      },
+    ],
+    'icon_emoji': icon,
+  }
+
+  r = requests.post(
+    url,
+    json=data,
+  )
+
+  if r.status_code != 200:
+    raise click.ClickException(f"Discord failed with statuscode {r.status_code} and message {r.text}")
 
 def verify_on_latest_master(host):
   repo = git.Repo('..')
@@ -54,7 +128,7 @@ def verify_on_latest_master(host):
 
   # Diff against the working tree
   for x in repo.head.commit.diff(None):
-    pass#raise click.ClickException('There is uncommited in your working tree or staging area')
+    click.ClickException('There is uncommited in your working tree or staging area')
 
 
 def get_slack_webhook():

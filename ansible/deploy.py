@@ -47,6 +47,7 @@ def deploy(host, playbook, check):
     notify_deploy_start(playbook, host, user, branch, revision)
 
   print("Running the following playbook:")
+  print(' '.join(arguments))
 
   try:
     subprocess.run(

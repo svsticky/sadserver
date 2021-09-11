@@ -17,7 +17,7 @@
 
 - name: "place config file"
   template:
-    src: "templates/var/www/digidecs/config.php.j2"
+    src: "config.php.j2"
     dest: "/var/www/commit/digidecs.{{ canonical_hostname }}/config.php"
     owner: "www-data"
     group: "commit"

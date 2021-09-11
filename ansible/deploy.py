@@ -16,7 +16,6 @@ def deploy(host, playbook, check):
   # in the original script we doublecheck if production deploy is intended. Should we do that here?
 
   # TODO: add the special casing for restore-backup.yml
-  # TODO: pass check flag
 
   user = os.environ['USER']
   branch = current_branch_name()
@@ -28,28 +27,39 @@ def deploy(host, playbook, check):
   env['ANSIBLE_SSH_PIPELINING'] = 'true'
   env['ANSIBLE_VAULT_PASSWORD_FILE'] = './scripts/bitwarden-vault-pass.py'
 
-  notify_deploy_start(playbook, host, user, branch, revision)
+  arguments = [
+    'ansible-playbook',
+    '--inventory',
+    './hosts',
+    '--diff',
+    "--limit",
+    host,
+    '--extra-vars',
+    f"playbook_revision={revision}",
+  ]
+
+  if check:
+    arguments.append('--check')
+
+  arguments.append(playbook)
+
+  if not check:
+    notify_deploy_start(playbook, host, user, branch, revision)
+
+  print("Running the following playbook:")
 
   try:
-    subprocess.run([
-        'ansible-playbook',
-        '--inventory',
-        './hosts',
-        '--diff',
-        "--limit",
-        host,
-        '--check',
-        '--extra-vars',
-        f"playbook_revision={revision}",
-        playbook,
-      ],
+    subprocess.run(
+      arguments,
       check=True,
       env=env
     )
-    notify_deploy_succes(playbook, host, branch, revision)
+    if not check:
+      notify_deploy_succes(playbook, host, branch, revision)
 
   except CalledProcessError:
-    notify_deploy_fail(playbook, host, branch, revision)
+    if not check:
+      notify_deploy_fail(playbook, host, branch, revision)
 
 
 def current_branch_name():

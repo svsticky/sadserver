@@ -9,8 +9,9 @@ import json
 @click.command()
 @click.option('--host', required=True, type=click.Choice(['staging', 'production']), help='The host to deploy to')
 @click.option('--playbook', default='main.yml', help='Ansible playbook to run')
+@click.option('--roles', default='', help='The roles to deploy')
 @click.option('--check', is_flag=True, default=False, help='Perform a dry run')
-def deploy(host, playbook, check):
+def deploy(host, playbook, roles, check):
   if not check:
     verify_on_latest_master(host)
 
@@ -45,6 +46,10 @@ def deploy(host, playbook, check):
 
   if check:
     arguments.append('--check')
+
+  if roles != '':
+    arguments.append('--tags')
+    arguments.append(roles)
 
   arguments.append(playbook)
 

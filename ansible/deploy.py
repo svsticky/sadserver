@@ -11,17 +11,16 @@ import json
 @click.option('--playbook', default='main.yml', help='Ansible playbook to run')
 @click.option('--check', is_flag=True, default=False, help='Perform a dry run')
 def deploy(host, playbook, check):
-  verify_on_latest_master(host)
+  if not check:
+    verify_on_latest_master(host)
 
   # in the original script we doublecheck if production deploy is intended. Should we do that here?
-
-  # TODO: add the special casing for restore-backup.yml
 
   user = os.environ['USER']
   branch = current_branch_name()
   revision = current_git_revision()[:8]
 
-  env = os.environ
+  env = os.environ.copy()
   env['ANSIBLE_STDOUT_CALLBACK'] = 'yaml'
   env['ANSIBLE_VAULT_IDENTITY'] = host
   env['ANSIBLE_SSH_PIPELINING'] = 'true'
@@ -37,6 +36,12 @@ def deploy(host, playbook, check):
     '--extra-vars',
     f"playbook_revision={revision}",
   ]
+
+  # Special scenario: When restore-backup.yml is run on staging, it needs to
+  # access the production Vault secrets, so this adds the call for that to
+  # the environment passed to ansible-playbook
+  if playbook == 'playbooks/restore-backup.yml':
+    arguments.append('--vault-id production@prompt')
 
   if check:
     arguments.append('--check')

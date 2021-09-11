@@ -45,12 +45,8 @@ server to become Sticky's production server.
 
 The code in this repository depends on the following software:
 
-- [ansible] >= 2.5
-- [slacktee] (vendored) -- create the `ansible/.slack-webhook` file with a
-  Slack webhook in order to run the provisioning script.
-- [Bitwarden CLI] (`bw` being available in your `$PATH`)
-- jq (`jq` being available in your `$PATH`)
-- bash
+- [nix]
+- A Discord (or Slack) webhook, which should be put in `ansible/.slack-webhook`
 
 Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 20.04 host** to be
 deployed on.
@@ -188,7 +184,7 @@ Enter the password from the previous step when prompted for.
 
 
 1. To create a new database and start Koala, you will also need to run these two playbooks.
-`$ .nix run -c python deploy.py --host=(production|staging) --playbook playbooks/koala/db-setup.yml`
+`$ nix run -c python deploy.py --host=(production|staging) --playbook playbooks/koala/db-setup.yml`
 `$ nix run -c python deploy.py --host=(production|staging) --playbook playbooks/koala/start.yml`
 
 
@@ -216,4 +212,4 @@ Godspeed!
   [deployment-new-production]:docs/deployment-new-production.md
   [IT Crowd]:mailto:itcrowd@svsticky.nl
   [deployment-guide]:#setting-up-the-staging-and-production-environment
-
+  [nix]:https://nixos.org/download.html

@@ -1,5 +1,5 @@
 import click
-import git
+import git  # type: ignore
 import os
 import subprocess
 import requests
@@ -15,7 +15,7 @@ import json
 )
 @click.option("--playbook", default="main.yml", help="Ansible playbook to run")
 @click.option("--check", is_flag=True, default=False, help="Perform a dry run")
-def deploy(host, playbook, check):
+def deploy(host: str, playbook: str, check: bool) -> None:
     if not check:
         verify_on_latest_master(host)
 
@@ -64,22 +64,24 @@ def deploy(host, playbook, check):
         if not check:
             notify_deploy_succes(playbook, host, branch, revision)
 
-    except CalledProcessError:
+    except subprocess.CalledProcessError:
         if not check:
-            notify_deploy_fail(playbook, host, branch, revision)
+            notify_deploy_failure(playbook, host, branch, revision)
 
 
-def current_branch_name():
+def current_branch_name() -> str:
     repo = git.Repo("..")
-    return repo.active_branch
+    return str(repo.active_branch)
 
 
-def current_git_revision():
+def current_git_revision() -> str:
     repo = git.Repo("..")
-    return repo.commit().hexsha
+    return str(repo.commit().hexsha)
 
 
-def notify_deploy_start(playbook, host, user, git_branch, git_revision):
+def notify_deploy_start(
+    playbook: str, host: str, user: str, git_branch: str, git_revision: str
+) -> None:
     discord_notify(
         f"*Deployment of playbook {playbook} in {host} environment started by {user}*\n"
         + f'_(branch: {git_branch} - revision "{git_revision}")_',
@@ -88,7 +90,9 @@ def notify_deploy_start(playbook, host, user, git_branch, git_revision):
     )
 
 
-def notify_deploy_succes(playbook, host, git_branch, git_revision):
+def notify_deploy_succes(
+    playbook: str, host: str, git_branch: str, git_revision: str
+) -> None:
     discord_notify(
         f"*Deployment of playbook {playbook} in {host} environment succesfully completed*\n"
         + f'_(branch: {git_branch} - revision "{git_revision}")_',
@@ -97,7 +101,9 @@ def notify_deploy_succes(playbook, host, git_branch, git_revision):
     )
 
 
-def notify_deploy_failure(playbook, host, git_branch, git_revision):
+def notify_deploy_failure(
+    playbook: str, host: str, git_branch: str, git_revision: str
+) -> None:
     discord_notify(
         f"*Deployment of playbook {playbook} in {host} environment FAILED!*\n"
         + f'_(branch: {git_branch} - revision "{git_revision}")_',
@@ -106,7 +112,7 @@ def notify_deploy_failure(playbook, host, git_branch, git_revision):
     )
 
 
-def discord_notify(message, icon, color):
+def discord_notify(message: str, icon: str, color: str) -> None:
     url = get_slack_webhook().strip()
 
     data = {
@@ -125,7 +131,7 @@ def discord_notify(message, icon, color):
         )
 
 
-def verify_on_latest_master(host):
+def verify_on_latest_master(host: str) -> None:
     repo = git.Repo("..")
 
     # not sure why str() needs to be called
@@ -148,7 +154,7 @@ def verify_on_latest_master(host):
         click.ClickException("There is uncommited in your working tree or staging area")
 
 
-def get_slack_webhook():
+def get_slack_webhook() -> str:
     webhook_filename = ".slack-webhook"
 
     if not os.path.exists(webhook_filename):

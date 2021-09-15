@@ -23,8 +23,9 @@ import json
     help="Ansible playbook to run",
 )
 @click.option("--check", is_flag=True, default=False, help="Perform a dry run")
-def deploy(host: str, playbook: str, check: bool) -> None:
-    if not check:
+@click.option("--force", is_flag=True, default=False, help="Override checks")
+def deploy(host: str, playbook: str, check: bool, force: bool) -> None:
+    if not check and not force:
         verify_on_latest_master(host)
 
     # in the original script we doublecheck if production deploy is intended. Should we do that here?

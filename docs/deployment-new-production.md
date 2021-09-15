@@ -13,14 +13,14 @@ records that point `(*.)new-prod.svsticky.nl` to the new IP.
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ nix run -c python deploy.py --host=production --playbook playbooks/koala/maintenance-on.yml
+$ nix run -c ./deploy.py --host=production --playbook playbooks/koala/maintenance-on.yml
 ```
 
 **Run backups** of the data that should be migrated to the new server:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ nix run -c python deploy.py --host=production --playbook playbooks/create-backup.yml
+$ nix run -c ./deploy.py --host=production --playbook playbooks/create-backup.yml
 ```
 Be aware that the backup process may take about 15 minutes.
 
@@ -49,35 +49,35 @@ $ sed -i '/^svsticky\.nl / s/$/ ansible_host=192.0.2.0/' hosts
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ nix run -c python deploy.py --host=production --playbook bootstrap-new-host.yml
+$ nix run -c ./deploy.py --host=production --playbook bootstrap-new-host.yml
 ```
 
 **Run the playbook** on the new production server:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ nix run -c python deploy.py --host=production
+$ nix run -c ./deploy.py --host=production
 ```
 
 **Restore the backups** that were made earlier:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ nix run -c python deploy.py --host=production --playbook playbooks/restore-backup.yml
+$ nix run -c ./deploy.py --host=production --playbook playbooks/restore-backup.yml
 ```
 **Re-run the playbook** on the new production server, because the backup might
 have restored out-of-date system state:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ nix run -c python deploy.py --host=production
+$ nix run -c ./deploy.py --host=production
 ```
 
 **Start Koala on the new server:**
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ nix run -c python deploy.py --host=production --playbook playbooks/koala/maintenance-off.yml
+$ nix run -c ./deploy.py --host=production --playbook playbooks/koala/maintenance-off.yml
 ```
 
 **Update the DNS zones** at DigitalOcean of all of Sticky's domains with the IP

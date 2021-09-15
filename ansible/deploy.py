@@ -13,7 +13,12 @@ import json
     type=click.Choice(["staging", "production"]),
     help="The host to deploy to",
 )
-@click.option("--playbook", default="main.yml", help="Ansible playbook to run")
+@click.option(
+    "--playbook",
+    default="main.yml",
+    type=click.Path(exists=True),
+    help="Ansible playbook to run",
+)
 @click.option("--check", is_flag=True, default=False, help="Perform a dry run")
 def deploy(host: str, playbook: str, check: bool) -> None:
     if not check:

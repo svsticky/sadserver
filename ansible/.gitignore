@@ -2,4 +2,5 @@
 *.log
 koala-backups
 .slack-webhook
+.discord-webhook
 result

@@ -46,7 +46,7 @@ server to become Sticky's production server.
 The code in this repository depends on the following software:
 
 - [nix]
-- A Discord (or Slack) webhook, which should be put in `ansible/.slack-webhook`
+- A Discord webhook, which should be put in `ansible/.discord-webhook`
 
 Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 20.04 host** to be
 deployed on.
@@ -126,7 +126,7 @@ To make a host ready to run regular Ansible playbooks on, a special playbook
 should be used that bootstraps the server. It installs Ansible's dependencies,
 and sets up a non-root user for Ansible to use. A playbook should be applied to
 a host by means of a wrapper script around `ansible-playbook`, that posts
-progress notifications to the committee's Slack team, among a few other things.
+progress notifications to the committee's Discord team, among a few other things.
 
 After the bootstrapping, the main playbook can be run to completely set up the
 server. The main playbook can be applied in the same way as the bootstrap
@@ -165,7 +165,7 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 `$ git submodule update --init`
 `$ cd ansible`
 
-1. Create a file `.slack-webhook` containing the webhook to be used for Slack
+1. Create a file `.discord-webhook` containing the webhook to be used for Slack
 notifications. If unsure, read it via the command `$ ansible-vault view
 group_vars/production/vault.yml` (search for
 `vault_slack_notifications_webhook_url`).

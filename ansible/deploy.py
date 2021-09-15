@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import click
 import git  # type: ignore
 import os

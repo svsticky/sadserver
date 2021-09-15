@@ -56,10 +56,8 @@
       include_tasks: "tasks/stickypedia.yml"
     - name: "start process of configuring execut"
       include_tasks: "tasks/execut-django-website.yml"
-    - name: "start process of configuring the telegram crazy88bot"
-      include_tasks: "tasks/crazy88bot.yml"
-    # - name: "start process of configuring the intro-cs backend"
-    #   include_tasks: "tasks/intro-cs-backend.yml"
+    # - name: "start process of configuring the telegram crazy88bot"
+    #   include_tasks: "tasks/crazy88bot.yml"
 
 
   post_tasks:

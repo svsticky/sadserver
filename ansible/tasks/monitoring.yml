@@ -20,11 +20,11 @@
 
 - name: "enable slack notifications for netdata's alarms"
   template:
-      src: "templates/{{ path }}.j2"
-      dest: "/{{ path }}"
-      owner: "netdata"
-      group: "netdata"
-      mode: "0660"
+    src: "templates/{{ path }}.j2"
+    dest: "/{{ path }}"
+    owner: "netdata"
+    group: "netdata"
+    mode: "0660"
   vars:
     path: "etc/netdata/health_alarm_notify.conf"
   register: "netdata_slack_notifications"

@@ -37,7 +37,7 @@
       priv: "ALL"
       role_attr_flags: CREATEDB,LOGIN
     become_user: postgres
-  
+
   - name: "ensure dbeaver koala user exists"
     postgresql_user:
       db: "koala"
@@ -46,7 +46,7 @@
       priv: "CONNECT"
       role_attr_flags: "NOSUPERUSER"
     become_user: postgres
-  
+
   - name: "ensure dbeaver koala user has the right privs"
     postgresql_privs:
       db: "koala"

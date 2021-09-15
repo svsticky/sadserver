@@ -122,7 +122,7 @@ def notify_deploy_failure(
 
 
 def discord_notify(message: str, icon: str, color: str) -> None:
-    url = get_slack_webhook().strip()
+    url = get_discord_webhook().strip()
 
     data = {
         "username": "Ansible",
@@ -163,12 +163,12 @@ def verify_on_latest_master(host: str) -> None:
         click.ClickException("There is uncommited in your working tree or staging area")
 
 
-def get_slack_webhook() -> str:
-    webhook_filename = ".slack-webhook"
+def get_discord_webhook() -> str:
+    webhook_filename = ".discord-webhook"
 
     if not os.path.exists(webhook_filename):
         raise click.ClickException(
-            "Please create .slack-webhook with a webhook URL for deploy notifications"
+            "Please create .discord-webhook with a webhook URL for deploy notifications"
         )
     else:
         # maybe should be a try-catch block here

@@ -9,6 +9,7 @@ import json
 @click.command()
 @click.option(
     "--host",
+    "--to",
     required=True,
     type=click.Choice(["staging", "production"]),
     help="The host to deploy to",

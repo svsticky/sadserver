@@ -7,6 +7,8 @@ import subprocess
 import requests
 import json
 
+from typing import Optional
+
 
 @click.command()
 @click.option(
@@ -22,9 +24,14 @@ import json
     type=click.Path(exists=True),
     help="Ansible playbook to run",
 )
+@click.option(
+    "--tags",
+    "--roles",
+    help="Roles to execute"
+)
 @click.option("--check", is_flag=True, default=False, help="Perform a dry run")
 @click.option("--force", is_flag=True, default=False, help="Override checks")
-def deploy(host: str, playbook: str, check: bool, force: bool) -> None:
+def deploy(host: str, playbook: str, tags: Optional[str], check: bool, force: bool) -> None:
     if not check and not force:
         verify_on_latest_master(host)
 
@@ -59,6 +66,10 @@ def deploy(host: str, playbook: str, check: bool, force: bool) -> None:
 
     if check:
         arguments.append("--check")
+
+    if not tags is None:
+        arguments.append("--tags")
+        arguments.append(tags)
 
     arguments.append(playbook)
 

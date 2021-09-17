@@ -1,0 +1,3 @@
+skip_list:
+  # We don't want to always use explicit versions for git checkouts
+  - 401

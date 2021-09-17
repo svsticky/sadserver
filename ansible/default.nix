@@ -15,6 +15,7 @@ let
     pkgs.click
     pkgs.mypy
     pkgs.GitPython
+    pkgs.ansible-lint
     ansible-mitogen
   ]);
 

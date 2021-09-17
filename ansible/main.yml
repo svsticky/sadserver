@@ -67,3 +67,4 @@
     # exists. Otherwise fail2ban would miss the log files it has to monitor.
     - name: "start process of configuring fail2ban"
       include_tasks: "tasks/fail2ban.yml"
+      tags: "always"

@@ -91,11 +91,21 @@
       - "koala-check-study-year.timer"
       - "koala-clean-users-table.service"
       - "koala-clean-users-table.timer"
-      - "koala-reindex-search.service"
-      - "koala-reindex-search.timer"
       - "koala-status-mail.service"
       - "koala-status-mail.timer"
       - "sidekiq.service"
+    notify:
+      - "systemctl daemon-reload"
+
+  - name: "remove old services + timers"
+    become: true
+    become_user: "root"
+    file:
+      path: "/etc/systemd/system/{{ item }}"
+      state: "absent"
+    with_items:
+      - "koala-reindex-search.service"
+      - "koala-reindex-search.timer"
     notify:
       - "systemctl daemon-reload"
 

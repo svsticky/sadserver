@@ -1,0 +1,40 @@
+---
+- name: "ensure freight user exists"
+  user:
+    name: "freight"
+    shell: "/bin/sh"
+    home: "/var/lib/freight"
+    system: true
+
+- name: "ensure that freight has .ssh folder"
+  file:
+    path: "/var/lib/freight/.ssh"
+    state: "directory"
+    owner: "freight"
+    group: "freight"
+
+- name: "add authorized github key"
+  copy:
+    dest: "/var/lib/freight/.ssh/authorized_keys"
+    content: "{{ freight_ssh_pub_key }}"
+    owner: "freight"
+    group: "freight"
+    mode: "0644"
+
+- name: "add apt key for freight"
+  apt_key:
+    data: "{{ lookup('file', 'pubkey.gpg') }}"
+    id: "30EBF4E73CCE63EEE124DD278E6DA8B4E158C569"
+
+- name: "add freight apt repository"
+  apt_repository:
+    repo: "deb http://build.openvpn.net/debian/freight_team {{ ansible_lsb.codename }} main"
+
+- name: "ensure freight is installed and manageable"
+  apt:
+    name:
+      - "freight"
+  tags:
+    - "packages"
+
+

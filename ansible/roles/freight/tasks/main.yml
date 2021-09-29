@@ -37,4 +37,29 @@
   tags:
     - "packages"
 
+- name: "copy nginx template"
+  template:
+    src: "nginx.conf.j2"
+    dest: "/etc/nginx/sites-available/packages.{{ canonical_hostname }}.conf"
+
+- name: "symlink nginx template"
+  file:
+    src: "/etc/nginx/sites-available/packages.{{ canonical_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/packages.{{ canonical_hostname }}.conf"
+    state: "link"
+
+- name: "request tls certificates"
+  command: >-
+    certbot certonly
+    --non-interactive
+    --agree-tos
+    --email "domreg@svsticky.nl"
+    --keep-until-expiring
+    --cert-name packages.{{ canonical_hostname }}
+    --webroot
+    --webroot-path /var/www/acme-challenges
+    --domain packages.{{ canonical_hostname }}
+    --deploy-hook "systemctl reload nginx"
+  when: true
+
 

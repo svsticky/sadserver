@@ -23,7 +23,7 @@ server {
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
-  server_name execut.nl;
+  server_name 2021.execut.nl;
 
   ssl_certificate /etc/letsencrypt/live/execut-2021.{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/execut-2021.{{ canonical_hostname }}/privkey.pem;
@@ -48,5 +48,29 @@ server {
     access_log off;
     expires 365d;
     add_header Cache-Control "public";
+  }
+}
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name execut.nl;
+
+  ssl_certificate /etc/letsencrypt/live/execut-2021.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/execut-2021.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/execut-2021.{{ canonical_hostname }}/chain.pem;
+
+  include includes/block-cert-validation-path.conf;
+  add_header Referrer-Policy same-origin;
+  add_header X-XSS-Protection "1; mode=block";
+  add_header X-Content-Type-Options "nosniff";
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+  # Security header file not included because frames
+
+  root /var/www/symposium/execut-landing-2022.svsticky.nl;
+  index index.html;
+
+  location /speakers {
+    return 301 https://forms.gle/Ph5XmauSYKy2krkY9;
   }
 }

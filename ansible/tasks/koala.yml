@@ -260,7 +260,6 @@
   with_items:
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
-    - "koala-reindex-search.timer"
     - "koala-status-mail.timer"
 
 - name: "ensure sidekiq service is started and enabled"

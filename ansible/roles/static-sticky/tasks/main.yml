@@ -1,0 +1,39 @@
+---
+- name: "copy systemd service for deploying static-sticky"
+  copy:
+    src: "deploy-static-sticky.service"
+    dest: "/etc/systemd/system/deploy-static-sticky.service"
+
+- name: "copy deploy script"
+  template:
+    src: "deploy-static-sticky.sh.j2"
+    dest: "/usr/local/bin/deploy-static-sticky.sh"
+    mode: "0755"
+
+- name:
+    "install systemd-journal-remote for accessing static-sticky's deploy logs
+    remotely and awscli to fetch the builds from s3"
+  apt:
+    name:
+      - "systemd-journal-remote"
+      - "awscli"
+    state: "present"
+
+- name: "start and enable systemd-journal-gatewayd"
+  systemd:
+    name: "systemd-journal-gatewayd"
+    enabled: true
+    state: "started"
+
+- block:
+  - name: "create build directory"
+    file:
+      path: "/var/www/static-sticky/build"
+      state: "directory"
+
+  become_user: "static-sticky"
+
+- name: "run deploy"
+  systemd:
+    name: "deploy-static-sticky.service"
+    state: "started"

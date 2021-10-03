@@ -14,6 +14,8 @@
       tags: "digidecs"
     - role: "freight"
       tags: "freight"
+    - role: "static-sticky"
+      tags: "static"
 
   tasks:
     - name: "start process of managing general system settings"
@@ -52,8 +54,6 @@
       include_tasks: "tasks/pretix.yml"
     - name: "start process of configuring radio"
       include_tasks: "tasks/radio.yml"
-    - name: "start process of configuring static-sticky"
-      include_tasks: "tasks/static-sticky.yml"
     - name: "start process of configuring aas"
       include_tasks: "tasks/aas.yml"
     - name: "start process of configuring stickypedia"

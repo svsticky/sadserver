@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+# Unofficial Bash Strict Mode
+set -efuo pipefail
+IFS=$'\n\t'
+
+GITHUB_USER="svsticky-deploy"
+GITHUB_PASSWORD="{{ secret_static_sticky.github_deployments_token }}"
+DEPLOY_ENV="{{ ('staging' in group_names) | ternary("staging", "production") }}"
+
+fail_github_deploy_status() {
+  # Create a "deployment status" at GitHub: "failure"
+  curl \
+    --silent --show-error \
+    --output /dev/null \
+    --fail \
+    --user "${GITHUB_USER}:${GITHUB_PASSWORD}" \
+    --header "Accept: application/vnd.github.ant-man-preview+json" \
+    --header "Content-Type: application/json" \
+    --request POST \
+    --data \
+      '{"state": "failure",
+        "environment_url": "https://{{ canonical_hostname }}/",
+        "log_url": "https://{{ canonical_hostname }}/logs/'"${INVOCATION_ID}"'"
+      }' \
+    "https://api.github.com/repos/svsticky/static-sticky/deployments/${DEPLOY_ID}/statuses"
+}
+
+cd /var/www/static-sticky/static-sticky
+
+# Create a "deployment" at GitHub and save its ID
+DEPLOY_ID="$(curl \
+  --silent --show-error \
+  --fail \
+  --user "${GITHUB_USER}:${GITHUB_PASSWORD}" \
+  --header "Accept: application/vnd.github.v3+json" \
+  --header "Content-Type: application/json" \
+  --request POST \
+  --data \
+    '{"ref": "'"{{ static_sticky_env.git_ref }}"'",
+      "auto_merge": false,
+      "required_contexts": [],
+      "description": "'"Newstyle deploy"'",
+      "environment": "'"${DEPLOY_ENV}"'"
+    }' \
+  https://api.github.com/repos/svsticky/static-sticky/deployments \
+  | jq --raw-output '.id')"
+
+trap fail_github_deploy_status ERR
+
+# Set aws credentials
+export AWS_ACCESS_KEY_ID="{{ secret_static_sticky.aws_access_key_id }}"
+export AWS_SECRET_ACCESS_KEY="{{ secret_static_sticky.aws_secret_access_key }}"
+export AWS_DEFAULT_REGION="{{ secret_static_sticky.aws_default_region }}"
+
+# We base our filename on the branch, but files cannot, like branches
+# have a / in them. We replace this by a -
+export FILENAME=$(echo {{ static_sticky_env.git_ref }} | sed 's/\//-/g')
+
+# This parses the output of awscli to get the filenames of the builds that are present,
+# then filters by the appropiate branch, sorts the results alphabetically (which means
+# by date because of our naming system), and takes the top one (so most recent)
+# It then cuts of .tar.gz from the end of the filename.
+export BUILD=$(\
+  aws s3 ls s3://static-sticky-builds \
+    | awk -F' ' '{print $NF}' \
+    | grep $FILENAME \
+    | grep tar.gz \
+    | sort -r \
+    | head -n1 \
+    | rev \
+    | cut -c 8- \
+    | rev \
+  )
+
+aws s3 cp s3://static-sticky-builds/$BUILD.tar.gz /tmp/static-sticky/$BUILD.tar.gz
+aws s3 cp s3://static-sticky-builds/$BUILD.sha256 /tmp/static-sticky/$BUILD.sha256
+# Verify download consistency
+(cd /tmp/static-sticky && sha256sum --check $BUILD.sha256)
+# Remove previous build
+rm --force --recursive /var/www/static-sticky/build/*
+# Extract new build
+tar --extract --file /tmp/static-sticky/$BUILD.tar.gz --directory /var/www/static-sticky/build
+
+# Copy website contents to webroot, replacing already existing target contents
+rsync --delete --recursive \
+  /var/www/static-sticky/build/public \
+  /var/www/static-sticky/static.{{ canonical_hostname }}/
+
+# Create a "deployment status" at GitHub: "success"
+curl \
+  --silent --show-error \
+  --output /dev/null \
+  --fail \
+  --user "${GITHUB_USER}:${GITHUB_PASSWORD}" \
+  --header "Accept: application/vnd.github.ant-man-preview+json" \
+  --header "Content-Type: application/json" \
+  --request POST \
+  --data \
+    '{"state": "success",
+      "environment_url": "https://{{ canonical_hostname }}/",
+      "log_url": "https://{{ canonical_hostname }}/logs/'"${INVOCATION_ID}"'"
+    }' \
+  "https://api.github.com/repos/svsticky/static-sticky/deployments/${DEPLOY_ID}/statuses"

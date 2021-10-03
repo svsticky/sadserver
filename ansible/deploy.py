@@ -24,14 +24,12 @@ from typing import Optional
     type=click.Path(exists=True),
     help="Ansible playbook to run",
 )
-@click.option(
-    "--tags",
-    "--roles",
-    help="Roles to execute"
-)
+@click.option("--tags", "--roles", help="Roles to execute")
 @click.option("--check", is_flag=True, default=False, help="Perform a dry run")
 @click.option("--force", is_flag=True, default=False, help="Override checks")
-def deploy(host: str, playbook: str, tags: Optional[str], check: bool, force: bool) -> None:
+def deploy(
+    host: str, playbook: str, tags: Optional[str], check: bool, force: bool
+) -> None:
     if not check and not force:
         verify_on_latest_master(host)
 

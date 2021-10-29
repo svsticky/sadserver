@@ -85,7 +85,7 @@ tar --extract --file /tmp/static-sticky/$BUILD.tar.gz --directory /var/www/stati
 
 # Copy website contents to webroot, replacing already existing target contents
 rsync --delete --recursive \
-  /var/www/static-sticky/build/public \
+  /var/www/static-sticky/build/public/ \
   /var/www/static-sticky/static.{{ canonical_hostname }}/
 
 # Create a "deployment status" at GitHub: "success"

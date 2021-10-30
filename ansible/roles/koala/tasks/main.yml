@@ -6,9 +6,6 @@
     system: true
     shell: "/bin/bash"
   notify: "restart koala"
-  tags:
-    - "ruby"
-    - "koala"
 
 - name: "use koala cachix"
   shell: "cachix use svsticky-constipated-koala"
@@ -20,8 +17,6 @@
     owner: "koala"
     group: "koala"
     recurse: true
-  tags:
-    - "koala"
 
 - name: "ensure koala service file is present"
   template:
@@ -37,8 +32,6 @@
     file:
       path: "~/.ssh"
       state: "directory"
-    tags:
-      - "koala"
 
   - name: "copy deploy key (private) for user koala"
     copy:
@@ -108,8 +101,6 @@
       version: "{{ koala_env.git_ref }}"
     diff: false
     when: koala_checkout_result.changed
-    tags:
-      - "koala"
 
   - name: "ensure tmp directory exist (for nix-shell)"
     file:
@@ -117,8 +108,6 @@
       state: "directory"
       owner: "koala"
       group: "koala"
-    tags:
-      - "koala"
 
   - name: "ensure environment variables are present"
     template:

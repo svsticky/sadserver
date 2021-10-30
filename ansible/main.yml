@@ -16,6 +16,8 @@
       tags: "freight"
     - role: "static-sticky"
       tags: "static"
+    - role: "pretix"
+      tags: "pretix"
 
   tasks:
     - name: "start process of managing general system settings"
@@ -50,8 +52,6 @@
       include_tasks: "tasks/public_files.yml"
     - name: "start process of configuring monitoring services"
       include_tasks: "tasks/monitoring.yml"
-    - name: "start process of configuring pretix"
-      include_tasks: "tasks/pretix.yml"
     - name: "start process of configuring radio"
       include_tasks: "tasks/radio.yml"
     - name: "start process of configuring aas"

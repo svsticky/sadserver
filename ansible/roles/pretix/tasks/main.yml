@@ -38,7 +38,7 @@
       name: "pretix"
       owner: "pretix"
       state: "present"
-    register: "setup_database_result"
+    notify: "pretix post-upgrade"
 
 - name: "ensure pretix config directories are present"
   file:
@@ -57,10 +57,10 @@
     owner: "pretix"
     group: "pretix"
     mode: "0600"
-  register: "pretix_config_file_result"
+  notify: "restart pretix"
 
 - name: "create virtualenv if not exists, update pip and tools"
-  pip:
+  pip: # noqa 403
     name:
       - "pip"
       - "setuptools"
@@ -80,8 +80,9 @@
     - "pretix-worker.service"
     - "pretix-runperiodic.service"
     - "pretix-runperiodic.timer"
-  notify: "systemctl daemon-reload"
-  register: "pretix_service_result"
+  notify:
+    - "systemctl daemon-reload"
+    - "restart pretix"
 
 - meta: "flush_handlers" # Ensures daemon is reloaded
 
@@ -105,31 +106,11 @@
       version: "1.7.0"
     - name: "psycopg2"
       version: "2.8.6"
-  register: "pretix_install_result"
+  notify:
+    - "pretix post-upgrade"
+    - "restart pretix"
   become: true
   become_user: "pretix"
-
-- name: "run pretix migration if package version changed"
-  command: "/var/www/pretix/venv/bin/python -m pretix {{ item }}"
-  with_items:
-    - "migrate"
-    - "rebuild"
-    - "updatestyles"
-  when: "pretix_install_result.changed or setup_database_result.changed"
-  become: true
-  become_user: "pretix"
-
-- name: "ensure pretix is restarted if needed"
-  service:
-    name: "{{ item }}"
-    state: "restarted"
-  when: >
-    pretix_install_result.changed or
-    pretix_config_file_result.changed or
-    pretix_service_result.changed
-  with_items:
-    - "pretix-web.service"
-    - "pretix-worker.service"
 
 - name: "ensure pretix services are running and enabled"
   service:

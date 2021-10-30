@@ -1,0 +1,23 @@
+---
+
+- name: "run pretix migration and other post-upgrade tasks"
+  command: "/var/www/pretix/venv/bin/python -m pretix {{ item }}"
+  with_items:
+    - "migrate"
+    - "rebuild"
+    - "updatestyles"
+  become: true
+  become_user: "pretix"
+  listen: "pretix post-upgrade"
+
+- name: "ensure pretix is restarted if needed"
+  service:
+    name: "{{ item }}"
+    state: "restarted"
+  when: >
+    pretix_config_file_result.changed or
+    pretix_service_result.changed
+  with_items:
+    - "pretix-web.service"
+    - "pretix-worker.service"
+  listen: "restart pretix"

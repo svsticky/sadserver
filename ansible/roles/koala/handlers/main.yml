@@ -1,0 +1,15 @@
+---
+- name: "check if koala is running"
+  systemd:
+    name: "koala.service"
+    state: "started"
+  check_mode: true
+  register: "koala_running"
+  listen: "restart koala"
+
+- name: "restart koala service"
+  service:
+    name: "koala"
+    state: "restarted"
+  when: "koala_running is not changed"
+  listen: "restart koala"

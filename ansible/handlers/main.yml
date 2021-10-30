@@ -1,12 +1,4 @@
 ---
-- name: "check if koala is running"
-  systemd:
-    name: "koala.service"
-    state: "started"
-  check_mode: true
-  register: "koala_running"
-  listen: "restart koala"
-
 - name: "restart oauth2-proxy"
   service:
     name: "oauth2-proxy"
@@ -18,13 +10,6 @@
     name: "oauth2-proxy-admin"
     state: "restarted"
   listen: "restart oauth2-proxy-admin"
-
-- name: "restart koala service"
-  service:
-    name: "koala"
-    state: "restarted"
-  when: "koala_running is not changed"
-  listen: "restart koala"
 
 - name: "restart fail2ban"
   service:

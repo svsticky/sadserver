@@ -22,7 +22,6 @@
       - "libssl-dev"
       - "gettext"
       - "libpq-dev"
-      #- "libmariadb-client-lgpl-dev-compat"
       - "libjpeg-dev"
     state: "present"
 
@@ -40,12 +39,6 @@
       owner: "pretix"
       state: "present"
     register: "setup_database_result"
-
-# - name: "ensure mysql_config symlink is present"
-#   file:
-#     src: "/usr/bin/mariadb_config"
-#     dest: "/usr/bin/mysql_config"
-#     state: "link"
 
 - name: "ensure pretix config directories are present"
   file:
@@ -98,18 +91,18 @@
     version: "{{ item.version }}"
     state: "present"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.6"
+    virtualenv_python: "python3.9"
   with_items:
     - name: "gunicorn"
-      version: "20.0.4"
-    - name: "pretix[mysql]"
-      version: "3.16.0"
+      version: "20.1.0"
+    - name: "pretix"
+      version: "4.4.0"
     - name: "pretix-pages"
-      version: "1.4.0"
+      version: "1.4.1"
     - name: "pretix-mollie"
       version: "1.3.2"
     - name: "pretix-fontpack-free"
-      version: "1.6.0"
+      version: "1.7.0"
     - name: "psycopg2"
       version: "2.8.6"
   register: "pretix_install_result"

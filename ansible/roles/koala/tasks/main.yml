@@ -7,7 +7,7 @@
     shell: "/bin/bash"
   notify: "restart koala"
 
-- name: "use koala cachix"
+- name: "use koala cachix" # noqa 301 305
   shell: "cachix use svsticky-constipated-koala"
 
 - name: "ensure clone location exists and is owned by koala"
@@ -91,7 +91,7 @@
   # Enables maintenance mode only when Koala was already running, and needs to
   # be updated
   - name: "start process of enabling koala's maintenance mode"
-    include_tasks: "playbooks/koala/.maintenance-on.yml"
+    include_tasks: "../../../playbooks/koala/.maintenance-on.yml"
     when: koala_updated
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
@@ -116,14 +116,14 @@
       mode: "0700"
     notify: "restart koala"
 
-  - name: "building nix environment (this might take a while)"
+  - name: "building nix environment (this might take a while)" # noqa 305
     shell: nix-shell --run 'echo lol'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
     notify: "restart koala"
 
-  - name: "ensure tmp directories exist"
+  - name: "ensure tmp directories exist" # noqa 305
     shell: nix-shell --run 'rails tmp:create'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
@@ -178,7 +178,7 @@
     become: true
     become_user: "koala"
 
-  - name: "add credentials for oauth application"
+  - name: "add credentials for oauth application" # noqa 305
     shell: nix-shell --run 'dotenv rails oauthproxy:create_application'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
@@ -211,7 +211,7 @@
 # Disables maintenance mode only when Koala had to be updated, and can now be
 # started again.
 - name: "start process of disabling koala's maintenance mode"
-  include_tasks: "playbooks/koala/.maintenance-off.yml"
+  include_tasks: "../../../playbooks/koala/.maintenance-off.yml"
   when: koala_updated
 
 - name: "ensure koala's timers are started and enabled in production"

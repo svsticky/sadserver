@@ -69,6 +69,17 @@ server {
 		proxy_pass http://unicorn;
 	}
 
+	location ~* ^/rails/active_storage/disk/ {
+		expires 1y;
+		add_header Cache-Control "private";
+
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header Host $http_host;
+		proxy_set_header X-Forwarded-Proto https;
+		proxy_redirect off;
+		proxy_pass http://unicorn;
+	}
+
 	location @unicorn {
 		if (-f /home/koala/MAINTENANCE_MODE) {
 		    error_page 503 /503.html;

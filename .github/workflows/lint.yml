@@ -11,12 +11,14 @@ jobs:
 
       - name: "install Nix"
         uses: "cachix/install-nix-action@v12"
+        with:
+          install_url: "https://releases.nixos.org/nix/nix-2.3.16/install"
 
       - name: "Lint our Python files"
-        run: "(cd ansible; nix shell --extra-experimental-features nix-command black deploy.py)"
+        run: "(cd ansible; nix run -c black deploy.py)"
 
       - name: "Typecheck our Python files"
-        run: "(cd ansible; nix shell mypy --extra-experimental-features nix-command deploy.py --strict)"
+        run: "(cd ansible; nix run -c mypy deploy.py --strict)"
 
       - name: "Lint our ansible files"
-        run: "(cd ansible; nix shell --extra-experimental-features nix-command ansible-lint --exclude=tasks --exclude=playbooks)"
+        run: "(cd ansible; nix run -c ansible-lint --exclude=tasks --exclude=playbooks)"

@@ -28,6 +28,7 @@ server {
 
   root /var/www/static-sticky/static.{{ canonical_hostname }};
   index index.html index.htm;
+  error_page 404 /404.html;
 
   include includes/security-headers.conf;
 

@@ -4,7 +4,7 @@ Wants=redis.service postgresql.service
 
 [Service]
 ExecStartPre=/usr/bin/yarn db:migrate
-ExecStart=/usr/bin/yarn start
+ExecStart=/usr/bin/yarn start --env production
 WorkingDirectory=/var/www/outline/outline
 
 EnvironmentFile=/etc/outline/outline.env

@@ -11,7 +11,7 @@ server {
   ssl_certificate_key  /etc/letsencrypt/live/packages.{{ canonical_hostname }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/packages.{{ canonical_hostname }}/chain.pem;
 
-  root /var/lib/freight/cache;
+  root /var/lib/freight/var/cache;
 
   index index.html index.htm;
 

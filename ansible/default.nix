@@ -4,6 +4,7 @@
 
 let
   pkgs = import sources.nixpkgs {};
+  pkgs-new = import sources.nixpkgs-unstable {};
 
   python = pkgs.python37;
 
@@ -23,7 +24,7 @@ in pkgs.buildEnv {
   name = "sadserver-environment";
   paths = [
     pythonEnvironment
-    pkgs.bitwarden-cli
+    pkgs-new.bitwarden-cli
     pkgs.jq
     pkgs.yamllint
   ];

@@ -20,6 +20,8 @@
       tags: "pretix"
     - role: "koala"
       tags: "koala"
+    - role: "outline"
+      tags: "outline"
 
   tasks:
     - name: "start process of managing general system settings"

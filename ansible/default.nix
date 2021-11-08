@@ -16,7 +16,6 @@ let
     pkgs.click
     pkgs.mypy
     pkgs.GitPython
-    pkgs.ansible-lint
     ansible-mitogen
   ]);
 
@@ -25,6 +24,7 @@ in pkgs.buildEnv {
   paths = [
     pythonEnvironment
     pkgs-new.bitwarden-cli
+    pkgs.ansible-lint
     pkgs.jq
     pkgs.yamllint
   ];

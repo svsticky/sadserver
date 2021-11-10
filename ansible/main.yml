@@ -24,6 +24,8 @@
       tags: "outline"
     - role: "aas"
       tags: "aas"
+    - role: "execut"
+      tags: "execut"
 
   tasks:
     - name: "start process of managing general system settings"
@@ -62,8 +64,6 @@
       include_tasks: "tasks/aas.yml"
     - name: "start process of configuring stickypedia"
       include_tasks: "tasks/stickypedia.yml"
-    - name: "start process of configuring execut"
-      include_tasks: "tasks/execut-django-website.yml"
     # - name: "start process of configuring the telegram crazy88bot"
     #   include_tasks: "tasks/crazy88bot.yml"
 

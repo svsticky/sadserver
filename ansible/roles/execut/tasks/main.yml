@@ -51,7 +51,7 @@
 
     - name: "install environment file"
       template:
-        src: "templates/var/www/symposium/execut-2021/execut_www.env.j2"
+        src: "execut_www.env.j2"
         dest: "{{ execut_website_path }}/execut_www.env"
         mode: "0600"
 
@@ -78,14 +78,14 @@
 
 - name: "install service file"
   template:
-    src: "templates/etc/systemd/system/execut-django-website.service.j2"
+    src: "execut.service.j2"
     dest: "/etc/systemd/system/execut-django-website.service"
     mode: "0644"
   notify: "systemctl daemon-reload"
 
 - name: "install Nginx config"
   template:
-    src: "templates/etc/nginx/sites-available/execute-django-website.conf.j2"
+    src: "nginx.conf.j2"
     dest: "/etc/nginx/sites-available/execut-django-website.conf"
   notify: "reload nginx"
 

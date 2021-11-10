@@ -15,12 +15,14 @@
   postgresql_user:
     name: "symposium"
   become_user: "postgres"
+  become: true
 
 - name: "ensure database exists"
   postgresql_db:
     name: "execut"
     owner: "symposium"
   become_user: "postgres"
+  become: true
 
 - name: "ensure database user has the right privileges"
   postgresql_user:
@@ -29,6 +31,7 @@
     priv: "ALL"
     role_attr_flags: "CREATEDB,LOGIN"
   become_user: "postgres"
+  become: true
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: "determine website folder"
@@ -118,6 +121,7 @@
 
 - name: "test Nginx config"
   command: "nginx -t"
+  changed_when: false
 
 - name: "Reload Nginx, systemd if needed"
   meta: "flush_handlers"

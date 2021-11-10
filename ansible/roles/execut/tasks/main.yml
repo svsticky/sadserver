@@ -11,6 +11,26 @@
       - "python3.9-dev"
     state: "present"
 
+- name: "ensure database user exists"
+  postgresql_user:
+    name: "symposium"
+  become_user: "postgres"
+
+- name: "ensure database exists"
+  postgresql_db:
+    name: "execut"
+    owner: "symposium"
+  become_user: "postgres"
+
+- name: "ensure database user has the right privileges"
+  postgresql_user:
+    db: "execut"
+    name: "symposium"
+    priv: "ALL"
+    role_attr_flags: "CREATEDB,LOGIN"
+  become_user: "postgres"
+  ignore_errors: "{{ ansible_check_mode }}"
+
 - name: "determine website folder"
   set_fact:
     execut_website_path: "/var/www/symposium/execut-2021.{{ canonical_hostname }}"

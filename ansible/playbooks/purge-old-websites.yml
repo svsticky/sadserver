@@ -46,47 +46,8 @@
         - item.state == "absent"
         - "item.custom_config is undefined or not item.custom_config"
 
-    - name: "delete database(s)"
-      command: "mysql -NBe 'DROP DATABASE IF EXISTS {{ item.database.name }};'"
-      with_items: "{{ websites }}"
-      when:
-        # List is evaluated as logical AND
-        - "item.database is defined"
-        - "item.state == 'absent' or item.database.state == 'absent'"
-      loop_control:
-        label: "{{ item.database | default(item.name) }}"
-
-    - name: "delete database user(s)"
-      command: "mysql -NBe 'DROP USER IF EXISTS {{ db_user }}@localhost;'"
-      vars:
-        db_user: "{{ item.user | default(item.database.name) }}"
-      with_items: "{{ websites }}"
-      when:
-        # List is evaluated as logical AND
-        - "item.database is defined"
-        - "item.state == 'absent' or item.database.state == 'absent'"
-      loop_control:
-        label:
-          website: "{{ item.name }}"
-
-    - name: "delete extra manual database user(s)"
-      command:
-        "mysql -NBe 'DROP USER IF EXISTS {{ item.1.name }}@localhost;'"
-      with_subelements:
-        - "{{ websites }}"
-        - "database.extra_manual_users"
-        - skip_missing: true
-      when:
-        "item.0.state == 'absent' or item.0.database.state == 'absent' or
-        item.1.state == 'absent'"
-      loop_control:
-        label:
-          website: "{{ item.0.name }}"
-          database_user: "{{ item.1 }}"
-
     - debug:
         msg:
-          "The certificates of all absent websites are revoked and deleted.
-          Also, its webroot, database and db user (if existing) are deleted.
+          "The certificates and webroot of all absent websites are revoked and deleted.
           Remember to delete any specific templates/tasks from this repository
           yourself."

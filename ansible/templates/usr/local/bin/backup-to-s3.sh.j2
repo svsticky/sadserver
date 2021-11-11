@@ -89,15 +89,6 @@ case "${SOURCE}" in
             var/lib/crazy88bot/crazy88bot/submissions \
             | gzip -9)
           ;;
-        databases)
-          S3PATH="websites/${SOURCE}"
-          FILE_NAME="${FILE_TITLE}.sql.gz"
-
-          # Uses root's unix socket for authentication
-          upload_backup_to_s3 < <(mysqldump \
-            --all-databases \
-            | gzip -9)
-          ;;
         postgres)
           S3PATH="postgres/${SOURCE}"
           FILE_NAME="${FILE_TITLE}.sql.gz"

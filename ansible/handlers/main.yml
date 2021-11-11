@@ -21,11 +21,6 @@
     name: "redis-server"
     state: "restarted"
 
-- name: "restart mariadb"
-  service:
-    name: "mysql"
-    state: "restarted"
-
 - name: "test nginx configuration"
   command: "nginx -t"
   listen: "reload nginx"

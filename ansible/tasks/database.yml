@@ -55,102 +55,36 @@
       privs: "SELECT"
     become_user: postgres
 
-  - name: "add apt key for mariadb repository"
+  - name: "remove apt key for mariadb repository"
     apt_key:
       url: "https://mariadb.org/mariadb_release_signing_key.asc"
-      state: "present"
+      state: "absent"
 
-  - name: "add mariadb apt repository"
+  - name: "remove mariadb apt repository"
     apt_repository:
       repo: "deb http://ams2.mirrors.digitalocean.com/mariadb/repo/10.5/ubuntu {{ ansible_lsb.codename }} main"
+      state: "absent"
 
-  - name: "ensure mariadb is installed and manageable"
+  - name: "remove mariadb package"
     apt:
       name:
         - "mariadb-server-10.5"
         - "python3-mysqldb"
-      state: "present"
+      state: "absent"
     tags:
       - "packages"
 
-  - name: "create folder for mariadb override"
+  - name: "remove mariadb override"
     file:
       path: "/etc/systemd/system/mysql.service.d"
-      state: "directory"
+      state: "absent"
 
-  - name: "override parameters of mariadb service"
-    template:
-      src: "templates/{{ item }}.j2"
-      dest: "/{{ item }}"
-    with_items:
-      - "etc/systemd/system/mysql.service.d/override.conf"
-      - "etc/systemd/system/mysql.service.d/onfailure.conf"
-    notify: "systemctl daemon-reload"
+  - name: "remove extra configuration"
+    file:
+      path: "/etc/mysql/conf.d/mysqld.cnf"
+      state: "absent"
 
-  - name: "enable extra configuration"
-    template:
-      src: "templates/{{ config_file }}.j2"
-      dest: "/{{ config_file }}"
-    vars:
-      config_file: "etc/mysql/conf.d/mysqld.cnf"
-    notify: "restart mariadb"
-
-  - name: "ensure database is enabled and running"
-    service:
-      name: "mysql"
-      enabled: true
-      state: "started"
-    tags:
-      - "service"
-
-  - name: "configure root MariaDB account and delete test database"
-    command: "mysql -NBe '{{ item }}'"
-    with_items:
-      - "grant all privileges on *.* to `root`@`localhost` identified via
-        unix_socket with grant option;"
-      - "drop database if exists test;"
-    ignore_errors: true
-
-  - name: "create website databases"
-    command:
-      "mysql -NBe 'create database if not exists
-      {{ item.database.name }} {{ extra }};'"
-    vars:
-      extra: "{{ item.database.extra_creation_params | default('') }}"
-    with_items: "{{ websites }}"
-    when: &website_with_db
-      "item.database is defined and item.database.state == 'present' and
-      item.state == 'present'"
-    loop_control:
-      label: "{{ item.database if item.database is defined else item.name }}"
-
-  - name: "create default users for website databases"
-    command: >-
-      mysql -NBe 'grant all privileges on {{ item.database.name }}.* to
-      `{{ db_user }}`@`localhost` identified via unix_socket;'
-    vars:
-      db_user:
-        "{{ item.user if item.user is defined else item.database.name }}"
-    with_items: "{{ websites }}"
-    when: *website_with_db
-    loop_control:
-      label:
-        website: "{{ item.name }}"
-
-  - name: "create extra users for manual use of website databases"
-    command: >-
-      mysql -NBe 'grant all privileges on {{ item.0.database.name }}.* to
-      `{{ item.1.name }}`@`localhost` identified via mysql_native_password
-      using "{{ secret_mysql[item.1.name]['hash'] }}";'
-    with_subelements:
-      - "{{ websites }}"
-      - "database.extra_manual_users"
-      - skip_missing: true
-    when: "item.0.state == 'present' and item.1.state == 'present'"
-    loop_control:
-      label:
-        website: "{{ item.0.name }}"
-        database_user: "{{ item.1 }}"
-
-  tags:
-    - "database"
+  - name: "cleanup mysql databases"
+    file:
+      path: "/etc/mysql"
+      state: "absent"

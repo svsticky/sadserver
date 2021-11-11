@@ -35,16 +35,6 @@ secret_koala:
   # To change, use the web interface at https://sentry.io/
   sentry_dsn:
 
-# This should only be used for database users that can't authenticate using
-# Unix socket authentication, practical or security wise
-secret_mysql:
-  example:
-    # To change, generate a new password using something like `pwgen -sy 32 1`
-    password:
-    # To change, generate a new hash using the query
-    # `SELECT PASSWORD('example')` in MySQL to output the hash
-    hash:
-
 secret_backup_aws:
   # To change, generate a new keypair for the user used for backups in AWS's
   # IAM Management Console, and make the old key inactive

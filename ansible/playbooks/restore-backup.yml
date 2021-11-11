@@ -111,13 +111,6 @@
       loop_control:
         label: "{{ item.stdout }}"
 
-    - name: "restore production databases - MariaDB"
-      shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | mysql"
-      with_items: "{{ backup_filenames.results }}"
-      when: "item.item == 'websites/databases'"
-      loop_control:
-        label: "{{ item.stdout }}"
-
     - name: "delete backup archives"
       file:
         path: "{{ backup_restore_tmp_dir.path }}"

@@ -2,7 +2,7 @@
 
 [Unit]
 Description=Clear expired pretix sessions
-Requires=mysql.service
+Requires=postgresql.service
 OnFailure=failure-notificator@%n.service
 
 [Service]

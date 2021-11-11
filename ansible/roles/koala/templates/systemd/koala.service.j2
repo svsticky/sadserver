@@ -2,7 +2,7 @@
 
 [Unit]
 Description=Run koala {{ koala_env.environment }} service
-Wants=mysql.service
+Wants=postgresql.service
 After=network.target
 OnFailure=failure-notificator@%n.service
 

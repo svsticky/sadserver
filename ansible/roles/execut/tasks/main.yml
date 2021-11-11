@@ -68,7 +68,7 @@
 
     - name: "clone website's repository"
       git:
-        repo: "https://github.com/Tears/execut_www.git"
+        repo: "https://github.com/StichtingSticky/execut-www"
         dest: "{{ execut_website_path }}/execut_www"
         version: "master"
 

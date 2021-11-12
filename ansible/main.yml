@@ -22,6 +22,8 @@
       tags: "koala"
     - role: "outline"
       tags: "outline"
+    - role: "aas"
+      tags: "aas"
 
   tasks:
     - name: "start process of managing general system settings"

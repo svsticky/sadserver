@@ -9,7 +9,7 @@
 
 - name: "permit aas user to start static-sticky deploy service"
   template:
-    src: "templates/etc/sudoers.d/aas.j2"
+    src: "sudoers.j2"
     dest: "/etc/sudoers.d/aas"
     mode: "0440"
     validate: "/usr/sbin/visudo -cf %s"
@@ -27,7 +27,7 @@
   - name:
       "template environment file for aas"
     template:
-      src: "templates/var/www/aas/.env.j2"
+      src: ".env.j2"
       dest: "/var/www/aas/aas.{{ canonical_hostname }}/.env"
     notify: "restart aas"
 
@@ -43,7 +43,7 @@
 - name:
     "copy systemd service of aas"
   template:
-    src: "templates/etc/systemd/system/aas.service.j2"
+    src: "aas.service.j2"
     dest: "/etc/systemd/system/aas.service"
   notify: "restart aas"
 

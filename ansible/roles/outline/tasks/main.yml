@@ -52,10 +52,20 @@
     repo: "deb https://dl.yarnpkg.com/debian/ stable main"
     state: "present"
 
-- name: "install yarn"
+- name: "Add Nodesource repository key"
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+
+- name: "Add Nodesource repository for NodeJS 14"
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_14.x {{ ansible_lsb.codename}} main"
+
+- name: "install Node.js and yarn"
   apt:
-   name: "yarn"
-   state: "present"
+    name:
+      - "nodejs"
+      - "yarn"
+    state: "present"
 
 - name: "do Yarn stuff"
   become_user: "outline"

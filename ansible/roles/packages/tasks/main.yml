@@ -6,17 +6,7 @@
   become: true
   changed_when: false
 
-- name: "Add Nodesource repository key"
-  apt_key:
-    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
-
-# The default NodeJS version shipped on 18.04 is NodeJS 8.10, this is very old
-# and we want a newer one.
-- name: "Add Nodesource repository for NodeJS 14"
-  apt_repository:
-    repo: "deb https://deb.nodesource.com/node_14.x {{ ansible_lsb.codename}} main"
-
-- name: "install common utilities and newer Node.js"
+- name: "install common utilities"
   apt:
     name:
       - "aptitude"
@@ -24,10 +14,10 @@
       - "unattended-upgrades"
       - "haveged"
       - "jq"
-      - "nodejs"
       - "nginx"
       - "acl"
       - "git"
+      - "toilet"
     state: "present"
 
 - name: "update all packages"
@@ -36,14 +26,18 @@
     update_cache: true
     cache_valid_time: 100
 
+- name: "set apt unattended-upgrades settings"
+  template:
+    src: "50unattended-upgrades.j2"
+    dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
+
 - name: "configure unattended-upgrades"
   template:
-    src: "templates/{{ item }}.j2"
-    dest: "/{{ item }}"
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
   with_items:
-    - "etc/apt/apt.conf.d/50unattended-upgrades"
-    - "etc/systemd/system/unattended-upgrades-output.service"
-    - "etc/systemd/system/unattended-upgrades-output.timer"
+    - "unattended-upgrades-output.service"
+    - "unattended-upgrades-output.timer"
   notify:
     - "systemctl daemon-reload"
 

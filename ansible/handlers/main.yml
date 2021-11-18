@@ -73,11 +73,6 @@
     unit: "stickypedia.service"
     state: "restarted"
 
-- name: "restart intro-cs-backend server"
-  systemd:
-    unit: "intro-cs-backend.service"
-    state: "restarted"
-
 - name: "restart crazy88bot"
   systemd:
     unit: "crazy88bot.service"

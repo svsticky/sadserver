@@ -10,6 +10,10 @@
     - import_tasks: "handlers/main.yml"
 
   roles:
+    - role: "common"
+      tags: "always"
+    - role: "packages"
+      tags: "packages"
     - role: "digidecs"
       tags: "digidecs"
     - role: "freight"
@@ -36,10 +40,6 @@
       tags: "users"
 
   tasks:
-    - name: "start process of managing general system settings"
-      include_tasks: "tasks/system-settings.yml"
-    - name: "start process of general package management"
-      include_tasks: "tasks/packages.yml"
     - name: "start process of installing sodi website"
       include_tasks: "tasks/sodi.yml"
     - name: "start process of configuring firewall"

@@ -7,20 +7,13 @@
     - "10-help-text"
     - "51-cloudguest"
 
-# This tool outputs our beautiful hostname header.
-- name: "install toilet"
-  apt:
-    name: "toilet"
-    update_cache: true
-    state: "present"
-
 - name: "copy motd templates"
   template:
-    src: "templates/etc/update-motd.d/{{ item }}.j2"
+    src: "motd/{{ item }}.j2"
     dest: "/etc/update-motd.d/{{ item }}"
     mode: "0755"
   with_items:
-    - "01-{{ server_hostname }}-header"
+    - "01-sadserver-header"
     - "02-playbook-revision"
 
 # In staging we just use the name that is set when creating our VPS.
@@ -42,13 +35,13 @@
 
 - name: "copy locale variables"
   template:
-    src: "templates/{{ path }}.j2"
+    src: "locale.j2"
     dest: "/{{ path }}"
   vars:
     path: "etc/default/locale"
 
 - name: "copy failure handler for systemd units"
   template:
-    src: "templates/etc/systemd/system/failure-notificator@.service.j2"
+    src: "failure-notificator@.service.j2"
     dest: "/etc/systemd/system/failure-notificator@.service"
   notify: "systemctl daemon-reload"

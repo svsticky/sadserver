@@ -58,14 +58,14 @@
     update: false
   diff: false
 
-- name: "retrieve all version numbers of slacktee"
+- name: "retrieve all version numbers of slacktee" # noqa 303 305
   shell: "git fetch --tags"
   args:
     chdir: "{{ slack_notifications.slacktee.install_path }}"
   register: "slacktee_fetch"
   changed_when: slacktee_fetch.stdout != ""
 
-- name: "determine latest version number of slacktee"
+- name: "determine latest version number of slacktee" # noqa 303
   shell: "git describe --tags $(git rev-list --tags --max-count=1)"
   args:
     chdir: "{{ slack_notifications.slacktee.install_path }}"

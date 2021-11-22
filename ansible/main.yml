@@ -26,6 +26,8 @@
       tags: "aas"
     - role: "execut"
       tags: "execut"
+    - role: "databases"
+      tags: "databases"
 
   tasks:
     - name: "start process of managing general system settings"
@@ -40,8 +42,6 @@
       include_tasks: "tasks/sodi.yml"
     - name: "start process of configuring firewall"
       include_tasks: "tasks/firewall.yml"
-    - name: "start process of configuring our SQL databases"
-      include_tasks: "tasks/database.yml"
     - name: "start process of configuring the webserver"
       include_tasks: "tasks/nginx.yml"
     - name: "start process of configuring backup processes"

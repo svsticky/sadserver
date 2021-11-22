@@ -1,42 +1,37 @@
 ---
 # Contains application-agnostic database tasks
+- name: "add apt key for postgresql"
+  apt_key:
+    url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+    state: "present"
+    id: "B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8"
+
+- name: "add postgresql apt repository"
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_lsb.codename }}-pgdg main"
+
+- name: "ensure postgresql is installed and manageable"
+  apt:
+    name:
+      - "postgresql-13"
+      - "python3-psycopg2"
+
 - block:
-  - name: "add apt key for postgresql"
-    apt_key:
-      url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-      state: "present"
-      id: "B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8"
-
-  - name: "add postgresql apt repository"
-    apt_repository:
-      repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_lsb.codename }}-pgdg main"
-
-  - name: "ensure postgresql is installed and manageable"
-    apt:
-      name:
-        - "postgresql-13"
-        - "python3-psycopg2"
-    tags:
-      - "packages"
-
   - name: "ensure koala user exists"
     postgresql_user:
       name: "koala"
-    become_user: postgres
 
   - name: "ensure koala database exists"
     postgresql_db:
       name: "koala"
       owner: "koala"
-    become_user: postgres
 
   - name: "ensure koala user exists"
     postgresql_user:
       db: "koala"
       name: "koala"
       priv: "ALL"
-      role_attr_flags: CREATEDB,LOGIN
-    become_user: postgres
+      role_attr_flags: "CREATEDB,LOGIN"
 
   - name: "ensure dbeaver koala user exists"
     postgresql_user:
@@ -45,7 +40,6 @@
       password: "{{ secret_koala_manual.password }}"
       priv: "CONNECT"
       role_attr_flags: "NOSUPERUSER"
-    become_user: postgres
 
   - name: "ensure dbeaver koala user has the right privs"
     postgresql_privs:
@@ -53,4 +47,5 @@
       role: "koala_manual"
       objs: "ALL_IN_SCHEMA"
       privs: "SELECT"
-    become_user: postgres
+
+  become_user: "postgres"

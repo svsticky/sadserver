@@ -82,6 +82,7 @@ server {
 }
 
 
+{% if ('staging' in group_names) %}
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
@@ -112,3 +113,4 @@ server {
     add_header Cache-Control "public";
   }
 }
+{% endif %}

@@ -55,11 +55,6 @@
       privs: "SELECT"
     become_user: postgres
 
-  - name: "remove apt key for mariadb repository"
-    apt_key:
-      url: "https://mariadb.org/mariadb_release_signing_key.asc"
-      state: "absent"
-
   - name: "remove mariadb apt repository"
     apt_repository:
       repo: "deb http://ams2.mirrors.digitalocean.com/mariadb/repo/10.5/ubuntu {{ ansible_lsb.codename }} main"

@@ -1,0 +1,36 @@
+---
+- name: "Ensure doorgeefluik user exists"
+  user:
+    name: "doorgeefluik"
+    state: "present"
+    system: true
+    shell: "/bin/bash"
+  notify: "restart doorgeefluik"
+
+- name: "ensure clone location exists and is owned by doorgeefluik"
+  file:
+    path: "/var/www/doorgeefluik.{{ canonical_hostname }}"
+    state: "directory"
+    owner: "doorgeefluik"
+    group: "doorgeefluik"
+    recurse: true
+
+- name: "clone the repo"
+  git:
+    repo: "github.com:svsticky/doorgeefluik.git"
+    dest: "/var/www/doorgeefluik.{{ canonical_hostname }}"
+  diff: false
+  check_mode: true
+
+- name: "build the binary"
+  command:
+    cmd: ""
+
+- name: "generate dotenv file"
+  copy:
+    src: ".env"
+    dest: "/var/www/doorgeefluik/.env"
+  notify: "restart doorgeefluik"
+
+
+

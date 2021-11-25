@@ -32,12 +32,12 @@
       tags: "radio"
     - role: "auth"
       tags: "auth"
+    - role: "users"
+      tags: "users"
 
   tasks:
     - name: "start process of managing general system settings"
       include_tasks: "tasks/system-settings.yml"
-    - name: "start process of user management"
-      include_tasks: "tasks/users.yml"
     - name: "start process of general package management"
       include_tasks: "tasks/packages.yml"
     - name: "start process of installing sodi website"

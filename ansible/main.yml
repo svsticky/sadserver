@@ -60,8 +60,6 @@
       include_tasks: "tasks/monitoring.yml"
     - name: "start process of configuring radio"
       include_tasks: "tasks/radio.yml"
-    - name: "start process of configuring aas"
-      include_tasks: "tasks/aas.yml"
     - name: "start process of configuring stickypedia"
       include_tasks: "tasks/stickypedia.yml"
     # - name: "start process of configuring the telegram crazy88bot"

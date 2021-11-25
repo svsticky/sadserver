@@ -175,7 +175,6 @@
     state: "present"
   with_items:
     - "static-sticky"
-    - "radio"
 
 - name: "copy general configuration for php"
   template:

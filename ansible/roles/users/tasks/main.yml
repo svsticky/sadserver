@@ -48,7 +48,7 @@
     state: "directory"
   when:
     # List is evaluated as logical AND
-    - item.admin != true
+    - not item.admin
     - item.state == 'present'
   with_items:
     - "{{ users }}"
@@ -60,7 +60,7 @@
     dest: "{{ item.home_prefix }}/{{ item.name }}/.bashrc"
     regexp: "^export PS1="
     line: "{{ bash_prompt }}"
-  when: item.admin == true and item.state == 'present'
+  when: item.admin and item.state == 'present'
   with_items:
     - "{{ users }}"
   loop_control:

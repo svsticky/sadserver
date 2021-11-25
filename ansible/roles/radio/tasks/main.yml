@@ -22,11 +22,9 @@
   - name:
       "template environment file for radio"
     template:
-      src: "templates{{ item }}.j2"
-      dest: "{{ item }}"
+      src: ".env.j2"
+      dest: "/var/www/radio/radio/.env"
     diff: false
-    with_items:
-      - "/var/www/radio/radio/.env"
 
   - name: "clone NVM"
     git:

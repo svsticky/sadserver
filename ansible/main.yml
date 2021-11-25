@@ -28,6 +28,8 @@
       tags: "execut"
     - role: "databases"
       tags: "databases"
+    - role: "radio"
+      tags: "radio"
 
   tasks:
     - name: "start process of managing general system settings"
@@ -58,8 +60,6 @@
       include_tasks: "tasks/public_files.yml"
     - name: "start process of configuring monitoring services"
       include_tasks: "tasks/monitoring.yml"
-    - name: "start process of configuring radio"
-      include_tasks: "tasks/radio.yml"
     - name: "start process of configuring stickypedia"
       include_tasks: "tasks/stickypedia.yml"
     # - name: "start process of configuring the telegram crazy88bot"

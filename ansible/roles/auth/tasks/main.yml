@@ -2,8 +2,8 @@
 # Contains a snapshot of the hostkeys of github.com, so these can be validated
 # at runtime
 - name: "install system-wide known hostkeys"
-  template:
-    src: "templates/etc/ssh/ssh_known_hosts"
+  copy:
+    src: "ssh_known_hosts"
     dest: "/etc/ssh/ssh_known_hosts"
     owner: "root"
     group: "root"
@@ -25,7 +25,7 @@
     create: true
     validate: "visudo -cf %s"
 
-- name: "check if password of admin user is locked"
+- name: "check if password of admin user is locked" # noqa 306
   shell: "passwd --status {{ item.name }} | awk '{print $2}'"
   register: "admin_passwords"
   with_items: "{{ users }}"
@@ -144,10 +144,8 @@
 
 - name: "copy hardened sshd configuration"
   template:
-    src: "templates/{{ path }}.j2"
-    dest: "/{{ path }}"
-  vars:
-    path: "etc/ssh/sshd_config"
+    src: "sshd_config.j2"
+    dest: "/etc/ssh/sshd_config"
   notify: "reboot server"
 
 # Make sure the "reboot server" handler is run now (when notified), and not just

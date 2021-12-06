@@ -14,31 +14,25 @@
     mode: "0440"
     validate: "/usr/sbin/visudo -cf %s"
 
-- block:
-  - name:
-      "clone aas repository"
-    git:
-      repo: "https://github.com/svsticky/aas.git"
-      dest: "/var/www/aas/aas.{{ canonical_hostname }}"
-      version: "master"
-    diff: false
-    register: "aas_clone"
+- name: "add cachix cache"
+  command: "cachix use svsticky-aas"
 
-  - name:
-      "template environment file for aas"
-    template:
-      src: ".env.j2"
-      dest: "/var/www/aas/aas.{{ canonical_hostname }}/.env"
-    notify: "restart aas"
+- name: "fetch the aas binaries"
+  command:
+    cmd: "nix-store --realize --add-root /nix/var/nix/gcroots/aas-env {{ secret_aas.nix_pin }}"
 
-  - name: "Ensure nix environment is built"
-    command: "nix-build"
-    args:
-      chdir: "/var/www/aas/aas.{{ canonical_hostname }}"
-    when: "aas_clone is changed"
-    notify: "restart aas"
+- name: "ensure config directory exists"
+  file:
+    path: "/etc/aas"
+    state: "directory"
 
-  become_user: "aas"
+- name: "create environment file"
+  template:
+    src: ".env.j2"
+    dest: "/etc/aas/.env"
+    owner: "root"
+    mode: "0600"
+  notify: "restart aas"
 
 - name:
     "copy systemd service of aas"

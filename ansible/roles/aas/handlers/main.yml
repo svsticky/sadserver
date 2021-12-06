@@ -1,0 +1,5 @@
+---
+- name: "restart aas"
+  systemd:
+    unit: "aas.service"
+    state: "restarted"

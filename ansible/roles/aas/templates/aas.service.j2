@@ -11,15 +11,13 @@ User=aas
 Group=www-data
 Restart=always
 
-WorkingDirectory=/var/www/aas/aas.{{ canonical_hostname }}
-
 RuntimeDirectory=aas
 RuntimeDirectoryMode=0770
 
-EnvironmentFile=/var/www/aas/aas.{{ canonical_hostname }}/.env 
-ExecStart=/usr/local/bin/nix run -c gunicorn \
+EnvironmentFile=/etc/aas/.env
+ExecStart={{ secret_aas.nix_pin }}/bin/gunicorn aas:aas \
                                       --workers 4 \
-                                      --bind unix:/run/aas/gunicorn.sock aas:aas
+                                      --bind unix:/run/aas/gunicorn.sock
 
 [Install]
 WantedBy=multi-user.target

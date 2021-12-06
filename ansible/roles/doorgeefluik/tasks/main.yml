@@ -1,4 +1,9 @@
 ---
+# FOOKING HELL I THREW EVERYTHING AWAY
+# COPY DATABASE SHIT FROM EXECUTE
+# and do something with sudo ^Cx-store --realize /nix/store/iq88326gdvrkcnl7j4dzbnv1jfzkv8kl-app --add-root ./deploy --indirect
+
+
 - name: "Ensure doorgeefluik user exists"
   user:
     name: "doorgeefluik"

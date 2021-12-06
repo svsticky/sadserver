@@ -4,3 +4,5 @@ skip_list:
   # Comparing to an empty string is sometimes just necessary, ansible-lint is just too strict here
   # Complete discussion here: https://github.com/ansible-community/ansible-lint/issues/450
   - 602
+  # We run commands, deal with it
+  - 301

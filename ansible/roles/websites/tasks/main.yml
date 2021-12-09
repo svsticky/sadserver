@@ -1,0 +1,90 @@
+---
+
+# This task is used for websites which use the default nginx config, and need
+# its webroot to be created.
+- name: "create directories for regular websites"
+  file:
+    path:
+      "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
+      item.name }}"
+    owner: "www-data"
+    group: "{{ item.user | default(omit) }}"
+    mode: "2775"
+    state: "directory"
+  with_items: "{{ websites }}"
+  when:
+    # List is evaluated as logical AND
+    - item.state == "present"
+    - "item.custom_config is undefined or not item.custom_config"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "copy nginx configurations for regular websites"
+  template:
+    src: "templates/etc/nginx/sites-available/website.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
+  with_items: "{{ websites }}"
+  when:
+    # List is evaluated as logical AND
+    - item.state == "present"
+    - "item.custom_config is undefined or not item.custom_config"
+  notify: "reload nginx"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "enable regular nginx configurations"
+  file:
+    src: "/etc/nginx/sites-available/{{ item.name }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
+    state: "link"
+  with_items: "{{ websites }}"
+  when:
+    # List is evaluated as logical AND
+    - item.state == "present"
+    - "item.custom_config is undefined or not item.custom_config"
+  notify: "reload nginx"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "copy custom nginx configurations"
+  template:
+    src: "templates/etc/nginx/sites-available/{{ item.src }}.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ item.dest }}.conf"
+  with_items:
+    - src: "dgdarc"
+      dest: "dgdarc.{{ canonical_hostname }}"
+    - src: "savadaba"
+      dest: "savadaba.{{ canonical_hostname }}"
+    - src: "wintersport"
+      dest: "wintersport.{{ canonical_hostname }}"
+    - src: "intro-cs"
+      dest: "intro-cs.{{ canonical_hostname }}"
+  notify: "reload nginx"
+  loop_control:
+    label: "{{ item.dest }}"
+
+- name: "enable custom nginx configurations"
+  file:
+    src: "/etc/nginx/sites-available/{{ item }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item }}.conf"
+    state: "link"
+  with_items:
+    - "dgdarc.{{ canonical_hostname }}"
+    - "savadaba.{{ canonical_hostname }}"
+    - "wintersport.{{ canonical_hostname }}"
+    - "intro-cs.{{ canonical_hostname }}"
+  notify: "reload nginx"
+
+- name: "delete nginx configurations of absent websites"
+  file:
+    path: "/etc/nginx/{{ item[0] }}/{{ item[1].name }}.conf"
+    state: "absent"
+  with_nested:
+    -
+      - "sites-available"
+      - "sites-enabled"
+    - "{{ websites }}"
+  when: item[1].state == "absent"
+  notify: "reload nginx"
+  loop_control:
+    label: "{{ item[0] }}/{{ item[1].name }}.conf"

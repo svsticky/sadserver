@@ -1,4 +1,20 @@
 ---
+- name: "create user for static-sticky"
+  user:
+    name: "static-sticky"
+    home: "/var/www/static-sticky"
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: "present"
+
+- name: "create static-sticky directory"
+  file:
+    path: "/var/www/static-sticky"
+    owner: "static-sticky"
+    group: "static-sticky"
+    mode: "2775"
+    state: "directory"
+
 - name: "copy systemd service for deploying static-sticky"
   copy:
     src: "deploy-static-sticky.service"
@@ -37,3 +53,16 @@
   systemd:
     name: "deploy-static-sticky.service"
     state: "started"
+
+- name: "copy nginx configuration"
+  template:
+    src: "svsticky.conf.j2"
+    dest: "/etc/nginx/sites-available/svsticky.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/svsticky.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/svsticky.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

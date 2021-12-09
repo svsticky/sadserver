@@ -21,7 +21,7 @@
 
 - name: "copy nginx configurations for regular websites"
   template:
-    src: "templates/etc/nginx/sites-available/website.conf.j2"
+    src: "website.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
   with_items: "{{ websites }}"
   when:
@@ -48,7 +48,7 @@
 
 - name: "copy custom nginx configurations"
   template:
-    src: "templates/etc/nginx/sites-available/{{ item.src }}.conf.j2"
+    src: "{{ item.src }}.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.dest }}.conf"
   with_items:
     - src: "dgdarc"

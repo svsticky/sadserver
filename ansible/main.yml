@@ -40,10 +40,10 @@
       tags: "users"
     - role: "sodi"
       tags: "sodi"
+    - role: "firewall"
+      tags: "firewall"
 
   tasks:
-    - name: "start process of configuring firewall"
-      include_tasks: "tasks/firewall.yml"
     - name: "start process of configuring the webserver"
       include_tasks: "tasks/nginx.yml"
     - name: "start process of configuring backup processes"

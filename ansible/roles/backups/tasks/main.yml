@@ -1,0 +1,71 @@
+---
+- name: "add backup user"
+  user:
+    name: "backup"
+    shell: "/usr/sbin/nologin"
+    home: "/home/backup"
+    system: true
+
+- name: "install awscli"
+  apt:
+    name: "awscli"
+    state: "present"
+
+- name: "ensure aws cli configuration folders are present"
+  file:
+    path: "{{ item.path }}/.aws"
+    owner: "{{ item.owner }}"
+    group: "{{ item.owner }}"
+    state: "directory"
+  with_items:
+    - path: "/home/ansible"
+      owner: "ansible"
+    - path: "/root"
+      owner: "root"
+
+- name: "ensure aws cli configuration is present"
+  template:
+    src: "config.j2"
+    dest: "/home/ansible/.aws/config"
+    mode: "600"
+  become: false
+
+- name: "ensure aws cli configuration is linked for root user"
+  file:
+    src: "/home/ansible/.aws/config"
+    path: "/root/.aws/config"
+    state: "link"
+
+- name: "ensure aws cli script is present, with correct permissions"
+  template:
+    src: "backup-to-s3.sh.j2"
+    dest: "/usr/local/bin/backup-to-s3.sh"
+    mode: "0700"
+
+- name: "ensure backup services and timers are present"
+  template:
+    src: "systemd/{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  loop:
+    - "backup-admins.service"
+    - "backup-admins.timer"
+    - "backup-contentful.service"
+    - "backup-contentful.timer"
+    - "backup-postgres.service"
+    - "backup-postgres.timer"
+    - "backup-websites.service"
+    - "backup-websites.timer"
+  notify:
+    - "systemctl daemon-reload"
+
+- name: "start and enable backup timers in production"
+  service:
+    name: "{{ item }}"
+    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
+    state:
+      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
+  loop:
+    - "backup-admins.timer"
+    - "backup-contentful.timer"
+    - "backup-postgres.timer"
+    - "backup-websites.timer"

@@ -42,12 +42,12 @@
       tags: "sodi"
     - role: "firewall"
       tags: "firewall"
+    - role: "backups"
+      tags: "backups"
 
   tasks:
     - name: "start process of configuring the webserver"
       include_tasks: "tasks/nginx.yml"
-    - name: "start process of configuring backup processes"
-      include_tasks: "tasks/backups.yml"
     - name: "start process of configuring redis"
       include_tasks: "tasks/redis.yml"
     - name: "start process of installing Nix"

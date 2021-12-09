@@ -20,26 +20,6 @@ server {
 
   include includes/security-headers.conf;
 
-  location = /submitRegistration {
-    proxy_pass http://localhost:25565/submitRegistration;
-  }
-
-  location = /getRegistration {
-    proxy_pass http://localhost:25565/getRegistration;
-  }
-
-  location = /updateRegistration {
-    proxy_pass http://localhost:25565/updateRegistration;
-  }
-
-  location = /deleteRegistration {
-    proxy_pass http://localhost:25565/deleteRegistration;
-  }
-
-  location = /getAllRegistrations {
-    proxy_pass http://localhost:25565/getAllRegistrations;
-  }
-
   location ~* /helperworden {
     return 302 https://forms.gle/XboCrsfwJrEbobux7;
   }

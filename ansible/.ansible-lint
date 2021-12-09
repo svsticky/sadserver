@@ -6,3 +6,5 @@ skip_list:
   - 602
   # We run commands, deal with it
   - 301
+  # We don't always want to set explicit version for packages
+  - 403

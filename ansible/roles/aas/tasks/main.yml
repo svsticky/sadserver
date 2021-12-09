@@ -34,6 +34,19 @@
     mode: "0600"
   notify: "restart aas"
 
+- name: "copy nginx configuration"
+  template:
+    src: "aas.conf.j2"
+    dest: "/etc/nginx/sites-available/aas.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/aas.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/aas.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
 - name:
     "copy systemd service of aas"
   template:

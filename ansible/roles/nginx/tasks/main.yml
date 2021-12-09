@@ -1,0 +1,158 @@
+---
+- name: "install nginx, openssl and fancyindex"
+  apt:
+    name:
+      - "nginx"
+      - "openssl"
+      - "libnginx-mod-http-fancyindex"
+    state: "present"
+
+- name: "create directories for onfailure override for nginx"
+  file:
+    path: "/etc/systemd/system/nginx.service.d"
+    state: "directory"
+
+- name: "copy onfailure override for nginx"
+  template:
+    src: "onfailure-override.conf.j2"
+    dest: "/etc/systemd/system/nginx.service.d/onfailure.conf"
+  notify: "systemctl daemon-reload"
+
+- name: "create nginx includes directory"
+  file:
+    path: "/etc/nginx/includes"
+    state: "directory"
+
+- name: "copy nginx include files"
+  template:
+    src: "includes/{{ item }}.j2"
+    dest: "/etc/nginx/includes/{{ item }}"
+  loop:
+    - "block-cert-validation-path.conf"
+    - "execut-referer-tracking.conf"
+    - "php-parameters.conf"
+    - "security-headers.conf"
+  notify: "reload nginx"
+
+- name: "copy general configuration file for nginx"
+  template:
+    src: "nginx.conf.j2"
+    dest: "/etc/nginx/nginx.conf"
+  notify: "reload nginx"
+
+- name: "ensure stock nginx configuration is not present"
+  file:
+    path: "/etc/nginx/{{ item }}"
+    state: "absent"
+  loop:
+    - "sites-available/default"
+    - "sites-enabled/default"
+  notify: "reload nginx"
+
+- name: "copy dhparams"
+  copy:
+    src: "dhparams.pem"
+    dest: "/etc/nginx/dhparams.pem"
+  notify: "reload nginx"
+
+- name: "copy default nginx configuration"
+  template:
+    src: "sites-available/default.conf.j2"
+    dest: "/etc/nginx/sites-available/default.conf"
+  notify: "reload nginx"
+
+- name: "enable default nginx config"
+  file:
+    src: "/etc/nginx/sites-available/default.conf"
+    path: "/etc/nginx/sites-enabled/default"
+    state: "link"
+  notify: "reload nginx"
+
+# This enables the nginx service, and starts it if necessary. Certbot depends on
+# this.
+- name: "enable and start nginx"
+  service:
+    name: "nginx"
+    enabled: true
+    state: "started"
+
+- name: "Delete default html directory"
+  file:
+    path: "/var/www/html"
+    state: "absent"
+
+- name: "install certbot"
+  apt:
+    name: "certbot"
+    state: "latest"
+
+# This directory will be used to validate all websites that need a certificate
+- name: "create acme-challenges directory"
+  file:
+    path: "/var/www/acme-challenges"
+    state: "directory"
+    owner: "root"
+    group: "www-data"
+    # The 2xxx octal means the group setuid bit is set, meaning all files that
+    # get created in this directory will have the group `www-data`.
+    mode: "2750"
+
+- name: "create folders for certbot renewal override"
+  file:
+    path: "/etc/systemd/system/{{ item }}"
+    state: "directory"
+  with_items:
+    - "certbot.service.d"
+    - "certbot.timer.d"
+
+- name: "override parameters of certbot's renewal service+timer"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - "certbot.service.d/override.conf"
+    - "certbot.service.d/onfailure.conf"
+    - "certbot.timer.d/override.conf"
+  notify: "systemctl daemon-reload"
+
+# To make sure nginx is reloaded if needed
+- meta: "flush_handlers"
+
+- name: "request certificates"
+  # --non-interactive makes sure command never waits for user input
+  # --keep-until-expiring makes sure cert only gets renewed when cert is
+  # actually close to expiring
+  # --expand enables adding more SAN's to the same cert lineage later on
+  # --webroot sets domain validation method
+  # --domain adds main hostname of a website as CN and SAN, and all alternative
+  # hostnames as SAN's
+  # --deploy-hook reloads nginx after a successful issuance, and adds this in
+  # the renewal configuration of the certificate
+  command: >-
+    certbot certonly
+    --non-interactive
+    --agree-tos
+    --email "domreg@svsticky.nl"
+    --keep-until-expiring
+    --cert-name {{ item.name }}
+    --webroot
+    --webroot-path /var/www/acme-challenges
+    --domain {{ item.name }}
+    {% if 'staging' not in group_names %}
+    {% for hostname in item.alternative_names %}
+    --domain {{ hostname }}
+    {% endfor %}
+    {% endif %}
+    --deploy-hook "systemctl reload nginx"
+  with_items: "{{ websites }}"
+  register: "certbot_output"
+  changed_when: "'no action taken' not in certbot_output.stdout"
+  when: item.state == "present"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "ensure certbot timer is started in production"
+  service:
+    name: "certbot.timer"
+    enabled: true
+    state: "started"

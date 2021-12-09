@@ -26,11 +26,6 @@
     state: "reloaded"
   listen: "reload nginx"
 
-- name: "reload php"
-  service:
-    name: "php7.4-fpm"
-    state: "reloaded"
-
 - name: "systemctl daemon-reload"
   systemd:
     daemon_reload: true

@@ -38,10 +38,10 @@
       tags: "auth"
     - role: "users"
       tags: "users"
+    - role: "sodi"
+      tags: "sodi"
 
   tasks:
-    - name: "start process of installing sodi website"
-      include_tasks: "tasks/sodi.yml"
     - name: "start process of configuring firewall"
       include_tasks: "tasks/firewall.yml"
     - name: "start process of configuring the webserver"

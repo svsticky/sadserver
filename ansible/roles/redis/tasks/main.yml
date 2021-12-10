@@ -1,0 +1,37 @@
+---
+# Contains tasks needed to set up Redis
+- name: "ensure Redis server and client are present"
+  apt:
+    name:
+      - "redis-server"
+      - "redis-tools"
+    state: "present"
+
+- name: "create directory for onfailure override for redis service"
+  file:
+    path: "/etc/systemd/system/redis-server.service.d"
+    state: "directory"
+
+- name: "copy onfailure override for redis service"
+  template:
+    src: "onfailure-override.conf.j2"
+    dest: "/etc/systemd/system/redis-server.service.d/onfailure.conf"
+  notify: "systemctl daemon-reload"
+
+- name: "place Redis config file"
+  template:
+    src: "redis.conf.j2"
+    dest: "/etc/redis/redis.conf"
+    owner: "redis"
+    group: "redis"
+    mode: "0640"
+  notify:
+    - "restart redis"
+
+- name: "ensure Redis server is running and enabled"
+  service:
+    name: "redis-server"
+    enabled: true
+    state: "started"
+  tags:
+    - "service"

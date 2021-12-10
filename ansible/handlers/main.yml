@@ -16,11 +16,6 @@
     name: "fail2ban"
     state: "restarted"
 
-- name: "restart redis"
-  service:
-    name: "redis-server"
-    state: "restarted"
-
 - name: "test nginx configuration"
   command: "nginx -t"
   listen: "reload nginx"

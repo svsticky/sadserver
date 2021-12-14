@@ -14,20 +14,22 @@
     group: "www-data"
     state: "directory"
 
+# The theming generation can be found at https://github.com/svsticky/fancy-index
 - name: "copy Fancy Index theme"
-  template:
+  copy:
     src: "{{ item }}"
-    dest:
-      "/var/www/public.{{ canonical_hostname }}/theme/\
-      {{ item | basename | regex_replace('\\.j2$','') }}"
+    dest: "/var/www/public.{{ canonical_hostname }}/theme/{{ item }}"
     owner: "www-data"
     group: "www-data"
-  with_fileglob:
-    - "../templates/var/www/public/theme/*"
+  loop:
+    - "footer.html"
+    - "header.html"
+    - "style.css"
+    - "fa-brands-400.ttf"
 
 - name: "copy NGiNX site config Fancy Index"
   template:
-    src: "etc/nginx/sites-available/public.conf.j2"
+    src: "public.conf.j2"
     dest: "/etc/nginx/sites-available/public.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 

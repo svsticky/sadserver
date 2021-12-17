@@ -50,7 +50,7 @@
       tags: "oauth"
     - role: "public_files"
       tags: "public"
-    - role: "files_websites"
+    - role: "files_website"
       tags: "files"
 
   tasks:

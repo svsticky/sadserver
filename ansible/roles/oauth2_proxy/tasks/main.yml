@@ -1,8 +1,9 @@
 ---
-- set_fact:
-    oauthproxy_filename: "oauth2_proxy-v5.1.1.linux-amd64.go1.14.2"
-    oauthproxy_version: "v5.1.1"
-    oauthproxy_checksum: "sha256:5cbcec177b069b588bb6bd212a4e2a901c49a8a359590cbe669c74c267aa2e89"
+- name: "set proxy version"
+  set_fact:
+    oauthproxy_filename: "oauth2-proxy-v7.2.0.linux-amd64"
+    oauthproxy_version: "v7.2.0"
+    oauthproxy_checksum: "sha256:db0f19b7d5533aecdbb352d0bbbf26a85733b74729d74a68babe7b3d7a69496b"
 
 - name: "download oauth2_proxy and verify checksum"
   get_url:
@@ -27,13 +28,13 @@
 
 - name: "copy oauth2_proxy config"
   template:
-    src: "templates/etc/oauth2_proxy/config.cfg.j2"
+    src: "config.cfg.j2"
     dest: "/etc/oauth2_proxy/config.cfg"
   notify: "restart oauth2-proxy"
 
 - name: "install systemd service"
   template:
-    src: "templates/etc/systemd/system/oauth2-proxy.service.j2"
+    src: "oauth2-proxy.service.j2"
     dest: "/etc/systemd/system/oauth2-proxy.service"
   notify: "systemctl daemon-reload"
 
@@ -52,13 +53,13 @@
 
 - name: "copy oauth2_proxy admin config"
   template:
-    src: "templates/etc/oauth2_proxy/admin-config.cfg.j2"
+    src: "admin-config.cfg.j2"
     dest: "/etc/oauth2_proxy/admin-config.cfg"
   notify: "restart oauth2-proxy-admin"
 
 - name: "install systemd service"
   template:
-    src: "templates/etc/systemd/system/oauth2-proxy-admin.service.j2"
+    src: "oauth2-proxy-admin.service.j2"
     dest: "/etc/systemd/system/oauth2-proxy-admin.service"
   notify: "systemctl daemon-reload"
 

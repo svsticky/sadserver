@@ -75,16 +75,18 @@
     - "intro-cs.{{ canonical_hostname }}"
   notify: "reload nginx"
 
-- name: "delete nginx configurations of absent websites"
+- name: "delete nginx configuration (sites-enabled) of absent websites"
   file:
-    path: "/etc/nginx/{{ item[0] }}/{{ item[1].name }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
     state: "absent"
-  with_nested:
-    -
-      - "sites-available"
-      - "sites-enabled"
-    - "{{ websites }}"
-  when: item[1].state == "absent"
+  with_items: "{{ websites }}"
+  when: item.state == "absent"
   notify: "reload nginx"
-  loop_control:
-    label: "{{ item[0] }}/{{ item[1].name }}.conf"
+
+- name: "delete nginx configuration (sites-available) of absent websites"
+  file:
+    path: "/etc/nginx/sites-available/{{ item.name }}.conf"
+    state: "absent"
+  with_items: "{{ websites }}"
+  when: item.state == "absent"
+  notify: "reload nginx"

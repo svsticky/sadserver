@@ -3,6 +3,9 @@
 # COPY DATABASE SHIT FROM EXECUTE
 # and do something with sudo ^Cx-store --realize /nix/store/iq88326gdvrkcnl7j4dzbnv1jfzkv8kl-app --add-root ./deploy --indirect
 
+- name: "Set variables"
+  set_fact:
+    doorgeefluik_nix_path: /nix/store/8dksp4clx7z5nlaa6hs9asf7rnb7zi15-app
 
 - name: "Ensure doorgeefluik user exists"
   user:
@@ -12,30 +15,45 @@
     shell: "/bin/bash"
   notify: "restart doorgeefluik"
 
-- name: "ensure clone location exists and is owned by doorgeefluik"
-  file:
-    path: "/var/www/doorgeefluik.{{ canonical_hostname }}"
-    state: "directory"
+- name: "ensure database user exists"
+  postgresql_user:
+    name: "doorgeefluik"
+  become_user: "postgres"
+  become: true
+
+- name: "ensure database exists"
+  postgresql_db:
+    name: "doorgeefluik"
     owner: "doorgeefluik"
-    group: "doorgeefluik"
-    recurse: true
+  become_user: "postgres"
+  become: true
 
-- name: "clone the repo"
-  git:
-    repo: "github.com:svsticky/doorgeefluik.git"
-    dest: "/var/www/doorgeefluik.{{ canonical_hostname }}"
-  diff: false
-  check_mode: true
+- name: "ensure database user has the right privileges"
+  postgresql_user:
+    db: "doorgeefluik"
+    name: "doorgeefluik"
+    priv: "ALL"
+    role_attr_flags: "CREATEDB,LOGIN"
+  become_user: "postgres"
+  become: true
+  ignore_errors: "{{ ansible_check_mode }}"
 
-- name: "build the binary"
+- name: "get the app from cachix"
   command:
-    cmd: ""
+    cmd: "nix-store --realize {{ doorgeefluik_nix_path }} --add-root ./deploy --indirect"
+  become: true
 
-- name: "generate dotenv file"
-  copy:
-    src: ".env"
-    dest: "/var/www/doorgeefluik/.env"
-  notify: "restart doorgeefluik"
+- name: "Run the migrations"
+  shell:
+    cmd: "psql < {{doorgeefluik_nix_path}}/lib/migrations/1637606752-initial-migration.sql"
+  become: true
+  become_user: "doorgeefluik"
+
+- name: "Run the seed script"
+  shell:
+    cmd: "DATABASE_URL=\"postgresql:///doorgeefluik\" {{doorgeefluik_nix_path}}/bin/SeedDatabase"
+  become: true
+  become_user: "doorgeefluik"
 
 
-
+  #// postgresql:///doorgeefluik

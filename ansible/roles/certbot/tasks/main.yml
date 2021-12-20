@@ -29,8 +29,8 @@
     src: "{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}"
   with_items:
+    - "onfailure.conf"
     - "certbot.service.d/override.conf"
-    - "certbot.service.d/onfailure.conf"
     - "certbot.timer.d/override.conf"
   notify: "systemctl daemon-reload"
 

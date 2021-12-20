@@ -14,7 +14,7 @@
 
 - name: "copy onfailure override for nginx"
   template:
-    src: "onfailure-override.conf.j2"
+    src: "onfailure.conf.j2"
     dest: "/etc/systemd/system/nginx.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 

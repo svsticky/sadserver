@@ -25,6 +25,7 @@
   file:
     path: "/etc/php/7.4/fpm/pool.d/www.conf"
     state: "absent"
+  notify: "reload php"
 
 - name: "template php-fpm pool configurations"
   template:

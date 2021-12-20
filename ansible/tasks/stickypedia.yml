@@ -1,76 +1,43 @@
 ---
-- name: "create stickypedia user"
+- name: "stop stickypedia service"
+  systemd:
+    unit: "stickypedia.service"
+    state: "stopped"
+
+- name: "remove stickypedia user"
   user:
     name: "stickypedia"
     shell: "/usr/sbin/nologin"
     home: "/var/www/stickypedia"
     system: true
+    state: "absent"
 
-- name: "install prerequisites for gollum"
+- name: "remove prerequisites for gollum"
   apt:
     name:
       - "ruby"
       - "ruby-dev"
-      - "make"
-      - "zlib1g-dev"
       - "libicu-dev"
-      - "build-essential"
-      - "git"
-      - "cmake"
-      - "pkg-config"
-    state: "present"
+    state: "absent"
   become: true
 
-- name: "make sure gem is at a version compatible with gollum"
-  shell: "gem update --system 3.0.6"
-
-- block:
-    - name: "create working directory"
-      file:
-        path: "/var/www/stickypedia/stickypedia.{{ canonical_hostname }}"
-        state: "directory"
-        mode: "0700"
-
-    - name: "copy gollum startup script"
-      template:
-        src: "templates/var/www/stickypedia/start-gollum.sh.j2"
-        dest: "~/start-gollum.sh"
-        mode: "0770"
-      notify: "restart stickypedia"
-
-    - name: "install gem gollum"
-      gem:
-        name: "gollum"
-        version: "5.1.2"
-        state: "present"
-      environment:
-        PATH: "/var/www/stickypedia/.gem/ruby/2.7.0/bin:{{ ansible_env.PATH }}"
-      notify: "restart stickypedia"
-
-  become_user: "stickypedia"
-
-- name: "copy systemd service for stickypedia"
-  template:
-    src: "templates/etc/systemd/system/stickypedia.service.j2"
-    dest: "/etc/systemd/system/stickypedia.service"
-  notify: "restart stickypedia"
-
-- name: "copy nginx configuration for stickypedia"
-  template:
-    src: "templates/etc/nginx/sites-available/stickypedia.conf.j2"
-    dest: "/etc/nginx/sites-available/stickypedia.conf"
-  notify: "reload nginx"
-
-- name: "enable nginx config"
+- name: "remove working directory"
   file:
-    src: "/etc/nginx/sites-available/stickypedia.conf"
-    path: "/etc/nginx/sites-enabled/stickypedia.{{ canonical_hostname }}.conf"
-    state: "link"
-  notify: "reload nginx"
+    path: "/var/www/stickypedia/stickypedia.{{ canonical_hostname }}"
+    state: "absent"
 
-- name: "run stickypedia service"
-  systemd:
-    unit: "stickypedia.service"
-    state: "started"
-    enabled: true
-    daemon-reload: true
+- name: "remove systemd service for stickypedia"
+  file:
+    path: "/etc/systemd/system/stickypedia.service"
+    state: "absent"
+
+- name: "remove nginx configuration for stickypedia"
+  file:
+    path: "/etc/nginx/sites-available/stickypedia.conf"
+    state: "absent"
+
+- name: "remove nginx config"
+  file:
+    path: "/etc/nginx/sites-enabled/stickypedia.{{ canonical_hostname }}.conf"
+    state: "absent"
+

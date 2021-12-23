@@ -30,13 +30,3 @@
     delay: 20
   listen: "reboot server"
 
-- name: "restart crazy88bot"
-  systemd:
-    unit: "crazy88bot.service"
-    state: "restarted"
-  when: "'production' in group_names"
-
-- name: "restart crazy88bot"
-  systemd:
-    unit: "crazy88bot.service"
-    state: "restarted"

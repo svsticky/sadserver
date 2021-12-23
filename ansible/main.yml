@@ -60,6 +60,9 @@
       tags: "public"
     - role: "files_website"
       tags: "files"
+    # We only want to deploy the crazy88 role when specifically requested
+    - role: "crazy88bot"
+      tags: ["never", "crazy88bot"]
 
   tasks:
     - name: "start process of installing Nix"
@@ -68,8 +71,6 @@
       include_tasks: "tasks/monitoring.yml"
     - name: "start process of configuring stickypedia"
       include_tasks: "tasks/stickypedia.yml"
-    # - name: "start process of configuring the telegram crazy88bot"
-    #   include_tasks: "tasks/crazy88bot.yml"
 
 
   post_tasks:

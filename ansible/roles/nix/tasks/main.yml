@@ -45,3 +45,12 @@
     dest: "/usr/local/bin/cachix"
     state: "link"
   become: true
+
+# Only trusted users can use the binary cache
+# See: https://nixos.org/manual/nix/stable/installation/multi-user.html#multi-user-mode
+- name: "set ansible user as trusted Nix user"
+  lineinfile:
+    path: "/etc/nix/nix.conf"
+    regexp: "^trusted-users"
+    line: "trusted-users = ansible"
+  notify: "restart nix-daemon"

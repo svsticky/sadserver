@@ -96,7 +96,5 @@
 
 - name: "configure slacktee"
   template:
-    src: "templates/{{ item }}"
-    dest: "/{{ item }}"
-  with_items:
-    - "etc/slacktee.conf"
+    src: "slacktee.conf"
+    dest: "/etc/slacktee.conf"

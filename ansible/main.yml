@@ -71,8 +71,6 @@
       include_tasks: "tasks/nix.yml"
     - name: "start process of configuring monitoring services"
       include_tasks: "tasks/monitoring.yml"
-    - name: "start process of configuring stickypedia"
-      include_tasks: "tasks/stickypedia.yml"
 
 
   post_tasks:

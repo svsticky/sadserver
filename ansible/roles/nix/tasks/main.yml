@@ -12,6 +12,12 @@
   args:
     creates: "/nix"
 
+- name: "Update Nix to the latest version"
+  shell: "nix-channel --update && nix-env -iA nixpkgs.nix nixpkgs.cacert"
+  notify:
+    - "systemctl daemon-reload"
+    - "restart nix-daemon"
+
 - name: "Make Nix programs available without sourcing shell stuff"
   with_items:
     - "nix"

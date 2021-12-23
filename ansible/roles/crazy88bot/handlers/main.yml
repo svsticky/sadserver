@@ -1,0 +1,5 @@
+---
+- name: "restart crazy88bot"
+  systemd:
+    unit: "crazy88bot.service"
+    state: "restarted"

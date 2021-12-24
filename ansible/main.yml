@@ -69,11 +69,7 @@
       tags: ["never", "crazy88bot"]
     - role: "doorgeefluik"
       tags: "doorgeefluik"
-
-
-  post_tasks:
     # Included the last, so any service that fail2ban is applied to, already
     # exists. Otherwise fail2ban would miss the log files it has to monitor.
-    - name: "start process of configuring fail2ban"
-      include_tasks: "tasks/fail2ban.yml"
+    - role: "fail2ban"
       tags: "always"

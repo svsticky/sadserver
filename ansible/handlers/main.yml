@@ -1,16 +1,4 @@
 ---
-- name: "restart oauth2-proxy"
-  service:
-    name: "oauth2-proxy"
-    state: "restarted"
-  listen: "restart oauth2-proxy"
-
-- name: "restart oauth2-proxy (admin)"
-  service:
-    name: "oauth2-proxy-admin"
-    state: "restarted"
-  listen: "restart oauth2-proxy-admin"
-
 - name: "restart fail2ban"
   service:
     name: "fail2ban"

@@ -57,12 +57,12 @@
 - name: "copy nginx configuration"
   template:
     src: "svsticky.conf.j2"
-    dest: "/etc/nginx/sites-available/svsticky.{{ canonical_hostname }}.conf"
+    dest: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx configuration"
   file:
-    src: "/etc/nginx/sites-available/svsticky.{{ canonical_hostname }}.conf"
-    path: "/etc/nginx/sites-enabled/svsticky.{{ canonical_hostname }}.conf"
+    src: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ canonical_hostname }}.conf"
     state: "link"
   notify: "reload nginx"

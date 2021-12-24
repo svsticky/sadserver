@@ -24,12 +24,17 @@
     - "certbot.service.d"
     - "certbot.timer.d"
 
+- name: "place onfailure override"
+  template:
+    src: "onfailure.conf.j2"
+    dest: "/etc/systemd/system/certbot.service.d/onfailure.conf"
+  notify: "systemctl daemon-reload"
+
 - name: "override parameters of certbot's renewal service+timer"
   template:
     src: "{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}"
   with_items:
-    - "onfailure.conf"
     - "certbot.service.d/override.conf"
     - "certbot.timer.d/override.conf"
   notify: "systemctl daemon-reload"

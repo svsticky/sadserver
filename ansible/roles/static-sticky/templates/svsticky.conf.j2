@@ -86,7 +86,16 @@ server {
     proxy_pass http://localhost:19531;
   }
 
+  location @doorgeefluik {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host "doorgeefluik.{{canonical_hostname}}";
+    proxy_intercept_errors on;
+    error_page 404 /404.html;
+    proxy_pass http://localhost:1515/visit$request_uri;
+  }
+
   location / {
-    try_files $uri $uri/ =404;
+    try_files $uri $uri/ @doorgeefluik;
   }
 }

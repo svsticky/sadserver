@@ -1,11 +1,14 @@
 ---
-# FOOKING HELL I THREW EVERYTHING AWAY
-# COPY DATABASE SHIT FROM EXECUTE
-# and do something with sudo ^Cx-store --realize /nix/store/iq88326gdvrkcnl7j4dzbnv1jfzkv8kl-app --add-root ./deploy --indirect
+
+- name: "download latest release"
+  uri:
+    url: "https://api.github.com/repos/svsticky/doorgeefluik/releases/latest"
+    return_content: true
+  register: "latest_doorgeefluik_release"
 
 - name: "Set variables"
   set_fact:
-    doorgeefluik_nix_path: /nix/store/8dksp4clx7z5nlaa6hs9asf7rnb7zi15-app
+    doorgeefluik_nix_path: "{{ lookup('url', latest_doorgeefluik_release.json.assets[0].browser_download_url) }}"
 
 - name: "Ensure doorgeefluik user exists"
   user:
@@ -55,5 +58,33 @@
   become: true
   become_user: "doorgeefluik"
 
+- name:
+    "copy systemd service of doorgeefluik"
+  template:
+    src: "doorgeefluik.service.j2"
+    dest: "/etc/systemd/system/doorgeefluik.service"
+  notify: "restart doorgeefluik"
 
-  #// postgresql:///doorgeefluik
+- name: "run doorgeefluik service"
+  systemd:
+    unit: "doorgeefluik.service"
+    state: "started"
+    enabled: true
+    daemon-reload: true
+
+- name: "place doorgeefluik's nginx configuration"
+  template:
+    src: "doorgeefluik.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ dest_filename }}"
+  vars:
+    dest_filename: "doorgeefluik.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable doorgeefluik's nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/{{ filename }}"
+    dest: "/etc/nginx/sites-enabled/{{ filename }}"
+    state: "link"
+  vars:
+    filename: "doorgeefluik.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"

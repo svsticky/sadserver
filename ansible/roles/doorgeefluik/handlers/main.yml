@@ -1,0 +1,15 @@
+---
+- name: "check if doorgeefluik is running"
+  systemd:
+    name: "doorgeefluik.service"
+    state: "started"
+  check_mode: true
+  register: "doorgeefluik_running"
+  listen: "restart doorgeefluik"
+
+- name: "restart doorgeefluik service"
+  service:
+    name: "doorgeefluik"
+    state: "restarted"
+  when: "doorgeefluik_running is not changed"
+  listen: "restart doorgeefluik"

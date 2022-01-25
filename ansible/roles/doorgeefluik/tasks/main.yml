@@ -48,13 +48,15 @@
 
 - name: "Run the migrations"
   shell:
-    cmd: "psql < {{doorgeefluik_nix_path}}/lib/migrations/1637606752-initial-migration.sql"
+    cmd: "psql < {{ doorgeefluik_nix_path }}/lib/migrations/1637606752-initial-migration.sql"
   become: true
   become_user: "doorgeefluik"
 
 - name: "Run the seed script"
-  shell:
-    cmd: "DATABASE_URL=\"postgresql:///doorgeefluik\" {{doorgeefluik_nix_path}}/bin/SeedDatabase"
+  environment:
+    DATABASE_URL: "postgresql:///doorgeefluik"
+  command:
+    cmd: "{{ doorgeefluik_nix_path }}/bin/SeedDatabase"
   become: true
   become_user: "doorgeefluik"
 

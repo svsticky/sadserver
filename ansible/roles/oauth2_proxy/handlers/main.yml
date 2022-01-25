@@ -1,12 +1,14 @@
 ---
 - name: "restart oauth2-proxy"
-  service:
+  systemd:
     name: "oauth2-proxy"
     state: "restarted"
+    daemon_reload: true
   listen: "restart oauth2-proxy"
 
 - name: "restart oauth2-proxy (admin)"
-  service:
+  systemd:
     name: "oauth2-proxy-admin"
     state: "restarted"
+    daemon_reload: true
   listen: "restart oauth2-proxy-admin"

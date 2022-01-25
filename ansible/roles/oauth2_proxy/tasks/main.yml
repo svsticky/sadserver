@@ -36,7 +36,7 @@
   template:
     src: "oauth2-proxy.service.j2"
     dest: "/etc/systemd/system/oauth2-proxy.service"
-  notify: "systemctl daemon-reload"
+  notify: "restart oauth2-proxy"
 
 - name: "enable and start oauth2-proxy"
   service:
@@ -61,7 +61,7 @@
   template:
     src: "oauth2-proxy-admin.service.j2"
     dest: "/etc/systemd/system/oauth2-proxy-admin.service"
-  notify: "systemctl daemon-reload"
+  notify: "restart oauth2-proxy-admin"
 
 - name: "enable and start oauth2-proxy"
   service:

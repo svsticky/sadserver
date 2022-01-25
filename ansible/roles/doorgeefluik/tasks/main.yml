@@ -41,6 +41,9 @@
   become: true
   ignore_errors: "{{ ansible_check_mode }}"
 
+- name: "add cachix cache"
+  command: "cachix use svsticky-doorgeefluik"
+
 - name: "get the app from cachix"
   command:
     cmd: "nix-store --realize {{ doorgeefluik_nix_path }} --add-root ./deploy --indirect"

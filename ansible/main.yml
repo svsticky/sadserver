@@ -20,6 +20,8 @@
       tags: "auth"
     - role: "users"
       tags: "users"
+    - role: "monitoring"
+      tags: "monitoring"
     - role: "firewall"
       tags: "firewall"
     - role: "backups"
@@ -67,10 +69,6 @@
       tags: ["never", "crazy88bot"]
     - role: "doorgeefluik"
       tags: "doorgeefluik"
-
-  tasks:
-    - name: "start process of configuring monitoring services"
-      include_tasks: "tasks/monitoring.yml"
 
 
   post_tasks:

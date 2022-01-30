@@ -3,9 +3,6 @@
   apt:
     name: "netdata"
     state: "present"
-  tags:
-    - "monitoring"
-    - "packages"
 
 - name: "create directory for onfailure override for netdata service"
   file:
@@ -20,41 +17,26 @@
 
 - name: "enable slack notifications for netdata's alarms"
   template:
-    src: "templates/{{ path }}.j2"
-    dest: "/{{ path }}"
+    src: "health_alarm_notify.conf.j2"
+    dest: "/etc/netdata/health_alarm_notify.conf"
     owner: "netdata"
     group: "netdata"
     mode: "0660"
-  vars:
-    path: "etc/netdata/health_alarm_notify.conf"
-  register: "netdata_slack_notifications"
+  notify: "restart netdata"
 
 - name: "raise alert threshold for tcp listen drops"
   template:
-    src: "templates/{{ path }}.j2"
-    dest: "/{{ path }}"
+    src: "tcp_listen.conf.j2"
+    dest: "/etc/netdata/health.d/tcp_listen.conf"
     owner: "netdata"
     group: "netdata"
     mode: "0660"
-  vars:
-    path: "etc/netdata/health.d/tcp_listen.conf"
-  register: "netdata_listen_drop_rules"
-
-# netdata service doesn't implement reloading
-- name: "restart netdata if config changed"
-  service:
-    name: "netdata"
-    state: "restarted"
-  when:
-    "netdata_slack_notifications.changed or
-    netdata_listen_drop_rules.changed"
+  notify: "restart netdata"
 
 - name: "copy nginx files for metrics site"
   template:
-    src: "templates/{{ item.path }}.conf.j2"
-    dest: "/{{ item.path }}.{{ canonical_hostname }}.conf"
-  with_items:
-    - path: "etc/nginx/sites-available/metrics"
+    src: "metrics.conf.j2"
+    dest: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx proxy config for metrics site"
@@ -62,7 +44,4 @@
     src: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}.conf"
     path: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}.conf"
     state: "link"
-  tags:
-    - "monitoring"
-    - "nginx"
   notify: "reload nginx"

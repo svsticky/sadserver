@@ -7,6 +7,19 @@
     state: "present"
     system: true
 
+- name: "copy nginx configuration"
+  template:
+    src: "radio.conf.j2"
+    dest: "/etc/nginx/sites-available/radio.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/radio.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/radio.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
 - name: "create radio webroot"
   file:
     path: "/var/www/radio/radio.{{ canonical_hostname }}"

@@ -8,8 +8,5 @@ Type=simple
 User=root
 Group=root
 PrivateTmp=true
-ExecStart=/bin/sh -c "grep \'Packages that will be upgraded:\' -B 5 -A 10\
-/var/log/unattended-upgrades/unattended-upgrades.log | grep -E \"^($(date\
---date \"-1 day\" +'%%F')|$(date --date \"-2 day\" +'%%F')).*$\" |\
-/usr/local/bin/slacktee --username 'Unattended upgrades' --icon\
-':arrows_clockwise:' --attachment '#46c4ff'"
+
+{{ lookup('template', 'healthcheck.conf.j2') }}

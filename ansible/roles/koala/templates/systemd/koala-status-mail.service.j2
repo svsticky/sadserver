@@ -13,3 +13,5 @@ status:mail"
 ExecStart=/bin/sh -c "echo \"*Koala service \'Sent mails to request member info updates\'\
 completed* _($(date +'%%F %%T %%:z'))_\" | /usr/local/bin/slacktee\
 --plain-text --username 'Koala service' --icon '::' --attachment 'good'"
+
+{{ lookup('template', 'healthcheck.conf.j2') }}

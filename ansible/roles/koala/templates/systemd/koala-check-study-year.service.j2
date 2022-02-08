@@ -11,4 +11,4 @@ WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
 ExecStart=/nix/var/nix/profiles/default/bin/nix-shell --command "rails RAILS_ENV={{ koala_env.environment }}\
 admin:start_year"
 
-# No notification to Slack on success, because this has to run every night
+{{ lookup('template', 'healthcheck.conf.j2') }}

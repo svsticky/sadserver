@@ -5,6 +5,8 @@
     url: "https://api.github.com/repos/svsticky/doorgeefluik/releases/latest"
     return_content: true
   register: "latest_doorgeefluik_release"
+  # Don't skip this task in check mode: this makes the next step fail.
+  check_mode: false
 
 - name: "Set variables"
   set_fact:

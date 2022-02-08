@@ -23,6 +23,7 @@
       - "gettext"
       - "libpq-dev"
       - "libjpeg-dev"
+      - "nodejs"
     state: "present"
 
 - name: "setup Pretix database"
@@ -84,8 +85,6 @@
     - "systemctl daemon-reload"
     - "restart pretix"
 
-- meta: "flush_handlers" # Ensures daemon is reloaded
-
 - name: "install pretix"
   pip:
     name: "{{ item.name }}"
@@ -111,6 +110,8 @@
     - "restart pretix"
   become: true
   become_user: "pretix"
+
+- meta: "flush_handlers" # Ensures daemon is reloaded
 
 - name: "ensure pretix services are running and enabled"
   service:

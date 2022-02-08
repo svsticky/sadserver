@@ -9,7 +9,7 @@
 
 - name: "create static-sticky directory"
   file:
-    path: "/var/www/static-sticky"
+    path: "/var/www/static-sticky/static-sticky"
     owner: "static-sticky"
     group: "static-sticky"
     mode: "2775"

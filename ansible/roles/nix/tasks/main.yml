@@ -12,11 +12,6 @@
   args:
     creates: "/nix"
 
-- name: "Update Nix to the latest version"
-  shell: "nix-channel --update && nix-env -iA nixpkgs.nix nixpkgs.cacert"
-  notify:
-    - "systemctl daemon-reload"
-    - "restart nix-daemon"
 
 - name: "Make Nix programs available without sourcing shell stuff"
   with_items:
@@ -35,6 +30,12 @@
     dest: "/usr/local/bin/{{ item }}"
     state: "link"
   become: true
+
+- name: "Update Nix to the latest version"
+  shell: "nix-channel --update && nix-env -iA nixpkgs.nix nixpkgs.cacert"
+  notify:
+    - "systemctl daemon-reload"
+    - "restart nix-daemon"
 
 - name: "install cachix" # noqa 305
   shell: "nix-env -iA cachix -f https://cachix.org/api/v1/install"

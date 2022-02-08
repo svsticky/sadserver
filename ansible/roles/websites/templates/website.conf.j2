@@ -16,12 +16,10 @@ server {
   root /var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
 item.name }};
 
-  index {{ 'index.php' if (item.php_enabled | default(false)) else '' }}
+  index
     index.html index.htm;
 
   include includes/security-headers.conf;
-{{ '  include includes/php-parameters.conf;' if (item.php_enabled |
-default(false)) else '' }}
 
   {% if item.extra_includes is defined -%}
   {% for include in item.extra_includes %}include includes/{{ include }}.conf;
@@ -69,7 +67,6 @@ default(false)) else '' }}
     auth_request_set $auth_cookie $upstream_http_set_cookie;
     add_header Set-Cookie $auth_cookie;
 {% endif %}
-    try_files $uri $uri/{{ ' /index.php?q=$uri&$args' if (item.php_enabled |
-default(false)) else '' }} =404;
+    try_files $uri $uri/ =404;
   }
 }

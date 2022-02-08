@@ -53,5 +53,5 @@
   lineinfile:
     path: "/etc/nix/nix.conf"
     regexp: "^trusted-users"
-    line: "trusted-users = ansible"
+    line: "trusted-users = ansible,koala"
   notify: "restart nix-daemon"

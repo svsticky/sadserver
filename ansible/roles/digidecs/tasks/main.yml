@@ -23,6 +23,19 @@
     group: "commit"
     mode: "660"
 
+- name: "copy nginx configuration"
+  template:
+    src: "digidecs.conf.j2"
+    dest: "/etc/nginx/sites-available/digidecs.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/digidecs.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/digidecs.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
 - name: "run composer"
   composer:
     working_dir: "/var/www/commit/digidecs.{{ canonical_hostname }}"

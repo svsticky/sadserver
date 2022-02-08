@@ -10,3 +10,5 @@ User=root
 Group=root
 PrivateTmp=true
 ExecStart=/usr/local/bin/backup-to-s3.sh websites
+
+{{ lookup('template', 'healthcheck.conf.j2') }}

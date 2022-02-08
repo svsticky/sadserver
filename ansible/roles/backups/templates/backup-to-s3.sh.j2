@@ -117,12 +117,4 @@ case "${SOURCE}" in
           exit 1
 esac
 
-SUCCESS_MESSAGE="*{% if 'staging' in group_names %}_FROM STAGING:_ {% endif
-%}Backup of ${SOURCE} completed* _(${BACKUP_DATE})_\n_(Backup size: \
-${BACKUP_SIZE})_"
-
-echo -e "${SUCCESS_MESSAGE}" | /usr/local/bin/slacktee --plain-text \
---username 'Backup service' --icon ':floppy_disk:' --attachment 'good' \
->/dev/null
-
 echo "Backup of ${SOURCE} successful!"

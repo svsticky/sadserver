@@ -23,7 +23,6 @@
       - "gettext"
       - "libpq-dev"
       - "libjpeg-dev"
-      - "nodejs"
     state: "present"
 
 - name: "setup Pretix database"

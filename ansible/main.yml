@@ -28,6 +28,8 @@
       tags: "nginx"
     - role: "php"
       tags: "php"
+    - role: "node"
+      tags: "node"
     - role: "certbot"
       tags: "certbot"
     - role: "redis"

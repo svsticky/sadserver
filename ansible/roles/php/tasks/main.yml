@@ -31,8 +31,9 @@
   template:
     src: "pool-template.conf.j2"
     dest: "/etc/php/7.4/fpm/pool.d/pool-{{ item.name }}.conf"
-  with_items: "{{ websites }}"
-  when: "item.php_enabled | default(false)"
+  loop:
+    - name: "digidecs.{{ canonical_hostname }}"
+      user: "commit"
+    - name: "indievelopment.{{ canonical_hostname }}"
+      user: "indievelopment"
   notify: "reload php"
-  loop_control:
-    label: "{{ item.name }}"

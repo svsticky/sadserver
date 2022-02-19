@@ -7,18 +7,16 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v2.4.0"
 
       - name: "install Nix"
-        uses: "cachix/install-nix-action@v12"
-        with:
-          install_url: "https://releases.nixos.org/nix/nix-2.3.16/install"
+        uses: "cachix/install-nix-action@v16"
 
       - name: "Lint our Python files"
-        run: "(cd ansible; nix run -c black deploy.py)"
+        run: (cd ansible; nix-shell --run "black --check deploy.py")
 
       - name: "Typecheck our Python files"
-        run: "(cd ansible; nix run -c mypy deploy.py --strict)"
+        run: (cd ansible; nix-shell --run "mypy deploy.py --strict")
 
       - name: "Lint our ansible files"
-        run: "(cd ansible; nix run -c ansible-lint --exclude=tasks --exclude=playbooks)"
+        run: (cd ansible; nix-shell --run "ansible-lint --exclude=playbooks")

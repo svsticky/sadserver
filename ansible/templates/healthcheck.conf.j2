@@ -1,0 +1,12 @@
+{#-
+  - This snippet is meant to be included in a Systemd service file to add
+  - healtcheck pinging to that service.
+  - Include it as follows:
+  -   {{ lookup('template', 'healthcheck.conf.j2') }}
+  -#}
+ExecStartPre=-/usr/bin/curl \
+  --max-time 15 --retry 3 --silent --show-error \
+  https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/%n/start
+ExecStartPost=-/usr/bin/curl \
+  --max-time 15 --retry 3 --silent --show-error \
+  https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/%n

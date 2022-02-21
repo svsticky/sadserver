@@ -14,5 +14,7 @@ Environment="PATH=/var/www/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin"
 ExecStart=/var/www/pretix/venv/bin/python -m pretix runperiodic
 WorkingDirectory=/var/www/pretix
 
+{{ lookup('template', 'healthcheck.conf.j2') }}
+
 [Install]
 WantedBy=multi-user.target

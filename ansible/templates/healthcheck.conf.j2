@@ -4,5 +4,9 @@
   - Include it as follows:
   -   {{ lookup('template', 'healthcheck.conf.j2') }}
   -#}
-ExecStartPre=-/usr/bin/curl https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/%n/start
-ExecStartPost=-/usr/bin/curl https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/%n
+ExecStartPre=-/usr/bin/curl \
+  --max-time 15 --retry 3 --silent --show-error \
+  https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/%n/start
+ExecStartPost=-/usr/bin/curl \
+  --max-time 15 --retry 3 --silent --show-error \
+  https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/%n

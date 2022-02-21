@@ -61,7 +61,6 @@
           - "wheel"
           - "pipenv"
           - "gunicorn==20.0.4"
-          - "mysqlclient==2.0.3"
           - "python-dotenv[cli]==0.15.0"
         virtualenv: "{{ execut_website_path }}/venv"
         virtualenv_command: "/usr/bin/python3.9 -m venv"

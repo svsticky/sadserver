@@ -66,6 +66,8 @@
       tags: "public"
     - role: "files_website"
       tags: "files"
+    - role: "mongoose"
+      tags: "mongoose"
     # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
       tags: ["never", "crazy88bot"]

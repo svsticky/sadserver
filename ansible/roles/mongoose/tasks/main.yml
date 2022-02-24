@@ -1,0 +1,92 @@
+---
+
+- name: "create user for undead mongoose"
+  user:
+    name: "mongoose"
+    home: "/var/www/mongoose"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+
+- name: "copy nginx configuration"
+  template:
+    src: "mongoose.conf.j2"
+    dest: "/etc/nginx/sites-available/mongoose.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/mongoose.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/mongoose.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- block:
+  - name: "ensure mongoose user exists"
+    postgresql_user:
+      name: "mongoose"
+
+  - name: "ensure mongoose database exists"
+    postgresql_db:
+      name: "undead_mongoose"
+      owner: "mongoose"
+
+  - name: "ensure mongoose database exists"
+    postgresql_user:
+      db: "mongoose"
+      name: "mongoose"
+      priv: "ALL"
+      role_attr_flags: "CREATEDB,LOGIN"
+
+  become_user: "postgres"
+
+- block:
+  - name: "ensure mongoose has a ssh directory"
+    file:
+      path: "~/.ssh"
+      state: "directory"
+
+  - name: "copy deploy key for private projects on GitHub"
+    copy:
+      content: "{{ secret_deploy_key }}"
+      dest: "/var/www/mongoose/.ssh/id_ed25519"
+      mode: "0600"
+
+  - name:
+      "clone mongoose repository"
+    git:
+      repo: "git@github.com:svsticky/undead-mongoose"
+      dest: "/var/www/mongoose/undead-mongoose"
+      depth: 1
+      force: true
+      version: "master"
+    diff: false
+    register: "mongoose_clone"
+  
+  - name:
+      "template environment file for mongoose"
+    template:
+      src: ".env.j2"
+      dest: "/var/www/mongoose/undead-mongoose/.env"
+    diff: false
+
+  - name:
+      "run migrations"
+    command: "/nix/var/nix/profiles/default/bin/nix-shell --run 'dotenv ./manage.py migrate'"
+    args:
+      chdir: "/var/www/mongoose/undead-mongoose"
+    when: "mongoose_clone is changed"
+
+  become_user: "mongoose"
+
+- name: "template systemd service file for mongoose"
+  template:
+    src: "mongoose.service.j2"
+    dest: "/etc/systemd/system/mongoose.service"
+
+- name: "run mongoose service"
+  systemd:
+    unit: "mongoose.service"
+    state: "started"
+    enabled: true
+    daemon-reload: true

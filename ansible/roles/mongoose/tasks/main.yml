@@ -62,7 +62,7 @@
       version: "master"
     diff: false
     register: "mongoose_clone"
-  
+
   - name:
       "template environment file for mongoose"
     template:

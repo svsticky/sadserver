@@ -50,6 +50,8 @@
       tags: "pretix"
     - role: "koala"
       tags: "koala"
+    - role: "logrotate"
+      tags: "logrotate"
     - role: "monitoring"
       tags: "monitoring"
     - role: "oauth2_proxy"

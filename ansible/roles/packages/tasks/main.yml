@@ -46,22 +46,22 @@
 # Only ensure repository is cloned, don't update yet
 - name: "clone repository of slacktee"
   git:
-    repo: "{{ slack_notifications.slacktee.repo }}"
-    dest: "{{ slack_notifications.slacktee.install_path }}"
+    repo: "{{ slacktee.repo }}"
+    dest: "{{ slacktee.install_path }}"
     update: false
   diff: false
 
 - name: "retrieve all version numbers of slacktee" # noqa command-instead-of-module
   command: "git fetch --tags"
   args:
-    chdir: "{{ slack_notifications.slacktee.install_path }}"
+    chdir: "{{ slacktee.install_path }}"
   register: "slacktee_fetch"
   changed_when: slacktee_fetch.stdout != ""
 
 - name: "determine latest version number of slacktee" # noqa command-instead-of-module
   shell: "git describe --tags $(git rev-list --tags --max-count=1)"
   args:
-    chdir: "{{ slack_notifications.slacktee.install_path }}"
+    chdir: "{{ slacktee.install_path }}"
   register: "slacktee_version"
   # The next task already shows if there is actually a change
   changed_when: false
@@ -71,8 +71,8 @@
 - block:
   - name: "install newest release of slacktee"
     git:
-      repo: "{{ slack_notifications.slacktee.repo }}"
-      dest: "{{ slack_notifications.slacktee.install_path }}"
+      repo: "{{ slacktee.repo }}"
+      dest: "{{ slacktee.install_path }}"
       version: "v1.5.1"
     diff: false
   # Don't run in check mode because previous "git fetch" task also can't be run
@@ -81,7 +81,7 @@
 
 - name: "create symlink to slacktee in $PATH"
   file:
-    src: "{{ slack_notifications.slacktee.install_path }}/{{ filename }}.sh"
+    src: "{{ slacktee.install_path }}/{{ filename }}.sh"
     path: "/usr/local/bin/{{ filename }}"
     state: "link"
   vars:

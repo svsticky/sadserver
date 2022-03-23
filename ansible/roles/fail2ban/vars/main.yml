@@ -1,0 +1,26 @@
+---
+fail2ban:
+  loglevel: "WARNING"
+  ignoreip: "127.0.0.1/8 131.211.0.0/16"
+  bantime: 600
+  maxretry: 6
+  banaction: "iptables-multiport"
+
+  services:
+    - name: "sshd"
+      port: "ssh"
+      filter: "sshd"
+      logpath: "/var/log/auth.log"
+    - name: "koala"
+      port: "https"
+      filter: "koala"
+      logpath:
+        "/var/www/koala.{{ canonical_hostname }}/log/\
+        {{ koala_env.environment }}.log"
+      maxretry: 10
+    - name: "koala404"
+      port: "https"
+      filter: "koala404"
+      logpath: "/var/www/koala.{{ canonical_hostname }}/log/access.log"
+      findtime: 60
+      maxretry: 5

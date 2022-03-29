@@ -69,7 +69,7 @@ server {
 		proxy_pass http://unicorn;
 	}
 
-	location ~* ^/rails/active_storage/ {
+	location ~* ^/rails/active_storage/disk/ {
 		expires 1y;
 		add_header Cache-Control "private";
 

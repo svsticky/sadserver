@@ -34,6 +34,14 @@ def deploy(
     if not check and not force:
         verify_on_latest_master(host)
 
+    # Used by the bitwarden plugin
+    os.environ["STICKY_ENV"] = host
+
+    # Sync bitwarden
+    os.system("bw sync")
+
+
+
     # in the original script we doublecheck if production deploy is intended. Should we do that here?
 
     user = os.environ["USER"]
@@ -45,6 +53,7 @@ def deploy(
     env["ANSIBLE_VAULT_IDENTITY"] = host
     env["ANSIBLE_SSH_PIPELINING"] = "true"
     env["ANSIBLE_VAULT_PASSWORD_FILE"] = "./scripts/bitwarden-vault-pass.py"
+
 
     arguments = [
         "ansible-playbook",

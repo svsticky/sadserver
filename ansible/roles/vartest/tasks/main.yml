@@ -1,0 +1,5 @@
+---
+
+- name: "Output variable data"
+  ansible.builtin.debug:
+    msg: "{{ secrets.hugos_password.yulla }}"

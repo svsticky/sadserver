@@ -6,9 +6,9 @@ server {
 
   server_name public.{{ canonical_hostname }};
 
-  ssl_certificate      /etc/letsencrypt/live/public.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/public.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/public.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate      /etc/letsencrypt/live/{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ canonical_hostname }}/chain.pem;
 
   include includes/security-headers.conf;
 

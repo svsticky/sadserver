@@ -69,7 +69,8 @@
     --cert-name {{ canonical_hostname }}
     --dns-digitalocean
     --dns-digitalocean-credentials /etc/letsencrypt/certbot-creds.ini
-    -d "*.{{ canonical_hostname }}"
+    --domain "*.{{ canonical_hostname }}"
+    --domain "{{ canonical_hostname }}"
     --deploy-hook "systemctl reload nginx"
   register: "certbot_output"
   changed_when: "'no action taken' not in certbot_output.stdout"

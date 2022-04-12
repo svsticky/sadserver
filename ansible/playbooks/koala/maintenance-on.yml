@@ -1,8 +1,0 @@
----
-- hosts: "all"
-  remote_user: "ansible"
-  force_handlers: true
-
-  tasks:
-    - name: "start process of enabling koala's maintenance mode"
-      include_tasks: ".maintenance-on.yml"

@@ -84,6 +84,8 @@
       - "koala-clean-users-table.timer"
       - "koala-status-mail.service"
       - "koala-status-mail.timer"
+      - "koala-payment-mail.service"
+      - "koala-payment-mail.timer"
       - "sidekiq.service"
     notify:
       - "systemctl daemon-reload"
@@ -226,6 +228,7 @@
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
     - "koala-status-mail.timer"
+    - "koala-payment-mail.timer"
 
 - name: "ensure sidekiq service is started and enabled"
   service:

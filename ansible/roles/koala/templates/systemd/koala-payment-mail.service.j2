@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Weekly mail to remind members of their outstanding payments.
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Type=simple
+User=koala
+WorkingDirectory=/var/www/koala.{{ canonical_hostname }}
+ExecStart=/nix/var/nix/profiles/default/bin/nix-shell --command "rails RAILS_ENV={{ koala_env.environment }}\
+payment:mail"
+
+{{ lookup('template', 'healthcheck.conf.j2') }}

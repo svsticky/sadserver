@@ -1,0 +1,59 @@
+---
+- name: "add deadsnakes PPA"
+  apt_repository:
+    repo: "ppa:deadsnakes/ppa"
+
+- name: "install Python 3.9"
+  apt:
+    pkg:
+      - "python3.9"
+      - "python3.9-venv"
+      - "python3.9-dev"
+    state: "present"
+
+- name: "install python modules"
+  pip:
+    name:
+      - "flask"
+      - "waitress"
+      - "psychopg2"
+
+- name: "clone repo to the right path"
+      git:
+        repo: "https://github.com/svsticky/sticker-map"
+        dest: "{{ sticker_map_path }}"
+        version: "master"
+
+- name: "ensure database user exists"
+  postgresql_user:
+    name: "stickerbot"
+  become_user: "postgres"
+  become: true
+
+- name: "ensure database exists"
+  postgresql_db:
+    name: "stickers"
+    owner: "stickerbot"
+  become_user: "postgres"
+  become: true
+
+- name: "install environment file"
+  template:
+    src: ".env.j2"
+    dest: "{{ sticker_map_path }}/.env"
+    mode: "0600"
+
+- name: "install Nginx config"
+  template:
+    src: "nginx.conf.j2"
+    dest: "/etc/nginx/sites-available/sticker-map.conf"
+  notify: "reload nginx"
+
+- name: "enable Nginx config"
+  file:
+    src: "/etc/nginx/sites-available/sticker-map.conf"
+    dest: "/etc/nginx/sites-enabled/sticker-map.conf"
+    state: "link"
+  notify: "reload nginx"
+      
+

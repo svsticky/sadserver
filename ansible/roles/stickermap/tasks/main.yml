@@ -1,4 +1,12 @@
 ---
+- name: "ensure stickermap system user exists"
+  user:
+    name: "stickermap"
+    system: true
+    shell: "/bin/false"
+    home: "/var/www/outline"
+    state: "present"
+
 - name: "add deadsnakes PPA"
   apt_repository:
     repo: "ppa:deadsnakes/ppa"
@@ -55,5 +63,3 @@
     dest: "/etc/nginx/sites-enabled/sticker-map.conf"
     state: "link"
   notify: "reload nginx"
-      
-

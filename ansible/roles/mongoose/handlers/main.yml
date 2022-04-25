@@ -7,7 +7,7 @@
   register: "mongoose_running"
   listen: "restart mongoose"
 
-- name: "restart koala service"
+- name: "restart mongoose service"
   service:
     name: "mongoose"
     state: "restarted"

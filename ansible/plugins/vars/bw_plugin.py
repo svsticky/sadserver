@@ -16,6 +16,8 @@ def extract_info(item):
     fields = {}
     for field in item["fields"]:
         fields[field["name"]] = field["value"]
+    if not fields:
+        fields = item["notes"]
     return { name: fields }
 
 def parse_bw_output(output):

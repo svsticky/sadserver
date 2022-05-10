@@ -8,7 +8,7 @@
 
   vars_prompt:
     - name: "confirm"
-      default: 'ABORT'
+      default: "ABORT"
       private: false
       prompt:
         "The playbook you are about to execute will DELETE THE HOME DIRECTORY
@@ -17,7 +17,8 @@
         will abort."
 
   tasks:
-    - assert:
+    - name: "confirm"
+      assert:
         that:
           - "confirm == 'obliteration'"
 
@@ -38,7 +39,8 @@
       loop_control:
         label: "{{ item.home_prefix }}/{{ item.name }}"
 
-    - debug:
+    - name: "message:"
+      debug:
         msg:
           "The home directories of all absent users are deleted. You are now
           free to remove the entry of the user from the users list."

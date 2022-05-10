@@ -4,14 +4,12 @@
 
 let
   pkgs = import sources.nixpkgs {};
-  pkgs-new = import sources.nixpkgs-unstable {};
 
-  python = pkgs.python37;
+  python = pkgs.python39;
 
   ansible-mitogen = import ./nix/ansible-mitogen.nix {inherit python;};
 
   pythonEnvironment = python.withPackages (pkgs: [
-    pkgs.ansible
     pkgs.black
     pkgs.click
     pkgs.mypy
@@ -23,7 +21,8 @@ in pkgs.buildEnv {
   name = "sadserver-environment";
   paths = [
     pythonEnvironment
-    pkgs-new.bitwarden-cli
+    pkgs.ansible_2_10
+    pkgs.bitwarden-cli
     pkgs.ansible-lint
     pkgs.jq
     pkgs.yamllint

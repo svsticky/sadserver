@@ -61,5 +61,3 @@
     --domain packages.{{ canonical_hostname }}
     --deploy-hook "systemctl reload nginx"
   when: true
-
-

@@ -147,8 +147,3 @@
     src: "sshd_config.j2"
     dest: "/etc/ssh/sshd_config"
   notify: "reboot server"
-
-# Make sure the "reboot server" handler is run now (when notified), and not just
-# before Certbot's task, when the handlers are also flushed. Because otherwise
-# Certbot would fail, because the kernel's RNG wouldn't be seeded yet.
-- meta: "flush_handlers"

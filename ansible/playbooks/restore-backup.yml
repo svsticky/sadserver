@@ -17,7 +17,7 @@
 
   vars_prompt:
     - name: "confirm"
-      default: 'ABORT'
+      default: "ABORT"
       private: false
       prompt: |-
         This playbook will restore a backup of the production server. This will
@@ -98,14 +98,14 @@
         label: "{{ item.stdout }}"
 
     - name: "remove all existing databases on target server"
-      shell: "pg_dropcluster --stop 13 main"
+      command: "pg_dropcluster --stop 13 main"
       ignore_errors: true
 
     - name: "create pg cluster"
-      shell: "pg_createcluster --start 13 main"
+      command: "pg_createcluster --start 13 main"
 
     - name: "restore production databases - postgres"
-      shell: "zcat {{ backup_restore_tmp_dir.path}}/{{item.stdout}} | sudo -u postgres psql"
+      shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | sudo -u postgres psql"
       with_items: "{{ backup_filenames.results }}"
       when: "item.item == 'postgres/postgres'"
       loop_control:

@@ -39,8 +39,8 @@
     - "certbot.timer.d/override.conf"
   notify: "systemctl daemon-reload"
 
-# To make sure nginx is reloaded if needed
-- meta: "flush_handlers"
+- name: "make sure nginx is reloaded if needed"
+  meta: "flush_handlers"
 
 - name: "request certificates"
   # --non-interactive makes sure command never waits for user input

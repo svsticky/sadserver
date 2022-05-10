@@ -44,7 +44,7 @@
       tags: "freight"
     - role: "aas"
       tags: "aas"
-    - role: "static-sticky"
+    - role: "static_sticky"
       tags: "static"
     - role: "pretix"
       tags: "pretix"

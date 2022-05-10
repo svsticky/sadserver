@@ -8,7 +8,7 @@
 
   vars_prompt:
     - name: "backup_sources"
-      default: 'NONE'
+      default: "NONE"
       private: false
       prompt:
         "Enter the comma-delimited source(s) you want to back up

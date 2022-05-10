@@ -24,4 +24,3 @@
   wait_for_connection:
     delay: 20
   listen: "reboot server"
-

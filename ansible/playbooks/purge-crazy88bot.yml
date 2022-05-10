@@ -8,14 +8,15 @@
 
   vars_prompt:
     - name: "confirm"
-      default: 'ABORT'
+      default: "ABORT"
       private: false
       prompt:
         "The playbook you are about to run will purge the crazy88bot. This will include all submissions!
         Type \"obliterate-intro\" to confirm."
 
   tasks:
-    - assert:
+    - name: "confirm"
+      assert:
         that:
           - "confirm == 'obliterate-intro'"
 

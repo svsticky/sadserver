@@ -8,7 +8,7 @@
 
   vars_prompt:
     - name: "confirm"
-      default: 'ABORT'
+      default: "ABORT"
       private: false
       prompt:
         "The playbook you are about to execute will DELETE ALL DATA OF
@@ -17,7 +17,8 @@
         will abort."
 
   tasks:
-    - assert:
+    - name: "confirm"
+      assert:
         that:
           - "confirm == 'obliteration'"
 
@@ -46,7 +47,8 @@
         - item.state == "absent"
         - "item.custom_config is undefined or not item.custom_config"
 
-    - debug:
+    - name: "Message:"
+      debug:
         msg:
           "The certificates and webroot of all absent websites are revoked and deleted.
           Remember to delete any specific templates/tasks from this repository

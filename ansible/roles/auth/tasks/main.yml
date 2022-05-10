@@ -25,7 +25,7 @@
     create: true
     validate: "visudo -cf %s"
 
-- name: "check if password of admin user is locked" # noqa 306
+- name: "check if password of admin user is locked" # noqa risky-shell-pipe
   shell: "passwd --status {{ item.name }} | awk '{print $2}'"
   register: "admin_passwords"
   with_items: "{{ users }}"

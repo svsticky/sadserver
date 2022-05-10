@@ -37,8 +37,8 @@
     - "systemctl daemon-reload"
     - "restart nix-daemon"
 
-- name: "install cachix" # noqa 305
-  shell: "nix-env -iA cachix -f https://cachix.org/api/v1/install"
+- name: "install cachix"
+  command: "nix-env -iA cachix -f https://cachix.org/api/v1/install"
 
 - name: "Make cachix available without sourcing shell stuff"
   file:

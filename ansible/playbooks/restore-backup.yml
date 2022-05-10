@@ -104,7 +104,7 @@
     - name: "create pg cluster"
       command: "pg_createcluster --start 13 main"
 
-    - name: "restore production databases - postgres"
+    - name: "restore production databases - postgres" # noqa risky-shell-pipe
       shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | sudo -u postgres psql"
       with_items: "{{ backup_filenames.results }}"
       when: "item.item == 'postgres/postgres'"

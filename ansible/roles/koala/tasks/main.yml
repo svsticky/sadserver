@@ -7,8 +7,8 @@
     shell: "/bin/bash"
   notify: "restart koala"
 
-- name: "use koala cachix" # noqa 301 305
-  shell: "cachix use svsticky-constipated-koala"
+- name: "use koala cachix"
+  command: "cachix use svsticky-constipated-koala"
 
 - name: "ensure clone location exists and is owned by koala"
   file:
@@ -118,15 +118,15 @@
       mode: "0700"
     notify: "restart koala"
 
-  - name: "building nix environment (this might take a while)" # noqa 305
-    shell: nix-shell --run 'echo lol'
+  - name: "building nix environment (this might take a while)"
+    command: nix-shell --run 'echo lol'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
     notify: "restart koala"
 
-  - name: "ensure tmp directories exist" # noqa 305
-    shell: nix-shell --run 'rails tmp:create'
+  - name: "ensure tmp directories exist"
+    command: nix-shell --run 'rails tmp:create'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
@@ -180,8 +180,8 @@
     become: true
     become_user: "koala"
 
-  - name: "add credentials for oauth application" # noqa 305
-    shell: nix-shell --run 'dotenv rails oauthproxy:create_application'
+  - name: "add credentials for oauth application"
+    command: nix-shell --run 'dotenv rails oauthproxy:create_application'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
 

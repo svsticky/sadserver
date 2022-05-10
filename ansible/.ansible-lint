@@ -1,14 +1,12 @@
 ---
-
 skip_list:
   # We don't want to always use explicit versions for git checkouts
   - git-latest
-  # Comparing to an empty string is sometimes just necessary, ansible-lint is just too strict here
-  # Complete discussion here: https://github.com/ansible-community/ansible-lint/issues/450
-  - 602
   # We run commands, deal with it
   - no-changed-when
   # We don't always want to set explicit version for packages
   - package-latest
-  # TODO: This should be solved sometime, but this gives too many warning to fix at once.
+  # We want to ignore errors in some places without ansible-lint complaining
+  - ignore-errors
+  # TODO: This should be solved sometime, but this gives too many warnings (84) to fix at once.
   - risky-file-permissions

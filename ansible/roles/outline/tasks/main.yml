@@ -40,7 +40,7 @@
     dest: "/etc/outline/outline.env"
     owner: "root"
     mode: "0600"
-  register: "_outline_env_file"
+  notify: "restart outline"
 
 - name: "do Yarn stuff"
   become_user: "outline"
@@ -51,6 +51,7 @@
         dest: "/var/www/outline/outline"
         version: "main"
       register: "_outline_checkout"
+      notify: "restart outline"
 
     - name: "install dependencies"
       when: "_outline_checkout is changed"
@@ -70,16 +71,7 @@
     dest: "/etc/systemd/system/outline.service"
     owner: "root"
     mode: "0644"
-  register: "_outline_service_file"
-
-- name: "restart outline if config changed"
-  when: "_outline_checkout is changed
-      or _outline_service_file is changed
-      or _outline_env_file is changed"
-  systemd:
-    name: "outline.service"
-    state: "restarted"
-    daemon_reload: true
+  notify: "restart outline"
 
 - name: "ensure outline service is started and enabled"
   systemd:

@@ -60,7 +60,7 @@
   notify: "restart pretix"
 
 - name: "create virtualenv if not exists, update pip and tools"
-  pip: # noqa 403
+  pip:
     name:
       - "pip"
       - "setuptools"

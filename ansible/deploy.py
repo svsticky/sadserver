@@ -2,12 +2,12 @@
 #!nix-shell -i python ./shell.nix
 
 import click
-import git  # type: ignore
 import os
 import subprocess
 import requests
 import json
 
+from git.repo import Repo
 from typing import Optional
 
 
@@ -89,12 +89,12 @@ def deploy(
 
 
 def current_branch_name() -> str:
-    repo = git.Repo("..")
+    repo = Repo("..")
     return str(repo.active_branch)
 
 
 def current_git_revision() -> str:
-    repo = git.Repo("..")
+    repo = Repo("..")
     return str(repo.commit().hexsha)
 
 
@@ -137,12 +137,22 @@ def discord_notify(message: str, icon: str, color: str) -> None:
     data = {
         "username": "Ansible",
         "attachments": [
-            {"color": color, "mrkdwn_in": ["text", "fields",], "text": message,},
+            {
+                "color": color,
+                "mrkdwn_in": [
+                    "text",
+                    "fields",
+                ],
+                "text": message,
+            },
         ],
         "icon_emoji": icon,
     }
 
-    r = requests.post(url, json=data,)
+    r = requests.post(
+        url,
+        json=data,
+    )
 
     if r.status_code != 200:
         raise click.ClickException(
@@ -151,7 +161,7 @@ def discord_notify(message: str, icon: str, color: str) -> None:
 
 
 def verify_on_latest_master(host: str) -> None:
-    repo = git.Repo("..")
+    repo = Repo("..")
 
     # not sure why str() needs to be called
     if host == "production" and str(repo.active_branch) != "master":

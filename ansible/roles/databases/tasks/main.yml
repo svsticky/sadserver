@@ -37,7 +37,7 @@
     postgresql_user:
       db: "koala"
       name: "koala_manual"
-      password: "{{ secrets.koala_manual.password }}"
+      password: "{{ secret_koala_manual.password }}"
       priv: "CONNECT"
       role_attr_flags: "NOSUPERUSER"
 

@@ -49,7 +49,7 @@
 - name: "create authorized users file"
   copy:
     dest: "/etc/oauth2_proxy/authorized-users"
-    content: "{{ secrets.oauth2_proxy.authorized_users }}"
+    content: "{{ secret_oauth2_proxy.authorized_users }}"
 
 - name: "copy oauth2_proxy admin config"
   template:

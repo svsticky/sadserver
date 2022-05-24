@@ -1,4 +1,7 @@
 ---
+- name: "disable git safe directory feature for sodi folder" # noqa command-instead-of-module
+  command: "git config --global --add safe.directory /var/www/sodi.{{ canonical_hostname }}"
+
 - name: "clone sodi website from git"
   git:
     repo: "git@github.com:svsticky/sodi.nl.git"

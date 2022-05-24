@@ -8,7 +8,7 @@
     state: "present"
   become: true
 
-- name: "disable git safe directory feature for digidecs folder"
+- name: "disable git safe directory feature for digidecs folder" # noqa command-instead-of-module
   command: "git config --global --add safe.directory /var/www/commit/digidecs.{{ canonical_hostname }}"
 
 - name: "clone digidecs repository"

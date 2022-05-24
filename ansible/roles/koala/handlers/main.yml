@@ -13,3 +13,9 @@
     state: "restarted"
   when: "koala_running is not changed"
   listen: "restart koala"
+
+- name: "restart sidekiq service"
+  service:
+    name: "sidekiq"
+    state: "restarted"
+  listen: "restart sidekiq"

@@ -12,9 +12,9 @@ folder_ids = {
 }
 
 def extract_info(item):
-    name = item["name"]
+    name = f'vault_{item["name"]}'
     fields = {}
-    for field in item["fields"]:
+    for field in item.get("fields", []):
         fields[field["name"]] = field["value"]
     if not fields:
         fields = item["notes"]
@@ -24,17 +24,15 @@ def parse_bw_output(output):
      items = list(map(extract_info, json.loads(output)))
      ret = {}
      for k in items:
-         ret = {**ret, **k}
+         ret.update(k)
      return ret
 
 @lru_cache(maxsize=100000)
 def global_get_vars():
     host = os.environ["STICKY_ENV"]
     folder_id = folder_ids[host]
-    print(f"Fetching credentials from bitwarden for {host} (folder: {folder_id})")
     secrets = parse_bw_output(subprocess.check_output([f"bw list items --folderid {folder_id}"], shell=True))
-    ret = {'secrets': secrets }
-    print(ret)
+    ret = secrets
     return ret
 
 

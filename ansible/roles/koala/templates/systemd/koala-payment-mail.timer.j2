@@ -1,10 +1,10 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Monthly backup of contentful data
+Description=Weekly mail to remind members of their outstanding payments.
 
 [Timer]
-OnCalendar=*-*-01 01:00:00 UTC
+OnCalendar=Fri 13:15:00 CET
 RandomizedDelaySec=1h
 Persistent=true
 

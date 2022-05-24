@@ -1,0 +1,15 @@
+---
+- name: "check if mongoose is running"
+  systemd:
+    name: "mongoose.service"
+    state: "started"
+  check_mode: true
+  register: "mongoose_running"
+  listen: "restart mongoose"
+
+- name: "restart mongoose service"
+  service:
+    name: "mongoose"
+    state: "restarted"
+  when: "mongoose_running is not changed"
+  listen: "restart mongoose"

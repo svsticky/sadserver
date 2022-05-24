@@ -19,7 +19,7 @@ let
   # Python to install this package.
   sourceFile = builtins.fetchTarball {
     name = "mitogen-${mitogenVersion}-source";
-    url = "https://networkgenomics.com/try/mitogen-${mitogenVersion}.tar.gz";
+    url = "http://networkgenomics.com/try/mitogen-${mitogenVersion}.tar.gz";
     sha256 = downloadHash;
   };
 

@@ -84,6 +84,8 @@
       - "koala-clean-users-table.timer"
       - "koala-status-mail.service"
       - "koala-status-mail.timer"
+      - "koala-payment-mail.service"
+      - "koala-payment-mail.timer"
       - "sidekiq.service"
     notify:
       - "systemctl daemon-reload"
@@ -91,7 +93,7 @@
   # Enables maintenance mode only when Koala was already running, and needs to
   # be updated
   - name: "start process of enabling koala's maintenance mode"
-    include_tasks: "../../../playbooks/koala/.maintenance-on.yml"
+    include_tasks: "maintenance-on.yml"
     when: koala_updated
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
@@ -211,7 +213,7 @@
 # Disables maintenance mode only when Koala had to be updated, and can now be
 # started again.
 - name: "start process of disabling koala's maintenance mode"
-  include_tasks: "../../../playbooks/koala/.maintenance-off.yml"
+  include_tasks: "maintenance-off.yml"
   when: koala_updated
 
 - name: "ensure koala's timers are started and enabled in production"
@@ -226,6 +228,7 @@
     - "koala-check-study-year.timer"
     - "koala-clean-users-table.timer"
     - "koala-status-mail.timer"
+    - "koala-payment-mail.timer"
 
 - name: "ensure sidekiq service is started and enabled"
   service:

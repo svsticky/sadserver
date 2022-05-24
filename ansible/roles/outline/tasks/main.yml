@@ -57,6 +57,7 @@
       command: "yarn install --frozen-lockfile"
       args:
         chdir: "/var/www/outline/outline"
+
     - name: "build outline"
       when: "_outline_checkout is changed"
       command: "yarn build"

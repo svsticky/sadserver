@@ -103,6 +103,7 @@
       version: "{{ koala_env.git_ref }}"
     diff: false
     when: koala_checkout_result.changed
+    notify: "restart sidekiq"
 
   - name: "ensure tmp directory exist (for nix-shell)"
     file:
@@ -116,7 +117,9 @@
       src: ".env.j2"
       dest: "/var/www/koala.{{ canonical_hostname }}/.env"
       mode: "0700"
-    notify: "restart koala"
+    notify:
+      - "restart koala"
+      - "restart sidekiq"
 
   - name: "building nix environment (this might take a while)"
     command: nix-shell --run 'echo lol'

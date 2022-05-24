@@ -8,6 +8,9 @@
     state: "present"
   become: true
 
+- name: "disable git safe directory feature for digidecs folder"
+  command: "git config --global --add safe.directory /var/www/commit/digidecs.{{ canonical_hostname }}"
+
 - name: "clone digidecs repository"
   git:
     repo: "https://github.com/svsticky/digidecs.git"

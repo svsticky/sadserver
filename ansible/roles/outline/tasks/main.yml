@@ -49,7 +49,7 @@
       git:
         repo: "https://github.com/svsticky/Sticky-Compendium.git"
         dest: "/var/www/outline/outline"
-        version: "update_v_0_63"
+        version: "main"
       register: "_outline_checkout"
 
     - name: "install dependencies"

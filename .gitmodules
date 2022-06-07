@@ -1,4 +1,0 @@
-[submodule "ansible/group_vars"]
-	path = ansible/group_vars
-	url = git@github.com:svsticky/sadserver-secrets
-	branch = master

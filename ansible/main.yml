@@ -79,5 +79,3 @@
     # exists. Otherwise fail2ban would miss the log files it has to monitor.
     - role: "fail2ban"
       tags: "always"
-    - role: "vartest"
-      tags: "vartest"

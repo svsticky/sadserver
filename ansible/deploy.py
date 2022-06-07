@@ -34,8 +34,6 @@ def deploy(
     if not check and not force:
         verify_on_latest_master(host)
 
-    # Used by the bitwarden plugin
-    os.environ["STICKY_ENV"] = host
 
     # Sync bitwarden
     os.system("bw sync")
@@ -53,6 +51,8 @@ def deploy(
     env["ANSIBLE_VAULT_IDENTITY"] = host
     env["ANSIBLE_SSH_PIPELINING"] = "true"
     env["ANSIBLE_VAULT_PASSWORD_FILE"] = "./scripts/bitwarden-vault-pass.py"
+    # Used by the bitwarden plugin
+    env["STICKY_ENV"] = host
 
 
     arguments = [
@@ -70,7 +70,9 @@ def deploy(
     # access the production Vault secrets, so this adds the call for that to
     # the environment passed to ansible-playbook
     if playbook == "playbooks/restore-backup.yml":
-        arguments.append("--vault-id production@prompt")
+        # Used by the bitwarden plugin
+        env["STICKY_RESTORING_BACKUP"] = "1"
+
 
     if check:
         arguments.append("--check")

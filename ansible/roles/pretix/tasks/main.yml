@@ -104,6 +104,8 @@
       version: "1.7.0"
     - name: "psycopg2"
       version: "2.9.3"
+    - name: "django-mysql"
+      version: "4.5.0"
   notify:
     - "pretix post-upgrade"
     - "restart pretix"

@@ -1,0 +1,153 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "vault_", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+# This is used as the sudo password.
+ansible_become_password: "{{ vault_ansible_become_password }}"
+
+# This is also used for the root user, but the "$" at the end is replaced by a
+# "#" through a regex in tasks/users.yml.
+bash_prompt:
+  "export PS1='\\n\\e[31m\\e[1m!! PRODUCTION !!\\e[0m \\e[33m\\e[1m`whoami`@`\
+  hostname --long`\\e[0m:`pwd`\\n$ '"
+
+secret_oauth2_proxy:
+  client_id: "{{ vault_secret_oauth2_proxy.client_id }}"
+  client_secret: "{{ vault_secret_oauth2_proxy.client_secret }}"
+  cookie_secret: "{{ vault_secret_oauth2_proxy.cookie_secret }}"
+  cookie_secret_admin: "{{ vault_secret_oauth2_proxy.cookie_secret_admin}}"
+  authorized_users: |
+    voorzitter@svsticky.nl
+    secretaris@svsticky.nl
+    penningmeester@svsticky.nl
+    intern@svsticky.nl
+    extern@svsticky.nl
+    onderwijs@svsticky.nl
+    superman@maartenberg.nl
+
+koala_env:
+  environment: "production"
+  oidc_signing_key_location: "/var/www/koala/signing-key.pem"
+  git_ref: "v2.17.0"
+
+secret_koala:
+  # To change, generate new token using 'rake secret', and recompile + deploy
+  # Checkout client with the embedded token updated.
+  checkout_token: "{{ vault_secret_koala.checkout_token }}"
+
+  # To change, generate new token using 'rake secret'
+  devise_secret: "{{ vault_secret_koala.devise_secret }}"
+
+  # To change, generate new token using 'rake secret'
+  rails_secret: "{{ vault_secret_koala.rails_secret }}"
+
+  # To change, use the web interface at https://sentry.io/
+  sentry_dsn: "{{ vault_secret_koala.sentry_dsn }}"
+
+secret_payconiq:
+  domain: "{{ vault_secret_payconiq.domain }}"
+  online_token: "{{ vault_secret_payconiq.online_token }}"
+  display_token: "{{ vault_secret_payconiq.display_token }}"
+
+secret_backup_aws:
+  # To change, generate a new keypair for the user used for backups in AWS's
+  # IAM Management Console, and make the old key inactive
+  access_key: "{{ vault_secret_backup_aws.access_key }}"
+  secret_key: "{{ vault_secret_backup_aws.secret_key }}"
+
+secret_execut_website_aws:
+  access_key: "{{ vault_secret_execut_website_aws.access_key }}"
+  secret_key: "{{ vault_secret_execut_website_aws.secret_key }}"
+
+secret_execut_website_secretkey:
+  "{{ vault_secret_execut_website_secretkey }}"
+
+# To change, regenerate the token in Mollie's web interface.
+secret_mollie_token: "{{ vault_secret_mollie_token }}"
+
+secret_pretix:
+  # To change, generate a new password and set it in the Mailgun interface:
+  # https://app.mailgun.com/app/domains/svsticky.nl/credentials
+  # Note: Mailgun limits the password length to 32 characters.
+  email_password: "{{ vault_secret_pretix.email_password }}"
+
+  # To change, generate a new secret using something like `pwgen 128 1`and
+  # re-deploy. Changing this value will invalidate all pretix sessions.
+  django_secret: "{{ vault_secret_pretix.django_secret }}"
+
+secret_static_sticky:
+  contentful_space_id: "{{ vault_secret_static_sticky.contentful_space_id }}"
+  contentful_space_access_token: "{{ vault_secret_static_sticky.contentful_space_access_token }}"
+  github_deployments_token: "{{ vault_secret_static_sticky.github_deployments_token }}"
+  aws_access_key_id: "{{ vault_secret_static_sticky.aws_access_key_id }}"
+  aws_secret_access_key: "{{ vault_secret_static_sticky.aws_secret_access_key }}"
+  aws_default_region: "eu-central-1"
+
+secret_aas:
+  github_secret: "{{ vault_secret_aas.github_secret }}"
+  sentry_endpoint: "{{ vault_secret_aas.sentry_endpoint }}"
+  contentful_endpoint: "{{ vault_secret_aas.contentful_endpoint }}"
+  pretix_token: "{{ vault_secret_aas.pretix_token }}"
+  nix_pin: "/nix/store/rglps2x0p70d3p7hmnnhiki8vsi2pxmg-python3-3.9.6-env"
+
+static_sticky_env:
+  git_ref: "master"
+
+secret_mailchimp:
+  token: "{{ vault_secret_mailchimp.token }}"
+  secret: "{{ vault_secret_mailchimp.secret }}"
+  datacenter: "{{ vault_secret_mailchimp.datacenter }}"
+  list_id: "{{ vault_secret_mailchimp.list_id }}"
+  alv_id: "{{ vault_secret_mailchimp.alv_id }}"
+  business_id: "{{ vault_secret_mailchimp.business_id }}"
+  mmm_id: "{{ vault_secret_mailchimp.mmm_id }}"
+  lectures_id: "{{ vault_secret_mailchimp.lectures_id }}"
+  teacher_id: "{{ vault_secret_mailchimp.teacher_id }}"
+
+secret_radio:
+  contentful_space_id: "{{ vault_secret_radio.contentful_space_id }}"
+  contentful_space_access_token: "{{ vault_secret_radio.contentful_space_access_token }}"
+
+secret_intro_bot:
+  alfas_app_id: "{{ vault_secret_intro_bot.alfas_app_id }}"
+  alfas_app_password: "{{ vault_secret_intro_bot.alfas_app_password }}"
+  uithof_app_id: "{{ vault_secret_intro_bot.uithof_app_id }}"
+  uithof_app_password: "{{ vault_secret_intro_bot.uithof_app_password }}"
+  admin_app_id: "{{ vault_secret_intro_bot.admin_app_id }}"
+  admin_app_password: "{{ vault_secret_intro_bot.admin_app_password }}"
+  intro_password: "{{ vault_secret_intro_bot.intro_password }}"
+  mentor_password: "{{ vault_secret_intro_bot.mentor_password }}"
+  committee_password: "{{ vault_secret_intro_bot.committee_password }}"
+  google_sheet_id: "{{ vault_secret_intro_bot.google_sheet_id }}"
+
+secret_intro_backend:
+  mail_usr: "{{ vault_secret_intro_backend.mail_usr }}"
+  mail_psswd: "{{ vault_secret_intro_backend.mail_psswd }}"
+  validation: "{{ vault_secret_intro_backend.validation }}"
+
+secret_contentful_export:
+  token: "{{ vault_secret_contentful_export.token }}"
+  space_id: "{{ vault_secret_contentful_export.space_id }}"
+
+secret_outline:
+  secret_key: "{{ vault_secret_outline.secret_key }}"
+  utils_key: "{{ vault_secret_outline.utils_key }}"
+  s3_access_key_id: "{{ vault_secret_outline.s3_access_key_id }}"
+  s3_secret_access_key: "{{ vault_secret_outline.s3_secret_access_key }}"
+  s3_bucket: "outline-wiki-prod"
+  mailgun_password: "{{ vault_secret_outline.mailgun_password }}"
+
+secret_koala_manual:
+  password: "{{ vault_secret_koala_manual.password }}"
+
+freight_ssh_pub_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFOXjzub9wBK7/eOu4sceuGu3JoAJAoulNtqlt+A4XvT freight@svsticky.nl"
+
+secret_healthchecks_io:
+  ping_key: "{{ vault_secret_healthchecks_io.ping_key }}"
+
+secret_grafana:
+  api_key: "{{ vault_secret_grafana.api_key }}"
+  prometheus_id: "{{ vault_secret_grafana.prometheus_id }}"
+  loki_id: "{{ vault_secret_grafana.loki_id }}"

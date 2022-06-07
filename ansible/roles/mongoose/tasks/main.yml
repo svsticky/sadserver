@@ -28,7 +28,7 @@
 
   - name: "ensure mongoose database exists"
     postgresql_db:
-      name: "undead_mongoose"
+      name: "mongoose"
       owner: "mongoose"
 
   - name: "ensure mongoose database exists"

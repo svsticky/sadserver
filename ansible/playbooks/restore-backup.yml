@@ -33,13 +33,6 @@
       assert:
         that: "confirm == 'obliteration'"
 
-    # We only need this when running on staging, to access
-    # the AWS bucket later that has the production backups
-    - name: "load secrets from production"
-      include_vars:
-        name: "production"
-        file: "../group_vars/production/vault.yml"
-      when: "'production' not in group_names"
 
     - name: "create temporary directory to store backup archives"
       tempfile:
@@ -71,7 +64,6 @@
           with_items:
             - "admins"
             - "websites"
-            - "websites/databases"
             - "postgres/postgres"
 
         - name: "download latest backups"

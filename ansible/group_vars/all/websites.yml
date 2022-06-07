@@ -1,0 +1,338 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "vault_", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+# Defines our websites. Important to note is that the "name" of a website should
+# always be a subdomain of the canonical hostname (using the
+# "canonical_hostname" variable). This has to do with the current state of our
+# DNS zones, and ensures that TLS certificates are set up correctly in the
+# staging environment. This could be improved perhaps.
+websites:
+  - name: "aas.{{ canonical_hostname }}"
+    user: "aas"
+    custom_config: true
+    alternative_names:
+      - "webhooks.{{ canonical_hostname }}"
+    state: "present"
+
+  - name: "doorgeefluik.{{ canonical_hostname }}"
+    user: "doorgeefluik"
+    custom_config: true
+    authenticated: true
+    alternative_names: []
+    state: "present"
+
+  - name: "dies.{{ canonical_hostname }}"
+    user: "dies"
+    alternative_names: []
+    state: "present"
+
+  - name: "dgdarc.{{ canonical_hostname }}"
+    custom_config: true
+    alternative_names:
+      - "dgdarc.nl"
+      - "www.dgdarc.nl"
+      - "dgdarc.com"
+      - "www.dgdarc.com"
+    state: "present"
+
+  - name: "digidecs.{{ canonical_hostname }}"
+    custom_config: true
+    user: "commit"
+    alternative_names:
+      - "declaraties.{{ canonical_hostname }}"
+      - "declareren.{{ canonical_hostname }}"
+    # You have to remove the task include of digidecs.yml to remove this
+    # completely
+    state: "present"
+
+  - name: "indievelopment.{{ canonical_hostname }}"
+    user: "indievelopment"
+    alternative_names:
+      - "indievelopment.nl"
+      - "www.indievelopment.nl"
+
+    state: "present"
+  - name: "koala.{{ canonical_hostname }}"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "intro.{{ canonical_hostname }}"
+      - "leden.{{ canonical_hostname }}"
+      - "members.{{ canonical_hostname }}"
+    # You have to remove the task include of koala.yml to remove this completely
+    state: "present"
+
+  - name: "metrics.{{ canonical_hostname }}"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "status.{{ canonical_hostname }}"
+    # You have to remove the task include of monitoring.yml to remove this
+    # completely
+    state: "present"
+    authenticated: true
+
+  - name: "phpmyadmin.{{ canonical_hostname }}"
+    user: "phpmyadmin"
+    alternative_names:
+      - "pma.{{ canonical_hostname }}"
+    # You have to remove the task include of phpmyadmin.yml to remove this
+    # completely
+    state: "absent"
+
+  - name: "pretix.{{ canonical_hostname }}"
+    custom_config: true
+    alternative_names:
+      - "tickets.{{ canonical_hostname }}"
+      - "tickets.execut.nl"
+    state: "present"
+
+  - name: "radio.{{ canonical_hostname }}"
+    custom_config: true
+    user: "radio"
+    alternative_names: []
+    state: "present"
+
+  - name: "mongoose.{{ canonical_hostname }}"
+    custom_config: true
+    user: "mongoose"
+    alternative_names: []
+    state: "present"
+
+  - name: "savadaba.{{ canonical_hostname }}"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "savadaba.nl"
+      - "www.savadaba.nl"
+    state: "present"
+
+  - name: "sodi.{{ canonical_hostname }}"
+    alternative_names:
+      - "sodi.nl"
+      - "www.sodi.nl"
+    # You have to remove the task include of sodi.yml to remove this completely
+    state: "present"
+
+  - name: "static.{{ canonical_hostname }}"
+    user: "static-sticky"
+    alternative_names: []
+    state: "absent"
+
+  - name: "stichting.{{ canonical_hostname }}"
+    user: "stichting"
+    alternative_names:
+      - "stichtingsticky.nl"
+      - "www.stichtingsticky.nl"
+    state: "absent"
+
+  - name: "studytrip.{{ canonical_hostname }}"
+    user: "studytrip"
+    alternative_names:
+      - "studiereis.{{ canonical_hostname }}"
+    state: "present"
+
+  - name: "{{ canonical_hostname }}"
+    user: "static-sticky"
+    custom_config: true
+    # Hostnames have to be set in custom nginx config as well!
+    alternative_names:
+      - "www.{{ canonical_hostname }}"
+      - "stickyutrecht.nl"
+      - "www.stickyutrecht.nl"
+      - "studieverenigingsticky.nl"
+      - "www.studieverenigingsticky.nl"
+    state: "present"
+
+  - name: "symposium.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "idata.{{ canonical_hostname }}"
+    state: "absent"
+
+  - name: "wintersport.{{ canonical_hostname }}"
+    user: "wintersport"
+    alternative_names: []
+    custom_config: true
+    state: "present"
+
+  - name: "photos.{{ canonical_hostname }}"
+    user: "pxl"
+    alternative_names:
+      - "fotos.{{ canonical_hostname }}"
+    authenticated: true
+    state: "present"
+
+  - name: "execut-speakers.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "speakers.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "present"
+
+  - name: "execut-partners.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "partners.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "absent"
+
+  - name: "execut-survey.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "survey.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "present"
+
+  - name: "execut-landing.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "landing.execut.nl"
+    extra_includes:
+     - "execut-referer-tracking"
+    state: "present"
+
+  - name: "execut-2018.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "2018.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "present"
+
+  - name: "execut-2019.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "2019.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "present"
+
+  - name: "execut-2020.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "2020.execut.nl"
+    extra_includes:
+     - "execut-referer-tracking"
+    state: "present"
+
+  - name: "execut-display.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "display.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "absent"
+
+  - name: "execut-aftermovie.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "aftermovie.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "present"
+
+  - name: "execut-app.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "app.execut.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    state: "absent"
+
+  - name: "execut-2021.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "www.execut.nl"
+      - "execut.nl"
+      - "www.execute.nl"
+      - "execute.nl"
+      - "2021.execut.nl"
+      - "2022.execut.nl"
+    extra_includes: []
+    custom_config: true
+    state: "present"
+
+  - name: "execut.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names: []
+    extra_includes: []
+    state: "present"
+
+  - name: "snic-preview.{{ canonical_hostname }}"
+    user: "snic"
+    alternative_names: []
+    state: "present"
+
+  # This site does not contain any private photos, and is limited
+  # to stuff to show off pxl. As pxl is an open source project, we'd
+  # like to show off a live demo and link it from the README.
+  - name: "pxl-demo.{{ canonical_hostname }}"
+    user: "pxl"
+    alternative_names: []
+    state: "present"
+
+  - name: "pxl-docs.{{ canonical_hostname }}"
+    user: "pxl"
+    alternative_names: []
+    state: "present"
+
+  - name: "execut-feedback.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "feedback.execut.nl"
+    state: "present"
+
+  - name: "execut-qa.{{ canonical_hostname }}"
+    user: "symposium"
+    alternative_names:
+      - "qa.execut.nl"
+    state: "present"
+
+  - name: "files.{{ canonical_hostname }}"
+    user: "bestuur"
+    custom_config: true
+    alternative_names: []
+    authenticated: true
+    state: "present"
+
+  - name: "public.{{ canonical_hostname }}"
+    user: "bestuur"
+    custom_config: true
+    alternative_names: []
+    state: "present"
+
+  - name: "intro-cs.{{ canonical_hostname }}"
+    user: "commit"
+    custom_config: true
+    alternative_names:
+      - "intro-cs.nl"
+    state: "present"
+
+  - name: "hacc.{{ canonical_hostname }}"
+    user: "hacc"
+    custom_config: false
+    alternative_names: []
+    state: "present"
+
+  - name: "compendium.{{ canonical_hostname }}"
+    user: "outline"
+    alternative_names:
+      - "wiki.{{ canonical_hostname }}"
+      - "stickypedia.{{ canonical_hostname }}"
+    custom_config: true
+    authenticated: true
+    oauth2_callback_url: "/auth/oidc.callback"
+    state: "present"
+
+  - name: "goededoelendag.{{ canonical_hostname }}"
+    user: "commit"
+    alternative_names:
+      - "charityday.{{ canonical_hostname }}"
+    state: "present"

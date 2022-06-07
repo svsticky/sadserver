@@ -1,0 +1,242 @@
+---
+# When defining a secret, define the value as a Jinja2 reference to the same
+# variable name, but prefixed with "vault_", and define that key in vault.yml.
+# In that way there is an overview of what secrets are used, without everyone
+# having to have access to the values.
+
+# When editing keys, be sure to read ../docs/updating-ssh-keys.md first!
+# When adding admin users, be sure to add their keys to the "ansible" user too!
+users:
+  - name: "ansible"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "arianvp"
+        state: "absent"
+      - username: "HugoPeters1024"
+        state: "present"
+      - username: "maartenberg"
+        state: "present"
+      - username: "Riscky"
+        state: "present"
+      - username: "Phavion"
+        state: "present"
+      - username: "Mstiekema"
+        state: "present"
+      - username: "fiinnnn"
+        state: "absent"
+      - username: "JustNireon"
+        state: "present"
+      - username: "jelte-akker"
+        state: "present"
+      - username: "armaatus"
+        state: "present"
+          # github user borked, investigate
+          #      - username: "j00lzz"
+          #        state: "present"
+
+  - name: "arian"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "arianvp"
+        state: "absent"
+
+  - name: "finn"
+    admin: true
+    home_prefix: "/home"
+    state: "absent"
+    github_accounts:
+      - username: "fiinnnn"
+        state: "absent"
+
+  - name: "hugo"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "HugoPeters1024"
+        state: "present"
+
+  - name: "maarten"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "maartenberg"
+        state: "present"
+
+  - name: "rick"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "Riscky"
+        state: "present"
+
+  - name: "niels"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "Phavion"
+        state: "present"
+
+  - name: "merijn"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "Mstiekema"
+        state: "present"
+
+  - name: "siem"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "JustNireon"
+        state: "present"
+
+  - name: "julius"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "j00lz"
+        state: "present"
+
+  - name: "joris"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "armaatus"
+        state: "present"
+
+  - name: "jelte"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "jelte-akker"
+        state: "present"
+
+  - name: "bestuur"
+    admin: false
+    sudoless_ssh: true
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "Riscky"
+        state: "present"
+      - username: "JustNireon"
+        state: "present"
+      - username: "Mstiekema"
+        state: "present"
+      - username: "JulianVerouden"
+        state: "present"
+
+  - name: "commit"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "maartenberg"
+        state: "present"
+      - username: "fiinnnn"
+        state: "present"
+      - username: "Phavion"
+        state: "present"
+      - username: "TiekieWiki"
+        state: "present"
+
+  - name: "dgdarc"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+
+  - name: "dies"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "GlennStewart125"
+        state: "absent"
+      - username: "WalterJopla"
+        state: "present"
+
+  - name: "indievelopment"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "RCdeWit"
+        state: "absent"
+
+  - name: "stichting"
+    admin: false
+    home_prefix: "/var/www"
+    state: "absent"
+
+  - name: "studytrip"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "Mstiekema"
+        state: "present"
+
+  - name: "symposium"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "Tears"
+        state: "present"
+
+  - name: "wintersport"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "alextjanse"
+        state: "absent"
+
+  - name: "snic"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "duijf"
+        state: "absent"
+
+  - name: "pxl"
+    admin: true
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "maartenberg"
+        state: "present"
+      - username: "Riscky"
+        state: "present"
+      - username: "JustNireon"
+        state: "present"
+      - username: "jelte-akker"
+        state: "present"
+      - username: "Yfkesmit"
+        state: "present"
+
+  - name: "hacc"
+    admin: false
+    home_prefix: "/var/www"
+    state: "present"
+    github_accounts:
+      - username: "Riscky"
+        state: "present"
+      - username: "leuke-naam"
+        state: "present"
+      - username: "JustNireon"
+        state: "present"

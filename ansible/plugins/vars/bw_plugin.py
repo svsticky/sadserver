@@ -30,10 +30,13 @@ def parse_bw_output(output):
 @lru_cache(maxsize=100000)
 def global_get_vars():
     host = os.environ["STICKY_ENV"]
+    print(f"Running bw-plugin with STICKY_ENV {host}")
     folder_id = folder_ids[host]
     secrets = parse_bw_output(subprocess.check_output([f"bw list items --folderid {folder_id}"], shell=True))
-    ret = secrets
-    return ret
+
+    if os.environ.get("STICKY_RESTORING_BACKUP") is not None:
+        secrets["production"] = parse_bw_output(subprocess.check_output([f"bw list items --folderid {folder_ids['production']}"], shell=True))
+    return secrets
 
 
 

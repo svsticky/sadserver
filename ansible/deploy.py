@@ -34,11 +34,8 @@ def deploy(
     if not check and not force:
         verify_on_latest_master(host)
 
-
     # Sync bitwarden
     os.system("bw sync")
-
-
 
     # in the original script we doublecheck if production deploy is intended. Should we do that here?
 
@@ -53,7 +50,6 @@ def deploy(
     env["ANSIBLE_VAULT_PASSWORD_FILE"] = "./scripts/bitwarden-vault-pass.py"
     # Used by the bitwarden plugin
     env["STICKY_ENV"] = host
-
 
     arguments = [
         "ansible-playbook",
@@ -72,7 +68,6 @@ def deploy(
     if playbook == "playbooks/restore-backup.yml":
         # Used by the bitwarden plugin
         env["STICKY_RESTORING_BACKUP"] = "1"
-
 
     if check:
         arguments.append("--check")

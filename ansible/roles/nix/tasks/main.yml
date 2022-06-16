@@ -5,7 +5,7 @@
     dest: "/var/tmp/install-nix"
     mode: "0755"
 
-- name: "Run Nix installer"
+- name: "Run Nix installer" # noqa risky-shell-pipe
   become: true
   become_user: "eindbaas"
   shell: "yes | /var/tmp/install-nix --daemon"

@@ -27,5 +27,6 @@ in pkgs.buildEnv {
     pkgs.ansible-lint
     pkgs.jq
     pkgs.yamllint
+    pkgs.niv
   ];
 }

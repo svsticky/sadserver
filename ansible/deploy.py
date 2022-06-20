@@ -33,7 +33,7 @@ import scripts.bitwarden as bitwarden
 def deploy(
     host: str, playbook: str, tags: Optional[str], check: bool, force: bool
 ) -> None:
-    bitwarden.unlock()
+    bitwarden.unlock()  # type: ignore
     if not check and not force:
         verify_on_latest_master(host)
 

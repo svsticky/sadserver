@@ -22,28 +22,11 @@ class BitwardenStatus(enum.Enum):
     Unlocked = "unlocked"
 
 
-@click.command()
-@click.option(
-    "--vault-id",
-    type=click.Choice(["staging", "production"]),
-    required=True,
-    envvar="ANSIBLE_VAULT_IDENTITY",
-)
 @click.pass_context
-def cli(ctx: click.Context, vault_id: str) -> None:
+def unlock(ctx: click.Context) -> None:
     """
-    This script uses Bitwarden's CLI tool to print the Ansible Vault decryption
-    key for the requested Vault ID to stdout.
-
-    The Ansible Vault ID to print the password for may be specified by either
-    passing the `--vault-id` parameter or by setting the ANSIBLE_VAULT_IDENTITY
-    environment variable.
-
-    This script manages the Bitwarden unlocking process for you: after
-    executing this script at least once the Bitwarden session key is cached in
-    a private directory and automatically reused for future invocations.
-
-    This script is intended to be called automatically by Ansible.
+    Ensures that the bitwarden is unlocked and the password is not required
+    for subsequent requests
     """
 
     bw_status = get_bitwarden_status()
@@ -76,14 +59,6 @@ def cli(ctx: click.Context, vault_id: str) -> None:
             assert (
                 get_bitwarden_status() == BitwardenStatus.Unlocked
             ), "Unable to unlock vault even after clearing cached session key."
-
-    bw_data = run_bitwarden_json_command(
-        ["get", "item", "caa7fb69-913a-4f08-9d0f-a87f013d39d2"]
-    )
-
-    lookup = {x["name"]: x["value"] for x in bw_data["fields"]}
-    print(lookup[vault_id])
-
 
 def get_bitwarden_status() -> BitwardenStatus:
     bw_data = run_bitwarden_json_command(["status"])

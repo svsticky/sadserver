@@ -19,7 +19,7 @@ jobs:
           authToken: ${{ secrets.CACHIX_SIGNING_KEY }}
 
       - name: "Lint our Python files"
-        run: (cd ansible; nix-shell --run "black --check deploy.py")
+        run: (cd ansible; nix-shell --run "black --check deploy.py plugins/vars/bw_plugin.py")
 
       - name: "Typecheck our Python files"
         run: (cd ansible; nix-shell --run "mypy deploy.py --strict")

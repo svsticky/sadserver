@@ -32,9 +32,8 @@ users:
         state: "present"
       - username: "armaatus"
         state: "present"
-          # github user borked, investigate
-          #      - username: "j00lzz"
-          #        state: "present"
+      - username: "j00lz"
+        state: "present"
 
   - name: "arian"
     admin: true

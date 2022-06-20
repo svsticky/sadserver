@@ -4,3 +4,23 @@ koala-backups
 .slack-webhook
 .discord-webhook
 result
+
+#-- vim
+[._]*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+#-- Emacs
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+#-- SublimeText
+*.sublime-workspace
+#*.sublime-project

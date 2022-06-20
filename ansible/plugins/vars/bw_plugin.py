@@ -7,9 +7,10 @@ import os
 import inspect
 
 folder_ids = {
-    "production" : "b690c7cf-16bb-4b69-b86a-ae6d01449634",
+    "production": "b690c7cf-16bb-4b69-b86a-ae6d01449634",
     "staging": "a4c144b8-457d-45d4-b3a9-ae51014bed02",
 }
+
 
 def extract_info(item):
     name = f'vault_{item["name"]}'
@@ -18,27 +19,33 @@ def extract_info(item):
         fields[field["name"]] = field["value"]
     if not fields:
         fields = item["notes"]
-    return { name: fields }
+    return {name: fields}
+
 
 def parse_bw_output(output):
-     items = list(map(extract_info, json.loads(output)))
-     ret = {}
-     for k in items:
-         ret.update(k)
-     return ret
+    items = list(map(extract_info, json.loads(output)))
+    ret = {}
+    for k in items:
+        ret.update(k)
+    return ret
+
 
 @lru_cache(maxsize=100000)
 def global_get_vars():
     host = os.environ["STICKY_ENV"]
     print(f"Running bw-plugin with STICKY_ENV {host}")
     folder_id = folder_ids[host]
-    secrets = parse_bw_output(subprocess.check_output([f"bw list items --folderid {folder_id}"], shell=True))
+    secrets = parse_bw_output(
+        subprocess.check_output([f"bw list items --folderid {folder_id}"], shell=True)
+    )
 
     if os.environ.get("STICKY_RESTORING_BACKUP") is not None:
-        secrets["production"] = parse_bw_output(subprocess.check_output([f"bw list items --folderid {folder_ids['production']}"], shell=True))
+        secrets["production"] = parse_bw_output(
+            subprocess.check_output(
+                [f"bw list items --folderid {folder_ids['production']}"], shell=True
+            )
+        )
     return secrets
-
-
 
 
 class VarsModule(BaseVarsPlugin):

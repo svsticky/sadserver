@@ -1,6 +1,6 @@
 ---
 # When defining a secret, define the value as a Jinja2 reference to the same
-# variable name, but prefixed with "vault_", and define that key in vault.yml.
+# variable name, but prefixed with "vault_", and define that key in bitwarden
 # In that way there is an overview of what secrets are used, without everyone
 # having to have access to the values.
 

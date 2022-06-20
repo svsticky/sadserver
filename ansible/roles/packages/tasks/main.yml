@@ -32,21 +32,14 @@
     dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
 
 - name: "configure unattended-upgrades"
-  template:
-    src: "{{ item }}.j2"
-    dest: "/etc/systemd/system/{{ item }}"
+  file:
+    path: "/etc/systemd/system/{{ item }}"
+    state: "absent"
   with_items:
     - "unattended-upgrades-output.service"
     - "unattended-upgrades-output.timer"
   notify:
     - "systemctl daemon-reload"
-
-- name: "enable unattended-upgrades notification in production"
-  service:
-    name: "unattended-upgrades-output.timer"
-    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
-    state:
-      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
 
 # slacktee is the tool we use to let the server send notifications to Slack.
 # Replaces email.

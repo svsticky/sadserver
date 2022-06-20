@@ -10,6 +10,8 @@ import json
 from git.repo import Repo
 from typing import Optional
 
+import scripts.bitwarden as bitwarden
+
 
 @click.command()
 @click.option(
@@ -31,14 +33,7 @@ from typing import Optional
 def deploy(
     host: str, playbook: str, tags: Optional[str], check: bool, force: bool
 ) -> None:
-    bw_status = json.loads(
-        subprocess.run(["bw", "status"], stdout=subprocess.PIPE).stdout
-    )["status"]
-    if bw_status != "unlocked":
-        raise click.ClickException(
-            f"Bitwarden CLI status: '{bw_status}', run \"bw login\" and set BW_SESSION"
-        )
-
+    bitwarden.unlock()
     if not check and not force:
         verify_on_latest_master(host)
 
@@ -55,7 +50,6 @@ def deploy(
     env["ANSIBLE_STDOUT_CALLBACK"] = "yaml"
     env["ANSIBLE_VAULT_IDENTITY"] = host
     env["ANSIBLE_SSH_PIPELINING"] = "true"
-    env["ANSIBLE_VAULT_PASSWORD_FILE"] = "./scripts/bitwarden-vault-pass.py"
     # Used by the bitwarden plugin
     env["STICKY_ENV"] = host
 

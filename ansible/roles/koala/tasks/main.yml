@@ -28,6 +28,13 @@
 
 
 - block:
+  - name: "place koala OIDC signing key"
+    copy:
+      dest: "~/oidc_signing_key.pem"
+      content: "{{ vault_secret_koala_oidc_signing_key }}"
+      mode: "0600"
+    notify: "restart koala"
+
   - name: "ensure koala has a ssh directory"
     file:
       path: "~/.ssh"

@@ -31,6 +31,10 @@ from typing import Optional
 def deploy(
     host: str, playbook: str, tags: Optional[str], check: bool, force: bool
 ) -> None:
+    bw_status = json.loads(subprocess.run(["bw", "status"], stdout=subprocess.PIPE).stdout)["status"]
+    if bw_status != "unlocked":
+        raise click.ClickException(f"Bitwarden CLI status: '{bw_status}', run \"bw login\" and set BW_SESSION");
+
     if not check and not force:
         verify_on_latest_master(host)
 

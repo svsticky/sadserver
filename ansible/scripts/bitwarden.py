@@ -60,6 +60,7 @@ def unlock(ctx: click.Context) -> None:
                 get_bitwarden_status() == BitwardenStatus.Unlocked
             ), "Unable to unlock vault even after clearing cached session key."
 
+
 def get_bitwarden_status() -> BitwardenStatus:
     bw_data = run_bitwarden_json_command(["status"])
 

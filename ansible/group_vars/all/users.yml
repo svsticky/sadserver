@@ -151,6 +151,8 @@ users:
         state: "present"
       - username: "TiekieWiki"
         state: "present"
+      - username: "jelte-akker"
+        state: "present"
 
   - name: "dgdarc"
     admin: false

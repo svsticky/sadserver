@@ -105,6 +105,7 @@ secret_mailchimp:
   mmm_id: "{{ vault_secret_mailchimp.mmm_id }}"
   lectures_id: "{{ vault_secret_mailchimp.lectures_id }}"
   teacher_id: "{{ vault_secret_mailchimp.teacher_id }}"
+  alumni_id: "{{ vault_secret_mailchimp.alumni_id }}"
 
 secret_radio:
   contentful_space_id: "{{ vault_secret_radio.contentful_space_id }}"

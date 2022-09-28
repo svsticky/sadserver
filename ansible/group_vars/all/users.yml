@@ -35,6 +35,14 @@ users:
       - username: "j00lz"
         state: "absent"
 
+  - name: "arian"
+    admin: true
+    home_prefix: "/home"
+    state: "absent"
+    github_accounts:
+      - username: "arianvp"
+        state: "absent"
+
   - name: "finn"
     admin: true
     home_prefix: "/home"
@@ -119,7 +127,7 @@ users:
     admin: true
     home_prefix: "/home"
     state: "present"
-    github: "Lucas"
+    github_accounts:
       - username: "LucasDissie"
         state: "present"
 

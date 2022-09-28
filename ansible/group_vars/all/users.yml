@@ -19,9 +19,9 @@ users:
       - username: "maartenberg"
         state: "present"
       - username: "Riscky"
-        state: "present"
+        state: "absent"
       - username: "Phavion"
-        state: "present"
+        state: "absent"
       - username: "Mstiekema"
         state: "present"
       - username: "fiinnnn"
@@ -31,16 +31,8 @@ users:
       - username: "jelte-akker"
         state: "present"
       - username: "armaatus"
-        state: "present"
+        state: "absent"
       - username: "j00lz"
-        state: "present"
-
-  - name: "arian"
-    admin: true
-    home_prefix: "/home"
-    state: "present"
-    github_accounts:
-      - username: "arianvp"
         state: "absent"
 
   - name: "finn"
@@ -70,18 +62,18 @@ users:
   - name: "rick"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Riscky"
-        state: "present"
+        state: "absent"
 
   - name: "niels"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Phavion"
-        state: "present"
+        state: "absent"
 
   - name: "merijn"
     admin: true
@@ -102,18 +94,18 @@ users:
   - name: "julius"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "j00lz"
-        state: "present"
+        state: "absent"
 
   - name: "joris"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "armaatus"
-        state: "present"
+        state: "absent"
 
   - name: "jelte"
     admin: true
@@ -123,20 +115,28 @@ users:
       - username: "jelte-akker"
         state: "present"
 
+  - name: "lucas"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github: "Lucas"
+      - username: "LucasDissie"
+        state: "present"
+
   - name: "bestuur"
     admin: false
     sudoless_ssh: true
     home_prefix: "/var/www"
     state: "present"
     github_accounts:
-      - username: "Riscky"
+      - username: "LucasDissie"
         state: "present"
       - username: "JustNireon"
         state: "present"
       - username: "Mstiekema"
         state: "present"
       - username: "JulianVerouden"
-        state: "present"
+        state: "absent"
 
   - name: "commit"
     admin: false
@@ -146,9 +146,9 @@ users:
       - username: "maartenberg"
         state: "present"
       - username: "fiinnnn"
-        state: "present"
+        state: "absent"
       - username: "Phavion"
-        state: "present"
+        state: "absent"
       - username: "TiekieWiki"
         state: "present"
       - username: "jelte-akker"
@@ -167,7 +167,7 @@ users:
       - username: "GlennStewart125"
         state: "absent"
       - username: "WalterJopla"
-        state: "present"
+        state: "absent"
 
   - name: "indievelopment"
     admin: false
@@ -196,7 +196,7 @@ users:
     state: "present"
     github_accounts:
       - username: "Tears"
-        state: "present"
+        state: "absent"
 
   - name: "wintersport"
     admin: false
@@ -228,7 +228,7 @@ users:
       - username: "jelte-akker"
         state: "present"
       - username: "Yfkesmit"
-        state: "present"
+        state: "absent"
 
   - name: "hacc"
     admin: false
@@ -236,7 +236,7 @@ users:
     state: "present"
     github_accounts:
       - username: "Riscky"
-        state: "present"
+        state: "absent"
       - username: "leuke-naam"
         state: "present"
       - username: "JustNireon"

@@ -129,13 +129,11 @@ users:
     admin: false
     home_prefix: "/var/www"
     state: "present"
+
   - name: "snic"
     admin: false
     home_prefix: "/var/www"
     state: "present"
-    github_accounts:
-      - username: "duijf"
-        state: "absent"
 
   - name: "pxl"
     admin: true
@@ -150,16 +148,14 @@ users:
         state: "present"
       - username: "jelte-akker"
         state: "present"
-      - username: "Yfkesmit"
-        state: "absent"
+      - username: "LucasDissie"
+        state: "present"
 
   - name: "hacc"
     admin: false
     home_prefix: "/var/www"
     state: "present"
     github_accounts:
-      - username: "Riscky"
-        state: "absent"
       - username: "leuke-naam"
         state: "present"
       - username: "JustNireon"

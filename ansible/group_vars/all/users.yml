@@ -19,7 +19,7 @@ users:
       - username: "maartenberg"
         state: "present"
       - username: "Riscky"
-g        state: "absent"
+        state: "absent"
       - username: "Phavion"
         state: "absent"
       - username: "Mstiekema"

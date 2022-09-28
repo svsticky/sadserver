@@ -12,44 +12,16 @@ users:
     home_prefix: "/home"
     state: "present"
     github_accounts:
-      - username: "arianvp"
-        state: "absent"
       - username: "HugoPeters1024"
         state: "present"
       - username: "maartenberg"
         state: "present"
-      - username: "Riscky"
-        state: "absent"
-      - username: "Phavion"
-        state: "absent"
       - username: "Mstiekema"
         state: "present"
-      - username: "fiinnnn"
-        state: "absent"
       - username: "JustNireon"
         state: "present"
       - username: "jelte-akker"
         state: "present"
-      - username: "armaatus"
-        state: "absent"
-      - username: "j00lz"
-        state: "absent"
-
-  - name: "arian"
-    admin: true
-    home_prefix: "/home"
-    state: "absent"
-    github_accounts:
-      - username: "arianvp"
-        state: "absent"
-
-  - name: "finn"
-    admin: true
-    home_prefix: "/home"
-    state: "absent"
-    github_accounts:
-      - username: "fiinnnn"
-        state: "absent"
 
   - name: "hugo"
     admin: true
@@ -67,22 +39,6 @@ users:
       - username: "maartenberg"
         state: "present"
 
-  - name: "rick"
-    admin: true
-    home_prefix: "/home"
-    state: "absent"
-    github_accounts:
-      - username: "Riscky"
-        state: "absent"
-
-  - name: "niels"
-    admin: true
-    home_prefix: "/home"
-    state: "absent"
-    github_accounts:
-      - username: "Phavion"
-        state: "absent"
-
   - name: "merijn"
     admin: true
     home_prefix: "/home"
@@ -98,22 +54,6 @@ users:
     github_accounts:
       - username: "JustNireon"
         state: "present"
-
-  - name: "julius"
-    admin: true
-    home_prefix: "/home"
-    state: "absent"
-    github_accounts:
-      - username: "j00lz"
-        state: "absent"
-
-  - name: "joris"
-    admin: true
-    home_prefix: "/home"
-    state: "absent"
-    github_accounts:
-      - username: "armaatus"
-        state: "absent"
 
   - name: "jelte"
     admin: true
@@ -139,12 +79,6 @@ users:
     github_accounts:
       - username: "LucasDissie"
         state: "present"
-      - username: "JustNireon"
-        state: "absent"
-      - username: "Mstiekema"
-        state: "absent"
-      - username: "JulianVerouden"
-        state: "absent"
 
   - name: "commit"
     admin: false
@@ -153,10 +87,6 @@ users:
     github_accounts:
       - username: "maartenberg"
         state: "present"
-      - username: "fiinnnn"
-        state: "absent"
-      - username: "Phavion"
-        state: "absent"
       - username: "TiekieWiki"
         state: "present"
       - username: "jelte-akker"
@@ -171,24 +101,16 @@ users:
     admin: false
     home_prefix: "/var/www"
     state: "present"
-    github_accounts:
-      - username: "GlennStewart125"
-        state: "absent"
-      - username: "WalterJopla"
-        state: "absent"
 
   - name: "indievelopment"
     admin: false
     home_prefix: "/var/www"
     state: "present"
-    github_accounts:
-      - username: "RCdeWit"
-        state: "absent"
 
   - name: "stichting"
     admin: false
     home_prefix: "/var/www"
-    state: "absent"
+    state: "present"
 
   - name: "studytrip"
     admin: false
@@ -202,18 +124,11 @@ users:
     admin: false
     home_prefix: "/var/www"
     state: "present"
-    github_accounts:
-      - username: "Tears"
-        state: "absent"
 
   - name: "wintersport"
     admin: false
     home_prefix: "/var/www"
     state: "present"
-    github_accounts:
-      - username: "alextjanse"
-        state: "absent"
-
   - name: "snic"
     admin: false
     home_prefix: "/var/www"

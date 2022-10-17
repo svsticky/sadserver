@@ -124,6 +124,9 @@ users:
     admin: false
     home_prefix: "/var/www"
     state: "present"
+    github_accounts:
+      - username: "leuke-naam"
+        state: "present"
 
   - name: "wintersport"
     admin: false

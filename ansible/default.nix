@@ -18,15 +18,16 @@ let
     ansible-mitogen
   ]);
 
+  linuxOnlyTools = if pkgs.stdenv.isLinux then [ pkgs.ansible-lint ] else [];
+
 in pkgs.buildEnv {
   name = "sadserver-environment";
   paths = [
     pythonEnvironment
     pkgs.ansible_2_10
     pkgs.bitwarden-cli
-    pkgs.ansible-lint
     pkgs.jq
     pkgs.yamllint
     pkgs.niv
-  ];
+  ] ++ linuxOnlyTools;
 }

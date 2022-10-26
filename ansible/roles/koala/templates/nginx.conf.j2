@@ -6,13 +6,10 @@ upstream unicorn {
 
 # maps inschrijven/signup.svsticky.nl to intro.svsticky.nl
 map $http_host $koala_site {
+	default	                                $http_host;
 
-	default 								$http_host;
-
-	inschrijven.{{ canonical_hostname }} 	intro.{{ canonical_hostname }};
-	signup.{{ canonical_hostname }}			intro.{{ canonical_hostname }};
-
-	
+	inschrijven.{{ canonical_hostname }}	intro.{{ canonical_hostname }};
+	signup.{{ canonical_hostname }}	        intro.{{ canonical_hostname }};
 }
 
 server {

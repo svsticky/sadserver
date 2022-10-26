@@ -68,6 +68,12 @@ def get_bitwarden_status() -> BitwardenStatus:
 
 
 def get_bitwarden_session_key() -> str:
+    if not SESSION_KEY_CACHE_DIR.parent.is_dir():
+        # No caching possible.
+        click.echo("Unlocking Bitwarden without caching", err=True)
+        session_key = run_bitwarden_command(["unlock", "--raw"])
+        return session_key
+
     SESSION_KEY_CACHE_DIR.mkdir(mode=0o700, parents=False, exist_ok=True)
 
     if SESSION_KEY_CACHE_FILE.is_file():

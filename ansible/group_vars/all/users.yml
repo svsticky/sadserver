@@ -22,6 +22,8 @@ users:
         state: "present"
       - username: "jelte-akker"
         state: "present"
+      - username: "Yfkesmit"
+        state: "present"
 
   - name: "hugo"
     admin: true
@@ -69,6 +71,14 @@ users:
     state: "present"
     github_accounts:
       - username: "LucasDissie"
+        state: "present"
+
+  - name: "yfke"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_account:
+      - username: "Yfkesmit"
         state: "present"
 
   - name: "bestuur"

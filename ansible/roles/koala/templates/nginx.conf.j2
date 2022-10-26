@@ -4,10 +4,21 @@ upstream unicorn {
 	server unix:/tmp/unicorn.sock fail_timeout=0;
 }
 
+# maps inschrijven/signup.svsticky.nl to intro.svsticky.nl
+map $http_host $koala_site {
+
+	default 								$http_host;
+
+	inschrijven.{{ canonical_hostname }} 	intro.{{ canonical_hostname }};
+	signup.{{ canonical_hostname }}			intro.{{ canonical_hostname }};
+
+	
+}
+
 server {
 	listen 443 ssl http2;
 	listen [::]:443 ssl http2;
-	server_name ~^(koala|leden|intro|members)\.{{ canonical_hostname }};
+	server_name ~^(koala|leden|intro|inschrijven|signup|members)\.{{ canonical_hostname }};
 
 	ssl_certificate /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/koala.{{ canonical_hostname }}/privkey.pem;
@@ -63,7 +74,7 @@ server {
 		add_header Access-Control-Allow-Headers "Origin, Content-Type, Accept";
 
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		proxy_set_header Host $http_host;
+		proxy_set_header Host $koala_site;
 		proxy_set_header X-Forwarded-Proto https;
 		proxy_redirect off;
 		proxy_pass http://unicorn;
@@ -74,7 +85,7 @@ server {
 		add_header Cache-Control "private";
 
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		proxy_set_header Host $http_host;
+		proxy_set_header Host $koala_site;
 		proxy_set_header X-Forwarded-Proto https;
 		proxy_redirect off;
 		proxy_pass http://unicorn;
@@ -87,7 +98,7 @@ server {
 		}
 
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		proxy_set_header Host $http_host;
+		proxy_set_header Host $koala_site;
 		proxy_set_header X-Forwarded-Proto https;
 		proxy_redirect off;
 		proxy_pass http://unicorn;

@@ -7,9 +7,9 @@ server {
   server_name
     radio.{{ canonical_hostname }};
 
-  ssl_certificate      /etc/letsencrypt/live/radio.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/radio.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/radio.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate      /etc/letsencrypt/live/{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ canonical_hostname }}/chain.pem;
 
   root /var/www/radio/radio.{{ canonical_hostname }};
 

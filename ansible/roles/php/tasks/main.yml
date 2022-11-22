@@ -33,7 +33,7 @@
     dest: "/etc/php/7.4/fpm/pool.d/pool-{{ item.name }}.conf"
   loop:
     - name: "digidecs.{{ canonical_hostname }}"
-      user: "commit"
+      user: "digidecs"
     - name: "indievelopment.{{ canonical_hostname }}"
       user: "indievelopment"
   notify: "reload php"

@@ -40,7 +40,7 @@ websites:
 
   - name: "digidecs.{{ canonical_hostname }}"
     custom_config: true
-    user: "commit"
+    user: "digidecs"
     alternative_names:
       - "declaraties.{{ canonical_hostname }}"
       - "declareren.{{ canonical_hostname }}"

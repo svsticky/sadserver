@@ -223,16 +223,20 @@ websites:
     alternative_names:
       - "2020.execut.nl"
     extra_includes:
-     - "execut-referer-tracking"
+      - "execut-referer-tracking"
     state: "present"
-
-  - name: "execut-display.{{ canonical_hostname }}"
+  
+  - name: "execut-2023.{{ canonical_hostname}}"
     user: "symposium"
     alternative_names:
-      - "display.execut.nl"
+      - "2023.execut.nl"
+      - "www.execut.nl"
+      - "execut.nl"
+      - "www.execute.nl"
+      - "execute.nl"
     extra_includes:
       - "execut-referer-tracking"
-    state: "absent"
+    state: "present"
 
   - name: "execut-aftermovie.{{ canonical_hostname }}"
     user: "symposium"
@@ -253,10 +257,6 @@ websites:
   - name: "execut-2021.{{ canonical_hostname }}"
     user: "symposium"
     alternative_names:
-      - "www.execut.nl"
-      - "execut.nl"
-      - "www.execute.nl"
-      - "execute.nl"
       - "2021.execut.nl"
       - "2022.execut.nl"
     extra_includes: []

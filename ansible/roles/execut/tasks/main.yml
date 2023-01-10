@@ -1,42 +1,42 @@
 ---
-- name: "add deadsnakes PPA"
-  apt_repository:
-    repo: "ppa:deadsnakes/ppa"
+# - name: "add deadsnakes PPA"
+#   apt_repository:
+#     repo: "ppa:deadsnakes/ppa"
 
-- name: "install Python 3.9"
-  apt:
-    pkg:
-      - "python3.9"
-      - "python3.9-venv"
-      - "python3.9-dev"
-    state: "present"
+# - name: "install Python 3.9"
+#   apt:
+#     pkg:
+#       - "python3.9"
+#       - "python3.9-venv"
+#       - "python3.9-dev"
+#     state: "present"
 
-- name: "ensure database user exists"
-  postgresql_user:
-    name: "symposium"
-  become_user: "postgres"
-  become: true
+# - name: "ensure database user exists"
+#   postgresql_user:
+#     name: "symposium"
+#   become_user: "postgres"
+#   become: true
 
-- name: "ensure database exists"
-  postgresql_db:
-    name: "execut"
-    owner: "symposium"
-  become_user: "postgres"
-  become: true
+# - name: "ensure database exists"
+#   postgresql_db:
+#     name: "execut"
+#     owner: "symposium"
+#   become_user: "postgres"
+#   become: true
 
-- name: "ensure database user has the right privileges"
-  postgresql_user:
-    db: "execut"
-    name: "symposium"
-    priv: "ALL"
-    role_attr_flags: "CREATEDB,LOGIN"
-  become_user: "postgres"
-  become: true
-  ignore_errors: "{{ ansible_check_mode }}"
+# - name: "ensure database user has the right privileges"
+#   postgresql_user:
+#     db: "execut"
+#     name: "symposium"
+#     priv: "ALL"
+#     role_attr_flags: "CREATEDB,LOGIN"
+#   become_user: "postgres"
+#   become: true
+#   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: "determine website folder"
   set_fact:
-    execut_website_path: "/var/www/symposium/execut-2021.{{ canonical_hostname }}"
+    execut_website_path: "/var/www/symposium/execut-2023.{{ canonical_hostname }}"
 
 - name: "make website directory"
   file:
@@ -52,51 +52,52 @@
 - name: "perform stuff as `symposium`"
   become_user: "symposium"
   block:
-
-    - name: "create virtualenv if not exists, update pip and tools"
-      pip:
-        name:
-          - "pip"
-          - "setuptools"
-          - "wheel"
-          - "pipenv"
-          - "gunicorn==20.0.4"
-          - "python-dotenv[cli]==0.15.0"
-        virtualenv: "{{ execut_website_path }}/venv"
-        virtualenv_command: "/usr/bin/python3.9 -m venv"
+    # - name: "create virtualenv if not exists, update pip and tools"
+    #   pip:
+    #     name:
+    #       - "pip"
+    #       - "setuptools"
+    #       - "wheel"
+    #       - "pipenv"
+    #       - "gunicorn==20.0.4"
+    #       - "python-dotenv[cli]==0.15.0"
+    #     virtualenv: "{{ execut_website_path }}/venv"
+    #     virtualenv_command: "/usr/bin/python3.9 -m venv"
 
     - name: "clone website's repository"
       git:
-        repo: "https://github.com/StichtingSticky/execut-www"
-        dest: "{{ execut_website_path }}/execut_www"
+        repo: "https://github.com/Daniel1of1/hello-world-static"
+        dest: "{{ execut_website_path }}"
         version: "master"
 
-    - name: "install environment file"
-      template:
-        src: "execut_www.env.j2"
-        dest: "{{ execut_website_path }}/execut_www.env"
-        mode: "0600"
+    # - name: "install environment file"
+    #   template:
+    #     src: "execut_www.env.j2"
+    #     dest: "{{ execut_website_path }}/execut_www.env"
+    #     mode: "0600"
 
-    - name: "install dependencies"
-      command: "{{ execut_website_path }}/venv/bin/pipenv sync"
-      environment:
-        VIRTUAL_ENV: "{{ execut_website_path }}/venv"
-      args:
-        chdir: "{{ execut_website_path }}/execut_www"
+    # - name: "install dependencies"
+    #   command: "{{ execut_website_path }}/venv/bin/pipenv sync"
+    #   environment:
+    #     VIRTUAL_ENV: "{{ execut_website_path }}/venv"
+    #   args:
+    #     chdir: "{{ execut_website_path }}/execut_www"
 
-    - name: "run migrations, rebuild static files"
-      command: >
-        {{ execut_website_path }}/venv/bin/dotenv
-        -f "{{ execut_website_path }}/execut_www.env"
-        run "{{ execut_website_path }}/venv/bin/python"
-        manage.py {{ item }}
-      environment:
-        VIRTUAL_ENV: "{{ execut_website_path }}/venv"
-      args:
-        chdir: "{{ execut_website_path }}/execut_www"
-      with_items:
-        - "migrate"
-        - "collectstatic --no-input"
+    # - name: "run migrations, rebuild static files"
+    #   command: >
+    #     {{ execut_website_path }}/venv/bin/dotenv
+    #     -f "{{ execut_website_path }}/execut_www.env"
+    #     run "{{ execut_website_path }}/venv/bin/python"
+    #     manage.py {{ item }}
+    #   environment:
+    #     VIRTUAL_ENV: "{{ execut_website_path }}/venv"
+    #   args:
+    #     chdir: "{{ execut_website_path }}/execut_www"
+    #   with_items:
+    #     - "migrate"
+    #     - "collectstatic --no-input"
+
+
 
 - name: "install service file"
   template:
@@ -104,17 +105,16 @@
     dest: "/etc/systemd/system/execut-django-website.service"
     mode: "0644"
   notify: "systemctl daemon-reload"
-
 - name: "install Nginx config"
   template:
     src: "nginx.conf.j2"
-    dest: "/etc/nginx/sites-available/execut-django-website.conf"
+    dest: "/etc/nginx/sites-available/execut-2023.{{canonical_hostname}}.conf"
   notify: "reload nginx"
 
 - name: "enable Nginx config"
   file:
-    src: "/etc/nginx/sites-available/execut-django-website.conf"
-    dest: "/etc/nginx/sites-enabled/execut-django-website.conf"
+    src: "/etc/nginx/sites-available/execut-2023.{{canonical_hostname}}.conf"
+    dest: "/etc/nginx/sites-enabled/execut-2023.{{canonical_hostname}}.conf"
     state: "link"
   notify: "reload nginx"
 

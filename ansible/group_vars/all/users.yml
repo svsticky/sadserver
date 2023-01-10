@@ -22,11 +22,9 @@ users:
         state: "present"
       - username: "jelte-akker"
         state: "present"
-<<<<<<< Updated upstream
       - username: "Yfkesmit"
-=======
+        state: "present"
       - username: "leuke-naam"
->>>>>>> Stashed changes
         state: "present"
 
   - name: "hugo"

@@ -22,7 +22,11 @@ users:
         state: "present"
       - username: "jelte-akker"
         state: "present"
+<<<<<<< Updated upstream
       - username: "Yfkesmit"
+=======
+      - username: "leuke-naam"
+>>>>>>> Stashed changes
         state: "present"
 
   - name: "hugo"
@@ -31,6 +35,14 @@ users:
     state: "present"
     github_accounts:
       - username: "HugoPeters1024"
+        state: "present"
+  
+  - name: "sem"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "leuke-naam"
         state: "present"
 
   - name: "maarten"

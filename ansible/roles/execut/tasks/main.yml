@@ -49,6 +49,22 @@
     - "/var/www/symposium/.local"
     - "/var/www/symposium/.cache"
 
+
+# - name: "clone NVM"
+#   git:
+#     repo: "https://github.com/creationix/nvm.git"
+#     dest: "{{ execut_website_path }}/.nvm"
+#     depth: 1
+#   diff: false
+
+# - name: "install node version"
+#   shell: |
+#     . {{ execut_website_path }}/.nvm/nvm.sh
+#     nvm install
+#   args:
+#     chdir: "{{ execut_website_path }}"
+#     executable: "/bin/bash"
+
 - name: "perform stuff as `symposium`"
   become_user: "symposium"
   block:
@@ -63,12 +79,23 @@
     #       - "python-dotenv[cli]==0.15.0"
     #     virtualenv: "{{ execut_website_path }}/venv"
     #     virtualenv_command: "/usr/bin/python3.9 -m venv"
+    
 
     - name: "clone website's repository"
       git:
-        repo: "https://github.com/Daniel1of1/hello-world-static"
+        repo: "https://github.com/stichtingsticky/execut"
         dest: "{{ execut_website_path }}"
-        version: "master"
+        version: "main"
+    # - name: "install dependencies"
+    #   command: "npm install"
+    #   args:
+    #     chdir: "{{ execut_website_path }}"
+    #     executable: "/bin/bash"    
+    # - name: "build website"
+    #   command: "npm run build"
+    #   args:
+    #     chdir: "{{ execut_website_path }}"
+    #     executable: "/bin/bash"
 
     # - name: "install environment file"
     #   template:
@@ -125,8 +152,8 @@
 - name: "Reload Nginx, systemd if needed"
   meta: "flush_handlers"
 
-- name: "Start and enable website service"
-  systemd:
-    name: "execut-django-website.service"
-    state: "restarted"
-    enabled: true
+# - name: "Start and enable website service"
+#   systemd:
+#     name: "execut-django-website.service"
+#     state: "restarted"
+#     enabled: true

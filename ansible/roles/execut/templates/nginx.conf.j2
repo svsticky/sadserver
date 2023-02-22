@@ -42,7 +42,7 @@ server {
   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
   # Security header file not included because frames
 
-  root /var/www/symposium/execut-2023.{{canonical_hostname}}/build;
+  root /var/www/symposium/execut-2023.{{canonical_hostname}}/dist;
   index index.html;
 }
 
@@ -64,7 +64,7 @@ server {
   # Security header file not included because frames
 
 
-  root /var/www/symposium/execut-2023.{{canonical_hostname}}/build;
+  root /var/www/symposium/execut-2023.{{canonical_hostname}}/dist;
   index index.html;
   
 }

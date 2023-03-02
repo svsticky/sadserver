@@ -268,7 +268,8 @@ websites:
     user: "symposium"
     alternative_names: []
     extra_includes: []
-    state: "present"
+    custom_config: true
+    state: "absent"
 
   - name: "snic-preview.{{ canonical_hostname }}"
     user: "snic"

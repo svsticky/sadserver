@@ -48,6 +48,7 @@
     - "{{ execut_website_path }}"
     - "/var/www/symposium/.local"
     - "/var/www/symposium/.cache"
+
 - name: "perform stuff as `symposium`"
   become_user: "symposium"
   block:
@@ -56,12 +57,13 @@
         repo: "https://github.com/stichtingsticky/execut"
         dest: "{{ execut_website_path }}"
         version: "main"
-- name: "install service file"
-  template:
-    src: "execut.service.j2"
-    dest: "/etc/systemd/system/execut-django-website.service"
-    mode: "0644"
-  notify: "systemctl daemon-reload"
+# - name: "install service file"
+#   template:
+#     src: "execut.service.j2"
+#     dest: "/etc/systemd/system/execut-django-website.service"
+#     mode: "0644"
+#   notify: "systemctl daemon-reload"
+
 - name: "install Nginx config"
   template:
     src: "nginx.conf.j2"

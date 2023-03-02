@@ -57,6 +57,23 @@
         repo: "https://github.com/stichtingsticky/execut"
         dest: "{{ execut_website_path }}"
         version: "main"
+
+- name: "run pnpm install"
+  command:
+    cmd: >
+      nix --extra-experimental-features nix-command
+      shell -f /var/www/symposium/execut-2023.{{ canonical_hostname }}/default.nix -c
+      pnpm install
+    chdir: "/var/www/symposium/execut-2023.{{ canonical_hostname }}/sites/static"
+
+- name: "run pnpm build"
+  command:
+    cmd: >
+      nix --extra-experimental-features nix-command
+      shell -f /var/www/symposium/execut-2023.{{ canonical_hostname }}/default.nix -c
+      pnpm build
+    chdir: "/var/www/symposium/execut-2023.{{ canonical_hostname }}/sites/static"
+
 # - name: "install service file"
 #   template:
 #     src: "execut.service.j2"

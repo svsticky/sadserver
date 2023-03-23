@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Run the Chroma basckend
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Type=simple
+User=chroma
+Group=chroma
+Restart=always
+
+Environemnt=RUST_LOG=INFO
+Environment=HTTP_PORT=34971
+Environment=DB_HOST="localhost"
+Environment=DB_USER="chroma"
+Environment=DB_DATABASE="chroma"
+Environment=S3_BUCKET_NAME=" TODO "
+Environment=S3_REGION=" TODO "
+Environment=S3_ENDPOINT_URL=" TODO "
+Environemnt=KOALA_BASE_REDIRECT_URI=https://koala.{{ canonical_hostname }}"
+Environemnt=KOALA_BASE_URI=https://koala.{{ canonical_hostname }}"
+Environment=KOALA_OAUTH_REDIRECT_URI=https://chroma.{{ canonical_hostname}}/api/v1/login
+Environemnt=LOGIN_COMPLETE_REDIRECT_URI=https://chroma.{{ canonical_hostname}}/logged_in
+
+ExecStart=/var/www/chroma/server/server-x86_64-unknown-linux-musl
+
+[Install]
+WantedBy=multi-user.target

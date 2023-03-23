@@ -225,7 +225,7 @@ websites:
     extra_includes:
       - "execut-referer-tracking"
     state: "present"
-  
+
   - name: "execut-2023.{{ canonical_hostname}}"
     user: "symposium"
     alternative_names:
@@ -234,6 +234,15 @@ websites:
       - "execut.nl"
       - "www.execute.nl"
       - "execute.nl"
+    extra_includes:
+      - "execut-referer-tracking"
+    custom_config: true
+    state: "present"
+
+  - name: "execut-api.{{ canonical_hostname}}"
+    user: "symposium"
+    alternative_names:
+      - "api.execut.nl"
     extra_includes:
       - "execut-referer-tracking"
     custom_config: true

@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=execut api service
+After=network.target
+OnFailure=failure-notificator@%n.service
+
+[Service]
+User=symposium
+Group=symposium
+ExecStart={{ execut_api_path }}/execut
+WorkingDirectory={{ execut_api_path }}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+

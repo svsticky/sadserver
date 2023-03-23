@@ -1,0 +1,85 @@
+---
+
+- name: "ensure database user exists"
+  postgresql_user:
+    name: "canary"
+  become_user: "postgres"
+  become: true
+
+- name: "ensure database exists"
+  postgresql_db:
+    name: "execut-api"
+    owner: "symposium"
+  become_user: "postgres"
+  become: true
+
+- name: "ensure database user has the right privileges"
+  postgresql_user:
+    db: "execut-api"
+    name: "canary"
+    priv: "ALL"
+    role_attr_flags: "CREATEDB,LOGIN"
+  become_user: "postgres"
+  become: true
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: "determine api folder"
+  set_fact:
+    execut_api_path: "/var/www/symposium/execut-api.{{ canonical_hostname }}"
+
+- name: "make api directory"
+  file:
+    path: "{{ execut_api_path }}"
+    owner: "symposium"
+    group: "symposium"
+    state: "directory"
+
+- name: "perform stuff as `symposium`"
+  become_user: "symposium"
+  block:
+    - name: "clone website's repository"
+      git:
+        repo: "https://github.com/StichtingSticky/execut"
+        dest: "{{ execut_api_path }}"
+        version: "main"
+
+- name: "run migrations"
+  command:
+    chdir: "{{ execut_api_path }}"
+    cmd: "nix shell nixpkgs#sqlx-cli -c sqlx migrate run"
+
+- name: "fetch and extract binary"
+  unarchive:
+    src: "https://github.com/StichtingSticky/execut/releases/0.0.1/execut.tar.gz"
+    dest: "{{ execut_api_path }}/execut"
+    remote_src: yes
+    owner: "symposium"
+    group: "symposium"
+    mode: "775"
+
+- name: "install env file"
+  template:
+    src: ".env.j2"
+    dest: "{{ execut_api_path }}/.env"
+    mode: "600"
+  notify: "reload execut api"
+
+- name: "install service file"
+  template:
+    src: ".env.j2"
+    dest: "/etc/systemd/system/execut-api.service"
+    mode: "0644"
+  notify: "systemctl daemon-reload"
+
+- name: "install nginx config"
+  template:
+    src: "nginx.conf.j2"
+    dest: "/etc/nginx/sites-enabled/execut-api.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "test nginx config"
+  command: "nginx -t"
+  changed_when: false
+
+- name: "reload nginx, systemd if needed"
+  meta: "flush_handlers"

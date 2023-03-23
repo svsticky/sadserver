@@ -17,6 +17,13 @@ websites:
       - "webhooks.{{ canonical_hostname }}"
     state: "present"
 
+  - name: "chroma.{{ canonical_hostname }}"
+    user: "chroma"
+    authenticated: true
+    alternative_names: []
+    custom_config: true
+    state: "present"
+
   - name: "doorgeefluik.{{ canonical_hostname }}"
     user: "doorgeefluik"
     custom_config: true

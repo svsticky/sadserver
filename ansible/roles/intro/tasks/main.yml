@@ -28,7 +28,7 @@
     group: "intro"
     mode: "2775"
     state: "directory"
-- block:    
+- block:
   - name: "clone intro-website repository"
     git:
       repo: "https://github.com/svsticky/intro-website.git"
@@ -47,29 +47,29 @@
 
   - name: "install node version"
     shell: |
-      . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+      . /var/www/intro/intro-cs.{{ canonical_hostname }}/.nvm/nvm.sh
       nvm install
     args:
-      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname }}"
       executable: "/bin/bash"
     when: "intro_clone is changed"
     register: "install_node_version"
 
   - name: "run npm rebuild if needed"
     shell: |
-      . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+      . /var/www/intro/intro-cs.{{ canonical_hostname }}/.nvm/nvm.sh
       npm rebuild
     args:
-      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname }}"
       executable: "/bin/bash"
     when: "install_node_version is changed"
 
   - name: "run npm install"
     shell: |
-      . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+      . /var/www/intro/intro-cs.{{ canonical_hostname }}/.nvm/nvm.sh
       npm install
     args:
-      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname }}"
       executable: "/bin/bash"
     when: "intro_clone is changed"
 
@@ -77,17 +77,17 @@
     block:
       - name: "build website"
         shell: |
-          . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+          . /var/www/intro/intro-cs.{{ canonical_hostname }}/.nvm/nvm.sh
           npm run build
         args:
-          chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+          chdir: "/var/www/intro/intro-cs.{{ canonical_hostname }}"
           executable: "/bin/bash"
         when: "intro_clone is changed"
 
   - name: "copy website contents to webroot"
     synchronize:
-      src: "/var/www/intro/intro-cs.{{ canonical_hostname}}/public/"
-      dest: "/var/www/intro/intro-cs.{{ canonical_hostname}}/"
+      src: "/var/www/intro/intro-cs.{{ canonical_hostname }}/public/"
+      dest: "/var/www/intro/intro-cs.{{ canonical_hostname }}/"
       delete: true
       recursive: true
       perms: false

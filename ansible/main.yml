@@ -64,6 +64,8 @@
       tags: "radio"
     - role: "sodi"
       tags: "sodi"
+    - role: "intro"
+      tags: "intro"
     - role: "public_files"
       tags: "public"
     - role: "files_website"

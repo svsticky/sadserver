@@ -1,0 +1,104 @@
+---
+
+- name: "create user for intro"
+  user:
+    name: "intro"
+    home: "/var/www/intro"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+
+- name: "copy nginx configuration"
+  template:
+    src: "intro-cs.conf.j2"
+    dest: "/etc/nginx/sites-available/intro-cs.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  file:
+    src: "/etc/nginx/sites-available/intro-cs.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/intro-cs.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- name: "create intro webroot"
+  file:
+    path: "/var/www/intro/intro-cs.{{ canonical_hostname }}"
+    owner: "intro"
+    group: "intro"
+    mode: "2775"
+    state: "directory"
+- block:    
+  - name: "clone intro-website repository"
+    git:
+      repo: "https://github.com/svsticky/intro-website.git"
+      dest: "/var/www/intro/intro-cs.{{ canonical_hostname }}"
+      version: "intro-2023"
+    diff: false
+    register: "intro_clone"
+
+  - name: "clone NVM"
+    git:
+      repo: "https://github.com/creationix/nvm.git"
+      dest: "/var/www/intro/intro-cs.{{ canonical_hostname }}/.nvm"
+      depth: 1
+    diff: false
+    when: "intro_clone is changed"
+
+  - name: "install node version"
+    shell: |
+      . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+      nvm install
+    args:
+      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+      executable: "/bin/bash"
+    when: "intro_clone is changed"
+    register: "install_node_version"
+
+  - name: "run npm rebuild if needed"
+    shell: |
+      . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+      npm rebuild
+    args:
+      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+      executable: "/bin/bash"
+    when: "install_node_version is changed"
+
+  - name: "run npm install"
+    shell: |
+      . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+      npm install
+    args:
+      chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+      executable: "/bin/bash"
+    when: "intro_clone is changed"
+
+  - name: "try building website"
+    block:
+      - name: "build website"
+        shell: |
+          . /var/www/intro/intro-cs.{{ canonical_hostname}}/.nvm/nvm.sh
+          npm run build
+        args:
+          chdir: "/var/www/intro/intro-cs.{{ canonical_hostname}}"
+          executable: "/bin/bash"
+        when: "intro_clone is changed"
+
+  - name: "copy website contents to webroot"
+    synchronize:
+      src: "/var/www/intro/intro-cs.{{ canonical_hostname}}/public/"
+      dest: "/var/www/intro/intro-cs.{{ canonical_hostname}}/"
+      delete: true
+      recursive: true
+      perms: false
+      times: false
+    delegate_to: "{{ inventory_hostname }}"
+
+  - name: "set permissions group on intro-cs files"
+    file:
+      path: "/var/www/intro/intro-cs.{{ canonical_hostname }}"
+      owner: "intro"
+      group: "intro"
+      recurse: true
+      state: "directory"
+  become_user: "intro"

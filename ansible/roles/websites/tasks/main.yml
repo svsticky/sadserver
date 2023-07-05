@@ -57,8 +57,6 @@
       dest: "savadaba.{{ canonical_hostname }}"
     - src: "wintersport"
       dest: "wintersport.{{ canonical_hostname }}"
-    - src: "intro-cs"
-      dest: "intro-cs.{{ canonical_hostname }}"
   notify: "reload nginx"
   loop_control:
     label: "{{ item.dest }}"

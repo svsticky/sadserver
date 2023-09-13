@@ -10,7 +10,6 @@ User=chroma
 Group=chroma
 Restart=always
 
-Environemnt=RUST_LOG=INFO
 Environment=HTTP_PORT=34971
 Environment=DB_HOST="localhost"
 Environment=DB_USER="chroma"
@@ -18,6 +17,9 @@ Environment=DB_DATABASE="chroma"
 Environment=S3_BUCKET_NAME=" TODO "
 Environment=S3_REGION=" TODO "
 Environment=S3_ENDPOINT_URL=" TODO "
+Environemnt=STORAGE_ENGINE="S3"
+Environment=SERVICE_TOKENS=
+Environemnt=RUST_LOG="WARN,chroma=INFO"
 Environemnt=KOALA_BASE_REDIRECT_URI=https://koala.{{ canonical_hostname }}"
 Environemnt=KOALA_BASE_URI=https://koala.{{ canonical_hostname }}"
 Environment=KOALA_OAUTH_REDIRECT_URI=https://chroma.{{ canonical_hostname}}/api/v1/login

@@ -23,6 +23,7 @@ websites:
     alternative_names: []
     custom_config: true
     state: "present"
+    oauth2_callback_url: "/api/v1/login"
 
   - name: "doorgeefluik.{{ canonical_hostname }}"
     user: "doorgeefluik"
@@ -232,7 +233,7 @@ websites:
     extra_includes:
       - "execut-referer-tracking"
     state: "present"
-  
+
   - name: "execut-2023.{{ canonical_hostname}}"
     user: "symposium"
     alternative_names:

@@ -54,10 +54,9 @@
       - "--strip-components=1"
 
 - name: "Download and extract chroma server"
-  unarchive:
-    src: https://github.com/svsticky/chroma/releases/latest/download/server-x86_64-unknown-linux-musl
+  get_url:
+    url: https://github.com/svsticky/chroma/releases/latest/download/server-x86_64-unknown-linux-musl
     dest: "/var/www/chroma/server"
-    remote_src: true
     owner: "chroma"
     group: "chroma"
     mode: "777"

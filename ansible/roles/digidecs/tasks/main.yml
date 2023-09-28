@@ -1,4 +1,11 @@
 ---
+- name: "create user for digidecs"
+  user:
+    name: "digidecs"
+    home: "/var/www/digidecs/"
+    shell: "/usr/sbin/nologin"
+    system: true
+
 - name: "install composer"
   apt:
     name:
@@ -9,21 +16,21 @@
   become: true
 
 - name: "disable git safe directory feature for digidecs folder" # noqa command-instead-of-module
-  command: "git config --global --add safe.directory /var/www/commit/digidecs.{{ canonical_hostname }}"
+  command: "git config --global --add safe.directory /var/www/digidecs.{{ canonical_hostname }}"
 
 - name: "clone digidecs repository"
   git:
     repo: "https://github.com/svsticky/digidecs.git"
-    dest: "/var/www/commit/digidecs.{{ canonical_hostname }}"
+    dest: "/var/www/digidecs.{{ canonical_hostname }}"
     version: "master"
   diff: false
 
 - name: "place config file"
   template:
     src: "config.php.j2"
-    dest: "/var/www/commit/digidecs.{{ canonical_hostname }}/config.php"
-    owner: "www-data"
-    group: "commit"
+    dest: "/var/www/digidecs.{{ canonical_hostname }}/config.php"
+    owner: "digidecs"
+    group: "digidecs"
     mode: "660"
 
 - name: "copy nginx configuration"
@@ -41,13 +48,13 @@
 
 - name: "run composer"
   composer:
-    working_dir: "/var/www/commit/digidecs.{{ canonical_hostname }}"
+    working_dir: "/var/www/digidecs.{{ canonical_hostname }}"
     command: "install"
 
 - name: "set permissions on digidecs files"
   file:
-    path: "/var/www/commit/digidecs.{{ canonical_hostname }}"
-    owner: "www-data"
-    group: "commit"
+    path: "/var/www/digidecs.{{ canonical_hostname }}"
+    owner: "digidecs"
+    group: "digidecs"
     recurse: true
     state: "directory"

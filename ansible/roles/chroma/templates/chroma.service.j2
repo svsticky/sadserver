@@ -9,23 +9,25 @@ Type=simple
 User=chroma
 Group=chroma
 Restart=always
+WorkingDirectory=/var/www/chroma/server
 
 Environment=HTTP_PORT=34971
-Environment=DB_HOST="localhost"
-Environment=DB_USER="chroma"
-Environment=DB_DATABASE="chroma"
+Environment=DB_HOST="postgresql:///chroma"
+Environment=DB_USERNAME=""
+Environment=DB_DATABASE=""
 Environment=S3_BUCKET_NAME=" TODO "
 Environment=S3_REGION=" TODO "
 Environment=S3_ENDPOINT_URL=" TODO "
-Environemnt=STORAGE_ENGINE="S3"
-Environment=SERVICE_TOKENS=
-Environemnt=RUST_LOG="WARN,chroma=INFO"
-Environemnt=KOALA_BASE_REDIRECT_URI=https://koala.{{ canonical_hostname }}"
-Environemnt=KOALA_BASE_URI=https://koala.{{ canonical_hostname }}"
-Environment=KOALA_OAUTH_REDIRECT_URI=https://chroma.{{ canonical_hostname}}/api/v1/login
-Environemnt=LOGIN_COMPLETE_REDIRECT_URI=https://chroma.{{ canonical_hostname}}/logged_in
+Environment=STORAGE_ENGINE="File"
+Environment=FILE_BASE="/tmp/"
+Environment=SERVICE_TOKENS=""
+Environment=RUST_LOG="WARN,chroma=INFO"
+Environment=KOALA_BASE_REDIRECT_URI="https://koala.{{ canonical_hostname }}"
+Environment=KOALA_BASE_URI="https://koala.{{ canonical_hostname }}"
+Environment=KOALA_OAUTH_REDIRECT_URI="https://chroma.{{ canonical_hostname}}/api/v1/login"
+Environment=LOGIN_COMPLETE_REDIRECT_URI="https://chroma.{{ canonical_hostname}}/#/logged_in"
 
-ExecStart=/var/www/chroma/server/server-x86_64-unknown-linux-musl
+ExecStart=dotenv /var/www/chroma/server/server-x86_64-unknown-linux-musl
 
 [Install]
 WantedBy=multi-user.target

@@ -161,9 +161,6 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 `$ git clone https://github.com/svsticky/sadserver`
 `$ cd sadserver`
 
-1. Update the submodule and enter the ansible folder.
-`$ git submodule update --init`
-`$ cd ansible`
 
 1. Create a file `.discord-webhook` containing the webhook to be used for
 Discord notifications. Put the value of the
@@ -173,22 +170,28 @@ in that file. You will need to login to bitwarden as `itcrowd@svsticky.nl` to re
 Yes, the secret is still called `slack_notifications_webhook_url` because of legacy reasons, but you
 should not just change the name because it is used in the ansible code.
 
+1. To install all required dependencies for the deploy script, first change to the `ansible` directory.
+`$ cd ansible`
+Then run the following command to enter a shell with all dependencies installed.
+`$ nix-shell`
+
+1. To run the deploy script, an active session with bitwarden is required. To do this, run `$ bw login` and follow the instructions. The account required is managed by the IT Crowd. You will have these credentials if you are a member of the IT Crowd.
+
 1. Bootstrap the host for either production or staging.
-`$ nix run -c ./deploy.py --host=(production|staging) --playbook bootstrap-new-host.yml`
+`$ ./deploy.py --host=(production|staging) --playbook bootstrap-new-host.yml`
 You do not need to enter a SUDO password, but you do need to enter the correct Vault password. (Can usually be found in bitwarden).
-At the end of the process you will receive a newly generated SUDO password, which you will need in the next step. (Save this in bitwarden for future reference).
 On staging, if the playbook fails immediately, you might have an old ssh key. To solve this type:
 `$ ssh root@dev.svsticky.nl`
 SSH will guide you the rest of the way.
 
 1. Run the main playbook for either production or staging.
-`$ nix run -c ./deploy.py --host=(production|staging)`
+`$ ./deploy.py --host=(production|staging)`
 Enter the password from the previous step when prompted for.
 
 
 1. To create a new database and start Koala, you will also need to run these two playbooks.
-`$ nix run -c ./deploy.py --host=(production|staging) --playbook playbooks/koala/db-setup.yml`
-`$ nix run -c ./deploy.py --host=(production|staging) --playbook playbooks/koala/start.yml`
+`$ ./deploy.py --host=(production|staging) --playbook playbooks/koala/db-setup.yml`
+`$ ./deploy.py --host=(production|staging) --playbook playbooks/koala/start.yml`
 
 
 ## Contact

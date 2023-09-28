@@ -165,10 +165,13 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 `$ git submodule update --init`
 `$ cd ansible`
 
-1. Create a file `.discord-webhook` containing the webhook to be used for Slack
-notifications. If unsure, read it via the command `$ ansible-vault view
-group_vars/production/vault.yml` (search for
-`vault_slack_notifications_webhook_url`).
+1. Create a file `.discord-webhook` containing the webhook to be used for
+Discord notifications. Put the value of the
+[`slack_notifications_webhook_url` secret]
+(https://vault.bitwarden.com/#/vault?search=slack&itemId=c02392e6-728e-4bce-ae4e-ae900153afc9&cipherId=c02392e6-728e-4bce-ae4e-ae900153afc9)
+in that file. You will need to login to bitwarden as `itcrowd@svsticky.nl` to read this secret.
+Yes, the secret is still called `slack_notifications_webhook_url` because of legacy reasons, but you
+should not just change the name because it is used in the ansible code.
 
 1. Bootstrap the host for either production or staging.
 `$ nix run -c ./deploy.py --host=(production|staging) --playbook bootstrap-new-host.yml`

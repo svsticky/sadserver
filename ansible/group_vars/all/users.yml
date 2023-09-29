@@ -89,7 +89,7 @@ users:
     admin: true
     home_prefix: "/home"
     state: "present"
-    github_account:
+    github_accounts:
       - username: "Yfkesmit"
         state: "present"
 
@@ -97,7 +97,7 @@ users:
     admin: true
     home_prefix: "/home"
     state: "present"
-    github_account:
+    github_accounts:
       - username: "TobiasDeBruijn"
         state: "present"
 

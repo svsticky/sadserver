@@ -26,6 +26,8 @@ users:
         state: "present"
       - username: "leuke-naam"
         state: "present"
+      - username: "TobiasDeBruijn"
+        state: "present"
 
   - name: "hugo"
     admin: true
@@ -34,7 +36,7 @@ users:
     github_accounts:
       - username: "HugoPeters1024"
         state: "present"
-  
+
   - name: "sem"
     admin: true
     home_prefix: "/home"
@@ -89,6 +91,14 @@ users:
     state: "present"
     github_account:
       - username: "Yfkesmit"
+        state: "present"
+
+  - name: "tobias"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_account:
+      - username: "TobiasDeBruijn"
         state: "present"
 
   - name: "bestuur"

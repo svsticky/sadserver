@@ -20,8 +20,6 @@ users:
         state: "present"
       - username: "JustNireon"
         state: "present"
-      - username: "jelte-akker"
-        state: "present"
       - username: "Yfkesmit"
         state: "present"
       - username: "leuke-naam"
@@ -69,14 +67,6 @@ users:
       - username: "JustNireon"
         state: "present"
 
-  - name: "jelte"
-    admin: true
-    home_prefix: "/home"
-    state: "present"
-    github_accounts:
-      - username: "jelte-akker"
-        state: "present"
-
   - name: "lucas"
     admin: true
     home_prefix: "/home"
@@ -116,10 +106,6 @@ users:
     state: "present"
     github_accounts:
       - username: "maartenberg"
-        state: "present"
-      - username: "TiekieWiki"
-        state: "present"
-      - username: "jelte-akker"
         state: "present"
 
   - name: "dgdarc"
@@ -178,8 +164,6 @@ users:
       - username: "Riscky"
         state: "present"
       - username: "JustNireon"
-        state: "present"
-      - username: "jelte-akker"
         state: "present"
       - username: "LucasDissie"
         state: "present"

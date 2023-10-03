@@ -26,6 +26,10 @@ users:
         state: "present"
       - username: "TobiasDeBruijn"
         state: "present"
+      - username: "PrinceMordred"
+        state: "present"
+      - username: "SanderHageman"
+        state: "present"
 
   - name: "hugo"
     admin: true
@@ -89,6 +93,22 @@ users:
     state: "present"
     github_accounts:
       - username: "TobiasDeBruijn"
+        state: "present"
+
+  - name: "jack"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "PrinceMordred"
+        state: "present"
+
+  - name: "sander"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "SanderHageman"
         state: "present"
 
   - name: "bestuur"

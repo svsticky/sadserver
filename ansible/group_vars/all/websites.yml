@@ -20,7 +20,6 @@ websites:
   - name: "chroma.{{ canonical_hostname }}"
     user: "chroma"
     authenticated: true
-    alternative_names: []
     custom_config: true
     state: "present"
     oauth2_callback_url: "/api/v1/login"

@@ -12,9 +12,7 @@ Restart=always
 WorkingDirectory=/var/www/chroma/server
 
 Environment=HTTP_PORT=34971
-Environment=DB_HOST="postgresql:///chroma"
-Environment=DB_USERNAME=""
-Environment=DB_DATABASE=""
+Environment=DB_URL="postgresql:///chroma"
 Environment=STORAGE_ENGINE="S3"
 Environment=SERVICE_TOKENS=""
 Environment=RUST_LOG="WARN,chroma=INFO"

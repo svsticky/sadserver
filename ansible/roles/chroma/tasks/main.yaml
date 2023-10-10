@@ -65,7 +65,7 @@
     dest: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"
-    mode: "777"
+    mode: "770"
 
 - name: "ensure database user exists"
   postgresql_user:

@@ -11,16 +11,6 @@ Group=chroma
 Restart=always
 WorkingDirectory=/var/www/chroma/server
 
-Environment=HTTP_PORT=34971
-Environment=DB_URL="postgresql:///chroma"
-Environment=STORAGE_ENGINE="S3"
-Environment=SERVICE_TOKENS=""
-Environment=RUST_LOG="WARN,chroma=INFO"
-Environment=KOALA_BASE_REDIRECT_URI="https://koala.{{ canonical_hostname }}"
-Environment=KOALA_BASE_URI="https://koala.{{ canonical_hostname }}"
-Environment=KOALA_OAUTH_REDIRECT_URI="https://chroma.{{ canonical_hostname}}/api/v1/login"
-Environment=LOGIN_COMPLETE_REDIRECT_URI="https://chroma.{{ canonical_hostname}}/#/logged_in"
-
 ExecStart=dotenv /var/www/chroma/server/server-x86_64-unknown-linux-musl
 
 [Install]

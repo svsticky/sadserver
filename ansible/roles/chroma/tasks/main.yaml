@@ -92,7 +92,7 @@
 
 - name: "Template environment file for Chroma"
   template:
-    src: ".env.j2"
+    src: "env.j2"
     dest: "/var/www/chroma/server/.env"
   diff: false
   notify: "restart chroma"

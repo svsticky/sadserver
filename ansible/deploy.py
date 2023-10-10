@@ -115,9 +115,6 @@ def deploy(
         roles = roles[: roles.index(until_playbook) + 1]
         from_until = True
 
-    if "crazy88bot" in roles:
-        r
-
     roles = ",".join(roles)
     if from_until:
         arguments.append("--tags")

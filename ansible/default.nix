@@ -15,6 +15,7 @@ let
     pkgs.mypy
     pkgs.GitPython
     pkgs.requests
+    pkgs.pyaml
     ansible-mitogen
   ]);
 

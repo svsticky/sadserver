@@ -6,31 +6,31 @@
 
 - name: "create directories for onfailure overrides for php-fpm"
   file:
-    path: "/etc/systemd/system/php7.4-fpm.service.d"
+    path: "/etc/systemd/system/php8.1-fpm.service.d"
     state: "directory"
 
 - name: "copy onfailure override for php-fpm"
   template:
     src: "onfailure.conf.j2"
-    dest: "/etc/systemd/system/php7.4-fpm.service.d/onfailure.conf"
+    dest: "/etc/systemd/system/php8.1-fpm.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 
 - name: "copy general configuration for php"
   template:
     src: "php.ini.j2"
-    dest: "/etc/php/7.4/fpm/php.ini"
+    dest: "/etc/php/8.1/fpm/php.ini"
   notify: "reload php"
 
 - name: "delete default php-fpm pool"
   file:
-    path: "/etc/php/7.4/fpm/pool.d/www.conf"
+    path: "/etc/php/8.1/fpm/pool.d/www.conf"
     state: "absent"
   notify: "reload php"
 
 - name: "template php-fpm pool configurations"
   template:
     src: "pool-template.conf.j2"
-    dest: "/etc/php/7.4/fpm/pool.d/pool-{{ item.name }}.conf"
+    dest: "/etc/php/8.1/fpm/pool.d/pool-{{ item.name }}.conf"
   loop:
     - name: "digidecs.{{ canonical_hostname }}"
       user: "digidecs"

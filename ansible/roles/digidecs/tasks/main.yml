@@ -10,8 +10,8 @@
   apt:
     name:
       - "composer"
-      - "php7.4-curl"
-      - "php7.4-bcmath"
+      - "php8.1-curl"
+      - "php8.1-bcmath"
     state: "present"
   become: true
 

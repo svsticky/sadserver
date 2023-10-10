@@ -18,7 +18,6 @@
       - "acl"
       - "git"
       - "toilet"
-      - "python3-dotenv-cli"
     state: "present"
 
 - name: "update all packages"

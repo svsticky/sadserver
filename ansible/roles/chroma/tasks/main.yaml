@@ -12,7 +12,7 @@
     name: "/var/www/chroma/frontend"
     owner: "chroma"
     group: "chroma"
-    mode: "2775"
+    mode: "2770"
     state: "directory"
 
 - name: "Create chroma docs directory"
@@ -20,7 +20,7 @@
     name: "/var/www/chroma/docs"
     owner: "chroma"
     group: "chroma"
-    mode: "2775"
+    mode: "2770"
     state: "directory"
 
 - name: "Create chroma server directory"
@@ -28,8 +28,14 @@
     name: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"
-    mode: "2775"
+    mode: "2770"
     state: "directory"
+
+- name: "install dependencies"
+  apt:
+    name:
+      - "python3-dotenv-cli"
+    state: "present"
 
 - name: "Download and extract chroma frontend"
   unarchive:
@@ -38,7 +44,7 @@
     remote_src: true
     owner: "chroma"
     group: "chroma"
-    mode: "775"
+    mode: "770"
     extra_opts:
     - "--strip-components=1"
 
@@ -49,7 +55,7 @@
     remote_src: true
     owner: "chroma"
     group: "chroma"
-    mode: "775"
+    mode: "770"
     extra_opts:
       - "--strip-components=1"
 

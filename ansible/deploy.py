@@ -6,6 +6,7 @@ import os
 import subprocess
 import requests
 import json
+import yaml
 
 from git.repo import Repo
 from typing import Optional
@@ -30,8 +31,10 @@ import scripts.bitwarden as bitwarden
 @click.option("--tags", "--roles", help="Roles to execute")
 @click.option("--check", is_flag=True, default=False, help="Perform a dry run")
 @click.option("--force", is_flag=True, default=False, help="Override checks")
+@click.option("--from", "from_playbook", help="Determine from which playbook to start the deploy from")
+@click.option("--until", "until_playbook", help="Determine until which playbook to run the deploy")
 def deploy(
-    host: str, playbook: str, tags: Optional[str], check: bool, force: bool
+    host: str, playbook: str, tags: Optional[str], check: bool, force: bool, from_playbook: Optional[str], until_playbook: Optional[str]
 ) -> None:
     bitwarden.unlock()  # type: ignore
     if not check and not force:
@@ -50,6 +53,8 @@ def deploy(
     env["ANSIBLE_STDOUT_CALLBACK"] = "yaml"
     env["ANSIBLE_VAULT_IDENTITY"] = host
     env["ANSIBLE_SSH_PIPELINING"] = "true"
+    env["ANSIBLE_ROLES_PATH"] = "roles/"
+    env["ANSIBLE_VARS_PLUGINS"] = "./plugins/vars"
     # Used by the bitwarden plugin
     env["STICKY_ENV"] = host
 
@@ -78,6 +83,28 @@ def deploy(
         arguments.append("--tags")
         arguments.append(tags)
 
+    # From-until logic:
+    with open("main.yml", "r") as yaml_file:
+        data = yaml.safe_load(yaml_file)
+
+    roles = [role['role'] for item in data if isinstance(item, dict) and 'roles' in item for role in item['roles'] if role['role'] != "crazy88bot"]
+    from_until = False
+    if from_playbook is not None and from_playbook in roles:
+        roles = roles[roles.index(from_playbook):]
+        from_until = True
+
+    if until_playbook is not None and until_playbook in roles:
+        roles = roles[:roles.index(until_playbook)+1]
+        from_until = True
+
+    if "crazy88bot" in roles:
+        r
+    
+    roles = ",".join(roles)
+    if from_until:
+        arguments.append("--tags")
+        arguments.append(roles)
+    
     arguments.append(playbook)
 
     if not check:

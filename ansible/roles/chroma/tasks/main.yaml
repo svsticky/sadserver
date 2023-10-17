@@ -12,7 +12,7 @@
     name: "/var/www/chroma/frontend"
     owner: "chroma"
     group: "chroma"
-    mode: "2770"
+    mode: "2775"
     state: "directory"
 
 - name: "Create chroma docs directory"
@@ -20,7 +20,7 @@
     name: "/var/www/chroma/docs"
     owner: "chroma"
     group: "chroma"
-    mode: "2770"
+    mode: "2775"
     state: "directory"
 
 - name: "Create chroma server directory"
@@ -28,7 +28,7 @@
     name: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"
-    mode: "2770"
+    mode: "2775"
     state: "directory"
 
 - name: "install dependencies"
@@ -44,7 +44,7 @@
     remote_src: true
     owner: "chroma"
     group: "chroma"
-    mode: "770"
+    mode: "775"
     extra_opts:
     - "--strip-components=1"
 
@@ -55,7 +55,7 @@
     remote_src: true
     owner: "chroma"
     group: "chroma"
-    mode: "770"
+    mode: "775"
     extra_opts:
       - "--strip-components=1"
 
@@ -65,7 +65,7 @@
     dest: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"
-    mode: "770"
+    mode: "775"
 
 - name: "ensure database user exists"
   postgresql_user:

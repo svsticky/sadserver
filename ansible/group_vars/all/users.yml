@@ -20,13 +20,17 @@ users:
         state: "present"
       - username: "JustNireon"
         state: "present"
-      - username: "jelte-akker"
-        state: "present"
       - username: "Yfkesmit"
         state: "present"
       - username: "leuke-naam"
         state: "present"
       - username: "TobiasDeBruijn"
+        state: "present"
+      - username: "PrinceMordred"
+        state: "present"
+      - username: "SanderHageman"
+        state: "present"
+      - username: "SilasPeters"
         state: "present"
 
   - name: "hugo"
@@ -69,14 +73,6 @@ users:
       - username: "JustNireon"
         state: "present"
 
-  - name: "jelte"
-    admin: true
-    home_prefix: "/home"
-    state: "present"
-    github_accounts:
-      - username: "jelte-akker"
-        state: "present"
-
   - name: "lucas"
     admin: true
     home_prefix: "/home"
@@ -101,6 +97,30 @@ users:
       - username: "TobiasDeBruijn"
         state: "present"
 
+  - name: "jack"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "PrinceMordred"
+        state: "present"
+
+  - name: "sander"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "SanderHageman"
+        state: "present"
+
+  - name: "silas"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "SilasPeters"
+        state: "present"
+
   - name: "bestuur"
     admin: false
     sudoless_ssh: true
@@ -116,10 +136,6 @@ users:
     state: "present"
     github_accounts:
       - username: "maartenberg"
-        state: "present"
-      - username: "TiekieWiki"
-        state: "present"
-      - username: "jelte-akker"
         state: "present"
 
   - name: "dgdarc"
@@ -178,8 +194,6 @@ users:
       - username: "Riscky"
         state: "present"
       - username: "JustNireon"
-        state: "present"
-      - username: "jelte-akker"
         state: "present"
       - username: "LucasDissie"
         state: "present"

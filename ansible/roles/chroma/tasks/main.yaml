@@ -66,6 +66,7 @@
     owner: "chroma"
     group: "chroma"
     mode: "775"
+  notify: "restart chroma"
 
 - name: "ensure database user exists"
   postgresql_user:

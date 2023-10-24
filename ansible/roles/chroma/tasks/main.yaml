@@ -94,7 +94,7 @@
 - name: "Copy nginx configuration"
   template:
     src: "chroma.conf.j2"
-    dest: "/etc/nginx/sites-enabled/{{ canonical_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/chroma.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "Template environment file for Chroma"

@@ -315,7 +315,7 @@ websites:
     state: "present"
 
   - name: "intro-cs.{{ canonical_hostname }}"
-    user: "commit"
+    user: "intro"
     custom_config: true
     alternative_names:
       - "intro-cs.nl"

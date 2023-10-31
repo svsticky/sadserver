@@ -158,3 +158,4 @@ secret_chroma:
   s3_secret_access_key: "{{ vault_secret_chroma.s3_secret_access_key }}"
   s3_region: "{{ vault_secret_chroma.s3_region }}"
   s3_bucket: "{{ vault_secret_chroma.s3_bucket }}"
+  service_tokens: "{{ vault_secret_chroma.service_tokens }}"

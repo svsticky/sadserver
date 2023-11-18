@@ -159,21 +159,18 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 
 1. Download the repository and enter the folder.
 `$ git clone https://github.com/svsticky/sadserver`
-`$ cd sadserver`
+`$ cd sadserver/ansible`
 
-
-1. Create a file `.discord-webhook` containing the webhook to be used for
-Discord notifications. Put the value of the
+1. Create a file `.discord-webhook` containing the webhook to be used for Discord notifications. Put the value of the
 [`slack_notifications_webhook_url` secret]
 (https://vault.bitwarden.com/#/vault?search=slack&itemId=c02392e6-728e-4bce-ae4e-ae900153afc9&cipherId=c02392e6-728e-4bce-ae4e-ae900153afc9)
 in that file. You will need to login to bitwarden as `itcrowd@svsticky.nl` to read this secret.
 Yes, the secret is still called `slack_notifications_webhook_url` because of legacy reasons, but you
 should not just change the name because it is used in the ansible code.
 
-1. To install all required dependencies for the deploy script, first change to the `ansible` directory.
-`$ cd ansible`
-Then run the following command to enter a shell with all dependencies installed.
+To install all required dependencies, run the following command to enter a nix shell.
 `$ nix-shell`
+Only the first time, will these dependencies be installed.
 
 1. To run the deploy script, an active session with bitwarden is required. To do this, run `$ bw login` and follow the instructions. The account required is managed by the IT Crowd. You will have these credentials if you are a member of the IT Crowd.
 

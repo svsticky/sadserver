@@ -190,12 +190,14 @@ users:
     state: "present"
     github_accounts:
       - username: "maartenberg"
-        state: "present"
-      - username: "Riscky"
-        state: "present"
+        state: "absent"
+      - username: "Risckey"
+        state: "absent"
+      - username: "LucasDissie"
+        state: "absent"
       - username: "JustNireon"
         state: "present"
-      - username: "LucasDissie"
+      - username: "SilasPeters"
         state: "present"
 
   - name: "hacc"

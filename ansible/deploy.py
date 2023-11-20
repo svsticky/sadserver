@@ -34,10 +34,10 @@ import scripts.bitwarden as bitwarden
 @click.option(
     "--from",
     "from_playbook",
-    help="Determine from which playbook to start the deploy from",
+    help="Determine from which role to start the deploy from",
 )
 @click.option(
-    "--until", "until_playbook", help="Determine until which playbook to run the deploy"
+    "--until", "until_playbook", help="Determine until which role to run the deploy"
 )
 def deploy(
     host: str,
@@ -65,7 +65,6 @@ def deploy(
     env["ANSIBLE_STDOUT_CALLBACK"] = "yaml"
     env["ANSIBLE_VAULT_IDENTITY"] = host
     env["ANSIBLE_SSH_PIPELINING"] = "true"
-    env["ANSIBLE_ROLES_PATH"] = "roles/"
     env["ANSIBLE_VARS_PLUGINS"] = "./plugins/vars"
     # Used by the bitwarden plugin
     env["STICKY_ENV"] = host

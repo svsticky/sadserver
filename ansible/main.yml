@@ -40,8 +40,8 @@
       tags: "websites"
     - role: "digidecs"
       tags: "digidecs"
-    - role: "freight"
-      tags: "freight"
+    # - role: "freight"  Commented out, as this seems to be unused and is incompatible with Ubuntu 22.04
+    #   tags: "freight"
     - role: "aas"
       tags: "aas"
     - role: "static_sticky"
@@ -58,8 +58,8 @@
       tags: "oauth"
     - role: "outline"
       tags: "outline"
-    - role: "execut"
-      tags: "execut"
+    # - role: "execut"  Should be hosted by Stichting Sticky
+    #   tags: "execut"
     - role: "radio"
       tags: "radio"
     - role: "sodi"

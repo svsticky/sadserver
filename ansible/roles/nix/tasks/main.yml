@@ -12,6 +12,20 @@
   args:
     creates: "/nix"
 
+# Needed for the combination of Nix 2.18 and systemd 249
+# See: https://github.com/NixOS/nix/issues/5909
+- name: "create nix daemon-socket"
+  file:
+    path: "/nix/var/nix/daemon-socket"
+    mode: "0755"
+    state: "directory"
+
+# Start the nix daemon manually. It won't be started by the installer because
+# of the issue above.
+- name: "start nix-daemon manually"
+  systemd:
+    name: "nix-daemon.service"
+    state: "started"
 
 - name: "Make Nix programs available without sourcing shell stuff"
   with_items:

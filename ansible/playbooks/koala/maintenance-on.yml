@@ -1,0 +1,8 @@
+---
+- hosts: "all"
+  remote_user: "ansible"
+  become: true
+
+  tasks:
+    - name: "enable maintenance mode"
+      include_tasks: "$playbook_dir/../../../roles/koala/tasks/maintenance-on.yml"

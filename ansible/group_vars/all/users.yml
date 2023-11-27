@@ -191,7 +191,7 @@ users:
     github_accounts:
       - username: "maartenberg"
         state: "absent"
-      - username: "Risckey"
+      - username: "Riscky"
         state: "absent"
       - username: "LucasDissie"
         state: "absent"

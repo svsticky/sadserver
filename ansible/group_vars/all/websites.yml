@@ -277,7 +277,7 @@ websites:
     alternative_names: []
     extra_includes: []
     custom_config: true
-    state: "absent"
+    state: "present"
 
   - name: "snic-preview.{{ canonical_hostname }}"
     user: "snic"

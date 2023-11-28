@@ -175,7 +175,7 @@ Only the first time, will these dependencies be installed.
 1. To run the deploy script, an active session with bitwarden is required. To do this, run `$ bw login` and follow the instructions. The account required is managed by the IT Crowd. You will have these credentials if you are a member of the IT Crowd.
 
 1. Bootstrap the host for either production or staging.
-`$ ./deploy.py --host=(production|staging) --playbook bootstrap-new-host.yml`
+`$ ./deploy.py --host=(production|staging) --playbook playbooks/bootstrap-new-host.yml`
 You do not need to enter a SUDO password, but you do need to enter the correct Vault password. (Can usually be found in bitwarden).
 On staging, if the playbook fails immediately, you might have an old ssh key. To solve this type:
 `$ ssh root@dev.svsticky.nl`

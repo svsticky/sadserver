@@ -51,7 +51,7 @@ $ sed -i '/^svsticky\.nl / s/$/ ansible_host=192.0.2.0/' hosts
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ ./deploy.py --host=production --playbook bootstrap-new-host.yml
+$ ./deploy.py --host=production --playbook playbooks/bootstrap-new-host.yml
 ```
 
 **Run the playbook** on the new production server:

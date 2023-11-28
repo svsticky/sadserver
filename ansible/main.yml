@@ -58,8 +58,8 @@
       tags: "oauth"
     - role: "outline"
       tags: "outline"
-    # - role: "execut"  Should be hosted by Stichting Sticky
-    #   tags: "execut"
+    - role: "execut"
+      tags: "execut"
     - role: "radio"
       tags: "radio"
     - role: "sodi"

@@ -83,6 +83,9 @@
         # them to the right location.
         dest: "/"
         remote_src: true
+        extra_opts:
+          - "--same-owner"
+          - "--preserve-permissions"
       with_items: "{{ backup_filenames.results }}"
       # Skip db backup here, because that's not an archive
       when: "item.item not in ['websites/databases', 'postgres/postgres']"

@@ -40,8 +40,6 @@
       tags: "websites"
     - role: "digidecs"
       tags: "digidecs"
-    # - role: "freight"  Commented out, as this seems to be unused and is incompatible with Ubuntu 22.04
-    #   tags: "freight"
     - role: "aas"
       tags: "aas"
     - role: "static_sticky"

@@ -24,7 +24,13 @@ $ ./deploy.py --host=production --playbook playbooks/koala/maintenance-on.yml
 # On your local machine, whilst in sadserver/ansible
 $ ./deploy.py --host=production --playbook playbooks/create-backup.yml
 ```
-Be aware that the backup process may take about 15 minutes.
+
+> Note that the hostnames should NOT be changed during backup. Make sure
+> these are set up correctly
+
+This script will ask you what to make a backup off. Enter all fields possible.
+(e.g. `admins,websites,postgres,contentful`). Be aware that the backup process
+may take about 15 minutes.
 
 **Redirect requests for ACME challenges** from the old server to the new server.
 This allows us to prove ownership of the domains we need to request TLS
@@ -67,6 +73,7 @@ $ ./deploy.py --host=production
 # On your local machine, whilst in sadserver/ansible
 $ ./deploy.py --host=production --playbook playbooks/restore-backup.yml
 ```
+
 **Re-run the playbook** on the new production server, because the backup might
 have restored out-of-date system state:
 

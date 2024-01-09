@@ -17,6 +17,14 @@ websites:
       - "webhooks.{{ canonical_hostname }}"
     state: "present"
 
+  - name: "chroma.{{ canonical_hostname }}"
+    user: "chroma"
+    authenticated: true
+    custom_config: true
+    state: "present"
+    alternative_names: []
+    oauth2_callback_url: "/api/v1/login"
+
   - name: "doorgeefluik.{{ canonical_hostname }}"
     user: "doorgeefluik"
     custom_config: true
@@ -225,7 +233,7 @@ websites:
     extra_includes:
       - "execut-referer-tracking"
     state: "present"
-  
+
   - name: "execut-2023.{{ canonical_hostname}}"
     user: "symposium"
     alternative_names:
@@ -269,7 +277,7 @@ websites:
     alternative_names: []
     extra_includes: []
     custom_config: true
-    state: "absent"
+    state: "present"
 
   - name: "snic-preview.{{ canonical_hostname }}"
     user: "snic"

@@ -9,15 +9,18 @@
 ## - the admins' home directories
 ## - the data of our websites (and also the home directories of its users)
 ## - the databases of our websites
+## - Contentful stuff
 ##
 ## A new backup source can be added by adding a new "elif" block in the if
 ## statement down below, and updating this block and $USAGE.
+## NOTE that if you add a backup source to this script, you most probably
+## should also include it in roles/backups/tasks/main.yml
 
 # Unofficial Bash strict mode
 set -eEfuo pipefail
 IFS=$'\n\t'
 
-USAGE="Usage: ${0} <admins | databases | websites>"
+USAGE="Usage: ${0} <admins | websites | postgres | contentful>"
 
 print_to_stderr() {
   echo >&2 "${1}"

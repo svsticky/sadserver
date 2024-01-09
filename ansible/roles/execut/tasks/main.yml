@@ -58,19 +58,20 @@
         dest: "{{ execut_website_path }}"
         version: "main"
 
+# FIXME update pnpm in symposium
 - name: "run pnpm install"
   command:
     cmd: >
-      nix --extra-experimental-features nix-command
-      shell -f /var/www/symposium/execut-2023.{{ canonical_hostname }}/default.nix -c
+      nix --extra-experimental-features 'nix-command flakes'
+      shell nixpkgs#nodePackages.pnpm -c
       pnpm install
     chdir: "/var/www/symposium/execut-2023.{{ canonical_hostname }}/sites/static"
 
 - name: "run pnpm build"
   command:
     cmd: >
-      nix --extra-experimental-features nix-command
-      shell -f /var/www/symposium/execut-2023.{{ canonical_hostname }}/default.nix -c
+      nix --extra-experimental-features 'nix-command flakes'
+      shell nixpkgs#nodePackages.pnpm -c
       pnpm build
     chdir: "/var/www/symposium/execut-2023.{{ canonical_hostname }}/sites/static"
 

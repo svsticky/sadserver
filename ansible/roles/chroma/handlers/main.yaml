@@ -1,0 +1,5 @@
+---
+- name: "restart chroma"
+  service:
+    name: "chroma"
+    state: "restarted"

@@ -68,6 +68,8 @@
       tags: "files"
     - role: "mongoose"
       tags: "mongoose"
+    - role: "chroma"
+      tags: "chroma"
     # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
       tags: ["never", "crazy88bot"]

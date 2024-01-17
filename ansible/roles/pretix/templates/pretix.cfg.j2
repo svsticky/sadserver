@@ -8,6 +8,7 @@ password_reset=on
 registration=off
 long_sessions=on
 ecb_rates=off
+loglevel=DEBUG
 
 [locale]
 default=en
@@ -23,10 +24,10 @@ host=
 ; See config file documentation for more options
 from=tickets@{{ canonical_hostname }}
 host=smtp.mailgun.org
-port=465
+port=587
 user=tickets@{{ canonical_hostname }}
 password={{ secret_pretix.email_password }}
-ssl=on
+tls=on
 admins={% if canonical_hostname == 'svsticky.nl' %}pretixspam@maartenberg.nl{% endif %}
 
 [django]
@@ -40,4 +41,3 @@ sessions=true
 [celery]
 backend=redis://127.0.0.1/1
 broker=redis://127.0.0.1/2
-

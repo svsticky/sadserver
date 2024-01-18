@@ -45,7 +45,7 @@
     - role: "aas"
       tags: "aas"
     - role: "static_sticky"
-      tags: "static"
+      tags: "static_sticky"
     - role: "pretix"
       tags: "pretix"
     - role: "koala"

@@ -18,7 +18,7 @@ users:
         state: "present"
       - username: "Mstiekema"
         state: "present"
-      - username: "JustNireon"
+      - username: "Siem2l"
         state: "present"
       - username: "Yfkesmit"
         state: "present"
@@ -70,7 +70,7 @@ users:
     home_prefix: "/home"
     state: "present"
     github_accounts:
-      - username: "JustNireon"
+      - username: "Siem2l"
         state: "present"
 
   - name: "lucas"
@@ -189,13 +189,7 @@ users:
     home_prefix: "/var/www"
     state: "present"
     github_accounts:
-      - username: "maartenberg"
-        state: "absent"
-      - username: "Riscky"
-        state: "absent"
-      - username: "LucasDissie"
-        state: "absent"
-      - username: "JustNireon"
+      - username: "Siem2l"
         state: "present"
       - username: "SilasPeters"
         state: "present"
@@ -207,5 +201,5 @@ users:
     github_accounts:
       - username: "leuke-naam"
         state: "present"
-      - username: "JustNireon"
+      - username: "Siem2l"
         state: "present"

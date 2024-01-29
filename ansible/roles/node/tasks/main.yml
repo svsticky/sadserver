@@ -13,9 +13,9 @@
   apt_key:
     url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
 
-- name: "Add Nodesource repository for NodeJS 20"
+- name: "Add Nodesource repository for NodeJS 14"
   apt_repository:
-    repo: "deb https://deb.nodesource.com/node_20.x {{ ansible_lsb.codename }} main"
+    repo: "deb https://deb.nodesource.com/node_14.x {{ ansible_lsb.codename }} main"
 
 - name: "install Node.js and yarn"
   apt:

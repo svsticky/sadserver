@@ -105,7 +105,7 @@ case "${SOURCE}" in
           FILE_NAME="${FILE_TITLE}.tar.gz"
 
           sudo -u backup mkdir -p /tmp/contentful-export
-          sudo -u backup -H npx --yes contentful-cli space export \
+          sudo -u backup -H npx contentful-cli space export \
             --management-token {{ secret_contentful_export.token }} \
             --space-id {{ secret_contentful_export.space_id }} \
             --download-assets \

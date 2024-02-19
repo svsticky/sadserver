@@ -32,6 +32,8 @@ users:
         state: "present"
       - username: "SilasPeters"
         state: "present"
+      - username: "Riscky"
+        state: "present"
 
   - name: "hugo"
     admin: true
@@ -39,6 +41,14 @@ users:
     state: "present"
     github_accounts:
       - username: "HugoPeters1024"
+        state: "present"
+
+  - name: "rick"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "Riscky"
         state: "present"
 
   - name: "sem"

@@ -58,6 +58,7 @@ websites:
 
   - name: "indievelopment.{{ canonical_hostname }}"
     user: "indievelopment"
+    state: "absent"
     alternative_names:
       - "indievelopment.nl"
       - "www.indievelopment.nl"

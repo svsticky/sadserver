@@ -58,11 +58,11 @@ websites:
 
   - name: "indievelopment.{{ canonical_hostname }}"
     user: "indievelopment"
+    state: "absent"
     alternative_names:
       - "indievelopment.nl"
       - "www.indievelopment.nl"
 
-    state: "present"
   - name: "koala.{{ canonical_hostname }}"
     custom_config: true
     # Hostnames have to be set in custom nginx config as well!

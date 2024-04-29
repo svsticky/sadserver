@@ -57,7 +57,7 @@
 
   - name: "install node version"
     shell: |
-      . /var/www/radio/.nvm/nvm.sh
+      source /var/www/radio/.nvm/nvm.sh
       nvm install
     args:
       chdir: "/var/www/radio/radio"
@@ -67,7 +67,8 @@
 
   - name: "run npm rebuild if needed"
     shell: |
-      . /var/www/radio/.nvm/nvm.sh
+      source /var/www/radio/.nvm/nvm.sh
+      nvm use
       npm rebuild
     args:
       chdir: "/var/www/radio/radio"
@@ -76,7 +77,8 @@
 
   - name: "run npm install"
     shell: |
-      . /var/www/radio/.nvm/nvm.sh
+      source /var/www/radio/.nvm/nvm.sh
+      nvm use
       npm install
     args:
       chdir: "/var/www/radio/radio"
@@ -87,7 +89,8 @@
     block:
       - name: "build website"
         shell: |
-          . /var/www/radio/.nvm/nvm.sh
+          source /var/www/radio/.nvm/nvm.sh
+          nvm use
           npm run build
         args:
           chdir: "/var/www/radio/radio"

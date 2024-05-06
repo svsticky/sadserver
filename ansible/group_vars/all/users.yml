@@ -34,6 +34,8 @@ users:
         state: "present"
       - username: "Riscky"
         state: "present"
+      - username: "stickyPiston"
+        state: "present"
 
   - name: "hugo"
     admin: true
@@ -129,6 +131,14 @@ users:
     state: "present"
     github_accounts:
       - username: "SilasPeters"
+        state: "present"
+
+  - name: "job"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "stickyPiston"
         state: "present"
 
   - name: "bestuur"

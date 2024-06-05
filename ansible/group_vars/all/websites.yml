@@ -169,14 +169,7 @@ websites:
     alternative_names: []
     custom_config: true
     state: "present"
-
-  - name: "photos.{{ canonical_hostname }}"
-    user: "pxl"
-    alternative_names:
-      - "fotos.{{ canonical_hostname }}"
-    authenticated: true
-    state: "present"
-
+    
   - name: "execut-speakers.{{ canonical_hostname }}"
     user: "symposium"
     alternative_names: []

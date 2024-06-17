@@ -5,9 +5,7 @@
 let
   pkgs = import sources.nixpkgs {};
 
-  python = pkgs.python39;
-
-  ansible-mitogen = import ./nix/ansible-mitogen.nix {inherit python;};
+  python = pkgs.python312;
 
   pythonEnvironment = python.withPackages (pkgs: [
     pkgs.black
@@ -16,7 +14,6 @@ let
     pkgs.GitPython
     pkgs.requests
     pkgs.pyaml
-    ansible-mitogen
   ]);
 
   linuxOnlyTools = if pkgs.stdenv.isLinux then [ pkgs.ansible-lint ] else [];
@@ -25,7 +22,7 @@ in pkgs.buildEnv {
   name = "sadserver-environment";
   paths = [
     pythonEnvironment
-    pkgs.ansible_2_10
+    pkgs.ansible_2_16
     pkgs.bitwarden-cli
     pkgs.jq
     pkgs.yamllint

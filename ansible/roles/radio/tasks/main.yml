@@ -49,9 +49,11 @@
 
   - name: "clone NVM"
     git:
-      repo: "https://github.com/creationix/nvm.git"
+      repo: "https://github.com/nvm-sh/nvmrc.git"
       dest: "/var/www/radio/.nvm"
       depth: 1
+      # branch name
+      version: main 
     diff: false
     when: "radio_clone is changed"
 
@@ -68,7 +70,7 @@
   - name: "run npm rebuild if needed"
     shell: |
       source /var/www/radio/.nvm/nvm.sh
-      nvm use
+      nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
       npm rebuild
     args:
       chdir: "/var/www/radio/radio"
@@ -78,19 +80,18 @@
   - name: "run npm install"
     shell: |
       source /var/www/radio/.nvm/nvm.sh
-      nvm use
+      nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
       npm install
     args:
       chdir: "/var/www/radio/radio"
       executable: "/bin/bash"
-    when: "radio_clone is changed"
 
   - name: "try building website"
     block:
       - name: "build website"
         shell: |
           source /var/www/radio/.nvm/nvm.sh
-          nvm use
+          nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
           npm run build
         args:
           chdir: "/var/www/radio/radio"

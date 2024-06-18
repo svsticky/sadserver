@@ -39,7 +39,7 @@
 
 - name: "Download and extract chroma frontend"
   unarchive:
-    src: https://github.com/svsticky/chroma/releases/latest/download/frontend.tar.gz
+    src: https://github.com/svsticky/chroma/releases/{{chroma.git_tag}}/download/frontend.tar.gz
     dest: "/var/www/chroma/frontend"
     remote_src: true
     owner: "chroma"
@@ -50,7 +50,7 @@
 
 - name: "Download and extract chroma docs"
   unarchive:
-    src: https://github.com/svsticky/chroma/releases/latest/download/docs.tar.gz
+    src: https://github.com/svsticky/chroma/releases/{{chroma.git_tag}}/download/docs.tar.gz
     dest: "/var/www/chroma/docs"
     remote_src: true
     owner: "chroma"
@@ -61,7 +61,7 @@
 
 - name: "Download and extract chroma server"
   get_url:
-    url: https://github.com/svsticky/chroma/releases/latest/download/server-x86_64-unknown-linux-musl
+    url: https://github.com/svsticky/chroma/releases/{{chroma.git_tag}}/download/server-x86_64-unknown-linux-musl
     dest: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"

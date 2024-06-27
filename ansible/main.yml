@@ -24,6 +24,8 @@
       tags: "databases"
     - role: "backups"
       tags: "backups"
+    - role: "docker"
+      tags: "docker"
     - role: "nginx"
       tags: "nginx"
     - role: "php"

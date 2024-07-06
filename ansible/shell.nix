@@ -10,7 +10,13 @@ let
   env = import ./default.nix {};
 
 # Make a shell that makes that the only build input
-in pkgs.mkShell { buildInputs = [ env ]; }
+in pkgs.mkShell {
+  buildInputs = [ env ];
+
+  shellHook = ''
+    export LC_ALL="C.UTF-8"
+  '';
+}
 
 # We can use this file to run shell scripts in the same environment by adding
 # the following shebang lines:

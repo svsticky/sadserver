@@ -17,7 +17,7 @@ secret_oauth2_proxy:
   client_id: "{{ vault_secret_oauth2_proxy.client_id }}"
   client_secret: "{{ vault_secret_oauth2_proxy.client_secret }}"
   cookie_secret: "{{ vault_secret_oauth2_proxy.cookie_secret }}"
-  cookie_secret_admin: "{{ vault_secret_oauth2_proxy.cookie_secret_admin}}"
+  cookie_secret_admin: "{{ vault_secret_oauth2_proxy.cookie_secret_admin }}"
   authorized_users: |
     voorzitter@svsticky.nl
     secretaris@svsticky.nl

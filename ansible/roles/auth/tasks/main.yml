@@ -50,8 +50,7 @@
     - item.stdout is defined
     - item.stdout == "L"
   loop_control:
-    label:
-      user: "{{ item.item.name }}"
+    label: "user: {{ item.item.name }}"
 
 - name: "ensure .ssh-directory is present at all users"
   file:
@@ -91,9 +90,7 @@
     - "github_accounts"
     - skip_missing: true
   loop_control:
-    label:
-      user: "{{ item.0.name }}"
-      key: "{{ item.1.username }}"
+    label: "user: {{ item.0.name }}, key: {{ item.1.username }}"
 
 - name: "copy deploy key for private projects on GitHub"
   copy:
@@ -126,10 +123,6 @@
       "save current list of public keys for ansible user"
     shell:
       "sed -n '/# BEGIN SSH key/,$p' ~/.ssh/authorized_keys"
-    args:
-      # To prevent warning about using a module like lineinfile instead of sed,
-      # which is most likely not possible in this case.
-      warn: false
     register: "ansible_user_public_keys"
     changed_when: false
     check_mode: false

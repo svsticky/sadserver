@@ -10,7 +10,9 @@ let
     mypy
     GitPython
     requests
+    types-requests
     pyaml
+    types-pyyaml
   ]);
 
   linuxOnlyTools = if pkgs.stdenv.isLinux then [ pkgs.ansible-lint ] else [];

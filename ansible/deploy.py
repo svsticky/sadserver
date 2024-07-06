@@ -48,7 +48,7 @@ def deploy(
     from_playbook: Optional[str],
     until_playbook: Optional[str],
 ) -> None:
-    bitwarden.unlock()  # type: ignore
+    bitwarden.unlock()
     if not check and not force:
         verify_on_latest_master(host)
 

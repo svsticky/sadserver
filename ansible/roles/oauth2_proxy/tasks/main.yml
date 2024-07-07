@@ -1,12 +1,12 @@
 ---
 - name: "set proxy version"
-  set_fact:
+  ansible.builtin.set_fact:
     oauthproxy_filename: "oauth2-proxy-v7.2.0.linux-amd64"
     oauthproxy_version: "v7.2.0"
     oauthproxy_checksum: "sha256:db0f19b7d5533aecdbb352d0bbbf26a85733b74729d74a68babe7b3d7a69496b"
 
 - name: "download oauth2_proxy and verify checksum"
-  get_url:
+  ansible.builtin.get_url:
     url: "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/{{ oauthproxy_version }}/{{ oauthproxy_filename }}.tar.gz"
     dest: "/tmp"
     mode: "u+x"
@@ -14,7 +14,7 @@
   check_mode: "no"
 
 - name: "unarchive oauth2_proxy to the right spot"
-  unarchive:
+  ansible.builtin.unarchive:
     src: "/tmp/{{ oauthproxy_filename }}.tar.gz"
     remote_src: "yes"
     dest: "/usr/local/bin"
@@ -22,24 +22,24 @@
       - "--strip-components=1"
 
 - name: "make directory"
-  file:
+  ansible.builtin.file:
     path: "/etc/oauth2_proxy"
     state: "directory"
 
 - name: "copy oauth2_proxy config"
-  template:
+  ansible.builtin.template:
     src: "config.cfg.j2"
     dest: "/etc/oauth2_proxy/config.cfg"
   notify: "restart oauth2-proxy"
 
 - name: "install systemd service"
-  template:
+  ansible.builtin.template:
     src: "oauth2-proxy.service.j2"
     dest: "/etc/systemd/system/oauth2-proxy.service"
   notify: "restart oauth2-proxy"
 
 - name: "enable and start oauth2-proxy"
-  service:
+  ansible.builtin.service:
     name: "oauth2-proxy"
     enabled: true
     state: "started"
@@ -47,24 +47,24 @@
 # Same thing but now for admin only oauth access
 
 - name: "create authorized users file"
-  copy:
+  ansible.builtin.copy:
     dest: "/etc/oauth2_proxy/authorized-users"
     content: "{{ secret_oauth2_proxy.authorized_users }}"
 
 - name: "copy oauth2_proxy admin config"
-  template:
+  ansible.builtin.template:
     src: "admin-config.cfg.j2"
     dest: "/etc/oauth2_proxy/admin-config.cfg"
   notify: "restart oauth2-proxy-admin"
 
 - name: "install systemd service"
-  template:
+  ansible.builtin.template:
     src: "oauth2-proxy-admin.service.j2"
     dest: "/etc/systemd/system/oauth2-proxy-admin.service"
   notify: "restart oauth2-proxy-admin"
 
 - name: "enable and start oauth2-proxy"
-  service:
+  ansible.builtin.service:
     name: "oauth2-proxy-admin"
     enabled: true
     state: "started"

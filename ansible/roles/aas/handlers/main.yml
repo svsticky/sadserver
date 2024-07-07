@@ -1,5 +1,5 @@
 ---
 - name: "restart aas"
-  systemd:
+  ansible.builtin.systemd:
     unit: "aas.service"
     state: "restarted"

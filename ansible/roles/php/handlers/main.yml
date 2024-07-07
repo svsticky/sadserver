@@ -1,6 +1,6 @@
 ---
 
 - name: "reload php"
-  service:
+  ansible.builtin.service:
     name: "php7.4-fpm"
     state: "reloaded"

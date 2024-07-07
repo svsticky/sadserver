@@ -1,7 +1,7 @@
 ---
 
 - name: "create user for undead mongoose"
-  user:
+  ansible.builtin.user:
     name: "mongoose"
     home: "/var/www/mongoose"
     shell: "/usr/sbin/nologin"
@@ -9,13 +9,13 @@
     system: true
 
 - name: "copy nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "mongoose.conf.j2"
     dest: "/etc/nginx/sites-available/mongoose.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx configuration"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/mongoose.{{ canonical_hostname }}.conf"
     path: "/etc/nginx/sites-enabled/mongoose.{{ canonical_hostname }}.conf"
     state: "link"
@@ -23,16 +23,16 @@
 
 - block:
   - name: "ensure mongoose user exists"
-    postgresql_user:
+    community.postgresql.postgresql_user:
       name: "mongoose"
 
   - name: "ensure mongoose database exists"
-    postgresql_db:
+    community.postgresql.postgresql_db:
       name: "mongoose"
       owner: "mongoose"
 
   - name: "ensure mongoose database exists"
-    postgresql_user:
+    community.postgresql.postgresql_user:
       db: "mongoose"
       name: "mongoose"
       priv: "ALL"
@@ -42,19 +42,19 @@
 
 - block:
   - name: "ensure mongoose has a ssh directory"
-    file:
+    ansible.builtin.file:
       path: "~/.ssh"
       state: "directory"
 
   - name: "copy deploy key for private projects on GitHub"
-    copy:
+    ansible.builtin.copy:
       content: "{{ secret_deploy_key }}"
       dest: "/var/www/mongoose/.ssh/id_ed25519"
       mode: "0600"
 
   - name:
       "clone mongoose repository"
-    git:
+    ansible.builtin.git:
       repo: "git@github.com:svsticky/undead-mongoose"
       dest: "/var/www/mongoose/undead-mongoose"
       depth: 1
@@ -66,7 +66,7 @@
 
   - name:
       "template environment file for mongoose"
-    template:
+    ansible.builtin.template:
       src: ".env.j2"
       dest: "/var/www/mongoose/undead-mongoose/.env"
     diff: false
@@ -74,7 +74,7 @@
 
   - name:
       "run migrations"
-    command: "/nix/var/nix/profiles/default/bin/nix-shell --run 'dotenv ./manage.py migrate'"
+    ansible.builtin.command: "/nix/var/nix/profiles/default/bin/nix-shell --run 'dotenv ./manage.py migrate'"
     args:
       chdir: "/var/www/mongoose/undead-mongoose"
     when: "mongoose_clone is changed"
@@ -83,16 +83,16 @@
   become_user: "mongoose"
 
 - name: "template systemd service file for mongoose"
-  template:
+  ansible.builtin.template:
     src: "mongoose.service.j2"
     dest: "/etc/systemd/system/mongoose.service"
   notify: "restart mongoose"
 
 - name: "flush_handlers"
-  meta: "flush_handlers"
+  ansible.builtin.meta: "flush_handlers"
 
 - name: "ensure mongoose service is running"
-  systemd:
+  ansible.builtin.systemd:
     name: "mongoose.service"
     state: "started"
     enabled: true

@@ -1,5 +1,5 @@
 ---
 - name: "restart chroma"
-  service:
+  ansible.builtin.service:
     name: "chroma"
     state: "restarted"

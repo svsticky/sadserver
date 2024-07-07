@@ -1,6 +1,6 @@
 ---
 - name: "Create user for chroma"
-  user:
+  ansible.builtin.user:
     name: chroma
     home: "/var/www/chroma"
     shell: "/usr/sbin/nologin"
@@ -8,7 +8,7 @@
     state: "present"
 
 - name: "Create chroma frontend directory"
-  file:
+  ansible.builtin.file:
     name: "/var/www/chroma/frontend"
     owner: "chroma"
     group: "chroma"
@@ -16,7 +16,7 @@
     state: "directory"
 
 - name: "Create chroma docs directory"
-  file:
+  ansible.builtin.file:
     name: "/var/www/chroma/docs"
     owner: "chroma"
     group: "chroma"
@@ -24,7 +24,7 @@
     state: "directory"
 
 - name: "Create chroma server directory"
-  file:
+  ansible.builtin.file:
     name: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"
@@ -32,13 +32,13 @@
     state: "directory"
 
 - name: "install dependencies"
-  apt:
+  ansible.builtin.apt:
     name:
       - "python3-dotenv-cli"
     state: "present"
 
 - name: "Download and extract chroma frontend"
-  unarchive:
+  ansible.builtin.unarchive:
     src: https://github.com/svsticky/chroma/releases/{{chroma.git_tag}}/download/frontend.tar.gz
     dest: "/var/www/chroma/frontend"
     remote_src: true
@@ -49,7 +49,7 @@
     - "--strip-components=1"
 
 - name: "Download and extract chroma docs"
-  unarchive:
+  ansible.builtin.unarchive:
     src: https://github.com/svsticky/chroma/releases/{{chroma.git_tag}}/download/docs.tar.gz
     dest: "/var/www/chroma/docs"
     remote_src: true
@@ -60,7 +60,7 @@
       - "--strip-components=1"
 
 - name: "Download and extract chroma server"
-  get_url:
+  ansible.builtin.get_url:
     url: https://github.com/svsticky/chroma/releases/{{chroma.git_tag}}/download/server-x86_64-unknown-linux-musl
     dest: "/var/www/chroma/server"
     owner: "chroma"
@@ -69,20 +69,20 @@
   notify: "restart chroma"
 
 - name: "ensure database user exists"
-  postgresql_user:
+  community.postgresql.postgresql_user:
     name: "chroma"
   become_user: "postgres"
   become: true
 
 - name: "ensure database exists"
-  postgresql_db:
+  community.postgresql.postgresql_db:
     name: "chroma"
     owner: "chroma"
   become_user: "postgres"
   become: true
 
 - name: "ensure database user has the right privileges"
-  postgresql_user:
+  community.postgresql.postgresql_user:
     db: "chroma"
     name: "chroma"
     priv: "ALL"
@@ -92,26 +92,26 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: "Copy nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "chroma.conf.j2"
     dest: "/etc/nginx/sites-enabled/chroma.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "Template environment file for Chroma"
-  template:
+  ansible.builtin.template:
     src: "env.j2"
     dest: "/var/www/chroma/server/.env"
   diff: false
   notify: "restart chroma"
 
 - name: "template systemd service file for chroma"
-  template:
+  ansible.builtin.template:
     src: "chroma.service.j2"
     dest: "/etc/systemd/system/chroma.service"
   notify: "restart chroma"
 
 - name: "run chroma service"
-  systemd:
+  ansible.builtin.systemd:
     unit: "chroma.service"
     state: "started"
     enabled: true

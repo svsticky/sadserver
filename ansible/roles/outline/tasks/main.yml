@@ -1,6 +1,6 @@
 ---
 - name: "create outline user"
-  user:
+  ansible.builtin.user:
     name: "outline"
     state: "present"
     shell: "/bin/false"
@@ -9,7 +9,7 @@
     password: "!"
 
 - name: "create outline directory"
-  file:
+  ansible.builtin.file:
     path: "/var/www/outline/outline"
     state: "directory"
     owner: "outline"
@@ -19,23 +19,23 @@
   become_user: "postgres"
   block:
   - name: "ensure Postgres role exists"
-    postgresql_user:
+    community.postgresql.postgresql_user:
       name: "outline"
       state: "present"
 
   - name: "ensure database exists"
-    postgresql_db:
+    community.postgresql.postgresql_db:
       name: "outline"
       owner: "outline"
       state: "present"
 
 - name: "ensure config directory exists"
-  file:
+  ansible.builtin.file:
     path: "/etc/outline"
     state: "directory"
 
 - name: "create environment file"
-  template:
+  ansible.builtin.template:
     src: "outline.env.j2"
     dest: "/etc/outline/outline.env"
     owner: "root"
@@ -46,7 +46,7 @@
   become_user: "outline"
   block:
     - name: "clone repo"
-      git:
+      ansible.builtin.git:
         repo: "https://github.com/svsticky/Sticky-Compendium.git"
         dest: "/var/www/outline/outline"
         version: "main"
@@ -55,18 +55,18 @@
 
     - name: "install dependencies"
       when: "_outline_checkout is changed"
-      command: "yarn install --frozen-lockfile"
+      ansible.builtin.command: "yarn install --frozen-lockfile"
       args:
         chdir: "/var/www/outline/outline"
 
     - name: "build outline"
       when: "_outline_checkout is changed"
-      command: "yarn build"
+      ansible.builtin.command: "yarn build"
       args:
         chdir: "/var/www/outline/outline"
 
 - name: "install Systemd service"
-  template:
+  ansible.builtin.template:
     src: "outline.service.j2"
     dest: "/etc/systemd/system/outline.service"
     owner: "root"
@@ -74,13 +74,13 @@
   notify: "restart outline"
 
 - name: "ensure outline service is started and enabled"
-  systemd:
+  ansible.builtin.systemd:
     name: "outline.service"
     state: "started"
     enabled: true
 
 - name: "install nginx config"
-  template:
+  ansible.builtin.template:
     src: "outline.conf.j2"
     dest: "/etc/nginx/sites-enabled/outline.conf"
   notify: "reload nginx"

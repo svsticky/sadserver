@@ -2,7 +2,7 @@
 # Contains a snapshot of the hostkeys of github.com, so these can be validated
 # at runtime
 - name: "install system-wide known hostkeys"
-  copy:
+  ansible.builtin.copy:
     src: "ssh_known_hosts"
     dest: "/etc/ssh/ssh_known_hosts"
     owner: "root"
@@ -10,7 +10,7 @@
     mode: "0644"
 
 - name: "set auth for eindbaas user"
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/sudoers.d/eindbaas"
     line: "eindbaas ALL= NOPASSWD:ALL"
     state: "present"
@@ -18,7 +18,7 @@
     validate: "visudo -cf %s"
 
 - name: "set NOPASSWD for sudo group in staging"
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/sudoers.d/ansible"
     line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
     state: "{% if 'staging' in group_names %}present{% else %}absent{% endif %}"
@@ -26,7 +26,7 @@
     validate: "visudo -cf %s"
 
 - name: "check if password of admin user is locked" # noqa risky-shell-pipe
-  shell: "passwd --status {{ item.name }} | awk '{print $2}'"
+  ansible.builtin.shell: "passwd --status {{ item.name }} | awk '{print $2}'"
   register: "admin_passwords"
   with_items: "{{ users }}"
   when:
@@ -42,7 +42,7 @@
 
 - name:
     "make new admin users choose a password at next login, in production"
-  command: "passwd -de {{ item.item.name }}"
+  ansible.builtin.command: "passwd -de {{ item.item.name }}"
   with_items: "{{ admin_passwords.results }}"
   when:
     # List is evaluated as logical AND
@@ -53,7 +53,7 @@
     label: "user: {{ item.item.name }}"
 
 - name: "ensure .ssh-directory is present at all users"
-  file:
+  ansible.builtin.file:
     path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh"
     state: "directory"
     owner: "{{ item.0.name }}"
@@ -72,7 +72,7 @@
 - name:
     "ensure SSH keys for users are present, fetched from associated GitHub
     accounts"
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: "{{ item.0.home_prefix }}/{{ item.0.name }}/.ssh/authorized_keys"
     block:
       "{{ lookup('url', 'https://github.com/' + item.1.username + '.keys',
@@ -93,7 +93,7 @@
     label: "user: {{ item.0.name }}, key: {{ item.1.username }}"
 
 - name: "copy deploy key for private projects on GitHub"
-  copy:
+  ansible.builtin.copy:
     content: "{{ secret_deploy_key }}"
     dest: "/home/ansible/.ssh/deploy_ed25519"
     owner: "ansible"
@@ -101,7 +101,7 @@
     mode: "0600"
 
 - name: "symlink deploy key for root"
-  file:
+  ansible.builtin.file:
     src: "/home/ansible/.ssh/{{ deploy_key_name.src }}"
     path: "/root/.ssh/{{ deploy_key_name.dest }}"
     state: link
@@ -111,17 +111,19 @@
       dest: "id_ed25519"
 
 - name: "remove public keys for root account"
-  file:
+  ansible.builtin.file:
     path: "/root/.ssh/authorized_keys"
     state: "absent"
 
 # The bootstrap playbook adds the SSH keys (as added by DO), to the ansible
 # user. Afterwards, they are re-added and managed by Ansible itself, so the old
 # duplicates must be deleted once.
-- block:
+- name: "gather public SSH keys for ansible user"
+  become: false
+  block:
   - name:
       "save current list of public keys for ansible user"
-    shell:
+    ansible.builtin.shell:
       "sed -n '/# BEGIN SSH key/,$p' ~/.ssh/authorized_keys"
     register: "ansible_user_public_keys"
     changed_when: false
@@ -130,13 +132,12 @@
   - name:
       "remove superfluous public keys for ansible user, added by bootstrap
       playbook"
-    copy:
+    ansible.builtin.copy:
       content: "{{ ansible_user_public_keys.stdout + '\n' }}"
       dest: "~/.ssh/authorized_keys"
-  become: false
 
 - name: "copy hardened sshd configuration"
-  template:
+  ansible.builtin.template:
     src: "sshd_config.j2"
     dest: "/etc/ssh/sshd_config"
   notify: "reboot server"

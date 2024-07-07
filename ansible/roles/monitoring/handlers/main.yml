@@ -2,6 +2,6 @@
 
 # netdata service doesn't support reloading
 - name: "restart netdata"
-  service:
+  ansible.builtin.service:
     name: "netdata"
     state: "restarted"

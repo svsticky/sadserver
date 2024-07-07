@@ -35,11 +35,11 @@
 #   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: "determine website folder"
-  set_fact:
+  ansible.builtin.set_fact:
     execut_website_path: "/var/www/symposium/execut-2023.{{ canonical_hostname }}"
 
 - name: "make website directory"
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     owner: "symposium"
     group: "symposium"
@@ -53,14 +53,14 @@
   become_user: "symposium"
   block:
     - name: "clone website's repository"
-      git:
+      ansible.builtin.git:
         repo: "https://github.com/stichtingsticky/execut"
         dest: "{{ execut_website_path }}"
         version: "main"
 
 # FIXME update pnpm in symposium
 - name: "run pnpm install"
-  command:
+  ansible.builtin.command:
     cmd: >
       nix --extra-experimental-features 'nix-command flakes'
       shell nixpkgs#nodePackages.pnpm -c
@@ -68,7 +68,7 @@
     chdir: "/var/www/symposium/execut-2023.{{ canonical_hostname }}/sites/static"
 
 - name: "run pnpm build"
-  command:
+  ansible.builtin.command:
     cmd: >
       nix --extra-experimental-features 'nix-command flakes'
       shell nixpkgs#nodePackages.pnpm -c
@@ -83,24 +83,24 @@
 #   notify: "systemctl daemon-reload"
 
 - name: "install Nginx config"
-  template:
+  ansible.builtin.template:
     src: "nginx.conf.j2"
     dest: "/etc/nginx/sites-available/execut-2023.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable Nginx config"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/execut-2023.{{ canonical_hostname }}.conf"
     dest: "/etc/nginx/sites-enabled/execut-2023.{{ canonical_hostname }}.conf"
     state: "link"
   notify: "reload nginx"
 
 - name: "test Nginx config"
-  command: "nginx -t"
+  ansible.builtin.command: "nginx -t"
   changed_when: false
 
 - name: "Reload Nginx, systemd if needed"
-  meta: "flush_handlers"
+  ansible.builtin.meta: "flush_handlers"
 
 # - name: "Start and enable website service"
 #   systemd:

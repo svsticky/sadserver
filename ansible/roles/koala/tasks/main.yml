@@ -1,6 +1,6 @@
 ---
 - name: "ensure koala system user exists"
-  user:
+  ansible.builtin.user:
     name: "koala"
     state: "present"
     system: true
@@ -8,10 +8,10 @@
   notify: "restart koala"
 
 - name: "use koala cachix"
-  command: "cachix use svsticky-constipated-koala"
+  ansible.builtin.command: "cachix use svsticky-constipated-koala"
 
 - name: "ensure clone location exists and is owned by koala"
-  file:
+  ansible.builtin.file:
     path: "/var/www/koala.{{ canonical_hostname }}"
     state: "directory"
     owner: "koala"
@@ -19,7 +19,7 @@
     recurse: true
 
 - name: "ensure koala service file is present"
-  template:
+  ansible.builtin.template:
     src: "systemd/koala.service.j2"
     dest: "/etc/systemd/system/koala.service"
   notify:
@@ -29,19 +29,19 @@
 
 - block:
   - name: "place koala OIDC signing key"
-    copy:
+    ansible.builtin.copy:
       dest: "~/oidc_signing_key.pem"
       content: "{{ vault_secret_koala_oidc_signing_key }}"
       mode: "0600"
     notify: "restart koala"
 
   - name: "ensure koala has a ssh directory"
-    file:
+    ansible.builtin.file:
       path: "~/.ssh"
       state: "directory"
 
   - name: "copy deploy key (private) for user koala"
-    copy:
+    ansible.builtin.copy:
       content: "{{ secret_deploy_key }}"
       dest: "/home/koala/.ssh/id_ed25519"
       mode: "0600"
@@ -49,7 +49,7 @@
   # This checks if Koala is already locally present, and if there is an update
   # on the remote
   - name: "check status of koala's local git repo"
-    git:
+    ansible.builtin.git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
       version: "{{ koala_env.git_ref }}"
@@ -58,7 +58,7 @@
     check_mode: true
 
   - name: "create marker file to trigger migration"
-    file:
+    ansible.builtin.file:
       path: "/home/koala/.KOALA_MIGRATION_PENDING"
       state: "touch"
       owner: "koala"
@@ -66,7 +66,7 @@
     when: "koala_checkout_result.changed"
 
   - name: "check if migration marker file exists"
-    stat:
+    ansible.builtin.stat:
       path: "/home/koala/.KOALA_MIGRATION_PENDING"
       get_checksum: "no"
       get_attributes: "no"
@@ -75,13 +75,13 @@
 
   # This sets the information gained from the previous task in a fact
   - name: "determine whether we need to update koala"
-    set_fact:
+    ansible.builtin.set_fact:
       koala_updated: "{{ koala_update_marker.stat.exists }}"
 
   - name: "ensure koala's recurring services+timers are present"
     become: true
     become_user: "root"
-    template:
+    ansible.builtin.template:
       src: "systemd/{{ item }}.j2"
       dest: "/etc/systemd/system/{{ item }}"
     with_items:
@@ -100,11 +100,11 @@
   # Enables maintenance mode only when Koala was already running, and needs to
   # be updated
   - name: "start process of enabling koala's maintenance mode"
-    include_tasks: "maintenance-on.yml"
+    ansible.builtin.include_tasks: "maintenance-on.yml"
     when: koala_updated
 
   - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
-    git:
+    ansible.builtin.git:
       repo: "git@github.com:svsticky/constipated-koala.git"
       dest: "/var/www/koala.{{ canonical_hostname }}"
       version: "{{ koala_env.git_ref }}"
@@ -113,14 +113,14 @@
     notify: "restart sidekiq"
 
   - name: "ensure tmp directory exist (for nix-shell)"
-    file:
+    ansible.builtin.file:
       path: "/var/www/koala.{{ canonical_hostname }}/tmp/pids"
       state: "directory"
       owner: "koala"
       group: "koala"
 
   - name: "ensure environment variables are present"
-    template:
+    ansible.builtin.template:
       src: ".env.j2"
       dest: "/var/www/koala.{{ canonical_hostname }}/.env"
       mode: "0700"
@@ -129,24 +129,24 @@
       - "restart sidekiq"
 
   - name: "configure nix to use koala cachix"
-    command: "cachix use svsticky-constipated-koala"
+    ansible.builtin.command: "cachix use svsticky-constipated-koala"
 
   - name: "building nix environment (this might take a while)"
-    command: nix-shell --run 'echo lol'
+    ansible.builtin.command: nix-shell --run 'echo lol'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
     notify: "restart koala"
 
   - name: "ensure tmp directories exist"
-    command: nix-shell --run 'rails tmp:create'
+    ansible.builtin.command: nix-shell --run 'rails tmp:create'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
       creates: "/var/www/koala.{{ canonical_hostname }}/tmp"
     notify: "restart koala"
 
   - name: "ensure log directory exists"
-    file:
+    ansible.builtin.file:
       path: "/var/www/koala.{{ canonical_hostname }}/log"
       state: "directory"
       mode: "0775"
@@ -154,38 +154,38 @@
 
   - block:
       - name: "make pre-upgrade database backup to S3"
-        systemd:
+        ansible.builtin.systemd:
           name: "backup-postgres.service"
           state: "started"
         become_user: "root"
 
       - name: "check whether the database exists"
-        shell: nix-shell --run 'dotenv rails db:version'
+        ansible.builtin.shell: nix-shell --run 'dotenv rails db:version'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
         register: "koala_database_version"
 
       - name: "parse database version message"
-        set_fact:
+        ansible.builtin.set_fact:
           database_exists: "{{ koala_database_version.stdout_lines[-1] != 'Current version: 0' }}"
 
       - name: "run database setup if database does not exist"
-        shell: nix-shell --run 'dotenv rails db:setup'
+        ansible.builtin.shell: nix-shell --run 'dotenv rails db:setup'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
         when: "not database_exists"
 
       - name: "run migration(s) if database already exists"
-        shell: nix-shell --run 'dotenv rails db:migrate'
+        ansible.builtin.shell: nix-shell --run 'dotenv rails db:migrate'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
           executable: "/bin/bash"
         when: "database_exists"
 
       - name: "ensure assets are precompiled"
-        shell: nix-shell --run 'dotenv rails assets:precompile'
+        ansible.builtin.shell: nix-shell --run 'dotenv rails assets:precompile'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
 
@@ -194,7 +194,7 @@
     become_user: "koala"
 
   - name: "add credentials for oauth application"
-    command: nix-shell --run 'dotenv rails oauthproxy:create_application'
+    ansible.builtin.command: nix-shell --run 'dotenv rails oauthproxy:create_application'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
 
@@ -203,13 +203,13 @@
 
 - block:
   - name: "place koala's nginx configuration"
-    template:
+    ansible.builtin.template:
       src: "nginx.conf.j2"
       dest: "/etc/nginx/sites-available/koala.{{ canonical_hostname }}.conf"
     notify: "reload nginx"
 
   - name: "enable koala's nginx config"
-    file:
+    ansible.builtin.file:
       src: "/etc/nginx/sites-available/{{ filename }}"
       path: "/etc/nginx/sites-enabled/{{ filename }}"
       state: "link"
@@ -221,16 +221,16 @@
 
 
 - name: "flush handlers"
-  meta: "flush_handlers"
+  ansible.builtin.meta: "flush_handlers"
 
 # Disables maintenance mode only when Koala had to be updated, and can now be
 # started again.
 - name: "start process of disabling koala's maintenance mode"
-  include_tasks: "maintenance-off.yml"
+  ansible.builtin.include_tasks: "maintenance-off.yml"
   when: koala_updated
 
 - name: "ensure koala's timers are started and enabled in production"
-  service:
+  ansible.builtin.service:
     name: "{{ item }}"
     enabled:
       "{% if 'staging' in group_names %}false{% else %}true\
@@ -244,12 +244,12 @@
     - "koala-payment-mail.timer"
 
 - name: "ensure sidekiq service is started and enabled"
-  service:
+  ansible.builtin.service:
     name: "sidekiq.service"
     enabled: "yes"
     state: "started"
 
 - name: "ensure koala update marker is absent"
-  file:
+  ansible.builtin.file:
     path: "/home/koala/.KOALA_MIGRATION_PENDING"
     state: "absent"

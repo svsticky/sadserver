@@ -1,6 +1,6 @@
 ---
 - name: "check if koala is running"
-  systemd:
+  ansible.builtin.systemd:
     name: "koala.service"
     state: "started"
   check_mode: true
@@ -8,14 +8,14 @@
   listen: "restart koala"
 
 - name: "restart koala service"
-  service:
+  ansible.builtin.service:
     name: "koala"
     state: "restarted"
   when: "koala_running is not changed"
   listen: "restart koala"
 
 - name: "restart sidekiq service"
-  service:
+  ansible.builtin.service:
     name: "sidekiq"
     state: "restarted"
   listen: "restart sidekiq"

@@ -1,13 +1,13 @@
 ---
 - name: "enable Koala's maintenance mode"
-  file:
+  ansible.builtin.file:
     state: "touch"
     path: "/home/koala/MAINTENANCE_MODE"
   become: true
   become_user: "koala"
 
 - name: "ensure sidekiq background worker is not running"
-  service:
+  ansible.builtin.service:
     name: "sidekiq"
     state: "stopped"
   ignore_errors: true
@@ -15,7 +15,7 @@
   become_user: "root"
 
 - name: "ensure koala is not running"
-  service:
+  ansible.builtin.service:
     name: "koala"
     state: "stopped"
   become: true

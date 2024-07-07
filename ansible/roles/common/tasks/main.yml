@@ -1,6 +1,6 @@
 ---
 - name: "remove help text from motd"
-  file:
+  ansible.builtin.file:
     path: "/etc/update-motd.d/{{ item }}"
     state: "absent"
   with_items:
@@ -8,7 +8,7 @@
     - "51-cloudguest"
 
 - name: "copy motd templates"
-  template:
+  ansible.builtin.template:
     src: "motd/{{ item }}.j2"
     dest: "/etc/update-motd.d/{{ item }}"
     mode: "0755"
@@ -18,13 +18,13 @@
 
 # In staging we just use the name that is set when creating our VPS.
 - name: "set custom hostname, in production"
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ server_hostname }}"
   when: "'staging' not in group_names"
 
 # In staging we just use the name that is set when creating our VPS.
 - name: "update hostname in /etc/hosts, in production"
-  lineinfile:
+  ansible.builtin.lineinfile:
     regexp: "^127.0.1.1"
     line:
       "127.0.1.1 {{ server_hostname }}.{{ canonical_hostname }}
@@ -34,14 +34,14 @@
   when: "'staging' not in group_names"
 
 - name: "copy locale variables"
-  template:
+  ansible.builtin.template:
     src: "locale.j2"
     dest: "/{{ path }}"
   vars:
     path: "etc/default/locale"
 
 - name: "copy failure handler for systemd units"
-  template:
+  ansible.builtin.template:
     src: "failure-notificator@.service.j2"
     dest: "/etc/systemd/system/failure-notificator@.service"
   notify: "systemctl daemon-reload"

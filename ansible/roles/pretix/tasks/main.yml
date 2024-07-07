@@ -1,12 +1,12 @@
 ---
 - name: "ensure pretix user is present"
-  user:
+  ansible.builtin.user:
     name: "pretix"
     home: "/var/www/pretix"
     system: true
 
 - name: "ensure dependencies are present"
-  apt:
+  ansible.builtin.apt:
     name:
       - "git"
       - "build-essential"
@@ -29,19 +29,19 @@
   become_user: "postgres"
   block:
   - name: "ensure Pretix database user exists"
-    postgresql_user:
+    community.postgresql.postgresql_user:
       name: "pretix"
       state: "present"
 
   - name: "ensure database exists"
-    postgresql_db:
+    community.postgresql.postgresql_db:
       name: "pretix"
       owner: "pretix"
       state: "present"
     notify: "pretix post-upgrade"
 
 - name: "ensure pretix config directories are present"
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: "directory"
     owner: "pretix"
@@ -51,7 +51,7 @@
     - "/var/www/pretix/data/media"
 
 - name: "place pretix config file"
-  template:
+  ansible.builtin.template:
     src: "pretix.cfg.j2"
     dest: "/etc/pretix/pretix.cfg"
     owner: "pretix"
@@ -60,7 +60,7 @@
   notify: "restart pretix"
 
 - name: "create virtualenv if not exists, update pip and tools"
-  pip:
+  ansible.builtin.pip:
     name:
       - "pip"
       - "setuptools"
@@ -72,7 +72,7 @@
   become_user: "pretix"
 
 - name: "place pretix's service files"
-  template:
+  ansible.builtin.template:
     src: "systemd/{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}"
   with_items:
@@ -85,7 +85,7 @@
     - "restart pretix"
 
 - name: "install pretix"
-  pip:
+  ansible.builtin.pip:
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     state: "present"
@@ -113,10 +113,10 @@
   become_user: "pretix"
 
 - name: "Ensure daemon is reloaded"
-  meta: "flush_handlers"
+  ansible.builtin.meta: "flush_handlers"
 
 - name: "ensure pretix services are running and enabled"
-  service:
+  ansible.builtin.service:
     name: "{{ item }}"
     state: "started"
     enabled: "yes"
@@ -126,7 +126,7 @@
     - "pretix-runperiodic.timer"
 
 - name: "place pretix's nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "pretix.conf.j2"
     dest: "/etc/nginx/sites-available/{{ dest_filename }}"
   vars:
@@ -134,7 +134,7 @@
   notify: "reload nginx"
 
 - name: "enable pretix's nginx configuration"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ filename }}"
     dest: "/etc/nginx/sites-enabled/{{ filename }}"
     state: "link"

@@ -1,6 +1,6 @@
 ---
 - name: "install nginx, openssl and fancyindex"
-  apt:
+  ansible.builtin.apt:
     name:
       - "nginx"
       - "openssl"
@@ -8,23 +8,23 @@
     state: "present"
 
 - name: "create directories for onfailure override for nginx"
-  file:
+  ansible.builtin.file:
     path: "/etc/systemd/system/nginx.service.d"
     state: "directory"
 
 - name: "copy onfailure override for nginx"
-  template:
+  ansible.builtin.template:
     src: "onfailure.conf.j2"
     dest: "/etc/systemd/system/nginx.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 
 - name: "create nginx includes directory"
-  file:
+  ansible.builtin.file:
     path: "/etc/nginx/includes"
     state: "directory"
 
 - name: "copy nginx include files"
-  template:
+  ansible.builtin.template:
     src: "includes/{{ item }}.j2"
     dest: "/etc/nginx/includes/{{ item }}"
   loop:
@@ -35,13 +35,13 @@
   notify: "reload nginx"
 
 - name: "copy general configuration file for nginx"
-  template:
+  ansible.builtin.template:
     src: "nginx.conf.j2"
     dest: "/etc/nginx/nginx.conf"
   notify: "reload nginx"
 
 - name: "ensure stock nginx configuration is not present"
-  file:
+  ansible.builtin.file:
     path: "/etc/nginx/{{ item }}"
     state: "absent"
   loop:
@@ -50,19 +50,19 @@
   notify: "reload nginx"
 
 - name: "copy dhparams"
-  copy:
+  ansible.builtin.copy:
     src: "dhparams.pem"
     dest: "/etc/nginx/dhparams.pem"
   notify: "reload nginx"
 
 - name: "copy default nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "sites-available/default.conf.j2"
     dest: "/etc/nginx/sites-available/default.conf"
   notify: "reload nginx"
 
 - name: "enable default nginx config"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/default.conf"
     path: "/etc/nginx/sites-enabled/default"
     state: "link"
@@ -71,12 +71,12 @@
 # This enables the nginx service, and starts it if necessary. Certbot depends on
 # this.
 - name: "enable and start nginx"
-  service:
+  ansible.builtin.service:
     name: "nginx"
     enabled: true
     state: "started"
 
 - name: "Delete default html directory"
-  file:
+  ansible.builtin.file:
     path: "/var/www/html"
     state: "absent"

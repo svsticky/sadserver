@@ -1,22 +1,22 @@
 ---
 - name: "install netdata"
-  apt:
+  ansible.builtin.apt:
     name: "netdata"
     state: "present"
 
 - name: "create directory for onfailure override for netdata service"
-  file:
+  ansible.builtin.file:
     path: "/etc/systemd/system/netdata.service.d"
     state: "directory"
 
 - name: "copy onfailure override for netdata service"
-  template:
+  ansible.builtin.template:
     src: "onfailure.conf.j2"
     dest: "/etc/systemd/system/netdata.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 
 - name: "enable slack notifications for netdata's alarms"
-  template:
+  ansible.builtin.template:
     src: "health_alarm_notify.conf.j2"
     dest: "/etc/netdata/health_alarm_notify.conf"
     owner: "netdata"
@@ -25,7 +25,7 @@
   notify: "restart netdata"
 
 - name: "raise alert threshold for tcp listen drops"
-  template:
+  ansible.builtin.template:
     src: "tcp_listen.conf.j2"
     dest: "/etc/netdata/health.d/tcp_listen.conf"
     owner: "netdata"
@@ -34,13 +34,13 @@
   notify: "restart netdata"
 
 - name: "copy nginx files for metrics site"
-  template:
+  ansible.builtin.template:
     src: "metrics.conf.j2"
     dest: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx proxy config for metrics site"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/metrics.{{ canonical_hostname }}.conf"
     path: "/etc/nginx/sites-enabled/metrics.{{ canonical_hostname }}.conf"
     state: "link"

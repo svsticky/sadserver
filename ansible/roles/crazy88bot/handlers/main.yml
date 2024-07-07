@@ -1,5 +1,5 @@
 ---
 - name: "restart crazy88bot"
-  systemd:
+  ansible.builtin.systemd:
     unit: "crazy88bot.service"
     state: "restarted"

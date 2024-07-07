@@ -1,6 +1,6 @@
 ---
 - name: "copy Nix install script"
-  copy:
+  ansible.builtin.copy:
     src: "install"
     dest: "/var/tmp/install-nix"
     mode: "0755"
@@ -8,7 +8,7 @@
 - name: "Run Nix installer" # noqa risky-shell-pipe
   become: true
   become_user: "eindbaas"
-  shell: "yes | /var/tmp/install-nix --daemon"
+  ansible.builtin.shell: "yes | /var/tmp/install-nix --daemon"
   args:
     creates: "/nix"
 
@@ -25,23 +25,23 @@
     - "nix-prefetch-url"
     - "nix-shell"
     - "nix-store"
-  file:
+  ansible.builtin.file:
     src: "/nix/var/nix/profiles/default/bin/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     state: "link"
   become: true
 
 - name: "Update Nix to the latest version"
-  shell: "nix-channel --update && nix-env -iA nixpkgs.nix nixpkgs.cacert"
+  ansible.builtin.shell: "nix-channel --update && nix-env -iA nixpkgs.nix nixpkgs.cacert"
   notify:
     - "systemctl daemon-reload"
     - "restart nix-daemon"
 
 - name: "install cachix"
-  command: "nix-env -iA cachix -f https://cachix.org/api/v1/install"
+  ansible.builtin.command: "nix-env -iA cachix -f https://cachix.org/api/v1/install"
 
 - name: "Make cachix available without sourcing shell stuff"
-  file:
+  ansible.builtin.file:
     src: "/nix/var/nix/profiles/default/bin/cachix"
     dest: "/usr/local/bin/cachix"
     state: "link"
@@ -50,7 +50,7 @@
 # Only trusted users can use the binary cache
 # See: https://nixos.org/manual/nix/stable/installation/multi-user.html#multi-user-mode
 - name: "set ansible user as trusted Nix user"
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "/etc/nix/nix.conf"
     regexp: "^trusted-users"
     line: "trusted-users = ansible koala"

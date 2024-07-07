@@ -1,23 +1,23 @@
 ---
 - name: "create committee group"
-  group:
+  ansible.builtin.group:
     name: "committee"
     state: "present"
 
 - name: "create sudoless_ssh group"
-  group:
+  ansible.builtin.group:
     name: "sudoless_ssh"
     state: "present"
 
 - name: "create /var/www"
-  file:
+  ansible.builtin.file:
     path: "/var/www"
     state: "directory"
 
 # When users are deleted here, their home directory is not. Run
 # ../playbooks/purge-old-users.yml for that.
 - name: "create/delete users"
-  user:
+  ansible.builtin.user:
     name: "{{ item.name }}"
     groups: "{% if item.admin %}sudo,adm{% elif item.sudoless_ssh | default(False) %}sudoless_ssh{% else %}committee{% endif %}"
     shell: "{{ '/bin/bash' if item.admin or (item.sudoless_ssh | default(False)) else omit }}"
@@ -32,7 +32,7 @@
 # This user is can do passwordless sudo, which is necessary from some
 # installation routines like nix
 - name: "create eindbaas user"
-  user:
+  ansible.builtin.user:
     name: "eindbaas"
     state: "present"
     shell: "/bin/false"
@@ -42,7 +42,7 @@
 
 
 - name: "fix permissions for chroot of committee users"
-  file:
+  ansible.builtin.file:
     path: "{{ item.home_prefix }}/{{ item.name }}"
     owner: "root"
     state: "directory"
@@ -56,7 +56,7 @@
     label: "{{ item.name }}"
 
 - name: "add environment to bash prompt of admins"
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ item.home_prefix }}/{{ item.name }}/.bashrc"
     regexp: "^export PS1="
     line: "{{ bash_prompt }}"
@@ -67,7 +67,7 @@
     label: "{{ item.name }}"
 
 - name: "add environment to bash prompt of root"
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/root/.bashrc"
     regexp: "^export PS1="
     line:

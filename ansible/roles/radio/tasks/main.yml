@@ -1,6 +1,6 @@
 ---
 - name: "create user for radio"
-  user:
+  ansible.builtin.user:
     name: "radio"
     home: "/var/www/radio"
     shell: "/usr/sbin/nologin"
@@ -8,20 +8,20 @@
     system: true
 
 - name: "copy nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "radio.conf.j2"
     dest: "/etc/nginx/sites-available/radio.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx configuration"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/radio.{{ canonical_hostname }}.conf"
     path: "/etc/nginx/sites-enabled/radio.{{ canonical_hostname }}.conf"
     state: "link"
   notify: "reload nginx"
 
 - name: "create radio webroot"
-  file:
+  ansible.builtin.file:
     path: "/var/www/radio/radio.{{ canonical_hostname }}"
     owner: "radio"
     group: "radio"
@@ -31,7 +31,7 @@
 - block:
   - name:
       "clone radio repository"
-    git:
+    ansible.builtin.git:
       repo: "https://github.com/svsticky/radio.git"
       dest: "/var/www/radio/radio"
       depth: 1
@@ -42,13 +42,13 @@
 
   - name:
       "template environment file for radio"
-    template:
+    ansible.builtin.template:
       src: ".env.j2"
       dest: "/var/www/radio/radio/.env"
     diff: false
 
   - name: "clone NVM"
-    git:
+    ansible.builtin.git:
       repo: "https://github.com/nvm-sh/nvmrc.git"
       dest: "/var/www/radio/.nvm"
       depth: 1
@@ -58,7 +58,7 @@
     when: "radio_clone is changed"
 
   - name: "install node version"
-    shell: |
+    ansible.builtin.shell: |
       source /var/www/radio/.nvm/nvm.sh
       nvm install
     args:
@@ -68,7 +68,7 @@
     register: "install_node_version"
 
   - name: "run npm rebuild if needed"
-    shell: |
+    ansible.builtin.shell: |
       source /var/www/radio/.nvm/nvm.sh
       nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
       npm rebuild
@@ -78,7 +78,7 @@
     when: "install_node_version is changed"
 
   - name: "run npm install"
-    shell: |
+    ansible.builtin.shell: |
       source /var/www/radio/.nvm/nvm.sh
       nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
       npm install
@@ -89,7 +89,7 @@
   - name: "try building website"
     block:
       - name: "build website"
-        shell: |
+        ansible.builtin.shell: |
           source /var/www/radio/.nvm/nvm.sh
           nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
           npm run build
@@ -101,7 +101,7 @@
   # Omitting it will create a `public` subdirectory and break stuff.
   # See `man rsync`, section USAGE.
   - name: "copy website contents to webroot"
-    synchronize:
+    ansible.posix.synchronize:
       src: "/var/www/radio/radio/dist/"
       dest: "/var/www/radio/radio.{{ canonical_hostname }}/"
       delete: true

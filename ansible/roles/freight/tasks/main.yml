@@ -1,20 +1,20 @@
 ---
 - name: "ensure freight user exists"
-  user:
+  ansible.builtin.user:
     name: "freight"
     shell: "/bin/sh"
     home: "/var/lib/freight"
     system: true
 
 - name: "ensure that freight has .ssh folder"
-  file:
+  ansible.builtin.file:
     path: "/var/lib/freight/.ssh"
     state: "directory"
     owner: "freight"
     group: "freight"
 
 - name: "add authorized github key"
-  copy:
+  ansible.builtin.copy:
     dest: "/var/lib/freight/.ssh/authorized_keys"
     content: "{{ freight_ssh_pub_key }}"
     owner: "freight"
@@ -22,34 +22,34 @@
     mode: "0644"
 
 - name: "add apt key for freight"
-  apt_key:
+  ansible.builtin.apt_key:
     data: "{{ lookup('file', 'pubkey.gpg') }}"
     id: "30EBF4E73CCE63EEE124DD278E6DA8B4E158C569"
 
 - name: "add freight apt repository"
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb http://build.openvpn.net/debian/freight_team {{ ansible_lsb.codename }} main"
 
 - name: "ensure freight is installed and manageable"
-  apt:
+  ansible.builtin.apt:
     name:
       - "freight"
   tags:
     - "packages"
 
 - name: "copy nginx template"
-  template:
+  ansible.builtin.template:
     src: "nginx.conf.j2"
     dest: "/etc/nginx/sites-available/packages.{{ canonical_hostname }}.conf"
 
 - name: "symlink nginx template"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/packages.{{ canonical_hostname }}.conf"
     dest: "/etc/nginx/sites-enabled/packages.{{ canonical_hostname }}.conf"
     state: "link"
 
 - name: "request tls certificates"
-  command: >-
+  ansible.builtin.command: >-
     certbot certonly
     --non-interactive
     --agree-tos

@@ -1,10 +1,10 @@
 ---
 - name: "install pipenv"
-  pip:
+  ansible.builtin.pip:
     name: "pipenv"
 
 - name: "ensure crazy88bot user exists"
-  user:
+  ansible.builtin.user:
     name: "crazy88bot"
     shell: "/usr/sbin/nologin"
     home: "/var/www/crazy88bot"
@@ -12,18 +12,18 @@
 
 - block:
   - name: "ensure intro-bot has a ssh directory"
-    file:
+    ansible.builtin.file:
       path: "~/.ssh"
       state: "directory"
 
   - name: "copy deploy key for private projects on GitHub"
-    copy:
+    ansible.builtin.copy:
       content: "{{ secret_deploy_key }}"
       dest: "/var/www/crazy88bot/.ssh/id_ed25519"
       mode: "0600"
 
   - name: "clone crazy88bot repository"
-    git:
+    ansible.builtin.git:
       repo: "git@github.com:svsticky/crazy88bot.git"
       dest: "/var/www/crazy88bot/crazy88bot"
       version: "master"
@@ -32,7 +32,7 @@
     notify: "restart crazy88bot"
 
   - name: "pipenv create virtual env and install crazy88bot"
-    command: "pipenv sync"
+    ansible.builtin.command: "pipenv sync"
     args:
       chdir: "/var/www/crazy88bot/crazy88bot"
     when: "crazy88_bot_clone is changed"
@@ -41,12 +41,12 @@
   become_user: "crazy88bot"
 
 - name: "copy systemd service of intro-bots"
-  template:
+  ansible.builtin.template:
     src: "crazy88bot.service.j2"
     dest: "/etc/systemd/system/crazy88bot.service"
 
 - name: "run crazy88bot service"
-  systemd:
+  ansible.builtin.systemd:
     unit: "crazy88bot.service"
     state: "started"
     enabled: true

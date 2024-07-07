@@ -4,7 +4,7 @@
   # when: "_outline_checkout is changed
   #     or _outline_service_file is changed
   #     or _outline_env_file is changed"
-  systemd:
+  ansible.builtin.systemd:
     name: "outline.service"
     state: "restarted"
     daemon_reload: true

@@ -1,26 +1,26 @@
 ---
 - name: "test nginx configuration"
-  command: "nginx -t"
+  ansible.builtin.command: "nginx -t"
   listen: "reload nginx"
 
 - name: "reload nginx service"
-  service:
+  ansible.builtin.service:
     name: "nginx"
     state: "reloaded"
   listen: "reload nginx"
 
 - name: "systemctl daemon-reload"
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: "issue reboot command"
-  shell: "sleep 2 && /sbin/reboot"
+  ansible.builtin.shell: "sleep 2 && /sbin/reboot"
   async: 60
   poll: 0
   ignore_errors: true
   listen: "reboot server"
 
 - name: "wait for server to finish rebooting"
-  wait_for_connection:
+  ansible.builtin.wait_for_connection:
     delay: 20
   listen: "reboot server"

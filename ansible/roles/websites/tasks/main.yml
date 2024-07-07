@@ -3,7 +3,7 @@
 # This task is used for websites which use the default nginx config, and need
 # its webroot to be created.
 - name: "create directories for regular websites"
-  file:
+  ansible.builtin.file:
     path:
       "/var/www/{% if item.user is defined %}{{ item.user }}/{% endif %}{{
       item.name }}"
@@ -20,7 +20,7 @@
     label: "{{ item.name }}"
 
 - name: "copy nginx configurations for regular websites"
-  template:
+  ansible.builtin.template:
     src: "website.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
   with_items: "{{ websites }}"
@@ -33,7 +33,7 @@
     label: "{{ item.name }}"
 
 - name: "enable regular nginx configurations"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ item.name }}.conf"
     path: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
     state: "link"
@@ -47,7 +47,7 @@
     label: "{{ item.name }}"
 
 - name: "copy custom nginx configurations"
-  template:
+  ansible.builtin.template:
     src: "{{ item.src }}.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item.dest }}.conf"
   with_items:
@@ -64,7 +64,7 @@
     label: "{{ item.dest }}"
 
 - name: "enable custom nginx configurations"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ item }}.conf"
     path: "/etc/nginx/sites-enabled/{{ item }}.conf"
     state: "link"
@@ -76,7 +76,7 @@
   notify: "reload nginx"
 
 - name: "delete nginx configuration (sites-enabled) of absent websites"
-  file:
+  ansible.builtin.file:
     path: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
     state: "absent"
   with_items: "{{ websites }}"
@@ -84,7 +84,7 @@
   notify: "reload nginx"
 
 - name: "delete nginx configuration (sites-available) of absent websites"
-  file:
+  ansible.builtin.file:
     path: "/etc/nginx/sites-available/{{ item.name }}.conf"
     state: "absent"
   with_items: "{{ websites }}"

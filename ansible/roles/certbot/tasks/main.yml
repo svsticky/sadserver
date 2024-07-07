@@ -1,13 +1,13 @@
 ---
 
 - name: "install certbot"
-  apt:
+  ansible.builtin.apt:
     name: "certbot"
     state: "latest"
 
 # This directory will be used to validate all websites that need a certificate
 - name: "create acme-challenges directory"
-  file:
+  ansible.builtin.file:
     path: "/var/www/acme-challenges"
     state: "directory"
     owner: "root"
@@ -17,7 +17,7 @@
     mode: "2750"
 
 - name: "create folders for certbot renewal override"
-  file:
+  ansible.builtin.file:
     path: "/etc/systemd/system/{{ item }}"
     state: "directory"
   with_items:
@@ -25,13 +25,13 @@
     - "certbot.timer.d"
 
 - name: "place onfailure override"
-  template:
+  ansible.builtin.template:
     src: "onfailure.conf.j2"
     dest: "/etc/systemd/system/certbot.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 
 - name: "override parameters of certbot's renewal service+timer"
-  template:
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}"
   with_items:
@@ -40,7 +40,7 @@
   notify: "systemctl daemon-reload"
 
 - name: "make sure nginx is reloaded if needed"
-  meta: "flush_handlers"
+  ansible.builtin.meta: "flush_handlers"
 
 - name: "request certificates"
   # --non-interactive makes sure command never waits for user input
@@ -52,7 +52,7 @@
   # hostnames as SAN's
   # --deploy-hook reloads nginx after a successful issuance, and adds this in
   # the renewal configuration of the certificate
-  command: >-
+  ansible.builtin.command: >-
     certbot certonly
     --non-interactive
     --agree-tos
@@ -76,7 +76,7 @@
     label: "{{ item.name }}"
 
 - name: "ensure certbot timer is started"
-  service:
+  ansible.builtin.service:
     name: "certbot.timer"
     enabled: true
     state: "started"

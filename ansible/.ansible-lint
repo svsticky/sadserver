@@ -10,6 +10,8 @@ skip_list:
   - ignore-errors
   # TODO: This should be solved sometime, but this gives too many warnings (84) to fix at once.
   - risky-file-permissions
+  # We always use lower case, and its too late now to turn back
+  - name[casing]
 
 exclude_paths:
   - playbooks/

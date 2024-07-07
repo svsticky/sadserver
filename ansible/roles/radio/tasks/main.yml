@@ -53,7 +53,7 @@
       dest: "/var/www/radio/.nvm"
       depth: 1
       # branch name
-      version: main 
+      version: main
     diff: false
     when: "radio_clone is changed"
 

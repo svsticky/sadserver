@@ -1,13 +1,13 @@
 ---
 - name: "create user for digidecs"
-  user:
+  ansible.builtin.user:
     name: "digidecs"
     home: "/var/www/digidecs/"
     shell: "/usr/sbin/nologin"
     system: true
 
 - name: "install composer"
-  apt:
+  ansible.builtin.apt:
     name:
       - "composer"
       - "php7.4-curl"
@@ -16,17 +16,17 @@
   become: true
 
 - name: "disable git safe directory feature for digidecs folder" # noqa command-instead-of-module
-  command: "git config --global --add safe.directory /var/www/digidecs.{{ canonical_hostname }}"
+  ansible.builtin.command: "git config --global --add safe.directory /var/www/digidecs.{{ canonical_hostname }}"
 
 - name: "clone digidecs repository"
-  git:
+  ansible.builtin.git:
     repo: "https://github.com/svsticky/digidecs.git"
     dest: "/var/www/digidecs.{{ canonical_hostname }}"
     version: "master"
   diff: false
 
 - name: "place config file"
-  template:
+  ansible.builtin.template:
     src: "config.php.j2"
     dest: "/var/www/digidecs.{{ canonical_hostname }}/config.php"
     owner: "digidecs"
@@ -34,25 +34,25 @@
     mode: "660"
 
 - name: "copy nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "digidecs.conf.j2"
     dest: "/etc/nginx/sites-available/digidecs.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx configuration"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/digidecs.{{ canonical_hostname }}.conf"
     path: "/etc/nginx/sites-enabled/digidecs.{{ canonical_hostname }}.conf"
     state: "link"
   notify: "reload nginx"
 
 - name: "run composer"
-  composer:
+  community.general.composer:
     working_dir: "/var/www/digidecs.{{ canonical_hostname }}"
     command: "install"
 
 - name: "set permissions on digidecs files"
-  file:
+  ansible.builtin.file:
     path: "/var/www/digidecs.{{ canonical_hostname }}"
     owner: "digidecs"
     group: "digidecs"

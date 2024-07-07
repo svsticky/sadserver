@@ -1,6 +1,6 @@
 ---
 - name: "create user for static-sticky"
-  user:
+  ansible.builtin.user:
     name: "static-sticky"
     home: "/var/www/static-sticky"
     shell: "/usr/sbin/nologin"
@@ -8,7 +8,7 @@
     state: "present"
 
 - name: "create static-sticky directory"
-  file:
+  ansible.builtin.file:
     path: "/var/www/static-sticky/static-sticky"
     owner: "static-sticky"
     group: "static-sticky"
@@ -16,12 +16,12 @@
     state: "directory"
 
 - name: "copy systemd service for deploying static-sticky"
-  copy:
+  ansible.builtin.copy:
     src: "deploy-static-sticky.service"
     dest: "/etc/systemd/system/deploy-static-sticky.service"
 
 - name: "copy deploy script"
-  template:
+  ansible.builtin.template:
     src: "deploy-static-sticky.sh.j2"
     dest: "/usr/local/bin/deploy-static-sticky.sh"
     mode: "0755"
@@ -29,39 +29,39 @@
 - name:
     "install systemd-journal-remote for accessing static-sticky's deploy logs
     remotely and awscli to fetch the builds from s3"
-  apt:
+  ansible.builtin.apt:
     name:
       - "systemd-journal-remote"
       - "awscli"
     state: "present"
 
 - name: "start and enable systemd-journal-gatewayd"
-  systemd:
+  ansible.builtin.systemd:
     name: "systemd-journal-gatewayd"
     enabled: true
     state: "started"
 
 - block:
   - name: "create build directory"
-    file:
+    ansible.builtin.file:
       path: "/var/www/static-sticky/build"
       state: "directory"
 
   become_user: "static-sticky"
 
 - name: "run deploy"
-  systemd:
+  ansible.builtin.systemd:
     name: "deploy-static-sticky.service"
     state: "started"
 
 - name: "copy nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "svsticky.conf.j2"
     dest: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx configuration"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
     path: "/etc/nginx/sites-enabled/{{ canonical_hostname }}.conf"
     state: "link"

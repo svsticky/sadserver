@@ -1,25 +1,25 @@
 ---
 - name: "install fail2ban"
-  apt:
+  ansible.builtin.apt:
     name: "fail2ban"
     state: "present"
 
 - name: "flush handlers so the files exist that fail2ban monitors"
-  meta: "flush_handlers"
+  ansible.builtin.meta: "flush_handlers"
 
 - name: "create directory for onfailure override for fail2ban service"
-  file:
+  ansible.builtin.file:
     path: "/etc/systemd/system/fail2ban.service.d"
     state: "directory"
 
 - name: "copy onfailure override for fail2ban service"
-  template:
+  ansible.builtin.template:
     src: "onfailure.conf.j2"
     dest: "/etc/systemd/system/fail2ban.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 
 - name: "configure fail2ban"
-  template:
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "/etc/fail2ban/{{ item }}"
   loop:
@@ -30,7 +30,7 @@
   notify: "restart fail2ban"
 
 - name: "start and enable fail2ban"
-  service:
+  ansible.builtin.service:
     name: "fail2ban"
     state: "started"
     enabled: true

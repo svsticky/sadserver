@@ -1,13 +1,13 @@
 ---
 # Needed because of Ansible issue #25414
 - name: "check if unattended-upgrades is not in progress"
-  shell:
+  ansible.builtin.shell:
     "while fuser /var/lib/dpkg/lock; do sleep 1; done;"
   become: true
   changed_when: false
 
 - name: "install common utilities"
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     name:
       - "aptitude"
@@ -22,18 +22,18 @@
     state: "present"
 
 - name: "update all packages"
-  apt:
+  ansible.builtin.apt:
     upgrade: "yes"
     update_cache: true
     cache_valid_time: 100
 
 - name: "set apt unattended-upgrades settings"
-  template:
+  ansible.builtin.template:
     src: "50unattended-upgrades.j2"
     dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
 
 - name: "configure unattended-upgrades"
-  file:
+  ansible.builtin.file:
     path: "/etc/systemd/system/{{ item }}"
     state: "absent"
   with_items:
@@ -46,21 +46,21 @@
 # Replaces email.
 # Only ensure repository is cloned, don't update yet
 - name: "clone repository of slacktee"
-  git:
+  ansible.builtin.git:
     repo: "{{ slacktee.repo }}"
     dest: "{{ slacktee.install_path }}"
     update: false
   diff: false
 
 - name: "retrieve all version numbers of slacktee" # noqa command-instead-of-module
-  command: "git fetch --tags"
+  ansible.builtin.command: "git fetch --tags"
   args:
     chdir: "{{ slacktee.install_path }}"
   register: "slacktee_fetch"
   changed_when: slacktee_fetch.stdout != ""
 
 - name: "determine latest version number of slacktee" # noqa command-instead-of-module
-  shell: "git describe --tags $(git rev-list --tags --max-count=1)"
+  ansible.builtin.shell: "git describe --tags $(git rev-list --tags --max-count=1)"
   args:
     chdir: "{{ slacktee.install_path }}"
   register: "slacktee_version"
@@ -71,7 +71,7 @@
 # which will fail in check mode
 - block:
   - name: "install newest release of slacktee"
-    git:
+    ansible.builtin.git:
       repo: "{{ slacktee.repo }}"
       dest: "{{ slacktee.install_path }}"
       version: "v1.5.1"
@@ -81,7 +81,7 @@
   when: not ansible_check_mode
 
 - name: "create symlink to slacktee in $PATH"
-  file:
+  ansible.builtin.file:
     src: "{{ slacktee.install_path }}/{{ filename }}.sh"
     path: "/usr/local/bin/{{ filename }}"
     state: "link"
@@ -89,6 +89,6 @@
     filename: "slacktee"
 
 - name: "configure slacktee"
-  template:
+  ansible.builtin.template:
     src: "slacktee.conf"
     dest: "/etc/slacktee.conf"

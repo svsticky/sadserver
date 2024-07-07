@@ -1,13 +1,15 @@
 ---
-- hosts: "all"
+- name: "sadserver main playbook"
+  hosts: "all"
   remote_user: "ansible"
   become: true
   become_user: "root"
-  become_method: "sudo"
+  become_method: "ansible.builtin.sudo"
   force_handlers: true
 
   handlers:
-    - import_tasks: "handlers/main.yml"
+    - name: "Common tasks for main"
+      ansible.builtin.import_tasks: "handlers/main.yml"
 
   roles:
     - role: "common"

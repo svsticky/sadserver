@@ -1,33 +1,33 @@
 ---
 
 - name: "add aas user"
-  user:
+  ansible.builtin.user:
     name: "aas"
     shell: "/usr/sbin/nologin"
     home: "/var/www/aas"
     system: true
 
 - name: "permit aas user to start static-sticky deploy service"
-  template:
+  ansible.builtin.template:
     src: "sudoers.j2"
     dest: "/etc/sudoers.d/aas"
     mode: "0440"
     validate: "/usr/sbin/visudo -cf %s"
 
 - name: "add cachix cache"
-  command: "cachix use svsticky-aas"
+  ansible.builtin.command: "cachix use svsticky-aas"
 
 - name: "fetch the aas binaries"
-  command:
+  ansible.builtin.command:
     cmd: "nix-store --realize --add-root /nix/var/nix/gcroots/aas-env {{ secret_aas.nix_pin }}"
 
 - name: "ensure config directory exists"
-  file:
+  ansible.builtin.file:
     path: "/etc/aas"
     state: "directory"
 
 - name: "create environment file"
-  template:
+  ansible.builtin.template:
     src: ".env.j2"
     dest: "/etc/aas/.env"
     owner: "root"
@@ -35,13 +35,13 @@
   notify: "restart aas"
 
 - name: "copy nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "aas.conf.j2"
     dest: "/etc/nginx/sites-available/aas.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable nginx configuration"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/aas.{{ canonical_hostname }}.conf"
     path: "/etc/nginx/sites-enabled/aas.{{ canonical_hostname }}.conf"
     state: "link"
@@ -49,13 +49,13 @@
 
 - name:
     "copy systemd service of aas"
-  template:
+  ansible.builtin.template:
     src: "aas.service.j2"
     dest: "/etc/systemd/system/aas.service"
   notify: "restart aas"
 
 - name: "run aas service"
-  systemd:
+  ansible.builtin.systemd:
     unit: "aas.service"
     state: "started"
     enabled: true

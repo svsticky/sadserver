@@ -1,6 +1,6 @@
 ---
 - name: "copy koala logrotate config"
-  template:
+  ansible.builtin.template:
     src: "koala.conf.j2"
     dest: "/etc/logrotate.d/koala"
     owner: "root"

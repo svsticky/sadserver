@@ -1,5 +1,5 @@
 ---
 - name: "restart redis"
-  service:
+  ansible.builtin.service:
     name: "redis-server"
     state: "restarted"

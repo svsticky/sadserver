@@ -1,34 +1,34 @@
 ---
 - name: "install php-fpm"
-  apt:
+  ansible.builtin.apt:
     name: "php-fpm"
     state: "present"
 
 - name: "create directories for onfailure overrides for php-fpm"
-  file:
+  ansible.builtin.file:
     path: "/etc/systemd/system/php7.4-fpm.service.d"
     state: "directory"
 
 - name: "copy onfailure override for php-fpm"
-  template:
+  ansible.builtin.template:
     src: "onfailure.conf.j2"
     dest: "/etc/systemd/system/php7.4-fpm.service.d/onfailure.conf"
   notify: "systemctl daemon-reload"
 
 - name: "copy general configuration for php"
-  template:
+  ansible.builtin.template:
     src: "php.ini.j2"
     dest: "/etc/php/7.4/fpm/php.ini"
   notify: "reload php"
 
 - name: "delete default php-fpm pool"
-  file:
+  ansible.builtin.file:
     path: "/etc/php/7.4/fpm/pool.d/www.conf"
     state: "absent"
   notify: "reload php"
 
 - name: "template php-fpm pool configurations"
-  template:
+  ansible.builtin.template:
     src: "pool-template.conf.j2"
     dest: "/etc/php/7.4/fpm/pool.d/pool-{{ item.name }}.conf"
   loop:

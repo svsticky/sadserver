@@ -1,6 +1,6 @@
 ---
 - name: "check if doorgeefluik is running"
-  systemd:
+  ansible.builtin.systemd:
     name: "doorgeefluik.service"
     state: "started"
   check_mode: true
@@ -8,7 +8,7 @@
   listen: "restart doorgeefluik"
 
 - name: "restart doorgeefluik service"
-  service:
+  ansible.builtin.service:
     name: "doorgeefluik"
     state: "restarted"
   when: "doorgeefluik_running is not changed"

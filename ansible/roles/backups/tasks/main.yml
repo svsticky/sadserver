@@ -1,18 +1,18 @@
 ---
 - name: "add backup user"
-  user:
+  ansible.builtin.user:
     name: "backup"
     shell: "/usr/sbin/nologin"
     home: "/home/backup"
     system: true
 
 - name: "install awscli"
-  apt:
+  ansible.builtin.apt:
     name: "awscli"
     state: "present"
 
 - name: "ensure aws cli configuration folders are present"
-  file:
+  ansible.builtin.file:
     path: "{{ item.path }}/.aws"
     owner: "{{ item.owner }}"
     group: "{{ item.owner }}"
@@ -24,26 +24,26 @@
       owner: "root"
 
 - name: "ensure aws cli configuration is present"
-  template:
+  ansible.builtin.template:
     src: "config.j2"
     dest: "/home/ansible/.aws/config"
     mode: "600"
   become: false
 
 - name: "ensure aws cli configuration is linked for root user"
-  file:
+  ansible.builtin.file:
     src: "/home/ansible/.aws/config"
     path: "/root/.aws/config"
     state: "link"
 
 - name: "ensure aws cli script is present, with correct permissions"
-  template:
+  ansible.builtin.template:
     src: "backup-to-s3.sh.j2"
     dest: "/usr/local/bin/backup-to-s3.sh"
     mode: "0700"
 
 - name: "ensure backup services and timers are present"
-  template:
+  ansible.builtin.template:
     src: "systemd/{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}"
   loop:
@@ -59,7 +59,7 @@
     - "systemctl daemon-reload"
 
 - name: "start and enable backup timers in production"
-  service:
+  ansible.builtin.service:
     name: "{{ item }}"
     enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
     state:

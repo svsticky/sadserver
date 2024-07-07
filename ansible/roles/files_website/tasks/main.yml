@@ -1,6 +1,6 @@
 ---
 - name: "create site root Fancy Index & theme dir"
-  file:
+  ansible.builtin.file:
     path: "/var/www/files.{{ canonical_hostname }}"
     owner: "www-data"
     group: "adm"
@@ -8,7 +8,7 @@
     state: "directory"
 
 - name: "create site root Fancy Index & theme dir"
-  file:
+  ansible.builtin.file:
     path: "/var/www/files.{{ canonical_hostname }}/theme"
     owner: "www-data"
     group: "www-data"
@@ -16,7 +16,7 @@
 
 # The theming generation can be found at https://github.com/svsticky/fancy-index
 - name: "copy Fancy Index theme"
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/var/www/files.{{ canonical_hostname }}/theme/{{ item }}"
     owner: "www-data"
@@ -28,13 +28,13 @@
     - "fa-brands-400.ttf"
 
 - name: "copy NGiNX site config Fancy Index"
-  template:
+  ansible.builtin.template:
     src: "files.conf.j2"
     dest: "/etc/nginx/sites-available/files.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
 - name: "enable NGiNX site config Fancy Index"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ filename }}"
     path: "/etc/nginx/sites-enabled/{{ filename }}"
     state: "link"

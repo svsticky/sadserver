@@ -1,7 +1,7 @@
 ---
 
 - name: "download latest release"
-  uri:
+  ansible.builtin.uri:
     url: "https://api.github.com/repos/svsticky/doorgeefluik/releases/latest"
     return_content: true
   register: "latest_doorgeefluik_release"
@@ -9,11 +9,11 @@
   check_mode: false
 
 - name: "Set variables"
-  set_fact:
+  ansible.builtin.set_fact:
     doorgeefluik_nix_path: "{{ lookup('url', latest_doorgeefluik_release.json.assets[0].browser_download_url) }}"
 
 - name: "Ensure doorgeefluik user exists"
-  user:
+  ansible.builtin.user:
     name: "doorgeefluik"
     state: "present"
     system: true
@@ -21,20 +21,20 @@
   notify: "restart doorgeefluik"
 
 - name: "ensure database user exists"
-  postgresql_user:
+  community.postgresql.postgresql_user:
     name: "doorgeefluik"
   become_user: "postgres"
   become: true
 
 - name: "ensure database exists"
-  postgresql_db:
+  community.postgresql.postgresql_db:
     name: "doorgeefluik"
     owner: "doorgeefluik"
   become_user: "postgres"
   become: true
 
 - name: "ensure database user has the right privileges"
-  postgresql_user:
+  community.postgresql.postgresql_user:
     db: "doorgeefluik"
     name: "doorgeefluik"
     priv: "ALL"
@@ -44,15 +44,15 @@
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: "add cachix cache"
-  command: "cachix use svsticky-doorgeefluik"
+  ansible.builtin.command: "cachix use svsticky-doorgeefluik"
 
 - name: "get the app from cachix"
-  command:
+  ansible.builtin.command:
     cmd: "nix-store --realize {{ doorgeefluik_nix_path }} --add-root ./deploy --indirect"
   become: true
 
 - name: "Run the migrations"
-  shell:
+  ansible.builtin.shell:
     cmd: "psql < {{ doorgeefluik_nix_path }}/lib/migrations/1637606752-initial-migration.sql"
   become: true
   become_user: "doorgeefluik"
@@ -60,27 +60,27 @@
 - name: "Run the seed script"
   environment:
     DATABASE_URL: "postgresql:///doorgeefluik"
-  command:
+  ansible.builtin.command:
     cmd: "{{ doorgeefluik_nix_path }}/bin/SeedDatabase"
   become: true
   become_user: "doorgeefluik"
 
 - name:
     "copy systemd service of doorgeefluik"
-  template:
+  ansible.builtin.template:
     src: "doorgeefluik.service.j2"
     dest: "/etc/systemd/system/doorgeefluik.service"
   notify: "restart doorgeefluik"
 
 - name: "run doorgeefluik service"
-  systemd:
+  ansible.builtin.systemd:
     unit: "doorgeefluik.service"
     state: "started"
     enabled: true
     daemon-reload: true
 
 - name: "place doorgeefluik's nginx configuration"
-  template:
+  ansible.builtin.template:
     src: "doorgeefluik.conf.j2"
     dest: "/etc/nginx/sites-available/{{ dest_filename }}"
   vars:
@@ -88,7 +88,7 @@
   notify: "reload nginx"
 
 - name: "enable doorgeefluik's nginx configuration"
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ filename }}"
     dest: "/etc/nginx/sites-enabled/{{ filename }}"
     state: "link"

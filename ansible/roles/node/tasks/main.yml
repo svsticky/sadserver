@@ -1,24 +1,24 @@
 ---
 - name: "add apt key for yarn repository"
-  apt_key:
+  ansible.builtin.apt_key:
     url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
     state: "present"
 
 - name: "add yarn repository"
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb https://dl.yarnpkg.com/debian/ stable main"
     state: "present"
 
 - name: "Add Nodesource repository key"
-  apt_key:
+  ansible.builtin.apt_key:
     url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
 
 - name: "Add Nodesource repository for NodeJS 14"
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb https://deb.nodesource.com/node_14.x {{ ansible_lsb.codename }} main"
 
 - name: "install Node.js and yarn"
-  apt:
+  ansible.builtin.apt:
     name:
       - "nodejs"
       - "yarn"

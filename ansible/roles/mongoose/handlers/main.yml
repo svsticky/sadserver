@@ -1,5 +1,5 @@
 ---
 - name: "restart mongoose"
-  service:
+  ansible.builtin.service:
     name: "mongoose"
     state: "restarted"

@@ -1,13 +1,13 @@
 ---
 - name: "restart oauth2-proxy"
-  systemd:
+  ansible.builtin.systemd:
     name: "oauth2-proxy"
     state: "restarted"
     daemon_reload: true
   listen: "restart oauth2-proxy"
 
 - name: "restart oauth2-proxy (admin)"
-  systemd:
+  ansible.builtin.systemd:
     name: "oauth2-proxy-admin"
     state: "restarted"
     daemon_reload: true

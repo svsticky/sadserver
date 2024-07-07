@@ -1,7 +1,7 @@
 ---
 
 - name: "run pretix migration and other post-upgrade tasks"
-  command: "/var/www/pretix/venv/bin/python -m pretix {{ item }}"
+  ansible.builtin.command: "/var/www/pretix/venv/bin/python -m pretix {{ item }}"
   with_items:
     - "migrate"
     - "rebuild"
@@ -11,7 +11,7 @@
   listen: "pretix post-upgrade"
 
 - name: "ensure pretix is restarted if needed"
-  service:
+  ansible.builtin.service:
     name: "{{ item }}"
     state: "restarted"
   with_items:

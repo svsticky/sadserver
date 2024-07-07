@@ -25,4 +25,4 @@ jobs:
         run: (cd ansible; nix-shell --run "mypy deploy.py --strict")
 
       - name: "Lint our ansible files"
-        run: (cd ansible; nix-shell --run "ansible-lint --exclude=playbooks")
+        run: (cd ansible; nix-shell --run "ansible-lint")

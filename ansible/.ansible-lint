@@ -10,3 +10,6 @@ skip_list:
   - ignore-errors
   # TODO: This should be solved sometime, but this gives too many warnings (84) to fix at once.
   - risky-file-permissions
+
+exclude_paths:
+  - playbooks/

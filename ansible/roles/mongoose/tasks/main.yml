@@ -35,12 +35,19 @@
       name: "mongoose"
       owner: "mongoose"
 
-  - name: "ensure mongoose database exists"
+  - name: "ensure mongoose role exists"
     community.postgresql.postgresql_user:
       db: "mongoose"
       name: "mongoose"
-      priv: "ALL"
       role_attr_flags: "CREATEDB,LOGIN"
+
+  - name: "ensure mongoose database privileges are set properly"
+    ignore_errors: "{{ ansible_check_mode }}"
+    community.postgresql.postgresql_privs:
+      db: "mongoose"
+      role: "mongoose"
+      type: "database"
+      privs: "ALL"
 
 - name: "set up mongoose repo"
   become_user: "mongoose"

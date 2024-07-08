@@ -27,7 +27,11 @@
     - "restart koala"
 
 
-- block:
+- name: "set up koala"
+  become_user: "koala"
+  become: true
+  block:
+
   - name: "place koala OIDC signing key"
     ansible.builtin.copy:
       dest: "~/oidc_signing_key.pem"
@@ -54,16 +58,13 @@
       dest: "/var/www/koala.{{ canonical_hostname }}"
       version: "{{ koala_env.git_ref }}"
     diff: false
-    register: "koala_checkout_result"
     check_mode: true
+    notify:
+      - "clone koala"
+      - "trigger migration"
 
-  - name: "create marker file to trigger migration"
-    ansible.builtin.file:
-      path: "/home/koala/.KOALA_MIGRATION_PENDING"
-      state: "touch"
-      owner: "koala"
-      group: "koala"
-    when: "koala_checkout_result.changed"
+  - name: "process handlers before continuing"
+    ansible.builtin.meta: flush_handlers
 
   - name: "check if migration marker file exists"
     ansible.builtin.stat:
@@ -79,8 +80,8 @@
       koala_updated: "{{ koala_update_marker.stat.exists }}"
 
   - name: "ensure koala's recurring services+timers are present"
-    become: true
     become_user: "root"
+    become: true
     ansible.builtin.template:
       src: "systemd/{{ item }}.j2"
       dest: "/etc/systemd/system/{{ item }}"
@@ -102,15 +103,6 @@
   - name: "start process of enabling koala's maintenance mode"
     ansible.builtin.include_tasks: "maintenance-on.yml"
     when: koala_updated
-
-  - name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
-    ansible.builtin.git:
-      repo: "git@github.com:svsticky/constipated-koala.git"
-      dest: "/var/www/koala.{{ canonical_hostname }}"
-      version: "{{ koala_env.git_ref }}"
-    diff: false
-    when: koala_checkout_result.changed
-    notify: "restart sidekiq"
 
   - name: "ensure tmp directory exist (for nix-shell)"
     ansible.builtin.file:
@@ -152,12 +144,18 @@
       mode: "0775"
     notify: "restart koala"
 
-  - block:
+  - name: "set up database and precompile assets"
+    become_user: "koala"
+    become: true
+    when: koala_updated
+    block:
+
       - name: "make pre-upgrade database backup to S3"
+        become_user: "root"
+        become: true
         ansible.builtin.systemd:
           name: "backup-postgres.service"
           state: "started"
-        become_user: "root"
 
       - name: "check whether the database exists"
         ansible.builtin.shell: nix-shell --run 'dotenv rails db:version'
@@ -185,23 +183,19 @@
         when: "database_exists"
 
       - name: "ensure assets are precompiled"
-        ansible.builtin.shell: nix-shell --run 'dotenv rails assets:precompile'
+        ansible.builtin.command: nix-shell --run 'dotenv rails assets:precompile'
         args:
           chdir: "/var/www/koala.{{ canonical_hostname }}"
-
-    when: koala_updated
-    become: true
-    become_user: "koala"
 
   - name: "add credentials for oauth application"
     ansible.builtin.command: nix-shell --run 'dotenv rails oauthproxy:create_application'
     args:
       chdir: "/var/www/koala.{{ canonical_hostname }}"
 
-  become: true
-  become_user: "koala"
+- name: "set up koala's nginx"
+  when: koala_config.server == "unicorn"
+  block:
 
-- block:
   - name: "place koala's nginx configuration"
     ansible.builtin.template:
       src: "nginx.conf.j2"
@@ -216,8 +210,6 @@
     vars:
       filename: "koala.{{ canonical_hostname }}.conf"
     notify: "reload nginx"
-
-  when: koala.server == "unicorn"
 
 
 - name: "flush handlers"

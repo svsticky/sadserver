@@ -1,0 +1,36 @@
+---
+- name: "clone NVM"
+  listen: "radio repo updated"
+  become_user: "radio"
+  become: true
+  ansible.builtin.git:
+    repo: "https://github.com/nvm-sh/nvmrc.git"
+    dest: "/var/www/radio/.nvm"
+    depth: 1
+    # branch name
+    version: main
+  diff: false
+
+- name: "install node version"
+  listen: "radio repo updated"
+  become_user: "radio"
+  become: true
+  ansible.builtin.shell: |
+    source /var/www/radio/.nvm/nvm.sh
+    nvm install
+  args:
+    chdir: "/var/www/radio/radio"
+    executable: "/bin/bash"
+  notify: "radio node version changed"
+
+- name: "run npm rebuild if needed"
+  listen: "radio node version changed"
+  become_user: "radio"
+  become: true
+  ansible.builtin.shell: |
+    source /var/www/radio/.nvm/nvm.sh
+    nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
+    npm rebuild
+  args:
+    chdir: "/var/www/radio/radio"
+    executable: "/bin/bash"

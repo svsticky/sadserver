@@ -51,6 +51,7 @@
 
 - name: "perform stuff as `symposium`"
   become_user: "symposium"
+  become: true
   block:
     - name: "clone website's repository"
       ansible.builtin.git:

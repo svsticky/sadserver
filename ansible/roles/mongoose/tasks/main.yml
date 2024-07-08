@@ -21,7 +21,11 @@
     state: "link"
   notify: "reload nginx"
 
-- block:
+- name: "set up postgres for mongoose"
+  become_user: "postgres"
+  become: true
+  block:
+
   - name: "ensure mongoose user exists"
     community.postgresql.postgresql_user:
       name: "mongoose"
@@ -38,9 +42,11 @@
       priv: "ALL"
       role_attr_flags: "CREATEDB,LOGIN"
 
-  become_user: "postgres"
+- name: "set up mongoose repo"
+  become_user: "mongoose"
+  become: true
+  block:
 
-- block:
   - name: "ensure mongoose has a ssh directory"
     ansible.builtin.file:
       path: "~/.ssh"
@@ -52,8 +58,7 @@
       dest: "/var/www/mongoose/.ssh/id_ed25519"
       mode: "0600"
 
-  - name:
-      "clone mongoose repository"
+  - name: "clone mongoose repository"
     ansible.builtin.git:
       repo: "git@github.com:svsticky/undead-mongoose"
       dest: "/var/www/mongoose/undead-mongoose"
@@ -61,26 +66,16 @@
       force: true
       version: "master"
     diff: false
-    register: "mongoose_clone"
-    notify: "restart mongoose"
+    notify:
+      - "restart mongoose"
+      - "run migrations"
 
-  - name:
-      "template environment file for mongoose"
+  - name: "template environment file for mongoose"
     ansible.builtin.template:
       src: ".env.j2"
       dest: "/var/www/mongoose/undead-mongoose/.env"
     diff: false
     notify: "restart mongoose"
-
-  - name:
-      "run migrations"
-    ansible.builtin.command: "/nix/var/nix/profiles/default/bin/nix-shell --run 'dotenv ./manage.py migrate'"
-    args:
-      chdir: "/var/www/mongoose/undead-mongoose"
-    when: "mongoose_clone is changed"
-    notify: "restart mongoose"
-
-  become_user: "mongoose"
 
 - name: "template systemd service file for mongoose"
   ansible.builtin.template:

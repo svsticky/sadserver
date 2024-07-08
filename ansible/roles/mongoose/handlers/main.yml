@@ -3,3 +3,12 @@
   ansible.builtin.service:
     name: "mongoose"
     state: "restarted"
+
+- name: "run migrations"
+  become_user: "mongoose"
+  become: true
+  ansible.builtin.command: "/nix/var/nix/profiles/default/bin/nix-shell --run 'dotenv ./manage.py migrate'"
+  args:
+    chdir: "/var/www/mongoose/undead-mongoose"
+  listen: "run migrations"
+  notify: "restart mongoose"

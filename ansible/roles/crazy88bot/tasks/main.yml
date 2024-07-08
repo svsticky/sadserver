@@ -10,7 +10,11 @@
     home: "/var/www/crazy88bot"
     system: true
 
-- block:
+- name: "set up crazy88bot"
+  become_user: "crazy88bot"
+  become: true
+  block:
+
   - name: "ensure intro-bot has a ssh directory"
     ansible.builtin.file:
       path: "~/.ssh"
@@ -28,17 +32,12 @@
       dest: "/var/www/crazy88bot/crazy88bot"
       version: "master"
     diff: false
-    register: "crazy88_bot_clone"
-    notify: "restart crazy88bot"
+    notify: # Only call when there was a git update (or fresh clone)
+      - "pipenv create virtual env and install crazy88bot"
+      - "restart crazy88bot"
 
-  - name: "pipenv create virtual env and install crazy88bot"
-    ansible.builtin.command: "pipenv sync"
-    args:
-      chdir: "/var/www/crazy88bot/crazy88bot"
-    when: "crazy88_bot_clone is changed"
-    notify: "restart crazy88bot"
-
-  become_user: "crazy88bot"
+- name: "flush handlers before starting crazy88bot"
+  ansible.builtin.meta: flush_handlers
 
 - name: "copy systemd service of intro-bots"
   ansible.builtin.template:

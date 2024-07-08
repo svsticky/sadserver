@@ -28,9 +28,11 @@
     mode: "2775"
     state: "directory"
 
-- block:
-  - name:
-      "clone radio repository"
+- name: "set up radio"
+  become_user: "radio"
+  become: true
+  block:
+  - name: "clone radio repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/radio.git"
       dest: "/var/www/radio/radio"
@@ -38,44 +40,16 @@
       force: true
       version: "master"
     diff: false
-    register: "radio_clone"
+    notify: "radio repo updated"
 
-  - name:
-      "template environment file for radio"
+  - name: "template environment file for radio"
     ansible.builtin.template:
       src: ".env.j2"
       dest: "/var/www/radio/radio/.env"
     diff: false
 
-  - name: "clone NVM"
-    ansible.builtin.git:
-      repo: "https://github.com/nvm-sh/nvmrc.git"
-      dest: "/var/www/radio/.nvm"
-      depth: 1
-      # branch name
-      version: main
-    diff: false
-    when: "radio_clone is changed"
-
-  - name: "install node version"
-    ansible.builtin.shell: |
-      source /var/www/radio/.nvm/nvm.sh
-      nvm install
-    args:
-      chdir: "/var/www/radio/radio"
-      executable: "/bin/bash"
-    when: "radio_clone is changed"
-    register: "install_node_version"
-
-  - name: "run npm rebuild if needed"
-    ansible.builtin.shell: |
-      source /var/www/radio/.nvm/nvm.sh
-      nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
-      npm rebuild
-    args:
-      chdir: "/var/www/radio/radio"
-      executable: "/bin/bash"
-    when: "install_node_version is changed"
+  - name: "ensure packages, node and nvm are up to date"
+    ansible.builtin.meta: flush_handlers
 
   - name: "run npm install"
     ansible.builtin.shell: |
@@ -109,5 +83,3 @@
       perms: false
       times: false
     delegate_to: "{{ inventory_hostname }}"
-
-  become_user: "radio"

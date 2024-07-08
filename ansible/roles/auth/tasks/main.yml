@@ -116,7 +116,10 @@
     state: "absent"
 
 # The bootstrap playbook adds the SSH keys (as added by DO), to the ansible
-# user. Afterwards, they are re-added and managed by Ansible itself, so the old
+# user. It does this by first reading the relevant parts of
+# ~/.ssh/authorized_keys into an Ansible variable (for later usage), to then
+# append the file with the SSH keys.
+# Because the keys are re-added and managed by Ansible itself, the old
 # duplicates must be deleted once.
 - name: "gather public SSH keys for ansible user"
   become: false
@@ -127,6 +130,8 @@
       "sed -n '/# BEGIN SSH key/,$p' ~/.ssh/authorized_keys"
     register: "ansible_user_public_keys"
     changed_when: false
+    tags:
+      - skip_ansible_lint # Reason: the linter complains about using a shell, while the proposed alternatives do not do the same
     check_mode: false
 
   - name:

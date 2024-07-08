@@ -1,8 +1,8 @@
 ---
-unattended_upgrades:
+packages_unattended_upgrades:
   security: true
   all: true
 
-slacktee:
+packages_slacktee:
   repo: "https://github.com/course-hero/slacktee.git"
   install_path: "/usr/local/src/slacktee"

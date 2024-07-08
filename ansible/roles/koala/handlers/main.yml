@@ -19,3 +19,24 @@
     name: "sidekiq"
     state: "restarted"
   listen: "restart sidekiq"
+
+- name: "clone koala to /var/www/koala.{{ canonical_hostname }}"
+  become_user: "koala"
+  become: true
+  ansible.builtin.git:
+    repo: "git@github.com:svsticky/constipated-koala.git"
+    dest: "/var/www/koala.{{ canonical_hostname }}"
+    version: "{{ koala_env.git_ref }}"
+  diff: false
+  listen: "clone koala"
+  notify: "restart sidekiq"
+
+- name: "create marker file to trigger migration"
+  become_user: "koala"
+  become: true
+  ansible.builtin.file:
+    path: "/home/koala/.KOALA_MIGRATION_PENDING"
+    state: "touch"
+    owner: "koala"
+    group: "koala"
+  listen: "trigger migration"

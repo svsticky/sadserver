@@ -1,15 +1,26 @@
 ---
-- name: "clone NVM"
+- name: "clone nvm"
   listen: "radio repo updated"
   become_user: "radio"
   become: true
   ansible.builtin.git:
-    repo: "https://github.com/nvm-sh/nvmrc.git"
+    repo: "https://github.com/nvm-sh/nvm.git"
     dest: "/var/www/radio/.nvm"
-    depth: 1
-    # branch name
-    version: main
+    recursive: false # cloning submodules fails, but they are purely for testing
   diff: false
+
+- name: "checkout latest nvm version" # based on nvm manual installation guide
+  listen: "radio repo updated"
+  become_user: "radio"
+  become: true
+  ansible.builtin.shell:
+    cmd: git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    chdir: "/var/www/radio/.nvm"
+    executable: "/bin/bash"
+  tags:
+    - skip_ansible_lint
+    # Reason: linter wants us to use the git module, but that can't do this
+    # complicated stuff
 
 - name: "install node version"
   listen: "radio repo updated"
@@ -17,7 +28,7 @@
   become: true
   ansible.builtin.shell: |
     source /var/www/radio/.nvm/nvm.sh
-    nvm install
+    nvm install $(cat /var/www/radio/radio/.nvmrc)
   args:
     chdir: "/var/www/radio/radio"
     executable: "/bin/bash"
@@ -29,7 +40,7 @@
   become: true
   ansible.builtin.shell: |
     source /var/www/radio/.nvm/nvm.sh
-    nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
+    nvm use
     npm rebuild
   args:
     chdir: "/var/www/radio/radio"

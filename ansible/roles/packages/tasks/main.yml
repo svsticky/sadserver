@@ -47,42 +47,44 @@
 # Only ensure repository is cloned, don't update yet
 - name: "clone repository of slacktee"
   ansible.builtin.git:
-    repo: "{{ slacktee.repo }}"
-    dest: "{{ slacktee.install_path }}"
+    repo: "{{ packages_slacktee.repo }}"
+    dest: "{{ packages_slacktee.install_path }}"
     update: false
   diff: false
 
 - name: "retrieve all version numbers of slacktee" # noqa command-instead-of-module
   ansible.builtin.command: "git fetch --tags"
   args:
-    chdir: "{{ slacktee.install_path }}"
+    chdir: "{{ packages_slacktee.install_path }}"
   register: "slacktee_fetch"
   changed_when: slacktee_fetch.stdout != ""
 
 - name: "determine latest version number of slacktee" # noqa command-instead-of-module
   ansible.builtin.shell: "git describe --tags $(git rev-list --tags --max-count=1)"
   args:
-    chdir: "{{ slacktee.install_path }}"
+    chdir: "{{ packages_slacktee.install_path }}"
   register: "slacktee_version"
   # The next task already shows if there is actually a change
   changed_when: false
 
 # Wrapped in block because otherwise templating is done before skipping task,
 # which will fail in check mode
-- block:
-  - name: "install newest release of slacktee"
-    ansible.builtin.git:
-      repo: "{{ slacktee.repo }}"
-      dest: "{{ slacktee.install_path }}"
-      version: "v1.5.1"
-    diff: false
+- name: "even more slacktree"
   # Don't run in check mode because previous "git fetch" task also can't be run
   # in check mode
   when: not ansible_check_mode
+  block:
+
+  - name: "install newest release of slacktee"
+    ansible.builtin.git:
+      repo: "{{ packages_slacktee.repo }}"
+      dest: "{{ packages_slacktee.install_path }}"
+      version: "v1.5.1"
+    diff: false
 
 - name: "create symlink to slacktee in $PATH"
   ansible.builtin.file:
-    src: "{{ slacktee.install_path }}/{{ filename }}.sh"
+    src: "{{ packages_slacktee.install_path }}/{{ filename }}.sh"
     path: "/usr/local/bin/{{ filename }}"
     state: "link"
   vars:

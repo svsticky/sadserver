@@ -1,5 +1,5 @@
 ---
-fail2ban:
+fail2ban_config:
   loglevel: "WARNING"
   ignoreip: "127.0.0.1/8 131.211.0.0/16"
   bantime: 600

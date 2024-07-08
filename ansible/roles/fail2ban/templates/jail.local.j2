@@ -2,20 +2,20 @@
 
 [DEFAULT]
 
-ignoreip = {{ fail2ban.ignoreip }}
-bantime  = {{ fail2ban.bantime }}
-maxretry = {{ fail2ban.maxretry }}
+ignoreip = {{ fail2ban_config.ignoreip }}
+bantime  = {{ fail2ban_config.bantime }}
+maxretry = {{ fail2ban_config.maxretry }}
 
 backend  = auto
 
-banaction = {{ fail2ban.banaction }}
+banaction = {{ fail2ban_config.banaction }}
 protocol = tcp
 chain = INPUT
 
 action_ = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
 
 action = %(action_)s
-{% for service in fail2ban.services %}
+{% for service in fail2ban_config.services %}
 
 [{{ service.name }}]
 

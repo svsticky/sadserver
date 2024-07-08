@@ -3,3 +3,11 @@
   ansible.builtin.systemd:
     unit: "crazy88bot.service"
     state: "restarted"
+
+- name: "pipenv create virtual env and install crazy88bot"
+  become_user: "crazy88"
+  become: true
+  ansible.builtin.command: "pipenv sync"
+  args:
+    chdir: "/var/www/crazy88bot/crazy88bot"
+  notify: "restart crazy88bot"

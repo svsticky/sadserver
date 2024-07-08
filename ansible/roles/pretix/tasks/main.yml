@@ -27,6 +27,7 @@
 
 - name: "setup Pretix database"
   become_user: "postgres"
+  become: true
   block:
   - name: "ensure Pretix database user exists"
     community.postgresql.postgresql_user:

@@ -17,6 +17,7 @@
 
 - name: "do database setup"
   become_user: "postgres"
+  become: true
   block:
   - name: "ensure Postgres role exists"
     community.postgresql.postgresql_user:
@@ -42,28 +43,17 @@
     mode: "0600"
   notify: "restart outline"
 
-- name: "do Yarn stuff"
+- name: "clone repo and do Yarn stuff"
   become_user: "outline"
-  block:
-    - name: "clone repo"
-      ansible.builtin.git:
-        repo: "https://github.com/svsticky/Sticky-Compendium.git"
-        dest: "/var/www/outline/outline"
-        version: "main"
-      register: "_outline_checkout"
-      notify: "restart outline"
-
-    - name: "install dependencies"
-      when: "_outline_checkout is changed"
-      ansible.builtin.command: "yarn install --frozen-lockfile"
-      args:
-        chdir: "/var/www/outline/outline"
-
-    - name: "build outline"
-      when: "_outline_checkout is changed"
-      ansible.builtin.command: "yarn build"
-      args:
-        chdir: "/var/www/outline/outline"
+  become: true
+  ansible.builtin.git:
+    repo: "https://github.com/svsticky/Sticky-Compendium.git"
+    dest: "/var/www/outline/outline"
+    version: "main"
+  notify:
+    - "yarn install"
+    - "yarn build"
+    - "restart outline"
 
 - name: "install Systemd service"
   ansible.builtin.template:

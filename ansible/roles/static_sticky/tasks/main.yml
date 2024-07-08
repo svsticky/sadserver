@@ -41,13 +41,12 @@
     enabled: true
     state: "started"
 
-- block:
-  - name: "create build directory"
-    ansible.builtin.file:
-      path: "/var/www/static-sticky/build"
-      state: "directory"
-
+- name: "create build directory"
   become_user: "static-sticky"
+  become: true
+  ansible.builtin.file:
+    path: "/var/www/static-sticky/build"
+    state: "directory"
 
 - name: "run deploy"
   ansible.builtin.systemd:

@@ -16,7 +16,11 @@
       - "postgresql-13"
       - "python3-psycopg2"
 
-- block:
+- name: "set up koala databases"
+  become_user: "postgres"
+  become: true
+  block:
+
   - name: "ensure koala user exists"
     community.postgresql.postgresql_user:
       name: "koala"
@@ -47,5 +51,3 @@
       role: "koala_manual"
       objs: "ALL_IN_SCHEMA"
       privs: "SELECT"
-
-  become_user: "postgres"

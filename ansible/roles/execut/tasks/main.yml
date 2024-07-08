@@ -58,6 +58,7 @@
         repo: "https://github.com/stichtingsticky/execut"
         dest: "{{ execut_website_path }}"
         version: "main"
+      diff: false
 
 # FIXME update pnpm in symposium
 - name: "run pnpm install"

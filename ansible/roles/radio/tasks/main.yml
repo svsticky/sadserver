@@ -54,7 +54,7 @@
   - name: "run npm install"
     ansible.builtin.shell: |
       source /var/www/radio/.nvm/nvm.sh
-      nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
+      nvm use
       npm install
     args:
       chdir: "/var/www/radio/radio"
@@ -65,7 +65,7 @@
       - name: "build website"
         ansible.builtin.shell: |
           source /var/www/radio/.nvm/nvm.sh
-          nvm use || nvm install $(cat /var/www/radio/radio/.nvmrc)
+          nvm use
           npm run build
         args:
           chdir: "/var/www/radio/radio"

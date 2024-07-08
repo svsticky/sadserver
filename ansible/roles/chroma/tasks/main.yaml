@@ -70,7 +70,9 @@
 
 - name: "ensure database user exists"
   community.postgresql.postgresql_user:
+    db: "chroma"
     name: "chroma"
+    role_attr_flags: "CREATEDB,LOGIN"
   become_user: "postgres"
   become: true
 
@@ -82,11 +84,11 @@
   become: true
 
 - name: "ensure database user has the right privileges"
-  community.postgresql.postgresql_user:
+  community.postgresql.postgresql_privs:
     db: "chroma"
-    name: "chroma"
-    priv: "ALL"
-    role_attr_flags: "CREATEDB,LOGIN"
+    role: "chroma"
+    type: "database"
+    privs: "ALL"
   become_user: "postgres"
   become: true
   ignore_errors: "{{ ansible_check_mode }}"

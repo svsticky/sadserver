@@ -1,75 +1,58 @@
 ---
-- name: "create outline user"
+- name: "Create outline user"
   ansible.builtin.user:
     name: "outline"
-    state: "present"
-    shell: "/bin/false"
-    system: true
     home: "/var/www/outline"
+    move_home: true
+    system: true
+    shell: "/sbin/nologin"
     password: "!"
 
-- name: "create outline directory"
+- name: "Create outline directory"
   ansible.builtin.file:
-    path: "/var/www/outline/outline"
+    path: "{{ outline_project_source }}"
     state: "directory"
     owner: "outline"
     group: "outline"
 
-- name: "do database setup"
+- name: "Do database setup"
   become_user: "postgres"
   become: true
   block:
-  - name: "ensure Postgres role exists"
+  - name: "Ensure Postgres role exists"
     community.postgresql.postgresql_user:
       name: "outline"
+      password: "{{ secret_outline.postgresql_password }}" # Sadly seems required to make authentication over localhost work, for peer authentication fails somehow
       state: "present"
 
-  - name: "ensure database exists"
+  - name: "Ensure database exists"
     community.postgresql.postgresql_db:
       name: "outline"
       owner: "outline"
       state: "present"
 
-- name: "ensure config directory exists"
-  ansible.builtin.file:
-    path: "/etc/outline"
-    state: "directory"
-
-- name: "create environment file"
+- name: "Create outline 'docker-compose.yml' file"
   ansible.builtin.template:
-    src: "outline.env.j2"
-    dest: "/etc/outline/outline.env"
-    owner: "root"
+    src: "docker-compose.yml.j2"
+    dest: "{{ outline_project_source }}/docker-compose.yml"
+    owner: "outline"
+    group: "outline"
     mode: "0600"
-  notify: "restart outline"
 
-- name: "clone repo and do Yarn stuff"
-  become_user: "outline"
-  become: true
-  ansible.builtin.git:
-    repo: "https://github.com/svsticky/Sticky-Compendium.git"
-    dest: "/var/www/outline/outline"
-    version: "main"
-  notify:
-    - "yarn install"
-    - "yarn build"
-    - "restart outline"
-
-- name: "install Systemd service"
+- name: "Create outline 'docker.env' file"
   ansible.builtin.template:
-    src: "outline.service.j2"
-    dest: "/etc/systemd/system/outline.service"
-    owner: "root"
-    mode: "0644"
-  notify: "restart outline"
+    src: "docker.env.j2"
+    dest: "{{ outline_project_source }}/docker.env"
+    owner: "outline"
+    group: "outline"
+    mode: "0600"
 
-- name: "ensure outline service is started and enabled"
-  ansible.builtin.systemd:
-    name: "outline.service"
-    state: "started"
-    enabled: true
+- name: "Docker compose"
+  ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+  vars:
+    project_source: "{{ outline_project_source }}"
 
-- name: "install nginx config"
+- name: "Install nginx config"
   ansible.builtin.template:
     src: "outline.conf.j2"
     dest: "/etc/nginx/sites-enabled/outline.conf"

@@ -1,0 +1,78 @@
+---
+# NOTE These tasks expect the 'project_source' variable to be set
+
+- name: "Check if Docker daemon is active"
+  shell: "systemctl is-active docker"
+  register: "docker_status"
+  ignore_errors: "yes" # Will give a non-zero error code if not active
+
+- name: "Assert Docker daemon is running"
+  assert:
+    that:
+      - "docker_status.rc == 0"
+    fail_msg: "Docker daemon is not running"
+    success_msg: "Docker daemon is running"
+
+- name: "Tear down existing services"
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_source }}"
+    state: "absent"
+
+- name: "Create and start services"
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_source }}"
+  register: "output"
+
+# - name: Show results
+#   ansible.builtin.debug:
+#     var: output
+
+- name: "Run `docker compose up` again"
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_source }}"
+  register: "output"
+
+# - name: Show results
+#   ansible.builtin.debug:
+#     var: output
+
+- name: "Assert that all services properly started"
+  ansible.builtin.assert:
+    that: "not output.changed"
+
+  # Remember what services are included in the compose file, for later
+- name: "Extract service names from output"
+  set_fact:
+    docker_compose_service_names: "{{ output.containers | map(attribute='Name') | list }}"
+
+- name: "Stop all services"
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_source }}"
+    state: "stopped"
+  register: "output"
+
+# - name: Show results
+#   ansible.builtin.debug:
+#     var: output
+
+- name: "Verify that all containers stopped" # TODO how to verify all other services?
+  ansible.builtin.assert:
+    that:
+      - "output.containers | selectattr('Name', 'equalto', item) | map(attribute='State') | list | first == 'exited'"
+  loop: "{{ docker_compose_service_names }}"
+
+- name: "Restart services"
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_source }}"
+    state: "restarted"
+  register: "output"
+
+# - name: Show results
+#   ansible.builtin.debug:
+#     var: output
+
+- name: "Verify that all containers are running" # TODO how to verify all other services?
+  ansible.builtin.assert:
+    that:
+      - "output.containers | selectattr('Name', 'equalto', item) | map(attribute='State') | list | first == 'running'"
+  loop: "{{ docker_compose_service_names }}"

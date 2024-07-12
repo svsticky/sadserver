@@ -22,6 +22,8 @@
       tags: "packages"
     - role: "firewall"
       tags: "firewall"
+    - role: "docker"
+      tags: "docker"
     - role: "databases"
       tags: "databases"
     - role: "backups"

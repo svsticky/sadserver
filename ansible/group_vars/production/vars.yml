@@ -155,7 +155,7 @@ secret_grafana:
   loki_id: "{{ vault_secret_grafana.loki_id }}"
 
 chroma:
-  git_tag: "1.2.25"
+  git_tag: "latest"
 
 secret_chroma:
   s3_access_key: "{{ vault_secret_chroma.s3_access_key }}"

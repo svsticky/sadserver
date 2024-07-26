@@ -1,7 +1,7 @@
 services:
 
   outline:
-    image: outlinewiki/outline:0.78.0
+    image: outlinewiki/outline:0.78.0 # NOTE when bumping this, see `docs/outline.md#Updating to a newer version`. Basically, backup before updating, for a migration will happen automatically upon updating.
     env_file: ./docker.env
     #    ports:
     #      - "4568:3000"

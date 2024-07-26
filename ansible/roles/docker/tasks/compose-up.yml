@@ -1,12 +1,21 @@
 ---
-# NOTE These tasks expect the 'project_source' variable to be set
 
-- name: "Gather service facts"
-  ansible.builtin.service_facts:
+- name: "Check if 'project_source' is defined"
+  ansible.builtin.fail:
+    msg: "You forgot to specify the path to the docker compose project"
+  when: "project_source is undefined"
 
 - name: "Assert that Docker daemon is active, but do not start it"
-  ansible.builtin.assert:
-    that: "ansible_facts.services['docker'].state == 'running'"
+  ansible.builtin.systemd_service:
+    name: "docker"
+    state: "started"
+  check_mode: true
+  register: "docker_status"
+
+- name: "Exit if docker is not running"
+  ansible.builtin.fail:
+    msg: "Docker deamon is not running"
+  when: "docker_status.status.ActiveState != 'active'"
 
 - name: "Tear down existing services"
   community.docker.docker_compose_v2:

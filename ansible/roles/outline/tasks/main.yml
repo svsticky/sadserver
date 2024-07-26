@@ -22,7 +22,7 @@
   - name: "Ensure Postgres role exists"
     community.postgresql.postgresql_user:
       name: "outline"
-      password: "{{ secret_outline.postgresql_password }}" # Sadly seems required to make authentication over localhost work, for peer authentication fails somehow
+      password: "{{ secret_outline.postgresql_password }}" # TODO Sadly seems required to make authentication over localhost work, for peer authentication fails somehow. Perhaps docker networks can make this easier.
       state: "present"
 
   - name: "Ensure database exists"
@@ -30,6 +30,12 @@
       name: "outline"
       owner: "outline"
       state: "present"
+
+# TODO this task assumes the database has already been migrated by Outline to
+# have the correct scheme. See `docs/outline.md` for more info.
+# Later on, when the database will be hosted in another docker service, this
+# migration should be done as well here (but be careful for data loss.
+# Backups?).
 
 - name: "Create outline 'docker-compose.yml' file"
   ansible.builtin.template:

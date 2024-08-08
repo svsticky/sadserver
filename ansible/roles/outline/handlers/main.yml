@@ -1,0 +1,29 @@
+---
+
+# Mark migration as started
+# Ensures migration critical processes will be continued upon abortion
+- name: "Create migration marker"
+  become_user: "outline"
+  become: true
+  ansible.builtin.file:
+    path: "{{ outline_config.project_source }}/.MIGRATION_PENDING"
+    state: "touch"
+    owner: "outline"
+    group: "outline"
+  listen: "trigger outline migration"
+
+
+- name: "Ensure outline is offline"
+  community.docker.docker_compose_v2:
+    project_src: "{{ outline_config.project_source }}"
+    state: "absent"
+  listen: "backup outline"
+  # TODO create a maintenance mode?
+
+- name: "Make backup of outline database"
+  become_user: "root"
+  become: true
+  ansible.builtin.systemd:
+    name: "backup-postgres.service"
+    state: "started"
+  listen: "backup outline"

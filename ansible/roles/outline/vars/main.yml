@@ -1,2 +1,5 @@
 ---
-outline_project_source: "/var/www/outline/outline"
+
+outline_config:
+  project_source: "/var/www/outline/outline"
+  version: "0.78.0"

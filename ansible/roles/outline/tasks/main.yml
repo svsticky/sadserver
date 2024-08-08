@@ -10,7 +10,7 @@
 
 - name: "Create outline directory"
   ansible.builtin.file:
-    path: "{{ outline_project_source }}"
+    path: "{{ outline_config.project_source }}"
     state: "directory"
     owner: "outline"
     group: "outline"
@@ -31,32 +31,56 @@
       owner: "outline"
       state: "present"
 
-# TODO this task assumes the database has already been migrated by Outline to
-# have the correct scheme. See `docs/outline.md` for more info.
-# Later on, when the database will be hosted in another docker service, this
-# migration should be done as well here (but be careful for data loss.
-# Backups?).
+- name: "Update configuration and migrate if needed"
+  become_user: "outline"
+  become: true
+  block:
 
-- name: "Create outline 'docker-compose.yml' file"
-  ansible.builtin.template:
-    src: "docker-compose.yml.j2"
-    dest: "{{ outline_project_source }}/docker-compose.yml"
-    owner: "outline"
-    group: "outline"
-    mode: "0600"
+  - name: "Create outline 'docker-compose.yml' file"
+    ansible.builtin.template:
+      src: "docker-compose.yml.j2"
+      dest: "{{ outline_config.project_source }}/docker-compose.yml"
+      owner: "outline"
+      group: "outline"
+      mode: "0600"
+    notify: "trigger outline migration"
 
-- name: "Create outline 'docker.env' file"
-  ansible.builtin.template:
-    src: "docker.env.j2"
-    dest: "{{ outline_project_source }}/docker.env"
-    owner: "outline"
-    group: "outline"
-    mode: "0600"
+  - name: "Create outline 'docker.env' file"
+    ansible.builtin.template:
+      src: "docker.env.j2"
+      dest: "{{ outline_config.project_source }}/docker.env"
+      owner: "outline"
+      group: "outline"
+      mode: "0600"
+    notify: "trigger outline migration"
+
+  - name: "Check if migration must be triggered"
+    ansible.builtin.meta: "flush_handlers"
+
+  - name: "Check if migration has been triggered"
+    ansible.builtin.stat:
+      path: "{{ outline_config.project_source }}/.MIGRATION_PENDING"
+      get_checksum: "no"
+      get_attributes: "no"
+      get_mime: "no"
+    register: "outline_update_marker"
+    changed_when: "outline_update_marker.stat.exists"
+    notify: "backup outline"
+    # NOTE Migration will automatically start the next time outline starts
+
+  - name: "Start handeling migration if needed"
+    ansible.builtin.meta: "flush_handlers"
+
+  - name: "Remove migration marker"
+    ansible.builtin.file:
+      path: "{{ outline_config.project_source }}/.MIGRATION_PENDING"
+      state: "absent"
+
 
 - name: "Docker compose"
   ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
   vars:
-    project_source: "{{ outline_project_source }}"
+    project_source: "{{ outline_config.project_source }}"
 
 - name: "Install nginx config"
   ansible.builtin.template:

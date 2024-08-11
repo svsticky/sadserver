@@ -42,8 +42,6 @@ websites:
     alternative_names:
       - "dgdarc.nl"
       - "www.dgdarc.nl"
-      - "dgdarc.com"
-      - "www.dgdarc.com"
     state: "present"
 
   - name: "digidecs.{{ canonical_hostname }}"

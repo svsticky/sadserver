@@ -55,6 +55,9 @@
   ansible.builtin.command: >-
     certbot certonly
     --non-interactive
+    {% if 'staging' in group_names %}
+    --test-cert
+    {% endif %}
     --agree-tos
     --email "domreg@svsticky.nl"
     --keep-until-expiring

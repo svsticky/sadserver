@@ -1,19 +1,4 @@
 ---
-- name: "Add apt key for yarn repository"
-  ansible.builtin.apt_key:
-    url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
-    state: "present"
-
-- name: "Add yarn repository"
-  ansible.builtin.apt_repository:
-    repo: "deb https://dl.yarnpkg.com/debian/ stable main"
-    state: "present"
-
-- name: "install yarn"
-  ansible.builtin.apt:
-    name: "yarn"
-    state: "present"
-
 - name: "Install nvm"
   ansible.builtin.git:
     repo: "https://github.com/nvm-sh/nvm.git"
@@ -42,5 +27,3 @@
     path: "{{ nvm.directory }}"
     group: "nvm"
     mode: "0774"
-
-# TODO yarn komt om de hoek kijken. Verwijderen? (rg -C 2 yarn)

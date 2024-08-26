@@ -4,6 +4,7 @@ services:
 
   outline:
     image: outlinewiki/outline:{{ outline_config.version }}
+    restart: unless-stopped
     env_file: ./docker.env
     #    ports:
     #      - "4568:3000"

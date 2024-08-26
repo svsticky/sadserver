@@ -3,9 +3,10 @@
 services:
 
   outline:
-    image: outlinewiki/outline:{{ outline_config.version }}
-    restart: unless-stopped
+    build:
+      dockerfile: Dockerfile
     env_file: ./docker.env
+    restart: on-failure:3
     #    ports:
     #      - "4568:3000"
     network_mode: host # TODO replace this

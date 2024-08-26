@@ -1,0 +1,17 @@
+FROM outlinewiki/outline:{{ outline_config.version }}
+
+# Become root to install package
+USER root
+
+RUN  apt-get update \
+  && apt-get install -y wget \
+  && rm -rf /var/lib/apt/lists/*
+
+# Return to defaut user for security reasons
+USER nodejs
+
+HEALTHCHECK --interval=5m --start-period=30s --start-interval=10s \
+  CMD wget -qO- http://localhost:${PORT}/_health | grep -q 'OK' \
+   && wget -qO- https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/outline \
+   || exit 1
+

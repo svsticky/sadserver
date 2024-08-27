@@ -30,7 +30,7 @@ secret_oauth2_proxy:
 koala_env:
   environment: "production"
   oidc_signing_key_location: "/var/www/koala/signing-key.pem"
-  git_ref: "v2.23.2"
+  git_ref: "v2.24.0"
 
 secret_koala:
   # To change, generate new token using 'rake secret', and recompile + deploy

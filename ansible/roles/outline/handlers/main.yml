@@ -1,26 +1,29 @@
 ---
 
-- name: "restart outline"
-  # when: "_outline_checkout is changed
-  #     or _outline_service_file is changed
-  #     or _outline_env_file is changed"
+# Mark migration as started
+# Ensures migration critical processes will be continued upon abortion
+- name: "Create migration marker"
+  become_user: "outline"
+  become: true
+  ansible.builtin.file:
+    path: "{{ outline_config.project_source }}/.MIGRATION_PENDING"
+    state: "touch"
+    owner: "outline"
+    group: "outline"
+  listen: "trigger outline migration"
+
+
+- name: "Ensure outline is offline"
+  community.docker.docker_compose_v2:
+    project_src: "{{ outline_config.project_source }}"
+    state: "absent"
+  listen: "backup outline"
+  # TODO create a maintenance mode?
+
+- name: "Make backup of outline database"
+  become_user: "root"
+  become: true
   ansible.builtin.systemd:
-    name: "outline.service"
-    state: "restarted"
-    daemon_reload: true
-
-- name: "install dependencies"
-  become_user: "outline"
-  become: true
-  ansible.builtin.command: "yarn install --frozen-lockfile"
-  args:
-    chdir: "/var/www/outline/outline"
-  listen: "yarn install"
-
-- name: "build outline"
-  become_user: "outline"
-  become: true
-  ansible.builtin.command: "yarn build"
-  args:
-    chdir: "/var/www/outline/outline"
-  listen: "yarn build"
+    name: "backup-postgres.service"
+    state: "started"
+  listen: "backup outline"

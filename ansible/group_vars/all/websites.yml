@@ -42,8 +42,6 @@ websites:
     alternative_names:
       - "dgdarc.nl"
       - "www.dgdarc.nl"
-      - "dgdarc.com"
-      - "www.dgdarc.com"
     state: "present"
 
   - name: "digidecs.{{ canonical_hostname }}"
@@ -321,6 +319,7 @@ websites:
     alternative_names:
       - "wiki.{{ canonical_hostname }}"
       - "stickypedia.{{ canonical_hostname }}"
+      - "stickywiki.{{ canonical_hostname }}"
     custom_config: true
     authenticated: true
     oauth2_callback_url: "/auth/oidc.callback"

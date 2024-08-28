@@ -19,6 +19,7 @@
       - "acl"
       - "git"
       - "toilet"
+      - "neovim"
     state: "present"
 
 - name: "update all packages"

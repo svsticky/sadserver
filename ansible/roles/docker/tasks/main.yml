@@ -1,0 +1,39 @@
+---
+# FIXME docker exposed ports bypass ufw firefwall, which we use.
+# See https://docs.docker.com/network/packet-filtering-firewalls/#docker-and-ufw
+
+- name: "Install Docker"
+  block:
+
+  - name: "Add Docker apt repository"
+    ansible.builtin.include_tasks: "docker-apt-repo.yml"
+
+  - name: "Install Docker packages"
+    ansible.builtin.package:
+      name:
+        - "docker-ce={{ docker_engine_version }}"
+        - "docker-ce-cli={{ docker_engine_version }}"
+        - "containerd.io"
+        - "docker-buildx-plugin"
+      state: "present"
+
+  - name: "Ensure Docker is started and enabled at boot"
+    ansible.builtin.service:
+      name: "docker"
+      state: "started"
+      enabled: true
+
+- name: "Install Docker Compose"
+  ansible.builtin.package:
+    name: "docker-compose-plugin"
+    state: "present"
+
+- name: "Ensure admin users are added to the docker group"
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "docker"
+    append: true
+  with_items: "{{ users }}"
+  when: "item.admin"
+  loop_control:
+    label: "Adding '{{ item.name }}' to the docker group"

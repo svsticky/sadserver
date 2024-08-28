@@ -140,6 +140,7 @@ secret_outline:
   s3_secret_access_key: "{{ vault_secret_outline.s3_secret_access_key }}"
   s3_bucket: "outline-wiki-prod"
   mailgun_password: "{{ vault_secret_outline.mailgun_password }}"
+  postgresql_password: "{{ vault_secret_outline.postgresql_password }}"
 
 secret_koala_manual:
   password: "{{ vault_secret_koala_manual.password }}"

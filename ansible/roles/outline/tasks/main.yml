@@ -86,11 +86,6 @@
       path: "{{ outline_config.project_source }}/.MIGRATION_PENDING"
       state: "absent"
 
-- name: "Install required packages"
-  ansible.builtin.apt:
-    name: "wget"
-    state: "present"
-
 - name: "Docker compose"
   ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
   vars:

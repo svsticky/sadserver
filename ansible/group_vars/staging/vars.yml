@@ -155,3 +155,6 @@ secret_chroma:
   s3_region: "{{ vault_secret_chroma.s3_region }}"
   s3_bucket: "{{ vault_secret_chroma.s3_bucket }}"
   service_tokens: "{{ vault_secret_chroma.service_tokens }}"
+
+fallacious_rooster:
+  git_tag: "0.1.2"

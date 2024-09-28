@@ -122,7 +122,7 @@ def deploy(
     arguments.append(playbook)
 
     if not check:
-        notify_deploy_start(playbook, host, user, branch, revision)
+        notify_deploy_start(playbook, host, user, branch, revision, roles)
 
     print("Running the following playbook:")
     print(" ".join(arguments))
@@ -148,11 +148,13 @@ def current_git_revision() -> str:
 
 
 def notify_deploy_start(
-    playbook: str, host: str, user: str, git_branch: str, git_revision: str
+    playbook: str, host: str, user: str, git_branch: str, git_revision: str, roles: [str]
 ) -> None:
+    roles_str = ', '.join(roles)
     discord_notify(
         f"*Deployment of playbook {playbook} in {host} environment started by {user}*\n"
-        + f'_(branch: {git_branch} - revision "{git_revision}")_',
+        + f'_Branch: {git_branch} - revision "{git_revision}"_\n'
+        + f'_Roles: {roles_str}',
         ":construction:",
         "#46c4ff",
     )

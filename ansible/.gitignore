@@ -24,3 +24,5 @@ tramp
 #-- SublimeText
 *.sublime-workspace
 #*.sublime-project
+
+.env

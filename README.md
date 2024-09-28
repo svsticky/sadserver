@@ -46,7 +46,7 @@ server to become Sticky's production server.
 The code in this repository depends on the following software:
 
 - [nix]
-- A Discord webhook, which should be put in `ansible/.discord-webhook`
+- Two Discord webhooks, which should be put in `ansible/.env`
 
 Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 20.04 host** to be
 deployed on.
@@ -157,16 +157,14 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 ##### On your local terminal:
 1. Install the Nix package manager via the steps on this page: https://nixos.org/download.html
 
-1. Download the repository and enter the folder.
+2. Download the repository and enter the folder.
 `$ git clone https://github.com/svsticky/sadserver`
 `$ cd sadserver/ansible`
 
-1. Create a file `.discord-webhook` containing the webhook to be used for Discord notifications. Put the value of the
-[`slack_notifications_webhook_url` secret]
-(https://vault.bitwarden.com/#/vault?search=slack&itemId=c02392e6-728e-4bce-ae4e-ae900153afc9&cipherId=c02392e6-728e-4bce-ae4e-ae900153afc9)
-in that file. You will need to login to bitwarden as `itcrowd@svsticky.nl` to read this secret.
-Yes, the secret is still called `slack_notifications_webhook_url` because of legacy reasons, but you
-should not just change the name because it is used in the ansible code.
+3. Copy `sample.env` to `.env` and fill in the missing discord webhooks.
+You will need to login to bitwarden as `itcrowd@svsticky.nl` to read this secret.
+(If you find the `slack_notifications_webhook_url`, do _not_ change the name of
+the secret for legacy reasons. Ansible's code is dependent on the name.)
 
 To install all required dependencies, run the following command to enter a nix shell.
 `$ nix-shell`
@@ -209,9 +207,6 @@ Godspeed!
   [ansible/group_vars/all/websites.yml]:ansible/group_vars_example/all/websites.yml
   [Ansible Vault]:http://docs.ansible.com/ansible/playbooks_vault.html
   [inventory]:https://docs.ansible.com/ansible/intro_inventory.html
-  [slacktee]:https://github.com/course-hero/slacktee
-  [ansible]:https://github.com/ansible/ansible
-  [Bitwarden CLI]:https://help.bitwarden.com/article/cli/#download--install
   [deployment-new-production]:docs/deployment-new-production.md
   [IT Crowd]:mailto:itcrowd@svsticky.nl
   [deployment-guide]:#setting-up-the-staging-and-production-environment

@@ -18,7 +18,7 @@ import scripts.bitwarden as bitwarden
 load_dotenv()
 discord_webhook_staging_deployments = os.getenv("DISCORD_WEBHOOK_STAGING_DEPLOYMENTS")
 discord_webhook_production_deployments = os.getenv(
-    "DISCORD_WEBHOOK_STAGING_DEPLOYMENTS"
+    "DISCORD_WEBHOOK_PRODUCTION_DEPLOYMENTS"
 )
 
 if (

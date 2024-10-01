@@ -17,7 +17,7 @@ services:
       start_period: 30s
       start_interval: 10s
     volumes:
-      - storage-data:/var/lib/outline/data
+      - storage-data:{{ outline_config.volume_path }}
         #    depends_on:
         #      - postgres
         #      - redis

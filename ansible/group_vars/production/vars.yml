@@ -30,7 +30,7 @@ secret_oauth2_proxy:
 koala_env:
   environment: "production"
   oidc_signing_key_location: "/var/www/koala/signing-key.pem"
-  git_ref: "v2.23.1"
+  git_ref: "v2.26.0"
 
 secret_koala:
   # To change, generate new token using 'rake secret', and recompile + deploy
@@ -156,7 +156,7 @@ secret_grafana:
   loki_id: "{{ vault_secret_grafana.loki_id }}"
 
 chroma:
-  git_tag: "latest"
+  git_tag: "0.1.26"
 
 secret_chroma:
   s3_access_key: "{{ vault_secret_chroma.s3_access_key }}"
@@ -164,3 +164,6 @@ secret_chroma:
   s3_region: "{{ vault_secret_chroma.s3_region }}"
   s3_bucket: "{{ vault_secret_chroma.s3_bucket }}"
   service_tokens: "{{ vault_secret_chroma.service_tokens }}"
+
+fallacious_rooster:
+  git_tag: "0.1.4"

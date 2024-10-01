@@ -1,0 +1,5 @@
+---
+- name: "restart fallacious-rooster"
+  ansible.builtin.service:
+    name: "fallacious-rooster"
+    state: "restarted"

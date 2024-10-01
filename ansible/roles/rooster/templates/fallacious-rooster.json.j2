@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+
+{
+  "server": {
+    "port": 65436,
+    "domain": "voeljeveilig.{{ canonical_hostname }}"
+  },
+  "koala": {
+    "koala_host": "https://koala.{{ canonical_hostname }}",
+    "client_id": "{{ secret_oauth2_proxy.client_id }}",
+    "client_secret": "{{ secret_oauth2_proxy.client_secret }}",
+    "redirect_uri": "https://voeljeveilig.{{ canonical_hostname }}/api/oauth/callback"
+  },
+  "email": {
+    "from_email": "anoniem@svsticky.nl",
+    "from_name": "Studievereniging Sticky Anoniem Meldpunt",
+    "smtp_relay": "smtp-relay.gmail.com"
+  },
+  "frontend": {
+    "home_page_url": "https://voeljeveilig.{{ canonical_hostname }}",
+    "domain": "voeljeveilig.{{ canonical_hostname }}"
+  },
+  "local_storage": "/var/www/fallacious-rooster/server/storage.json"
+}

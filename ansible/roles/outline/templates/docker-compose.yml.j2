@@ -4,6 +4,7 @@ services:
 
   outline:
     image: outlinewiki/outline:{{ outline_config.version }}
+    env_file: .env
     restart: on-failure:3
     network_mode: host # TODO replace this
     healthcheck:

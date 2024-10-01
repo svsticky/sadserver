@@ -45,20 +45,10 @@
       mode: "0600"
     notify: "trigger outline migration"
 
-  - name: "Create outline 'Dockerfile'"
+  - name: "Create outline '.env' file"
     ansible.builtin.template:
-      src: "Dockerfile.j2"
-      dest: "{{ outline_config.project_source }}/Dockerfile"
-      owner: "outline"
-      group: "outline"
-      mode: "0600"
-    notify: "trigger outline migration"
-    register: "dockerfile"
-
-  - name: "Create outline 'docker.env' file"
-    ansible.builtin.template:
-      src: "docker.env.j2"
-      dest: "{{ outline_config.project_source }}/docker.env"
+      src: ".env.j2"
+      dest: "{{ outline_config.project_source }}/.env"
       owner: "outline"
       group: "outline"
       mode: "0600"
@@ -90,7 +80,6 @@
   ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
   vars:
     project_source: "{{ outline_config.project_source }}"
-    remove_images: "{{ 'local' if dockerfile.changed else omit }}" # Rebuild the image if file changed
 
 - name: "Install nginx config"
   ansible.builtin.template:

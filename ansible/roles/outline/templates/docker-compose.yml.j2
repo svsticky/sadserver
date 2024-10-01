@@ -3,13 +3,18 @@
 services:
 
   outline:
-    build:
-      dockerfile: Dockerfile
-    env_file: ./docker.env
+    image: outlinewiki/outline:{{ outline_config.version }}
     restart: on-failure:3
-    #    ports:
-    #      - "4568:3000"
     network_mode: host # TODO replace this
+    healthcheck:
+      test: [
+        "CMD", "wget", "-qO-", "http://localhost:${PORT}/_health", "|", "grep", "-q", "OK",
+        "&&",  "wget", "-qO-", "https://hc-ping.com/{{ secret_healthchecks_io.ping_key }}/outline",
+        "||", "exit", "1"
+      ]
+      interval: 5m
+      start_period: 30s
+      start_interval: 10s
     volumes:
       - storage-data:/var/lib/outline/data
         #    depends_on:

@@ -161,7 +161,7 @@ users:
     home_prefix: "/var/www"
     state: "present"
     github_accounts:
-      - username: "LucasDissie"
+      - username: "TobiasDeBruijn"
         state: "present"
 
   - name: "commit"
@@ -170,7 +170,7 @@ users:
     state: "present"
     github_accounts:
       - username: "maartenberg"
-        state: "present"
+        state: "absent"
 
   - name: "dgdarc"
     admin: false
@@ -198,7 +198,7 @@ users:
     state: "present"
     github_accounts:
       - username: "Mstiekema"
-        state: "present"
+        state: "absent"
 
   - name: "symposium"
     admin: false
@@ -224,7 +224,7 @@ users:
     state: "present"
     github_accounts:
       - username: "Siem2l"
-        state: "present"
+        state: "absent"
       - username: "SilasPeters"
         state: "present"
 
@@ -234,6 +234,6 @@ users:
     state: "present"
     github_accounts:
       - username: "leuke-naam"
-        state: "present"
+        state: "absent"
       - username: "Siem2l"
-        state: "present"
+        state: "absent"

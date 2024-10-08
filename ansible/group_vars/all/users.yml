@@ -12,46 +12,50 @@ users:
     home_prefix: "/home"
     state: "present"
     github_accounts:
+      # May the boomers always be remembered
       - username: "HugoPeters1024"
-        state: "present"
+        state: "absent"
       - username: "maartenberg"
-        state: "present"
+        state: "absent"
+      - username: "Riscky"
+        state: "absent"
       - username: "Mstiekema"
-        state: "present"
+        state: "absent"
+
       - username: "Siem2l"
         state: "present"
       - username: "Yfkesmit"
-        state: "present"
+        state: "absent"
       - username: "leuke-naam"
         state: "present"
       - username: "TobiasDeBruijn"
         state: "present"
       - username: "PrinceMordred"
-        state: "present"
+        state: "absent"
       - username: "SanderHageman"
-        state: "present"
+        state: "absent"
       - username: "SilasPeters"
         state: "present"
-      - username: "Riscky"
-        state: "present"
       - username: "stickyPiston"
+        state: "present"
+      - username: "sam32123"
         state: "present"
 
   - name: "hugo"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "HugoPeters1024"
-        state: "present"
+        state: "absent"
 
   - name: "rick"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Riscky"
-        state: "present"
+        state: "absent"
 
   - name: "sem"
     admin: true
@@ -64,18 +68,18 @@ users:
   - name: "maarten"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "maartenberg"
-        state: "present"
+        state: "absent"
 
   - name: "merijn"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Mstiekema"
-        state: "present"
+        state: "absent"
 
   - name: "siem"
     admin: true
@@ -88,18 +92,18 @@ users:
   - name: "lucas"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "LucasDissie"
-        state: "present"
+        state: "absent"
 
   - name: "yfke"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Yfkesmit"
-        state: "present"
+        state: "absent"
 
   - name: "tobias"
     admin: true
@@ -112,18 +116,18 @@ users:
   - name: "jack"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "PrinceMordred"
-        state: "present"
+        state: "absent"
 
   - name: "sander"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "SanderHageman"
-        state: "present"
+        state: "absent"
 
   - name: "silas"
     admin: true

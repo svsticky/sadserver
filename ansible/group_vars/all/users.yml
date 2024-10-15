@@ -44,6 +44,8 @@ users:
         state: "present"
       - username: "olafboekholt"
         state: "present"
+      - username: "spookyboy99"
+        state: "present"
 
   - name: "hugo"
     admin: true

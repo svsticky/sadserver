@@ -13,6 +13,7 @@ let
     types-requests
     pyaml
     types-pyyaml
+    python-dotenv
   ]);
 
   linuxOnlyTools = if pkgs.stdenv.isLinux then [ pkgs.ansible-lint ] else [];

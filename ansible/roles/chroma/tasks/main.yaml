@@ -39,7 +39,7 @@
 
 - name: "Download and extract chroma frontend"
   ansible.builtin.unarchive:
-    src: https://github.com/svsticky/chroma/releases/{{ chroma.git_tag }}/download/frontend.tar.gz
+    src: https://github.com/svsticky/chroma/releases/download/{{ chroma.git_tag }}/frontend.tar.gz
     dest: "/var/www/chroma/frontend"
     remote_src: true
     owner: "chroma"
@@ -50,7 +50,7 @@
 
 - name: "Download and extract chroma docs"
   ansible.builtin.unarchive:
-    src: https://github.com/svsticky/chroma/releases/{{ chroma.git_tag }}/download/docs.tar.gz
+    src: https://github.com/svsticky/chroma/releases/download/{{ chroma.git_tag }}/docs.tar.gz
     dest: "/var/www/chroma/docs"
     remote_src: true
     owner: "chroma"
@@ -61,7 +61,7 @@
 
 - name: "Download and extract chroma server"
   ansible.builtin.get_url:
-    url: https://github.com/svsticky/chroma/releases/{{ chroma.git_tag }}/download/server-x86_64-unknown-linux-musl
+    url: https://github.com/svsticky/chroma/releases/download/{{ chroma.git_tag }}/server-x86_64-unknown-linux-musl
     dest: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"

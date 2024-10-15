@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Run the fallacious-rooster backend
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Type=simple
+User=fallacious-rooster
+Group=fallacious-rooster
+Restart=always
+WorkingDirectory=/var/www/fallacious-rooster/server
+ExecStart=dotenv /var/www/fallacious-rooster/server/server-x86_64-unknown-linux-musl --config /var/www/fallacious-rooster/server/config.json
+
+[Install]
+WantedBy=multi-user.target

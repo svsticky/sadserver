@@ -9,9 +9,23 @@ import json
 import yaml
 
 from git.repo import Repo
-from typing import Optional
+from typing import Optional, List
+from dotenv import load_dotenv
 
 import scripts.bitwarden as bitwarden
+
+# Import .env file
+load_dotenv()
+discord_webhook_staging_deployments = os.getenv("DISCORD_WEBHOOK_STAGING_DEPLOYMENTS")
+discord_webhook_production_deployments = os.getenv(
+    "DISCORD_WEBHOOK_PRODUCTION_DEPLOYMENTS"
+)
+
+if (
+    discord_webhook_production_deployments is None
+    or discord_webhook_staging_deployments is None
+):
+    print("At least one Discord webhook is missing. Please fill in the .env file")
 
 
 @click.command()
@@ -90,11 +104,7 @@ def deploy(
     if check:
         arguments.append("--check")
 
-    if not tags is None:
-        arguments.append("--tags")
-        arguments.append(tags)
-
-    # From-until logic:
+    # First determine all roles defined by from-until logic
     with open("main.yml", "r") as yaml_file:
         data = yaml.safe_load(yaml_file)
 
@@ -114,15 +124,40 @@ def deploy(
         roles = roles[: roles.index(until_playbook) + 1]
         from_until = True
 
-    final_roles = ",".join(roles)
     if from_until:
+        from_until_roles = roles  # Filtered by the from_until logic
+    else:
+        from_until_roles = []
+
+    # Then add all roles specified manually
+    if tags is not None:
+        manual_roles = [role.strip() for role in tags.split(",")]
+    else:
+        manual_roles = []
+
+    # Finally, pass down all roles specified, if any
+    specified_roles = from_until_roles + manual_roles
+    if specified_roles:
         arguments.append("--tags")
-        arguments.append(final_roles)
+        arguments.append(",".join(specified_roles))
 
     arguments.append(playbook)
 
+    if host == "production":
+        discord_deployment_webhook = str(discord_webhook_production_deployments)
+    else:
+        discord_deployment_webhook = str(discord_webhook_staging_deployments)
+
     if not check:
-        notify_deploy_start(playbook, host, user, branch, revision)
+        notify_deploy_start(
+            playbook,
+            host,
+            user,
+            branch,
+            revision,
+            specified_roles,
+            discord_deployment_webhook,
+        )
 
     print("Running the following playbook:")
     print(" ".join(arguments))
@@ -130,11 +165,27 @@ def deploy(
     try:
         subprocess.run(arguments, check=True, env=env)
         if not check:
-            notify_deploy_succes(playbook, host, branch, revision)
+            notify_deploy_succes(
+                playbook,
+                host,
+                user,
+                branch,
+                revision,
+                specified_roles,
+                discord_deployment_webhook,
+            )
 
     except subprocess.CalledProcessError:
         if not check:
-            notify_deploy_failure(playbook, host, branch, revision)
+            notify_deploy_failure(
+                playbook,
+                host,
+                user,
+                branch,
+                revision,
+                specified_roles,
+                discord_deployment_webhook,
+            )
 
 
 def current_branch_name() -> str:
@@ -148,41 +199,66 @@ def current_git_revision() -> str:
 
 
 def notify_deploy_start(
-    playbook: str, host: str, user: str, git_branch: str, git_revision: str
+    playbook: str,
+    host: str,
+    user: str,
+    git_branch: str,
+    git_revision: str,
+    roles: List[str],
+    discord_webhook: str,
 ) -> None:
+    roles_str = ", ".join(roles)
     discord_notify(
-        f"*Deployment of playbook {playbook} in {host} environment started by {user}*\n"
-        + f'_(branch: {git_branch} - revision "{git_revision}")_',
+        f"**Deployment of playbook {playbook} to {host} started by {user}**\n"
+        + f'Branch: {git_branch} - revision "{git_revision}"\n'
+        + f"Roles: {roles_str}",
         ":construction:",
         "#46c4ff",
+        discord_webhook,
     )
 
 
 def notify_deploy_succes(
-    playbook: str, host: str, git_branch: str, git_revision: str
+    playbook: str,
+    host: str,
+    user: str,
+    git_branch: str,
+    git_revision: str,
+    roles: List[str],
+    discord_webhook: str,
 ) -> None:
+    roles_str = ", ".join(roles)
     discord_notify(
-        f"*Deployment of playbook {playbook} in {host} environment succesfully completed*\n"
-        + f'_(branch: {git_branch} - revision "{git_revision}")_',
+        f"**Deployment of playbook {playbook} to {host}, started by {user}, succesfully completed**\n"
+        + f'Branch: {git_branch} - revision "{git_revision}"\n'
+        + f"Roles: {roles_str}",
         ":construction:",
         "good",
+        discord_webhook,
     )
 
 
 def notify_deploy_failure(
-    playbook: str, host: str, git_branch: str, git_revision: str
+    playbook: str,
+    host: str,
+    user: str,
+    git_branch: str,
+    git_revision: str,
+    roles: List[str],
+    discord_webhook: str,
 ) -> None:
+    roles_str = ", ".join(roles)
     discord_notify(
-        f"*Deployment of playbook {playbook} in {host} environment FAILED!*\n"
-        + f'_(branch: {git_branch} - revision "{git_revision}")_',
+        f"**Deployment of playbook {playbook} to {host}, started by {user}, FAILED!**\n"
+        + f'Branch: {git_branch} - revision "{git_revision}"\n'
+        + f"Roles: {roles_str}",
         ":exclamation:",
         "danger",
+        discord_webhook,
     )
 
 
-def discord_notify(message: str, icon: str, color: str) -> None:
-    url = get_discord_webhook().strip()
-
+def discord_notify(message: str, icon: str, color: str, webhook_url: str) -> None:
     data = {
         "username": "Ansible",
         "attachments": [
@@ -199,7 +275,7 @@ def discord_notify(message: str, icon: str, color: str) -> None:
     }
 
     r = requests.post(
-        url,
+        webhook_url,
         json=data,
     )
 
@@ -230,19 +306,6 @@ def verify_on_latest_master(host: str) -> None:
     # Diff against the working tree
     for x in repo.head.commit.diff(None):
         click.ClickException("There is uncommited in your working tree or staging area")
-
-
-def get_discord_webhook() -> str:
-    webhook_filename = ".discord-webhook"
-
-    if not os.path.exists(webhook_filename):
-        raise click.ClickException(
-            "Please create .discord-webhook with a webhook URL for deploy notifications"
-        )
-    else:
-        # maybe should be a try-catch block here
-        with open(webhook_filename) as f:
-            return f.read()
 
 
 if __name__ == "__main__":

@@ -212,7 +212,7 @@ users:
     state: "present"
     github_accounts:
       - username: "leuke-naam"
-        state: "present"
+        state: "absent"
 
   - name: "wintersport"
     admin: false

@@ -22,8 +22,10 @@ users:
       - username: "Mstiekema"
         state: "absent"
 
+      # Hall of history (please do not remove names, only set their state to
+      # absent for lore sake)
       - username: "Siem2l"
-        state: "present"
+        state: "absent"
       - username: "Yfkesmit"
         state: "absent"
       - username: "leuke-naam"
@@ -39,6 +41,8 @@ users:
       - username: "stickyPiston"
         state: "present"
       - username: "sam32123"
+        state: "present"
+      - username: "olafboekholt"
         state: "present"
 
   - name: "hugo"
@@ -163,6 +167,8 @@ users:
     github_accounts:
       - username: "TobiasDeBruijn"
         state: "present"
+      - username: "LucasDissie"
+        state: "absent"
 
   - name: "commit"
     admin: false

@@ -12,46 +12,54 @@ users:
     home_prefix: "/home"
     state: "present"
     github_accounts:
+      # May the boomers always be remembered
       - username: "HugoPeters1024"
-        state: "present"
+        state: "absent"
       - username: "maartenberg"
-        state: "present"
+        state: "absent"
+      - username: "Riscky"
+        state: "absent"
       - username: "Mstiekema"
-        state: "present"
+        state: "absent"
+
+      # Hall of history (please do not remove names, only set their state to
+      # absent for lore sake)
       - username: "Siem2l"
-        state: "present"
+        state: "absent"
       - username: "Yfkesmit"
-        state: "present"
+        state: "absent"
       - username: "leuke-naam"
         state: "present"
       - username: "TobiasDeBruijn"
         state: "present"
       - username: "PrinceMordred"
-        state: "present"
+        state: "absent"
       - username: "SanderHageman"
-        state: "present"
+        state: "absent"
       - username: "SilasPeters"
         state: "present"
-      - username: "Riscky"
-        state: "present"
       - username: "stickyPiston"
+        state: "present"
+      - username: "sam32123"
+        state: "present"
+      - username: "olafboekholt"
         state: "present"
 
   - name: "hugo"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "HugoPeters1024"
-        state: "present"
+        state: "absent"
 
   - name: "rick"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Riscky"
-        state: "present"
+        state: "absent"
 
   - name: "sem"
     admin: true
@@ -64,18 +72,18 @@ users:
   - name: "maarten"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "maartenberg"
-        state: "present"
+        state: "absent"
 
   - name: "merijn"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Mstiekema"
-        state: "present"
+        state: "absent"
 
   - name: "siem"
     admin: true
@@ -88,18 +96,18 @@ users:
   - name: "lucas"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "LucasDissie"
-        state: "present"
+        state: "absent"
 
   - name: "yfke"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "Yfkesmit"
-        state: "present"
+        state: "absent"
 
   - name: "tobias"
     admin: true
@@ -112,18 +120,18 @@ users:
   - name: "jack"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "PrinceMordred"
-        state: "present"
+        state: "absent"
 
   - name: "sander"
     admin: true
     home_prefix: "/home"
-    state: "present"
+    state: "absent"
     github_accounts:
       - username: "SanderHageman"
-        state: "present"
+        state: "absent"
 
   - name: "silas"
     admin: true
@@ -141,14 +149,26 @@ users:
       - username: "stickyPiston"
         state: "present"
 
+  - name: "sam"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "sam32123"
+        state: "present"
+
+
+
   - name: "bestuur"
     admin: false
     sudoless_ssh: true
     home_prefix: "/var/www"
     state: "present"
     github_accounts:
-      - username: "LucasDissie"
+      - username: "TobiasDeBruijn"
         state: "present"
+      - username: "LucasDissie"
+        state: "absent"
 
   - name: "commit"
     admin: false
@@ -156,7 +176,7 @@ users:
     state: "present"
     github_accounts:
       - username: "maartenberg"
-        state: "present"
+        state: "absent"
 
   - name: "dgdarc"
     admin: false
@@ -184,7 +204,7 @@ users:
     state: "present"
     github_accounts:
       - username: "Mstiekema"
-        state: "present"
+        state: "absent"
 
   - name: "symposium"
     admin: false
@@ -192,7 +212,7 @@ users:
     state: "present"
     github_accounts:
       - username: "leuke-naam"
-        state: "present"
+        state: "absent"
 
   - name: "wintersport"
     admin: false
@@ -210,7 +230,7 @@ users:
     state: "present"
     github_accounts:
       - username: "Siem2l"
-        state: "present"
+        state: "absent"
       - username: "SilasPeters"
         state: "present"
 
@@ -220,6 +240,6 @@ users:
     state: "present"
     github_accounts:
       - username: "leuke-naam"
-        state: "present"
+        state: "absent"
       - username: "Siem2l"
-        state: "present"
+        state: "absent"

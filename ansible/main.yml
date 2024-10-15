@@ -81,9 +81,11 @@
       tags: ["never", "crazy88bot"]
     - role: "doorgeefluik"
       tags: "doorgeefluik"
+    - role: "rooster"
+      tags: "rooster"
+    - role: "docuseal"
+      tags: "docuseal"
     # Included the last, so any service that fail2ban is applied to, already
     # exists. Otherwise fail2ban would miss the log files it has to monitor.
     - role: "fail2ban"
       tags: "always"
-    - role: "rooster"
-      tags: "rooster"

@@ -1,0 +1,5 @@
+---
+
+docuseal_config:
+  project_source: "/var/www/docuseal/docuseal"
+  version: "1.7.6"

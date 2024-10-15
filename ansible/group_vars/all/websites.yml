@@ -333,6 +333,11 @@ websites:
     oauth2_callback_url: "/auth/oidc.callback"
     state: "present"
 
+  - name: "docuseal.{{ canonical_hostname }}"
+    user: "docuseal"
+    custom_config: true
+    state: "present"
+
   - name: "goededoelendag.{{ canonical_hostname }}"
     user: "commit"
     alternative_names:

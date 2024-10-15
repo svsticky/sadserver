@@ -1,0 +1,15 @@
+---
+- name: "Ensure docuseal is offline"
+  community.docker.docker_compose_v2:
+    project_src: "{{ docuseal_config.project_source }}"
+    state: "absent"
+  listen: "backup docuseal"
+  # TODO create a maintenance mode?
+
+- name: "Make backup of docuseal database"
+  become_user: "root"
+  become: true
+  ansible.builtin.systemd:
+    name: "backup-postgres.service"
+    state: "started"
+  listen: "backup docuseal"

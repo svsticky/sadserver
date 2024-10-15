@@ -1,0 +1,63 @@
+---
+- name: "Create docuseal user"
+  ansible.builtin.user:
+    name: "docuseal"
+    home: "/var/www/docuseal"
+    move_home: true
+    system: true
+    shell: "/sbin/nologin"
+    password: "!"
+
+- name: "Create docuseal directory"
+  ansible.builtin.file:
+    path: "{{ docuseal_config.project_source }}"
+    state: "directory"
+    owner: "docuseal"
+    group: "docuseal"
+
+- name: "Do database setup"
+  become_user: "postgres"
+  become: true
+  block:
+  - name: "Ensure Postgres role exists"
+    community.postgresql.postgresql_user:
+      name: "docuseal"
+      password: "{{ secret_docuseal.postgresql_password }}" # TODO Sadly seems required to make authentication over localhost work, for peer authentication fails somehow. Perhaps docker networks can make this easier.
+      state: "present"
+
+  - name: "Ensure database exists"
+    community.postgresql.postgresql_db:
+      name: "docuseal"
+      owner: "docuseal"
+      state: "present"
+
+- name: "Update configuration and migrate if needed"
+  become_user: "docuseal"
+  become: true
+  block:
+  - name: "Create docuseal 'docker.env' file"
+    ansible.builtin.template:
+      src: "docker.env.j2"
+      dest: "{{ docuseal_config.project_source }}/docker.env"
+      owner: "docuseal"
+      group: "docuseal"
+      mode: "0600"
+
+  - name: "Create docuseal 'docker-compose.yml' file"
+    ansible.builtin.template:
+      src: "docker-compose.yml.j2"
+      dest: "{{ docuseal_config.project_source }}/docker-compose.yml"
+      owner: "docuseal"
+      group: "docuseal"
+      mode: "0600"
+
+- name: "Docker compose"
+  ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+  vars:
+    project_source: "{{ docuseal_config.project_source }}"
+
+- name: "Install nginx config"
+  ansible.builtin.template:
+    src: "docuseal.conf.j2"
+    dest: "/etc/nginx/sites-enabled/docuseal.conf"
+  notify: "reload nginx"

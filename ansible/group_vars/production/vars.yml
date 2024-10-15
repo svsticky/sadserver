@@ -142,6 +142,9 @@ secret_outline:
   mailgun_password: "{{ vault_secret_outline.mailgun_password }}"
   postgresql_password: "{{ vault_secret_outline.postgresql_password }}"
 
+docuseal_secret:
+  postgresql_password: "{{ vault_secret_docuseal.postgresql_password }}"
+
 secret_koala_manual:
   password: "{{ vault_secret_koala_manual.password }}"
 

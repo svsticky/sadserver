@@ -1,0 +1,17 @@
+# Ansible managed
+
+services:
+
+  docuseal:
+    image: docuseal/docuseal:{{ docuseal_config.version }}
+    restart: unless-stopped
+    env_file: ./docker.env
+    ports:
+      - 4569:3000
+    volumes:
+      - storage-data:/data:rw
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+volumes:
+  storage-data:

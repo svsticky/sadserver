@@ -32,6 +32,8 @@ users:
         state: "present"
       - username: "TobiasDeBruijn"
         state: "present"
+      - username: "LucasDissie"
+        state: "absent"
       - username: "PrinceMordred"
         state: "absent"
       - username: "SanderHageman"
@@ -159,6 +161,21 @@ users:
       - username: "sam32123"
         state: "present"
 
+  - name: "olaf"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "olafboekholt"
+        state: "present"
+
+  - name: "mervin"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "spookyboy99"
+        state: "present"
 
 
   - name: "bestuur"

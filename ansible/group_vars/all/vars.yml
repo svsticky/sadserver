@@ -29,3 +29,9 @@ secret_deploy_key: "{{ vault_secret_deploy_key }}"
 # The API key for our Mailgun account.
 # Change? Refresh API key at https://app.mailgun.com/app/account/security
 secret_mailgun_token: "{{ vault_secret_mailgun_token }}"
+
+# The place where https://github.com/nvm-sh/nvm will be installed, to be globally used
+nvm:
+  directory: "/usr/local/bin/.nvm"
+  script: "/usr/local/bin/.nvm/nvm.sh"
+  version: "v0.40.0" # Derived from the git tag

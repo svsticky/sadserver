@@ -1,0 +1,29 @@
+---
+- name: "Install nvm"
+  ansible.builtin.git:
+    repo: "https://github.com/nvm-sh/nvm.git"
+    version: "{{ nvm.version }}"
+    dest: "{{ nvm.directory }}"
+    recursive: false # cloning submodules fails, but they are purely for testing
+  diff: false
+
+- name: "Test nvm install"
+  ansible.builtin.shell: "source {{ nvm.script }} && command -v nvm"
+  register: "nvm_command"
+  args:
+    executable: "/bin/bash"
+  changed_when: false
+
+- name: "Assert that nvm is installed correctly"
+  ansible.builtin.assert:
+    that: "nvm_command.stdout == 'nvm'"
+
+- name: "Create nvm group"
+  ansible.builtin.group:
+    name: "nvm"
+
+- name: "Allow nvm group to manage nodejs installs"
+  ansible.builtin.file:
+    path: "{{ nvm.directory }}"
+    group: "nvm"
+    mode: "0774"

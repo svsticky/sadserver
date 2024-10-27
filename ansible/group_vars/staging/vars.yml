@@ -161,3 +161,4 @@ fallacious_rooster:
   
 digidecs:
   git_tag: "0.1.0"
+  server_port: 65437

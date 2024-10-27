@@ -16,7 +16,7 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto https;
     proxy_intercept_errors on;
-    proxy_pass http://localhost:65437;
+    proxy_pass http://localhost:{{ digidecs.server_port }};
   }
 
   location / {

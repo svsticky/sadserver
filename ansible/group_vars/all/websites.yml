@@ -91,14 +91,6 @@ websites:
     state: "present"
     authenticated: true
 
-  - name: "phpmyadmin.{{ canonical_hostname }}"
-    user: "phpmyadmin"
-    alternative_names:
-      - "pma.{{ canonical_hostname }}"
-    # You have to remove the task include of phpmyadmin.yml to remove this
-    # completely
-    state: "absent"
-
   - name: "pretix.{{ canonical_hostname }}"
     custom_config: true
     alternative_names:

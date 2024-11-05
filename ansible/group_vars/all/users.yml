@@ -248,9 +248,9 @@ users:
     home_prefix: "/var/www"
     state: "present"
     github_accounts:
-      - username: "Siem2l"
-        state: "absent"
       - username: "SilasPeters"
+        state: "present"
+      - username: "olafboekholt"
         state: "present"
 
   - name: "hacc"

@@ -57,13 +57,6 @@ secret_backup_aws:
   access_key: "{{ vault_secret_backup_aws.access_key }}"
   secret_key: "{{ vault_secret_backup_aws.secret_key }}"
 
-secret_execut_website_aws:
-  access_key: "{{ vault_secret_execut_website_aws.access_key }}"
-  secret_key: "{{ vault_secret_execut_website_aws.secret_key }}"
-
-secret_execut_website_secretkey:
-  "{{ vault_secret_execut_website_secretkey }}"
-
 # To change, regenerate the token in Mollie's web interface.
 secret_mollie_token: "{{ vault_secret_mollie_token }}"
 

@@ -29,7 +29,6 @@
     dest: "/etc/nginx/includes/{{ item }}"
   loop:
     - "block-cert-validation-path.conf"
-    - "execut-referer-tracking.conf"
     - "php-parameters.conf"
     - "security-headers.conf"
   notify: "reload nginx"

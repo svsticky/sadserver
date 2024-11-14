@@ -62,8 +62,6 @@
       tags: "oauth"
     - role: "outline"
       tags: "outline"
-    - role: "execut"
-      tags: "execut"
     - role: "radio"
       tags: "radio"
     - role: "sodi"
@@ -87,3 +85,9 @@
       tags: "always"
     - role: "rooster"
       tags: "rooster"
+
+# Following is a list of removed roles, which we did have.
+# If, for some reason, we ever want to use on of the removed services again,
+# one can easily restore the role by reverting the following PRs:
+#
+# - execut: #475

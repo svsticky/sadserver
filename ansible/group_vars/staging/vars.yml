@@ -130,8 +130,6 @@ secret_outline:
 secret_koala_manual:
   password: "{{ vault_secret_koala_manual.password }}"
 
-freight_ssh_pub_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHQiL2YN1yBeUAwWZENc8lPK3Kj1kIG/57IbAuxL9yTk freight@dev.svsticky.nl"
-
 secret_healthchecks_io:
   ping_key: "{{ vault_secret_healthchecks_io.ping_key }}"
 

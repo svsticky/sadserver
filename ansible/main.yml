@@ -26,14 +26,12 @@
       tags: "docker"
     - role: "databases"
       tags: "databases"
+    - role: "nvm"
+      tags: "nvm"
     - role: "backups"
       tags: "backups"
     - role: "nginx"
       tags: "nginx"
-    - role: "php"
-      tags: "php"
-    - role: "node"
-      tags: "node"
     - role: "certbot"
       tags: "certbot"
     - role: "redis"
@@ -90,3 +88,5 @@
 #
 # - execut: #475
 # - freight: #477
+# - php: #474
+# - node: #467

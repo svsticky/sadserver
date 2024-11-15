@@ -30,7 +30,8 @@ http {
   include /etc/nginx/mime.types;
   default_type application/octet-stream;
 
-  # Added this for phpMyAdmin
+  # Added this for phpMyAdmin.
+  # phpMyAdmin was removed but this line not, just to be sure
   server_names_hash_bucket_size 128;
 
   charset UTF-8;

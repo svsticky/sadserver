@@ -5,6 +5,8 @@
     shell: "/usr/sbin/nologin"
     home: "/home/backup"
     system: true
+    groups: "nvm"
+    append: true
 
 - name: "install awscli"
   ansible.builtin.apt:

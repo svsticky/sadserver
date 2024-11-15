@@ -30,8 +30,6 @@
       tags: "backups"
     - role: "nginx"
       tags: "nginx"
-    - role: "php"
-      tags: "php"
     - role: "node"
       tags: "node"
     - role: "certbot"
@@ -91,3 +89,4 @@
 # one can easily restore the role by reverting the following PRs:
 #
 # - execut: #475
+# - php: #474

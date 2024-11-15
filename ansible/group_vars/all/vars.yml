@@ -9,7 +9,7 @@ canonical_hostname: "{{ inventory_hostname }}"
 
 tmp_dir: "/tmp"
 
-# the upload limit for php-fpm and nginx in megabytes
+# the upload limit for nginx in megabytes
 upload_limit: 30
 
 slack_notifications:

@@ -31,7 +31,7 @@
     state: "link"
   become: true
 
-- name: "Update Nix to the latest version"
+- name: "Update Nix to the latest version" # See https://nix.dev/manual/nix/2.24/installation/upgrading.html
   ansible.builtin.shell: "nix-channel --update && nix-env -iA nixpkgs.nix nixpkgs.cacert"
   notify:
     - "systemctl daemon-reload"

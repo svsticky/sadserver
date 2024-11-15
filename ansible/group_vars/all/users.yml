@@ -32,6 +32,8 @@ users:
         state: "present"
       - username: "TobiasDeBruijn"
         state: "present"
+      - username: "LucasDissie"
+        state: "absent"
       - username: "PrinceMordred"
         state: "absent"
       - username: "SanderHageman"
@@ -43,6 +45,8 @@ users:
       - username: "sam32123"
         state: "present"
       - username: "olafboekholt"
+        state: "present"
+      - username: "spookyboy99"
         state: "present"
 
   - name: "hugo"
@@ -157,6 +161,21 @@ users:
       - username: "sam32123"
         state: "present"
 
+  - name: "olaf"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "olafboekholt"
+        state: "present"
+
+  - name: "mervin"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "spookyboy99"
+        state: "present"
 
 
   - name: "bestuur"
@@ -229,9 +248,9 @@ users:
     home_prefix: "/var/www"
     state: "present"
     github_accounts:
-      - username: "Siem2l"
-        state: "absent"
       - username: "SilasPeters"
+        state: "present"
+      - username: "olafboekholt"
         state: "present"
 
   - name: "hacc"

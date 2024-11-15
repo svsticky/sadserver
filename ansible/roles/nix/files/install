@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# NOTE
+# This whole file, except for this note, is the official install script
+# available from https://nixos.org/download/#nix-install-linux
+# To update the nix-version, please see if the official install method has
+# changed
+# END NOTE
+
 # This script installs the Nix package manager on your system by
 # downloading a binary distribution and running its installer script
 # (which in turn creates and populates /nix).
@@ -25,26 +32,77 @@ require_util() {
 }
 
 case "$(uname -s).$(uname -m)" in
-    Linux.x86_64) system=x86_64-linux; hash=faf9f146a38a3836c807d97cd3eb9cd9c9073d498e3b685c5e3da9b02b4aa9da;;
-    Linux.i?86) system=i686-linux; hash=b027043444b5a8a4189549484876f3c3a65538349c7ced4b9a64bea1b5d68a5b;;
-    Linux.aarch64) system=aarch64-linux; hash=245fa43894c5f51df7debb657a19b7c4bb06926c5023ae615a99bd9ae3125cfe;;
-    Darwin.x86_64) system=x86_64-darwin; hash=f3902fec5e15786b13622467f73e4e8848f5b861bd3d58c48714bd775a315cb1;;
-    Darwin.arm64) system=aarch64-darwin; hash=35f3ccf27fccec857d622cf31e0d9307e2c145fb7cc59720b73bf081282ca917;;
+    Linux.x86_64)
+        hash=23ce50919b933b89b0dd4b0d5ba07d2dd6e4201a2f06b00de5388c0a4209b09c
+        path=1qcc15z77jqpdqsp5k0k6rjmkw7f4zfb/nix-2.25.2-x86_64-linux.tar.xz
+        system=x86_64-linux
+        ;;
+    Linux.i?86)
+        hash=3ce95b7ad138bebaaac2be79a44d5c2b43a3e2483e36bc1c0821a6a9fc0e15bf
+        path=lxb16gfx6bmnqdmy21c879pz8havz5bx/nix-2.25.2-i686-linux.tar.xz
+        system=i686-linux
+        ;;
+    Linux.aarch64)
+        hash=8744e31c075c31272e7bab6995d5f15623a5de94f935a7a7420026d36f9cc90e
+        path=idfaklsf96dbi7xy42a0bbmynvv4czsk/nix-2.25.2-aarch64-linux.tar.xz
+        system=aarch64-linux
+        ;;
+    Linux.armv6l)
+        hash=6fcf943f47e5b0af0285720ee9e0a83ed8770ca4315c20589e23d334b6eeba80
+        path=39lnsjhvr8lh2vwfhicb2rr5cyjmbb77/nix-2.25.2-armv6l-linux.tar.xz
+        system=armv6l-linux
+        ;;
+    Linux.armv7l)
+        hash=e72bb87a8c78bc4d96710b742dfa841f342b038350ca265809df7a3eb50b2398
+        path=b71slfhcs6i11q8zr15891j0ss7r4dv4/nix-2.25.2-armv7l-linux.tar.xz
+        system=armv7l-linux
+        ;;
+    Linux.riscv64)
+        hash=6d17a3c543ec14df59af59eeeb0ba89b02411754128f5a276ff70a6d3dca25b2
+        path=cbpn7058y7m1v3xlal4i6qy212ddyffb/nix-2.25.2-riscv64-linux.tar.xz
+        system=riscv64-linux
+        ;;
+    Darwin.x86_64)
+        hash=94b601f9f6195d100da48b29cca21d0d81ab77c0fa3060554c3e46a07cabb179
+        path=z8brwk78bgzvs56hbz77rgkvkv28h1nd/nix-2.25.2-x86_64-darwin.tar.xz
+        system=x86_64-darwin
+        ;;
+    Darwin.arm64|Darwin.aarch64)
+        hash=82355d662cae1f23ed1e22225203dca70c9012a2627b6a1c15bcfd3761849eb4
+        path=pzpn97w5kgas9xfh4rir0b9rgh5v7j6w/nix-2.25.2-aarch64-darwin.tar.xz
+        system=aarch64-darwin
+        ;;
     *) oops "sorry, there is no binary distribution of Nix for your platform";;
 esac
 
-url="https://releases.nixos.org/nix/nix-2.3.16/nix-2.3.16-$system.tar.xz"
+# Use this command-line option to fetch the tarballs using nar-serve or Cachix
+if [ "${1:-}" = "--tarball-url-prefix" ]; then
+    if [ -z "${2:-}" ]; then
+        oops "missing argument for --tarball-url-prefix"
+    fi
+    url=${2}/${path}
+    shift 2
+else
+    url=https://releases.nixos.org/nix/nix-2.25.2/nix-2.25.2-$system.tar.xz
+fi
 
-tarball="$tmpDir/$(basename "$tmpDir/nix-2.3.16-$system.tar.xz")"
+tarball=$tmpDir/nix-2.25.2-$system.tar.xz
 
-require_util curl "download the binary tarball"
 require_util tar "unpack the binary tarball"
 if [ "$(uname -s)" != "Darwin" ]; then
     require_util xz "unpack the binary tarball"
 fi
 
-echo "downloading Nix 2.3.16 binary tarball for $system from '$url' to '$tmpDir'..."
-curl -L "$url" -o "$tarball" || oops "failed to download '$url'"
+if command -v curl > /dev/null 2>&1; then
+    fetch() { curl --fail -L "$1" -o "$2"; }
+elif command -v wget > /dev/null 2>&1; then
+    fetch() { wget "$1" -O "$2"; }
+else
+    oops "you don't have wget or curl installed, which I need to download the binary tarball"
+fi
+
+echo "downloading Nix 2.25.2 binary tarball for $system from '$url' to '$tmpDir'..."
+fetch "$url" "$tarball" || oops "failed to download '$url'"
 
 if command -v sha256sum > /dev/null 2>&1; then
     hash2="$(sha256sum -b "$tarball" | cut -c1-64)"
@@ -67,6 +125,7 @@ tar -xJf "$tarball" -C "$unpack" || oops "failed to unpack '$url'"
 script=$(echo "$unpack"/*/install)
 
 [ -e "$script" ] || oops "installation script is missing from the binary tarball!"
+export INVOKED_FROM_INSTALL_IN=1
 "$script" "$@"
 
 } # End of wrapping

@@ -4,29 +4,23 @@ server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
 
-  server_name
-    digidecs.{{ canonical_hostname }}
-    declaraties.{{ canonical_hostname }}
-    declareren.{{ canonical_hostname }};
+  server_name digidecs.{{ canonical_hostname }};
 
-  ssl_certificate      /etc/letsencrypt/live/digidecs.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/digidecs.{{ canonical_hostname }}/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/digidecs.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/digidecs.{{ canonical_hostname }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/digidecs.{{ canonical_hostname }}/chain.pem;
 
-  root /var/www/digidecs.{{ canonical_hostname }};
-
-  index index.php
-    index.html index.htm;
-
   include includes/security-headers.conf;
-  include includes/php-parameters.conf;
 
-
-  location ~* /.git/ {
-    deny all;
+  location /api {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_intercept_errors on;
+    proxy_pass http://localhost:{{ digidecs.server_port }};
   }
 
   location / {
-    try_files $uri $uri/ /index.php?q=$uri&$args =404;
+    index index.html;
+    root /var/www/digidecs/frontend;
   }
 }

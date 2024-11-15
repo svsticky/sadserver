@@ -104,11 +104,14 @@ case "${SOURCE}" in
           FILE_NAME="${FILE_TITLE}.tar.gz"
 
           sudo -u backup mkdir -p /tmp/contentful-export
-          sudo -u backup -H npx contentful-cli space export \
-            --management-token {{ secret_contentful_export.token }} \
-            --space-id {{ secret_contentful_export.space_id }} \
-            --download-assets \
-            --export-dir /tmp/contentful-export
+          sudo -Hu backup bash -c `
+          `'source {{ nvm.script }} && nvm install {{ backups_node_version }} &&'`
+          `' nvm exec {{ backups_node_version }} npx contentful-cli space export'`
+          `' --management-token {{ secret_contentful_export.token }}'`
+          `' --space-id {{ secret_contentful_export.space_id }}'`
+          `' --download-assets'`
+          `' --export-dir /tmp/contentful-export'
+
           upload_backup_to_s3 < <(tar \
             -c -f - -C /tmp contentful-export \
             | gzip -9)

@@ -1,60 +1,83 @@
 ---
-- name: "create user for digidecs"
+- name: "Create user for digidecs"
   ansible.builtin.user:
-    name: "digidecs"
-    home: "/var/www/digidecs/"
+    name: digidecs
+    home: "/var/www/digidecs"
     shell: "/usr/sbin/nologin"
     system: true
+    state: "present"
 
-- name: "install composer"
+- name: "Create digidecs frontend directory"
+  ansible.builtin.file:
+    name: "/var/www/digidecs/frontend"
+    owner: "digidecs"
+    group: "digidecs"
+    mode: "2775"
+    state: "directory"
+
+- name: "Create digidecs server directory"
+  ansible.builtin.file:
+    name: "/var/www/digidecs/server"
+    owner: "digidecs"
+    group: "digidecs"
+    mode: "2775"
+    state: "directory"
+
+- name: "install dependencies"
   ansible.builtin.apt:
     name:
-      - "composer"
-      - "php7.4-curl"
-      - "php7.4-bcmath"
+      - "python3-dotenv-cli"
     state: "present"
-  become: true
 
-- name: "disable git safe directory feature for digidecs folder" # noqa command-instead-of-module
-  ansible.builtin.command: "git config --global --add safe.directory /var/www/digidecs.{{ canonical_hostname }}"
-
-- name: "clone digidecs repository"
-  ansible.builtin.git:
-    repo: "https://github.com/svsticky/digidecs.git"
-    dest: "/var/www/digidecs.{{ canonical_hostname }}"
-    version: "master"
-  diff: false
-
-- name: "place config file"
-  ansible.builtin.template:
-    src: "config.php.j2"
-    dest: "/var/www/digidecs.{{ canonical_hostname }}/config.php"
+- name: "Download and extract digidecs frontend"
+  ansible.builtin.unarchive:
+    src: https://github.com/svsticky/digidecs/releases/download/{{ digidecs.git_tag }}/frontend.tar.gz
+    dest: "/var/www/digidecs/frontend"
+    remote_src: true
     owner: "digidecs"
     group: "digidecs"
-    mode: "660"
+    mode: "775"
+    extra_opts:
+    - "--strip-components=1"
 
-- name: "copy nginx configuration"
+- name: "Download and extract digidecs server"
+  ansible.builtin.get_url:
+    url: https://github.com/svsticky/digidecs/releases/download/{{ digidecs.git_tag }}/server-x86_64-unknown-linux-musl
+    dest: "/var/www/digidecs/server"
+    owner: "digidecs"
+    group: "digidecs"
+    mode: "775"
+  notify: "restart digidecs"
+
+- name: "Copy nginx configuration"
   ansible.builtin.template:
     src: "digidecs.conf.j2"
-    dest: "/etc/nginx/sites-available/digidecs.{{ canonical_hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/digidecs.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
-- name: "enable nginx configuration"
-  ansible.builtin.file:
-    src: "/etc/nginx/sites-available/digidecs.{{ canonical_hostname }}.conf"
-    path: "/etc/nginx/sites-enabled/digidecs.{{ canonical_hostname }}.conf"
-    state: "link"
-  notify: "reload nginx"
+- name: "Template environment file for digidecs"
+  ansible.builtin.template:
+    src: "env.j2"
+    dest: "/var/www/digidecs/server/.env"
+  diff: false
+  notify: "restart digidecs"
 
-- name: "run composer"
-  community.general.composer:
-    working_dir: "/var/www/digidecs.{{ canonical_hostname }}"
-    command: "install"
+- name: "Template config file for digidecs"
+  ansible.builtin.template:
+    src: "digidecs.json.j2"
+    dest: "/var/www/digidecs/server/config.json"
+  diff: false
+  notify: "restart digidecs"
 
-- name: "set permissions on digidecs files"
-  ansible.builtin.file:
-    path: "/var/www/digidecs.{{ canonical_hostname }}"
-    owner: "digidecs"
-    group: "digidecs"
-    recurse: true
-    state: "directory"
+- name: "template systemd service file for digidecs"
+  ansible.builtin.template:
+    src: "digidecs.service.j2"
+    dest: "/etc/systemd/system/digidecs.service"
+  notify: "restart digidecs"
+
+- name: "run digidecs service"
+  ansible.builtin.systemd:
+    unit: "digidecs.service"
+    state: "started"
+    enabled: true
+    daemon-reload: true

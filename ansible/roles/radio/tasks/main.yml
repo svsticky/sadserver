@@ -6,6 +6,8 @@
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
+    groups: "nvm"
+    append: true
 
 - name: "copy nginx configuration"
   ansible.builtin.template:
@@ -53,7 +55,7 @@
 
   - name: "run npm install"
     ansible.builtin.shell: |
-      source /var/www/radio/.nvm/nvm.sh
+      source {{ nvm.script }}
       nvm use
       npm install
     args:
@@ -64,7 +66,7 @@
     block:
       - name: "build website"
         ansible.builtin.shell: |
-          source /var/www/radio/.nvm/nvm.sh
+          source {{ nvm.script }}
           nvm use
           npm run build
         args:

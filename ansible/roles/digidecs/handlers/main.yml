@@ -1,0 +1,5 @@
+---
+- name: "restart digidecs"
+  ansible.builtin.service:
+    name: "digidecs"
+    state: "restarted"

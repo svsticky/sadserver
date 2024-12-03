@@ -9,7 +9,7 @@ services:
     restart: always
     network_mode: host # TODO replace this once postgres has been dockerized
     # ports:
-    #   - "3000:4568"
+    #   - "4568:3000"
     healthcheck:
       test: |
         wget -qO- http://localhost:${PORT}/_health | grep -q OK \

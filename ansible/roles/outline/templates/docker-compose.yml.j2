@@ -3,10 +3,13 @@
 services:
 
   outline:
+    container_name: outline
     image: outlinewiki/outline:{{ outline_config.version }}
     env_file: .env
-    restart: on-failure:3
-    network_mode: host # TODO replace this
+    restart: always
+    network_mode: host # TODO replace this once postgres has been dockerized
+    # ports:
+    #   - "3000:4568"
     healthcheck:
       test: |
         wget -qO- http://localhost:${PORT}/_health | grep -q OK \
@@ -16,7 +19,7 @@ services:
       start_period: 30s
       start_interval: 10s
     volumes:
-      - storage-data:{{ outline_config.volume_path }}
+      - storage-data:/var/lib/outline/data
         #    depends_on:
         #      - postgres
         #      - redis

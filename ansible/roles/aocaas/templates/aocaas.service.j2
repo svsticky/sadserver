@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Run AoCaaS
+OnFailure=failure-notificator@%n.service
+
+[Service]
+Type=simple
+User=aocaas
+Group=aocaas
+Restart=always
+WorkingDirectory=/var/www/aocaas
+ExecStart=/var/www/aocaas/bin/aocaas
+
+[Install]
+WantedBy=multi-user.target

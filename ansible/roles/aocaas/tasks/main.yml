@@ -1,0 +1,42 @@
+- name: Create user for AoCaaS
+  ansible.builtin.user:
+    name: aosaas
+    home: /var/www/aocaas
+    shell: /usr/sbin/nologin
+    system: true
+    state: present
+
+- name: Download and extract the AoCaaS binary
+  ansible.builtin.get_url:
+    # Fix this later
+    url: https://github.com/svsticky/AoCaaS/actions/runs/12240600267/artifacts/2295080056
+    dest: /var/www/aocaas/bin/artifact.zip
+    owner: aocaas
+    group: aocaas
+    mode: '775'
+  notify: restart aocaas
+
+- name: Extract the AoCaaS binary
+  ansible.builtin.unarchive:
+    src: /var/www/aocaas/bin/artifact.zip
+    dest: /var/www/aocaas/
+  notify: restart aocaas
+
+- name: Copy nginx configuration
+  ansible.builtin.template:
+    src: aocaas.conf.j2
+    dest: /etc/nginx/sites-enabled/aocaas.{{ canonical_hostname }}.conf
+  notify: reload nginx
+
+- name: Template systemd service file
+  ansible.builtin.template:
+    src: aocaas.service.j2
+    dest: /etc/systemd/system/aocaas.service
+  notify: restart aocaas
+
+- name: Run `aocaas` service
+  ansible.builtin.systemd:
+    unit: aocaas.service
+    state: started
+    enabled: true
+    daemon-reload: true

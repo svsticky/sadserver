@@ -1,0 +1,4 @@
+- name: Restart AoCaaS
+  ansible.builtin.service:
+    name: aocaas
+    state: restarted

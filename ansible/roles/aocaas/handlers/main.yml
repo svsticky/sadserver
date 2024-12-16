@@ -1,4 +1,5 @@
-- name: Restart AoCaaS
+---
+- name: "Restart AoCaaS"
   ansible.builtin.service:
-    name: aocaas
-    state: restarted
+    name: "aocaas"
+    state: "restarted"

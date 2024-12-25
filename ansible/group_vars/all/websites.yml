@@ -91,14 +91,6 @@ websites:
     state: "present"
     authenticated: true
 
-  - name: "phpmyadmin.{{ canonical_hostname }}"
-    user: "phpmyadmin"
-    alternative_names:
-      - "pma.{{ canonical_hostname }}"
-    # You have to remove the task include of phpmyadmin.yml to remove this
-    # completely
-    state: "absent"
-
   - name: "pretix.{{ canonical_hostname }}"
     custom_config: true
     alternative_names:
@@ -183,91 +175,6 @@ websites:
     authenticated: true
     state: "present"
 
-  - name: "execut-speakers.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "present"
-
-  - name: "execut-partners.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "absent"
-
-  - name: "execut-survey.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "present"
-
-  - name: "execut-landing.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-     - "execut-referer-tracking"
-    state: "present"
-
-  - name: "execut-2018.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "present"
-
-  - name: "execut-2019.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "present"
-
-  - name: "execut-2020.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "present"
-
-  - name: "execut-2023.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    custom_config: true
-    state: "present"
-
-  - name: "execut-aftermovie.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "present"
-
-  - name: "execut-app.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes:
-      - "execut-referer-tracking"
-    state: "absent"
-
-  - name: "execut-2021.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes: []
-    custom_config: true
-    state: "present"
-
-  - name: "execut.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    extra_includes: []
-    custom_config: true
-    state: "present"
-
   - name: "snic-preview.{{ canonical_hostname }}"
     user: "snic"
     alternative_names: []
@@ -283,16 +190,6 @@ websites:
 
   - name: "pxl-docs.{{ canonical_hostname }}"
     user: "pxl"
-    alternative_names: []
-    state: "present"
-
-  - name: "execut-feedback.{{ canonical_hostname }}"
-    user: "symposium"
-    alternative_names: []
-    state: "present"
-
-  - name: "execut-qa.{{ canonical_hostname }}"
-    user: "symposium"
     alternative_names: []
     state: "present"
 

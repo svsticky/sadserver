@@ -6,7 +6,14 @@
   block:
 
   - name: "Add Docker apt repository"
-    ansible.builtin.include_tasks: "docker-apt-repo.yml"
+    ansible.builtin.deb822_repository: # See https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+      name: "docker"
+      types: "deb"
+      uris: "https://download.docker.com/linux/{{ ansible_distribution | lower }}"
+      suites: "{{ ansible_distribution_release }}"
+      components: "stable"
+      architectures: "amd64"
+      signed_by: "https://download.docker.com/linux/ubuntu/gpg"
 
   - name: "Install Docker packages"
     ansible.builtin.package:
@@ -16,6 +23,7 @@
         - "containerd.io"
         - "docker-buildx-plugin"
       state: "present"
+      update_cache: true
 
   - name: "Ensure Docker is started and enabled at boot"
     ansible.builtin.service:

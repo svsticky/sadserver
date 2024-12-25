@@ -26,14 +26,12 @@
       tags: "docker"
     - role: "databases"
       tags: "databases"
+    - role: "nvm"
+      tags: "nvm"
     - role: "backups"
       tags: "backups"
     - role: "nginx"
       tags: "nginx"
-    - role: "php"
-      tags: "php"
-    - role: "node"
-      tags: "node"
     - role: "certbot"
       tags: "certbot"
     - role: "redis"
@@ -44,8 +42,6 @@
       tags: "websites"
     - role: "digidecs"
       tags: "digidecs"
-    - role: "freight"
-      tags: "freight"
     - role: "aas"
       tags: "aas"
     - role: "static_sticky"
@@ -62,8 +58,6 @@
       tags: "oauth"
     - role: "outline"
       tags: "outline"
-    - role: "execut"
-      tags: "execut"
     - role: "radio"
       tags: "radio"
     - role: "sodi"
@@ -87,3 +81,12 @@
       tags: "always"
     - role: "rooster"
       tags: "rooster"
+
+# Following is a list of removed roles, which we did have.
+# If, for some reason, we ever want to use on of the removed services again,
+# one can easily restore the role by reverting the following PRs:
+#
+# - execut: #475
+# - freight: #477
+# - php: #474
+# - node: #467

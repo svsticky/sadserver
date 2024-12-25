@@ -49,12 +49,6 @@ secret_backup_aws:
   access_key: "{{ vault_secret_backup_aws.access_key }}"
   secret_key: "{{ vault_secret_backup_aws.secret_key }}"
 
-secret_execut_website_aws:
-  access_key: "{{ vault_secret_execut_website_aws.access_key }}"
-  secret_key: "{{ vault_secret_execut_website_aws.secret_key }}"
-
-secret_execut_website_secretkey: "{{ vault_secret_execut_website_secretkey }}"
-
 # To change, regenerate the token in Mollie's web interface.
 secret_mollie_token: "{{ vault_secret_mollie_token }}"
 
@@ -136,8 +130,6 @@ secret_outline:
 secret_koala_manual:
   password: "{{ vault_secret_koala_manual.password }}"
 
-freight_ssh_pub_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHQiL2YN1yBeUAwWZENc8lPK3Kj1kIG/57IbAuxL9yTk freight@dev.svsticky.nl"
-
 secret_healthchecks_io:
   ping_key: "{{ vault_secret_healthchecks_io.ping_key }}"
 
@@ -158,7 +150,7 @@ secret_chroma:
 
 fallacious_rooster:
   git_tag: "0.1.4"
-  
+
 digidecs:
   git_tag: "0.1.0"
   server_port: 65437

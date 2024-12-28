@@ -42,7 +42,7 @@ users:
         state: "present"
       - username: "stickyPiston"
         state: "present"
-      - username: "sam32123"
+      - username: "SamStaijen"
         state: "present"
       - username: "olafboekholt"
         state: "present"
@@ -158,7 +158,7 @@ users:
     home_prefix: "/home"
     state: "present"
     github_accounts:
-      - username: "sam32123"
+      - username: "SamStaijen"
         state: "present"
 
   - name: "olaf"

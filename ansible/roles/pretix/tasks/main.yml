@@ -98,7 +98,7 @@
     state: "present"
     virtualenv: "/var/www/pretix/venv"
     virtualenv_python: "python3.9"
-    
+
   with_items:
     - name: "gunicorn"
       version: "20.1.0"

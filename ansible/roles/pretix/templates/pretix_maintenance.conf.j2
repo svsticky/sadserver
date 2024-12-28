@@ -1,0 +1,21 @@
+# {{ ansible_managed }}
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name ~^(pretix|tickets)\.{{ canonical_hostname }};
+
+  ssl_certificate /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/pretix.{{ canonical_hostname }}/chain.pem;
+
+  include includes/block-cert-validation-path.conf;
+  add_header Referrer-Policy same-origin;
+  add_header X-XSS-Protection "1; mode=block";
+  add_header X-Content-Type-Options "nosniff";
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+  # Security header file not included because frames
+
+  root /var/www/pretix-maintenance;
+  index pretix-maintenance.html;
+}

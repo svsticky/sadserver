@@ -62,13 +62,19 @@
 
 - name: "create virtualenv if not exists, update pip and tools"
   ansible.builtin.pip:
-    name:
-      - "pip"
-      - "setuptools"
-      - "wheel"
-    state: "latest"
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
     virtualenv: "/var/www/pretix/venv"
     virtualenv_python: "python3.8"
+    state: "present"
+  with_items:
+    # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail
+    - name: pip
+      version: "24.0"
+    - name: "setuptools"
+      version: "latest"
+    - name: "wheel"
+      version: "latest"
   become: true
   become_user: "pretix"
 
@@ -92,6 +98,7 @@
     state: "present"
     virtualenv: "/var/www/pretix/venv"
     virtualenv_python: "python3.9"
+    
   with_items:
     - name: "gunicorn"
       version: "20.1.0"
@@ -126,7 +133,46 @@
     - "pretix-worker.service"
     - "pretix-runperiodic.timer"
 
+# Maintenance directory, create if maintenance mode
+- name: "ensure pretix maintenance mode directory is present"
+  when: secret_pretix.pretix_maintenance_mode
+  ansible.builtin.file:
+    path: "/var/www/pretix-maintenance"
+    state: "directory"
+    owner: "pretix"
+    group: "pretix"
+
+# Maintenance directory, remove if not maintenance mode
+- name: "ensure pretix maintenance mode directory is present"
+  when: not secret_pretix.pretix_maintenance_mode
+  ansible.builtin.file:
+    path: "/var/www/pretix-maintenance"
+    state: "absent"
+    owner: "pretix"
+    group: "pretix"
+
+# Maintenance mode page
+- name: "Place Maintenance page if maintenance mode is enabled"
+  when: secret_pretix.pretix_maintenance_mode
+  ansible.builtin.template:
+    owner: "pretix"
+    group: "pretix"
+    src: "pretix_maintenance.html.j2"
+    dest: "/var/www/pretix-maintenance/pretix-maintenance.html"
+
+# Maintenance nginx configuration
+- name: "place pretix's maintenace nginx configuration"
+  when: secret_pretix.pretix_maintenance_mode
+  ansible.builtin.template:
+    src: "pretix_maintenance.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ dest_filename }}"
+  vars:
+    dest_filename: "pretix.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+# Regular nginx configuration
 - name: "place pretix's nginx configuration"
+  when: not secret_pretix.pretix_maintenance_mode
   ansible.builtin.template:
     src: "pretix.conf.j2"
     dest: "/etc/nginx/sites-available/{{ dest_filename }}"
@@ -134,6 +180,7 @@
     dest_filename: "pretix.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
+# Does either maintenance mode or regular mode
 - name: "enable pretix's nginx configuration"
   ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ filename }}"

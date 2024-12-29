@@ -18,4 +18,33 @@ server {
 
   root /var/www/pretix-maintenance;
   index pretix-maintenance.html;
+
+  location /control {
+    proxy_pass http://localhost:8345;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+  }
+
+  location /media/ {
+    alias /var/www/pretix/data/media/;
+    expires 7d;
+  }
+
+  location ^~ /media/cachedfiles {
+    deny all;
+    return 404;
+  }
+
+  location ^~ /media/invoices {
+    deny all;
+    return 404;
+  }
+
+  location /static/ {
+    alias /var/www/pretix/venv/lib/python3.8/site-packages/pretix/static.dist/;
+    access_log off;
+    expires 365d;
+    add_header Cache-Control "public";
+  }
 }

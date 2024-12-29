@@ -19,6 +19,8 @@ server {
   root /var/www/pretix-maintenance;
   index pretix-maintenance.html;
 
+  error_page 404 =200 /pretix-maintenance.html;
+
   location /control {
     proxy_pass http://localhost:8345;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

@@ -7,5 +7,6 @@ OnFailure=failure-notificator@%n.service
 [Service]
 # If, compared to UTC, we are between sunday 22:00 and monday 05:00, we want
 # maintenance mode and otherwise not.
-ExecStart=if [[ `date -u +%a` == "su" && `date -u +%H` > 21 || `date -u +%a` == "mo" && `date -u +%H` < 5` ]] then ln -sf {{ pretix_maintenance_directory }}/maintenance-nginx.conf /etc/nginx/sites-available/pretix.{{ canonical_hostname }}.conf; else ln -sf {{ pretix_maintenance_directory }}/regular-nginx.conf /etc/nginx/sites-available/pretix.{{ canonical_hostname }}.conf; fi && systemctl reload nginx
-#TODO use ternary on {maintenance,regular}-nginx.conf
+ExecStart=if [[ `date -u +%a` == "su" && `date -u +%H` > 21 || `date -u +%a` ==
+"mo" && `date -u +%H` < 5` ]] then touch '/var/www/pretix/MAINTENANCE_MODE';
+else rm '/var/www/pretix/MAINTENANCE_MODE'; fi && systemctl reload nginx

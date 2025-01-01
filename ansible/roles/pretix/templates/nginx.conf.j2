@@ -16,12 +16,19 @@ server {
   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
   # Security header file not included because frames
 
-  root /var/www/pretix-maintenance;
-  index pretix-maintenance.html;
+  location / {
+		if (-f /var/www/pretix/MAINTENANCE_MODE) { # TODO abstract to variable
+		    error_page 503 /503.html;
+		    return 503;
+		}
 
-  error_page 404 =200 /pretix-maintenance.html;
+    proxy_pass http://localhost:8345/;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+  }
 
-  location ~ ^/(control|download) {
+  location ~ ^/(control|download) { # Available during maintenance mode
     proxy_pass http://localhost:8345;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto https;

@@ -23,4 +23,4 @@
   ansible.builtin.service:
     name: "pretix-maintenance.service" # This service reloads nginx
     state: "started"
-  listen: "pretix deploy desired nginx"
+  listen: "pretix reload nginx"

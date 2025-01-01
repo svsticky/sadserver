@@ -137,12 +137,17 @@
   # basically means nginx gives a 503 page, defined here.
 - name: "prepare maintenance mode files"
   block:
-  - name: "place maintenance page" # TODO: move this to the pretix repo
+  - name: "place maintenance page"
     ansible.builtin.template:
       owner: "pretix"
       group: "pretix"
       src: "pretix_maintenance.html.j2"
       dest: "/var/www/pretix/pretix-maintenance.html"
+
+  - name: "install maintenance script to be run my systemd services"
+    ansible.builtin.template:
+      src: "pretix-maintenance.sh.j2"
+      dest: "/usr/local/bin/pretix-maintenance.sh"
 
   - name: "prepare maintenance mode services"
     ansible.builtin.template:
@@ -153,6 +158,9 @@
       - "pretix-maintenance.timer"
     notify:
       - "systemctl daemon-reload"
+
+  - name: "ensure daemon is reloaded"
+    ansible.builtin.meta: "flush_handlers"
 
   - name: "ensure maintenance mode timer is enabled"
     ansible.builtin.service:

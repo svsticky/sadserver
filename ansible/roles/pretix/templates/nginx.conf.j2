@@ -17,8 +17,8 @@ server {
   # Security header file not included because frames
 
   location / {
-		if (-f /var/www/pretix/MAINTENANCE_MODE) { # TODO abstract to variable
-		    error_page 503 /503.html;
+		if (-f /var/www/pretix/MAINTENANCE_MODE) {
+		    error_page 503 /var/www/pretix/pretix-maintenance.html;
 		    return 503;
 		}
 

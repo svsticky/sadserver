@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+##
+## This script checks the current UTC time, and based on that time
+## enables or disables the pretix maintenance mode.
+##
+## USAGE: pretix_maintenance.sh
+##
+
+# Unofficial Bash strict mode
+set -eEfuo pipefail
+IFS=$'\n\t'
+
+MARKER_PATH='/var/www/pretix/MAINTENANCE_MODE'
+
+HOUR=$(date -u +%H) # UTC hour
+DAY=$(date -u +%a) # UTC day
+
+if [[ "$DAY" == "su" && $HOUR -gt 21 || "$DAY" == "mo" && $HOUR -lt 5 ]]
+  then touch "$MARKER_PATH"; # Enable maintenance mode
+  else rm "$MARKER_PATH"; # Disable maintenance mode
+fi
+
+systemctl reload nginx # Apply changes

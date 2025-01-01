@@ -18,3 +18,9 @@
     - "pretix-web.service"
     - "pretix-worker.service"
   listen: "restart pretix"
+
+- name: "ensure maintenance mode is in desired state and reload nginx"
+  ansible.builtin.service:
+    name: "pretix-maintenance.service" # This service reloads nginx
+    state: "started"
+  listen: "pretix deploy desired nginx"

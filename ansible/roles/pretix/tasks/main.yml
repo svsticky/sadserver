@@ -1,4 +1,8 @@
 ---
+- name: "declare variables used in pretix tasks"
+  ansible.builtin.set_fact:
+    pretix_maintenance_directory: "/var/www/pretix-maintenance/"
+
 - name: "ensure pretix user is present"
   ansible.builtin.user:
     name: "pretix"
@@ -133,59 +137,87 @@
     - "pretix-worker.service"
     - "pretix-runperiodic.timer"
 
-# Maintenance directory, create if maintenance mode
-- name: "ensure pretix maintenance mode directory is present"
-  when: secret_pretix.pretix_maintenance_mode
-  ansible.builtin.file:
-    path: "/var/www/pretix-maintenance"
-    state: "directory"
-    owner: "pretix"
-    group: "pretix"
+  # These files are used when maintenance mode is on. Maintenance mode
+  # basically means nginx gives a 503 page, defined here.
+- name: "prepare maintenance mode files"
+  block:
+  - name: "ensure pretix maintenance mode directory is present" # TODO move pretix itself and these files into /var/www/pretix and /var/www/pretix/pretix.svsticky.nl or something"
+    ansible.builtin.file:
+      path: "{{ pretix_maintenance_directory }}"
+      state: "directory"
+      owner: "pretix"
+      group: "pretix"
 
-# Maintenance directory, remove if not maintenance mode
-- name: "ensure pretix maintenance mode directory is present"
-  when: not secret_pretix.pretix_maintenance_mode
-  ansible.builtin.file:
-    path: "/var/www/pretix-maintenance"
-    state: "absent"
-    owner: "pretix"
-    group: "pretix"
+  - name: "place maintenance page"
+    ansible.builtin.template:
+      owner: "pretix"
+      group: "pretix"
+      src: "pretix_maintenance.html.j2"
+      dest: "{{ pretix_maintenance_directory }}/pretix-maintenance.html"
 
-# Maintenance mode page
-- name: "Place Maintenance page if maintenance mode is enabled"
-  when: secret_pretix.pretix_maintenance_mode
-  ansible.builtin.template:
-    owner: "pretix"
-    group: "pretix"
-    src: "pretix_maintenance.html.j2"
-    dest: "/var/www/pretix-maintenance/pretix-maintenance.html"
+  - name: "prepare maintenance mode services"
+    ansible.builtin.template:
+      src: "systemd/{{ item }}.j2"
+      dest: "/etc/systemd/system/{{ item }}"
+    with_items:
+      - "pretix-maintenance.service"
+      - "pretix-maintenance.timer"
+    notify:
+      - "systemctl daemon-reload"
 
-# Maintenance nginx configuration
-- name: "place pretix's maintenace nginx configuration"
-  when: secret_pretix.pretix_maintenance_mode
-  ansible.builtin.template:
-    src: "pretix_maintenance.conf.j2"
-    dest: "/etc/nginx/sites-available/{{ dest_filename }}"
-  vars:
-    dest_filename: "pretix.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
+  - name: "ensure maintenance mode timer is enabled"
+    ansible.builtin.service:
+      name: "pretix-maintenance.timer"
+      state: "started"
+      enabled: "yes"
+      # Deliberatly do not start the service itself yet
 
-# Regular nginx configuration
-- name: "place pretix's nginx configuration"
-  when: not secret_pretix.pretix_maintenance_mode
-  ansible.builtin.template:
-    src: "pretix.conf.j2"
-    dest: "/etc/nginx/sites-available/{{ dest_filename }}"
-  vars:
-    dest_filename: "pretix.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
+  # To support easy maintenance mode toggling, we configure nginx slightly
+  # differently. Like usually, we have a symlink in 'sites-enabled' pointing to
+  # the config stored in 'sites-available'. However, this time the config in
+  # 'sites-available' is another symlink to either the maintenance config or
+  # regular config, stored in the maintenance directory. Toggling to
+  # maintenance mode means adjusting the second symlink, and reloading nginx.
+  #
+  # We further defined a systemd service earlier which ensures the maintenance mode is
+  # on or off, depending on if it should currently be on or off. This service
+  # is periodically triggered by a systemd timer.
+  #
+  # Lastly, when deploying, we do not want to configure nginx for either
+  # maintenance mode or regular mode, for both could be undesired in some
+  # scenarios. As a solution, rather than (manually) toggling the maintenance
+  # to the correct state immediatly afterwards and leaving a short gap, we let
+  # the script finish the nginx setup. We thus define in one place what mode
+  # should be deployed currently, and happen to trigger it periodically as well.
+  # This way, when the deployment is finished and pretix is accessible, it will
+  # always be in the desired state.
+- name: "set up nginx configs for pretix"
+  block:
+  - name: "place pretix's regular nginx configuration"
+    ansible.builtin.template:
+      src: "pretix.conf.j2"
+      dest: "{{ pretix_maintenance_directory }}/regular-nginx.conf"
+    notify: "pretix deploy desired nginx"
 
-# Does either maintenance mode or regular mode
-- name: "enable pretix's nginx configuration"
-  ansible.builtin.file:
-    src: "/etc/nginx/sites-available/{{ filename }}"
-    dest: "/etc/nginx/sites-enabled/{{ filename }}"
-    state: "link"
-  vars:
-    filename: "pretix.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
+  - name: "place pretix's maintenance nginx configuration"
+    ansible.builtin.template:
+      src: "pretix_maintenance.conf.j2"
+      dest: "{{ pretix_maintenance_directory }}/maintenance-nginx.conf"
+    notify: "pretix deploy desired nginx"
+
+  # This is what the systemd service does already (but sometimes for maintenance mode):
+  # - name: "use regular nginx conf"
+  #   ansible.builtin.file:
+  #     src: "{{ pretix_maintenance_directory }}/regular-nginx.conf"
+  #     dest: "/etc/nginx/sites-available/pretix.{{ canonical_hostname }}.conf"
+  #     state: "link"
+  #   notify: "reload nginx"
+
+  - name: "enable pretix's nginx configuration"
+    ansible.builtin.file:
+      src: "/etc/nginx/sites-available/{{ filename }}"
+      dest: "/etc/nginx/sites-enabled/{{ filename }}"
+      state: "link"
+    vars:
+      filename: "pretix.{{ canonical_hostname }}.conf"
+    notify: "pretix deploy desired nginx"

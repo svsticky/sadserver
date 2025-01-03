@@ -133,8 +133,8 @@
     - "pretix-worker.service"
     - "pretix-runperiodic.timer"
 
-  # These files are used when maintenance mode is on. Maintenance mode
-  # basically means nginx gives a 503 page, defined here.
+# These files are used when maintenance mode is on. Maintenance mode
+# basically means nginx gives a 503 page, defined here.
 - name: "prepare maintenance mode files"
   block:
   - name: "place maintenance page"

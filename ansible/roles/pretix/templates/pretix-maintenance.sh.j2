@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 
 ##
+## ABSTRACT:
 ## This script checks the current UTC time, and based on that time
 ## enables or disables the pretix maintenance mode.
+## This script also respects a maintenance lock, meaning that if the lock exists,
+## maintenance mode will be enabled regardless of anything.
+## Enable the lock by simply creating the marker at MARKER_PATH defined below.
+##
+## PURPOSE:
+## The goal is to compensate for the report cut-off being different for Mollie and
+## Pretix, as described in https://github.com/svsticky/sadserver/issues/487
+## This improves the treasurer's quality of life.
 ##
 ## USAGE: pretix_maintenance.sh
 ##
@@ -12,13 +21,22 @@ set -eEfuo pipefail
 IFS=$'\n\t'
 
 MARKER_PATH='/var/www/pretix/MAINTENANCE_MODE'
+MARKER_LOCK_PATH="${MARKER_PATH}_LOCK"
 
-HOUR=$(date -u +%H) # UTC hour
-DAY=$(date -u +%a) # UTC day
 
-if [[ "$DAY" == "su" && $HOUR -gt 21 || "$DAY" == "mo" && $HOUR -lt 5 ]]
-  then touch "$MARKER_PATH"; # Enable maintenance mode
-  else rm "$MARKER_PATH"; # Disable maintenance mode
+# If the maintenance lock exists, just ensure maintenance mode is enabled
+if [[ -f "$MARKER_LOCK_PATH" ]]; then
+  touch "$MARKER_PATH" # Enable maintenance mode
+  return
 fi
 
-systemctl reload nginx # Apply changes
+
+DAY=$(date -u +%a) # UTC day
+HOUR=$(date -u +%H) # UTC hour
+
+if [[ "$DAY" == "su" && $HOUR -gt 21 || "$DAY" == "mo" && $HOUR -lt 5 ]]; then
+  touch "$MARKER_PATH"; # Enable maintenance mode
+else
+  rm -f "$MARKER_PATH"; # Disable maintenance mode
+fi
+

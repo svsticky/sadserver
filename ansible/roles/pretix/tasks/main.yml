@@ -143,11 +143,14 @@
       group: "pretix"
       src: "pretix_maintenance.html.j2"
       dest: "/var/www/pretix/pretix-maintenance.html"
+    become: true
+    become_user: "pretix"
 
-  - name: "install maintenance script to be run my systemd services"
+  - name: "install maintenance script to be run by systemd services"
     ansible.builtin.template:
       src: "pretix-maintenance.sh.j2"
       dest: "/usr/local/bin/pretix-maintenance.sh"
+      mode: "755"
 
   - name: "prepare maintenance mode services"
     ansible.builtin.template:
@@ -167,19 +170,23 @@
       name: "pretix-maintenance.timer"
       state: "started"
       enabled: "yes"
-      # We do not need to start the service itself yet
 
-  # We do not simply reload nginx, but also run the previously defined systemd
-  # service to enable or disable maintenance mode - whichever is currently
-  # desired. This removes the need to specify during deploy whether we want
-  # maintenance mode on or off before we expose the service.
+  - name: "ensure maintenance mode is in right state"
+    ansible.builtin.service:
+      name: "pretix-maintenance.service"
+      state: "started"
+    changed_when: false
+    # Note: this should be run before reloading nginx, to prevent creating a
+    # short window of opportunity where people can buy tickets whilst
+    # maintenance mode should be on.
+
 - name: "set up nginx for pretix"
   block:
   - name: "place pretix's nginx configuration"
     ansible.builtin.template:
       src: "nginx.conf.j2"
       dest: "/etc/nginx/sites-available/pretix.{{ canonical_hostname }}.conf"
-    notify: "pretix reload nginx"
+    notify: "reload nginx"
 
   - name: "enable pretix's nginx configuration"
     ansible.builtin.file:
@@ -188,4 +195,4 @@
       state: "link"
     vars:
       filename: "pretix.{{ canonical_hostname }}.conf"
-    notify: "pretix reload nginx"
+    notify: "reload nginx"

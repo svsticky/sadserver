@@ -1,0 +1,14 @@
+---
+- name: "create pretix's maintenance lock"
+  ansible.builtin.file:
+    path: "/var/www/pretix/MAINTENANCE_MODE_LOCK"
+    state: "touch"
+  become: true
+  become_user: "pretix"
+
+- name: "ensure pretix's maintenance state is properly configured"
+  ansible.builtin.service:
+    name: "pretix-maintenance.service"
+    state: "started"
+  become: true
+  become_user: "root"

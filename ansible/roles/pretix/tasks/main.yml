@@ -133,59 +133,66 @@
     - "pretix-worker.service"
     - "pretix-runperiodic.timer"
 
-# Maintenance directory, create if maintenance mode
-- name: "ensure pretix maintenance mode directory is present"
-  when: secret_pretix.pretix_maintenance_mode
-  ansible.builtin.file:
-    path: "/var/www/pretix-maintenance"
-    state: "directory"
-    owner: "pretix"
-    group: "pretix"
+# These files are used when maintenance mode is on. Maintenance mode
+# basically means nginx gives a 503 page, defined here.
+- name: "prepare maintenance mode files"
+  block:
+  - name: "place maintenance page"
+    ansible.builtin.template:
+      owner: "pretix"
+      group: "pretix"
+      src: "pretix_maintenance.html.j2"
+      dest: "/var/www/pretix/pretix-maintenance.html"
+    become: true
+    become_user: "pretix"
 
-# Maintenance directory, remove if not maintenance mode
-- name: "ensure pretix maintenance mode directory is present"
-  when: not secret_pretix.pretix_maintenance_mode
-  ansible.builtin.file:
-    path: "/var/www/pretix-maintenance"
-    state: "absent"
-    owner: "pretix"
-    group: "pretix"
+  - name: "install maintenance script to be run by systemd services"
+    ansible.builtin.template:
+      src: "pretix-maintenance.sh.j2"
+      dest: "/usr/local/bin/pretix-maintenance.sh"
+      mode: "755"
 
-# Maintenance mode page
-- name: "Place Maintenance page if maintenance mode is enabled"
-  when: secret_pretix.pretix_maintenance_mode
-  ansible.builtin.template:
-    owner: "pretix"
-    group: "pretix"
-    src: "pretix_maintenance.html.j2"
-    dest: "/var/www/pretix-maintenance/pretix-maintenance.html"
+  - name: "prepare maintenance mode services"
+    ansible.builtin.template:
+      src: "systemd/{{ item }}.j2"
+      dest: "/etc/systemd/system/{{ item }}"
+    with_items:
+      - "pretix-maintenance.service"
+      - "pretix-maintenance.timer"
+    notify:
+      - "systemctl daemon-reload"
 
-# Maintenance nginx configuration
-- name: "place pretix's maintenace nginx configuration"
-  when: secret_pretix.pretix_maintenance_mode
-  ansible.builtin.template:
-    src: "pretix_maintenance.conf.j2"
-    dest: "/etc/nginx/sites-available/{{ dest_filename }}"
-  vars:
-    dest_filename: "pretix.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
+  - name: "ensure daemon is reloaded"
+    ansible.builtin.meta: "flush_handlers"
 
-# Regular nginx configuration
-- name: "place pretix's nginx configuration"
-  when: not secret_pretix.pretix_maintenance_mode
-  ansible.builtin.template:
-    src: "pretix.conf.j2"
-    dest: "/etc/nginx/sites-available/{{ dest_filename }}"
-  vars:
-    dest_filename: "pretix.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
+  - name: "ensure maintenance mode timer is enabled"
+    ansible.builtin.service:
+      name: "pretix-maintenance.timer"
+      state: "started"
+      enabled: "yes"
 
-# Does either maintenance mode or regular mode
-- name: "enable pretix's nginx configuration"
-  ansible.builtin.file:
-    src: "/etc/nginx/sites-available/{{ filename }}"
-    dest: "/etc/nginx/sites-enabled/{{ filename }}"
-    state: "link"
-  vars:
-    filename: "pretix.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
+  - name: "ensure maintenance mode is in right state"
+    ansible.builtin.service:
+      name: "pretix-maintenance.service"
+      state: "started"
+    changed_when: false
+    # Note: this should be run before reloading nginx, to prevent creating a
+    # short window of opportunity where people can buy tickets whilst
+    # maintenance mode should be on.
+
+- name: "set up nginx for pretix"
+  block:
+  - name: "place pretix's nginx configuration"
+    ansible.builtin.template:
+      src: "nginx.conf.j2"
+      dest: "/etc/nginx/sites-available/pretix.{{ canonical_hostname }}.conf"
+    notify: "reload nginx"
+
+  - name: "enable pretix's nginx configuration"
+    ansible.builtin.file:
+      src: "/etc/nginx/sites-available/{{ filename }}"
+      dest: "/etc/nginx/sites-enabled/{{ filename }}"
+      state: "link"
+    vars:
+      filename: "pretix.{{ canonical_hostname }}.conf"
+    notify: "reload nginx"

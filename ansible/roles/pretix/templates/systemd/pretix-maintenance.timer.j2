@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Weekly pretix maintenance
+# During week transitions, enable maintenance mode to make the treasurer's life easier
+
+[Timer]
+OnCalendar=Sun *-*-* 22:00:00 UTC
+OnCalendar=Mon *-*-* 05:00:00 UTC
+AccuracySec=5min
+
+[Install]
+WantedBy=timers.target

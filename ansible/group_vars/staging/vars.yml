@@ -61,7 +61,6 @@ secret_pretix:
   # To change, generate a new secret using something like `pwgen 128 1`and
   # re-deploy. Changing this value will invalidate all pretix sessions.
   django_secret: "{{ vault_secret_pretix.django_secret }}"
-  pretix_maintenance_mode: true
 
 secret_static_sticky:
   contentful_space_id: "{{ vault_secret_static_sticky.contentful_space_id }}"

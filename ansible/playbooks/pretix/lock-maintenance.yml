@@ -1,0 +1,8 @@
+---
+- hosts: "all"
+  remote_user: "ansible"
+  become: true
+
+  tasks:
+    - name: "lock and enable maintenance mode"
+      include_tasks: "$playbook_dir/../../../roles/pretix/tasks/lock-maintenance.yml"

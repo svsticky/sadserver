@@ -9,8 +9,8 @@ OnFailure=failure-notificator@%n.service
 User=mongoose
 Group=mongoose
 WorkingDirectory=/var/www/mongoose/undead-mongoose
-ExecStartPre=/usr/local/bin/uv run manage.py collectstatic --clear --no-input
-ExecStart=/usr/local/bin/uv run gunicorn undead_mongoose.wsgi \
+ExecStartPre={{ uv.install_dir }}/uv run manage.py collectstatic --clear --no-input
+ExecStart={{ uv.install_dir}}/uv run gunicorn undead_mongoose.wsgi \
                       --name mongoose --workers 2 \
                       --max-requests 1200 --max-requests-jitter 50 \
                       --log-level=info --bind=127.0.0.1:8352

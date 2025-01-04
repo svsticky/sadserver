@@ -7,7 +7,7 @@
 - name: "run migrations"
   become_user: "mongoose"
   become: true
-  ansible.builtin.command: "uv run --env-file .env manage.py migrate"
+  ansible.builtin.command: "{{ uv.install_dir }}/uv run --env-file .env manage.py migrate"
   args:
     chdir: "/var/www/mongoose/undead-mongoose"
   listen: "run migrations"

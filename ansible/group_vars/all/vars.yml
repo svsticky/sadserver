@@ -37,5 +37,5 @@ nvm:
   version: "v0.40.0" # Derived from the git tag
 
 uv:
-  install_dir: /usr/local/bin
+  install_dir: /usr/local/lib
   version: 0.5.14

@@ -35,3 +35,7 @@ nvm:
   directory: "/usr/local/bin/.nvm"
   script: "/usr/local/bin/.nvm/nvm.sh"
   version: "v0.40.0" # Derived from the git tag
+
+uv:
+  install_dir: /usr/local/bin
+  version: 0.5.14

@@ -2,12 +2,12 @@
 - name: "Install uv"
   ansible.builtin.shell: |
     set -o pipefail
-    if ! ~/.local/bin/uv --version | grep -q "uv {{ uv.version }}"; then
+    if ! {{ uv.install_dir }}/uv --version | grep -q "uv {{ uv.version }}"; then
       curl --proto '=https' --tlsv1.2 -LsSf \
         https://github.com/astral-sh/uv/releases/download/{{ uv.version }}/uv-installer.sh \
         | env UV_INSTALL_DIR="{{ uv.install_dir }}" sh
 
-      if ! ~/.local/bin/uv --version | grep -q "uv {{ uv.version }}"; then
+      if ! {{ uv.install_dir }}/uv --version | grep -q "uv {{ uv.version }}"; then
         exit 1
       else
         echo status=changed
@@ -15,3 +15,5 @@
     fi
   register: task
   changed_when: "'status=changed' in task.stdout"
+  args:
+    executable: "/bin/bash"

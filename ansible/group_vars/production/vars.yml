@@ -58,7 +58,8 @@ secret_backup_aws:
   secret_key: "{{ vault_secret_backup_aws.secret_key }}"
 
 # To change, regenerate the token in Mollie's web interface.
-secret_mollie_token: "{{ vault_secret_mollie_token }}"
+secret_mollie_token_koala: "{{ vault_secret_mollie_token_koala }}"
+secret_mollie_token_mongoose: "{{ vault_secret_mollie_token_mongoose }}"
 
 secret_pretix:
   # To change, generate a new password and set it in the Mailgun interface:

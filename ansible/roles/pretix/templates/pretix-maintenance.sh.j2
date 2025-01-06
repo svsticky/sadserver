@@ -27,7 +27,8 @@ MARKER_LOCK_PATH="${MARKER_PATH}_LOCK"
 # If the maintenance lock exists, just ensure maintenance mode is enabled
 if [[ -f "$MARKER_LOCK_PATH" ]]; then
   touch "$MARKER_PATH" # Enable maintenance mode
-  return
+	echo 'The maintenance lock was present, enabling maintenance mode'
+  exit
 fi
 
 
@@ -35,8 +36,10 @@ DAY=$(date -u +%a) # UTC day
 HOUR=$(date -u +%H) # UTC hour
 
 if [[ "$DAY" == "su" && $HOUR -gt 21 || "$DAY" == "mo" && $HOUR -lt 5 ]]; then
-  touch "$MARKER_PATH"; # Enable maintenance mode
+  touch "$MARKER_PATH";
+	echo 'Enabled maintenance mode'
 else
-  rm -f "$MARKER_PATH"; # Disable maintenance mode
+  rm -f "$MARKER_PATH";
+	echo 'Disabled maintenance mode'
 fi
 

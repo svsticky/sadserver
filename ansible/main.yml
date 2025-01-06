@@ -28,6 +28,8 @@
       tags: "databases"
     - role: "nvm"
       tags: "nvm"
+    - role: "uv"
+      tags: "uv"
     - role: "backups"
       tags: "backups"
     - role: "nginx"

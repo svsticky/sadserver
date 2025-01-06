@@ -73,6 +73,11 @@
       force: true
       version: "master"
     diff: false
+
+  - name: "install dependencies via uv"
+    ansible.builtin.command: "{{ uv.install_dir }}/uv sync"
+    args:
+      chdir: "/var/www/mongoose/undead-mongoose"
     notify:
       - "restart mongoose"
       - "run migrations"

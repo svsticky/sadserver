@@ -34,7 +34,7 @@ users:
         state: "present"
       - username: "LucasDissie"
         state: "absent"
-      - username: "PrinceMordred"
+      - username: "jackrosenberg"
         state: "absent"
       - username: "SanderHageman"
         state: "absent"

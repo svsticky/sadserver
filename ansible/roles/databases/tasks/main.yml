@@ -34,15 +34,20 @@
     community.postgresql.postgresql_user:
       db: "koala"
       name: "koala"
-      priv: "ALL"
       role_attr_flags: "CREATEDB,LOGIN"
+
+  - name: "ensure koala user has the right privs"
+    community.postgresql.postgresql_privs:
+      db: "koala"
+      role: "koala"
+      objs: "ALL_IN_SCHEMA"
+      privs: "ALL"
 
   - name: "ensure dbeaver koala user exists"
     community.postgresql.postgresql_user:
       db: "koala"
       name: "koala_manual"
       password: "{{ secret_koala_manual.password }}"
-      priv: "CONNECT"
       role_attr_flags: "NOSUPERUSER"
 
   - name: "ensure dbeaver koala user has the right privs"
@@ -51,3 +56,10 @@
       role: "koala_manual"
       objs: "ALL_IN_SCHEMA"
       privs: "SELECT"
+
+  - name: "ensure dbeaver koala user has the right privs"
+    community.postgresql.postgresql_privs:
+      db: "koala"
+      role: "koala_manual"
+      type: "database"
+      privs: "CONNECT"

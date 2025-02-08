@@ -23,6 +23,7 @@
 - name: "ensure database user exists"
   community.postgresql.postgresql_user:
     name: "doorgeefluik"
+    role_attr_flags: "CREATEDB,LOGIN"
   become_user: "postgres"
   become: true
 
@@ -34,11 +35,11 @@
   become: true
 
 - name: "ensure database user has the right privileges"
-  community.postgresql.postgresql_user:
+  community.postgresql.postgresql_privs:
     db: "doorgeefluik"
-    name: "doorgeefluik"
+    role: "doorgeefluik"
+    objs: "ALL_IN_SCHEMA"
     priv: "ALL"
-    role_attr_flags: "CREATEDB,LOGIN"
   become_user: "postgres"
   become: true
   ignore_errors: "{{ ansible_check_mode }}"

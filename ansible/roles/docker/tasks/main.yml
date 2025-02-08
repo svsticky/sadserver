@@ -18,8 +18,8 @@
   - name: "Install Docker packages"
     ansible.builtin.package:
       name:
-        - "docker-ce={{ docker_engine_version }}"
-        - "docker-ce-cli={{ docker_engine_version }}"
+        - "docker-ce"
+        - "docker-ce-cli"
         - "containerd.io"
         - "docker-buildx-plugin"
       state: "present"

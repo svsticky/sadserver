@@ -37,9 +37,13 @@
       - "python3-dotenv-cli"
     state: "present"
 
+- name: "Determine base url to online artifacts to deploy"
+  ansible.builtin.set_fact:
+    artifact_base_url: "https://github.com/svsticky/chroma/releases/{% if chroma.git_tag == 'latest' %}latest/download{% else %}download/{{ chroma.git_tag }}{% endif %}"
+
 - name: "Download and extract chroma frontend"
   ansible.builtin.unarchive:
-    src: https://github.com/svsticky/chroma/releases/download/{{ chroma.git_tag }}/frontend.tar.gz
+    src: "{{ artifact_base_url }}/frontend.tar.gz"
     dest: "/var/www/chroma/frontend"
     remote_src: true
     owner: "chroma"
@@ -50,7 +54,7 @@
 
 - name: "Download and extract chroma docs"
   ansible.builtin.unarchive:
-    src: https://github.com/svsticky/chroma/releases/download/{{ chroma.git_tag }}/docs.tar.gz
+    src: "{{ artifact_base_url }}/docs.tar.gz"
     dest: "/var/www/chroma/docs"
     remote_src: true
     owner: "chroma"
@@ -61,7 +65,7 @@
 
 - name: "Download and extract chroma server"
   ansible.builtin.get_url:
-    url: https://github.com/svsticky/chroma/releases/download/{{ chroma.git_tag }}/server-x86_64-unknown-linux-musl
+    url: "{{ artifact_base_url }}/server-x86_64-unknown-linux-musl"
     dest: "/var/www/chroma/server"
     owner: "chroma"
     group: "chroma"

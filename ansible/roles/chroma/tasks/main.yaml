@@ -74,7 +74,6 @@
 
 - name: "ensure database user exists"
   community.postgresql.postgresql_user:
-    db: "chroma"
     name: "chroma"
     role_attr_flags: "CREATEDB,LOGIN"
   become_user: "postgres"

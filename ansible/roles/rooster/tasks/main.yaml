@@ -29,9 +29,13 @@
       - "python3-dotenv-cli"
     state: "present"
 
+- name: "Determine base url to online artifacts to deploy"
+  ansible.builtin.set_fact:
+    artifact_base_url: "https://github.com/svsticky/fallacious-rooster/releases/{% if fallacious_rooster.git_tag == 'latest' %}latest/download{% else %}download/{{ fallacious_rooster.git_tag }}{% endif %}"
+
 - name: "Download and extract fallacious-rooster frontend"
   ansible.builtin.unarchive:
-    src: https://github.com/svsticky/fallacious-rooster/releases/download/{{ fallacious_rooster.git_tag }}/frontend.tar.gz
+    src: "{{ artifact_base_url }}/frontend.tar.gz"
     dest: "/var/www/fallacious-rooster/frontend"
     remote_src: true
     owner: "fallacious-rooster"
@@ -42,7 +46,7 @@
 
 - name: "Download and extract fallacious-rooster server"
   ansible.builtin.get_url:
-    url: https://github.com/svsticky/fallacious-rooster/releases/download/{{ fallacious_rooster.git_tag }}/server-x86_64-unknown-linux-musl
+    url: "{{ artifact_base_url }}/server-x86_64-unknown-linux-musl"
     dest: "/var/www/fallacious-rooster/server"
     owner: "fallacious-rooster"
     group: "fallacious-rooster"

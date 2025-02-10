@@ -151,8 +151,8 @@ secret_chroma:
   service_tokens: "{{ vault_secret_chroma.service_tokens }}"
 
 fallacious_rooster:
-  git_tag: "0.1.4"
+  git_tag: "latest"
 
 digidecs:
-  git_tag: "0.1.0"
+  git_tag: "latest"
   server_port: 65437

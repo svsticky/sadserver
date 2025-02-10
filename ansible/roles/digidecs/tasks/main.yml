@@ -29,9 +29,13 @@
       - "python3-dotenv-cli"
     state: "present"
 
+- name: "Determine base url to online artifacts to deploy"
+  ansible.builtin.set_fact:
+    artifact_base_url: "https://github.com/svsticky/digidecs/releases/{% if digidecs.git_tag == 'latest' %}latest/download{% else %}download/{{ digidecs.git_tag }}{% endif %}"
+
 - name: "Download and extract digidecs frontend"
   ansible.builtin.unarchive:
-    src: https://github.com/svsticky/digidecs/releases/download/{{ digidecs.git_tag }}/frontend.tar.gz
+    src: "{{ artifact_base_url }}/frontend.tar.gz"
     dest: "/var/www/digidecs/frontend"
     remote_src: true
     owner: "digidecs"
@@ -42,7 +46,7 @@
 
 - name: "Download and extract digidecs server"
   ansible.builtin.get_url:
-    url: https://github.com/svsticky/digidecs/releases/download/{{ digidecs.git_tag }}/server-x86_64-unknown-linux-musl
+    url: "{{ artifact_base_url }}/server-x86_64-unknown-linux-musl"
     dest: "/var/www/digidecs/server"
     owner: "digidecs"
     group: "digidecs"

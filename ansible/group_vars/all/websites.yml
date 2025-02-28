@@ -73,7 +73,7 @@ websites:
     custom_config: true
     # Hostnames have to be set in custom nginx config as well!
     alternative_names:
-      - "intro.{{ canonical_hostname }}"
+      - "wordlid.{{ canonical_hostname }}"
       - "leden.{{ canonical_hostname }}"
       - "members.{{ canonical_hostname }}"
       - "inschrijven.{{ canonical_hostname }}"

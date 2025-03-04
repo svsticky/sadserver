@@ -1,4 +1,8 @@
 ---
+# Possible variables which can be set to change the behaviour of these tasks:
+# - project_source (required): the path to the directory the compose file is in
+# - remove_images: whether to remove and rebuild all used images while composing up.
+#                  Leave unset to keep the images, otherwise use "local" or "all"
 
 - name: "Check if 'project_source' is defined"
   ansible.builtin.fail:
@@ -21,6 +25,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     state: "absent"
+    remove_images: "{{ remove_images | default(omit) }}" # NOTE: can give the warning that nothing is to be removed, if nothing exists yet (and thus expected)
 
 - name: "Create and start services"
   community.docker.docker_compose_v2:
@@ -36,7 +41,7 @@
     project_src: "{{ project_source }}"
   register: "output"
 
-- name: "Assert that all services properly started"
+- name: "Assert that all services properly started, and that the docker compose file is idempotent"
   ansible.builtin.assert:
     that: "not output.changed"
 
@@ -69,10 +74,12 @@
       - "output.containers | selectattr('Name', 'equalto', item) | map(attribute='State') | list | first == 'exited'"
   loop: "{{ docker_compose_service_names }}"
 
-- name: "Restart services"
+- name: "Restart services and ensure they are healhty"
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     state: "restarted"
+    wait: true
+    wait_timeout: 300
   register: "output"
 
 # - name: Show results

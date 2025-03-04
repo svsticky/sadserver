@@ -78,6 +78,7 @@ websites:
       - "members.{{ canonical_hostname }}"
       - "inschrijven.{{ canonical_hostname }}"
       - "signup.{{ canonical_hostname }}"
+      - "join.{{ canonical_hostname }}"
     # You have to remove the task include of koala.yml to remove this completely
     state: "present"
 

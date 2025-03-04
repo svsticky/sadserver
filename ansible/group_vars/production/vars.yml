@@ -105,6 +105,8 @@ secret_radio:
   contentful_space_id: "{{ vault_secret_radio.contentful_space_id }}"
   contentful_space_access_token: "{{ vault_secret_radio.contentful_space_access_token }}"
   github_api_token: "{{ vault_secret_radio.github_api_token }}"
+  weather_api_token: "{{ vault_secret_radio.weather_api_token }}"
+  committee_clash_url: "{{ vault_secret_radio.committee_clash_url }}"
 
 secret_intro_bot:
   alfas_app_id: "{{ vault_secret_intro_bot.alfas_app_id }}"

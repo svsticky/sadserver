@@ -30,7 +30,7 @@ secret_oauth2_proxy:
 koala_env:
   environment: "production"
   oidc_signing_key_location: "/var/www/koala/signing-key.pem"
-  git_ref: "v2.32.1"
+  git_ref: "v2.36.0"
 
 secret_koala:
   # To change, generate new token using 'rake secret', and recompile + deploy
@@ -58,7 +58,8 @@ secret_backup_aws:
   secret_key: "{{ vault_secret_backup_aws.secret_key }}"
 
 # To change, regenerate the token in Mollie's web interface.
-secret_mollie_token: "{{ vault_secret_mollie_token }}"
+secret_mollie_token_koala: "{{ vault_secret_mollie_token_koala }}"
+secret_mollie_token_mongoose: "{{ vault_secret_mollie_token_mongoose }}"
 
 secret_pretix:
   # To change, generate a new password and set it in the Mailgun interface:
@@ -160,8 +161,8 @@ secret_chroma:
   service_tokens: "{{ vault_secret_chroma.service_tokens }}"
 
 fallacious_rooster:
-  git_tag: "0.1.4"
+  git_tag: "0.1.5"
 
 digidecs:
-  git_tag: "0.1.0"
+  git_tag: "0.2.3"
   server_port: 65437

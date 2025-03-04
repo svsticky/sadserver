@@ -1,4 +1,0 @@
----
-# Possible docker engine versions can be obtained through the following
-# command: apt-cache madison docker-ce | awk '{ print $3 }'
-docker_engine_version: "5:27.0.3-1~ubuntu.20.04~focal"

@@ -28,6 +28,8 @@
       tags: "databases"
     - role: "nvm"
       tags: "nvm"
+    - role: "uv"
+      tags: "uv"
     - role: "backups"
       tags: "backups"
     - role: "nginx"
@@ -70,6 +72,8 @@
       tags: "mongoose"
     - role: "chroma"
       tags: "chroma"
+    - role: "rooster"
+      tags: "rooster"
     # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
       tags: ["never", "crazy88bot"]
@@ -79,8 +83,6 @@
     # exists. Otherwise fail2ban would miss the log files it has to monitor.
     - role: "fail2ban"
       tags: "always"
-    - role: "rooster"
-      tags: "rooster"
 
 # Following is a list of removed roles, which we did have.
 # If, for some reason, we ever want to use on of the removed services again,

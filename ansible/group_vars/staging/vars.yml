@@ -50,7 +50,8 @@ secret_backup_aws:
   secret_key: "{{ vault_secret_backup_aws.secret_key }}"
 
 # To change, regenerate the token in Mollie's web interface.
-secret_mollie_token: "{{ vault_secret_mollie_token }}"
+secret_mollie_token_koala: "{{ vault_secret_mollie_token_koala }}"
+secret_mollie_token_mongoose: "{{ vault_secret_mollie_token_mongoose }}"
 
 secret_pretix:
   # To change, generate a new password and set it in the Mailgun interface:
@@ -61,7 +62,6 @@ secret_pretix:
   # To change, generate a new secret using something like `pwgen 128 1`and
   # re-deploy. Changing this value will invalidate all pretix sessions.
   django_secret: "{{ vault_secret_pretix.django_secret }}"
-  pretix_maintenance_mode: true
 
 secret_static_sticky:
   contentful_space_id: "{{ vault_secret_static_sticky.contentful_space_id }}"
@@ -152,8 +152,8 @@ secret_chroma:
   service_tokens: "{{ vault_secret_chroma.service_tokens }}"
 
 fallacious_rooster:
-  git_tag: "0.1.4"
+  git_tag: "latest"
 
 digidecs:
-  git_tag: "0.1.0"
+  git_tag: "latest"
   server_port: 65437

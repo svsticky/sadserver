@@ -26,4 +26,4 @@
   ansible.builtin.file:
     path: "{{ nvm.directory }}"
     group: "nvm"
-    mode: "0774"
+    mode: "2774" # Note that 2 sets the 'set-group-ID' bit. New files made under this directory will inherit the group of this folder. This ensures that if the radio user creates the .cache folder, other services can write to it as well

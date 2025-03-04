@@ -32,10 +32,10 @@ users:
         state: "present"
       - username: "TobiasDeBruijn"
         state: "present"
-      - username: "LucasDissie"
-        state: "absent"
-      - username: "PrinceMordred"
-        state: "absent"
+      # - username: "LucasDissie"
+      #   state: "absent"
+      - username: "jackrosenberg"
+        state: "present"
       - username: "SanderHageman"
         state: "absent"
       - username: "SilasPeters"
@@ -105,6 +105,14 @@ users:
       - username: "spookyboy99"
         state: "present"
 
+  - name: "jack"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "jackrosenberg"
+        state: "present"
+
 
   - name: "bestuur"
     admin: false
@@ -114,8 +122,6 @@ users:
     github_accounts:
       - username: "TobiasDeBruijn"
         state: "present"
-      - username: "LucasDissie"
-        state: "absent"
 
   - name: "commit"
     admin: false

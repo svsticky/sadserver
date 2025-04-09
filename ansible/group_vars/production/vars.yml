@@ -82,10 +82,7 @@ secret_static_sticky:
 
 secret_aas:
   github_secret: "{{ vault_secret_aas.github_secret }}"
-  sentry_endpoint: "{{ vault_secret_aas.sentry_endpoint }}"
-  contentful_endpoint: "{{ vault_secret_aas.contentful_endpoint }}"
-  pretix_token: "{{ vault_secret_aas.pretix_token }}"
-  nix_pin: "/nix/store/rglps2x0p70d3p7hmnnhiki8vsi2pxmg-python3-3.9.6-env"
+  nix_pin: "/nix/store/h78dwxmqfjx5qpwfsl25lvk643jk221x-python3-3.9.6-env"
 
 static_sticky_env:
   git_ref: "master"

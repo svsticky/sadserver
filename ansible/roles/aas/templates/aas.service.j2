@@ -15,7 +15,7 @@ Restart=always
 WorkingDirectory=~
 RuntimeDirectory=aas # Run under nix folders, needed for the --bind flag below
 
-ExecStart={{ secret_aas.nix_pin }}/bin/gunicorn aas:aas \
+ExecStart={{ aas_env.nix_pin }}/bin/gunicorn aas:aas \
                                       --capture-output --log-level=debug \
                                       --workers 4 \
                                       --bind unix:/run/aas/gunicorn.sock

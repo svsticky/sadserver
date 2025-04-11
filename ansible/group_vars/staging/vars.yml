@@ -70,9 +70,9 @@ secret_static_sticky:
   aws_access_key_id: "{{ vault_secret_static_sticky.aws_access_key_id }}"
   aws_secret_access_key: "{{ vault_secret_static_sticky.aws_secret_access_key }}"
   aws_default_region: "eu-central-1"
+  aas_pre_shared_key: "{{ vault_secret_static_sticky.aas_pre_shared_key }}"
 
-secret_aas:
-  github_secret: "{{ vault_secret_aas.github_secret }}"
+aas_env:
   nix_pin: "/nix/store/h78dwxmqfjx5qpwfsl25lvk643jk221x-python3-3.9.6-env"
 
 static_sticky_env:

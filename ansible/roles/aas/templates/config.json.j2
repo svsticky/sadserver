@@ -1,0 +1,11 @@
+{
+	"webhookHandlers": {
+		"runSystemd": [
+			{
+				"serviceName": "deploy-static-sticky.service",
+				"endpoint": "/webhook/github",
+				"pre-sharedKey": "{{ secret_static_sticky.aas_pre_shared_key }}"
+			}
+		]
+	}
+}

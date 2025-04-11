@@ -7,7 +7,7 @@
     home: "/var/www/aas"
     system: true
 
-- name: "permit aas user to start static-sticky deploy service"
+- name: "permit aas user to start systemd services"
   ansible.builtin.template:
     src: "sudoers.j2"
     dest: "/etc/sudoers.d/aas"
@@ -19,18 +19,14 @@
 
 - name: "fetch the aas binaries"
   ansible.builtin.command:
-    cmd: "nix-store --realize --add-root /nix/var/nix/gcroots/aas-env {{ secret_aas.nix_pin }}"
+    cmd: "nix-store --realize --add-root /nix/var/nix/gcroots/aas-env {{ aas_env.nix_pin }}"
 
-- name: "ensure config directory exists"
-  ansible.builtin.file:
-    path: "/etc/aas"
-    state: "directory"
-
-- name: "create environment file"
+- name: "create config file"
+  become_user: "aas"
+  become: true
   ansible.builtin.template:
-    src: ".env.j2"
-    dest: "/etc/aas/.env"
-    owner: "root"
+    src: "config.json.j2"
+    dest: "~/config.json"
     mode: "0600"
   notify: "restart aas"
 
@@ -47,8 +43,7 @@
     state: "link"
   notify: "reload nginx"
 
-- name:
-    "copy systemd service of aas"
+- name: "copy systemd service of aas"
   ansible.builtin.template:
     src: "aas.service.j2"
     dest: "/etc/systemd/system/aas.service"

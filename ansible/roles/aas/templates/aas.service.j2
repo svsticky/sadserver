@@ -11,11 +11,12 @@ User=aas
 Group=www-data
 Restart=always
 
-RuntimeDirectory=aas
-RuntimeDirectoryMode=0770
+# This is also where the config.json is, the home folder of aas
+WorkingDirectory=~
+RuntimeDirectory=aas # Run under nix folders, needed for the --bind flag below
 
-EnvironmentFile=/etc/aas/.env
-ExecStart={{ secret_aas.nix_pin }}/bin/gunicorn aas:aas \
+ExecStart={{ aas_env.nix_pin }}/bin/gunicorn aas:aas \
+                                      --capture-output --log-level=debug \
                                       --workers 4 \
                                       --bind unix:/run/aas/gunicorn.sock
 

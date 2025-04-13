@@ -1,0 +1,45 @@
+---
+- name: "create user for intro-website"
+  ansible.builtin.user:
+    name: "intro-website"
+    home: "/var/www/intro-website"
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: "present"
+
+- name: "ensure all files in intro-website folder will belong to intro-website"
+  become_user: "intro-website"
+  become: true
+  ansible.builtin.file:
+    path: "/var/www/intro-website/"
+    state: "directory"
+    mode: "2755"
+
+- name: "copy systemd service for deploying intro-website"
+  ansible.builtin.template:
+    src: "deploy-intro-website.service.j2"
+    dest: "/etc/systemd/system/deploy-intro-website.service"
+
+- name: "copy deploy script"
+  ansible.builtin.template:
+    src: "deploy-intro-website.sh.j2"
+    dest: "/usr/local/bin/deploy-intro-website.sh"
+    mode: "0755"
+
+- name: "run deploy"
+  ansible.builtin.systemd:
+    name: "deploy-intro-website.service"
+    state: "started"
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "intro-website.conf.j2"
+    dest: "/etc/nginx/sites-available/intro.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/intro.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/intro.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

@@ -237,3 +237,9 @@ websites:
     alternative_names:
       - "charityday.{{ canonical_hostname }}"
     state: "present"
+
+  - name: "intro.{{ canonical_hostname }}"
+    user: "intro-website"
+    custom_config: true
+    alternative_names: []
+    state: "present"

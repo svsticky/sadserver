@@ -154,3 +154,7 @@ fallacious_rooster:
 digidecs:
   git_tag: "latest"
   server_port: 65437
+
+secret_intro_website:
+  aas_pre_shared_key: "{{ vault_secret_intro_website.aas_pre_shared_key }}"
+

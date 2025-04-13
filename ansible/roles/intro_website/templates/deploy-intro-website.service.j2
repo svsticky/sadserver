@@ -1,0 +1,8 @@
+[Unit]
+Description=Deploy intro website
+
+[Service]
+Type=oneshot
+User=intro-website
+Group=intro-website
+ExecStart=/usr/local/bin/deploy-intro-website.sh

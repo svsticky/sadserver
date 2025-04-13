@@ -39,3 +39,7 @@ nvm:
 uv:
   install_dir: "/usr/local/bin"
   version: "0.5.14" # Version number from uv's github releases page
+
+# All secrets globally used and defined/related to the svsticky-deploy github account
+secret_svsticky_deploy:
+  github_pat_download_artifact: "{{ vault_secret_svsticky_deploy.github_pat_download_artifact }}"

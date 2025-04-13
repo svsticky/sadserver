@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+# Unofficial Bash Strict Mode
+set -efuo pipefail
+IFS=$'\n\t'
+
+### Find latest artifact from GitHub (containing build to deploy)
+
+REPO_URL="https://api.github.com/repos/svsticky/intro-website-new"
+WORKFLOW_NAME="deploy.yml"
+BRANCH_NAME="{{ ('production' in group_names) | ternary("main", "development") }}" # Let ansible descide staging or production enviroment
+GH_TOKEN="{{ secret_svsticky_deploy.github_pat_download_artifact }}"
+
+# Get id of latest workflow which was successfull
+# Parses the JSON response with `jq`, an epic commandline utility
+# See https://docs.github.com/en/rest/actions/workflow-runs?apiVersion=2022-11-28#list-workflow-runs-for-a-repository
+RUN_ID=$(curl -sH "Authorization: token $GH_TOKEN" \
+	"$REPO_URL/actions/workflows/$WORKFLOW_NAME/runs?branch=$BRANCH_NAME&status=success&per_page=1" | \
+  jq -r '.workflow_runs[0].id')
+echo "Run id: $RUN_ID"
+
+# Get artifact id
+ARTIFACT_NAME="website-build-static-files"
+ARTIFACT_ID=$(curl -sH "Authorization: token $GH_TOKEN" "$REPO_URL/actions/runs/$RUN_ID/artifacts" | \
+  jq -r --arg name "$ARTIFACT_NAME" '.artifacts[] | select(.name == $name) | .id')
+echo "Artifact id: $ARTIFACT_ID"
+
+### Download artifact containing build to deploy
+
+cd "$(mktemp -d)"
+
+# This action requires the 'Actions' scope in the Auth token
+curl -LH "Authorization: token $GH_TOKEN" "$REPO_URL/actions/artifacts/$ARTIFACT_ID/zip" \
+	-o build.zip # GitHub creates zips
+
+unzip build.zip
+rm build.zip
+
+### Copy website contents to webroot, replacing already existing target contents
+
+rsync --delete --recursive . /var/www/intro-website/
+

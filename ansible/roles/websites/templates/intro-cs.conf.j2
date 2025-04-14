@@ -6,29 +6,12 @@ server {
 
   server_name
     intro-cs.nl
-    www.intro-cs.nl
-    intro-cs.{{ canonical_hostname }};
+    www.intro-cs.nl;
 
   ssl_certificate      /etc/letsencrypt/live/intro-cs.{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/intro-cs.{{ canonical_hostname }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/intro-cs.{{ canonical_hostname }}/chain.pem;
 
-  root /var/www/intro/intro-cs.{{ canonical_hostname }};
-
-  index
-    index.html index.htm;
-
-  include includes/security-headers.conf;
-
-  location ~* /helperworden {
-    return 302 https://forms.gle/XboCrsfwJrEbobux7;
-  }
-
-  location ~* /mentorworden {
-    return 302 https://forms.gle/mdSbfBYnFF4dN1Bt6;
-  }
-
-  location / {
-    try_files $uri $uri/ /index.html;
-  }
+  # Since we do not really use intro-cs.nl, but we do want to keep it, we just use a simple 308 :). 
+  return 308 https://intro.{{ canonical_hostname }};
 }

@@ -13,5 +13,5 @@ server {
   ssl_trusted_certificate /etc/letsencrypt/live/intro-cs.{{ canonical_hostname }}/chain.pem;
 
   # Since we do not really use intro-cs.nl, but we do want to keep it, we just use a simple 308 :). 
-  return 308 https://intro.svsticky.nl$request_uri;
+  return 308 https://intro.{{ canonical_hostname }}$request_uri;
 }

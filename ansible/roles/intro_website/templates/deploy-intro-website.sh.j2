@@ -1,9 +1,30 @@
 #!/usr/bin/env bash
 # {{ ansible_managed }}
 
+#
+# This script downloads the latest artifact from the correct branch (main/development)
+# in the intro-website repository. This artifact contains all static files to
+# host the website, and is unzipped into the right folder.
+#
+
 # Unofficial Bash Strict Mode
 set -efuo pipefail
 IFS=$'\n\t'
+
+# TODO
+# This script downloads the artifact of the latest successfully _completed_
+# workflow run, and as such the calling workflow must have finished before this
+# script attempts to download the related artifact for deployment.
+# It thus waits until the workflow which triggered this deploy has been completed,
+# such that this script does not download and deploy the previous version of the website.
+# The 'sleep 20' is a lazy fix, but not everything has to be perfect, and we
+# will transition to containerization soon anyway.
+# A better solution would be to split up the workflow into build and deploy
+# workflows, such that one calls the other. Then, the build workflow with
+# artifact will have completed once the deploy artifact - calling this script -
+# has started. Another advantage is that more workflows can trigger the deploy
+# seperately.
+sleep 20
 
 ### Find latest artifact from GitHub (containing build to deploy)
 

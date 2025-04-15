@@ -13,7 +13,7 @@
   ansible.builtin.file:
     path: "/var/www/intro-website/"
     state: "directory"
-    mode: "2755"
+    mode: "2775"
 
 - name: "copy systemd service for deploying intro-website"
   ansible.builtin.template:

@@ -28,7 +28,7 @@ sleep 20
 
 ### Find latest artifact from GitHub (containing build to deploy)
 
-REPO_URL="https://api.github.com/repos/svsticky/intro-website-new"
+REPO_URL="https://api.github.com/repos/svsticky/intro-website"
 WORKFLOW_NAME="deploy.yml"
 BRANCH_NAME="{{ ('production' in group_names) | ternary("main", "development") }}" # Let ansible descide staging or production enviroment
 GH_TOKEN="{{ secret_svsticky_deploy.github_pat_download_artifact }}"

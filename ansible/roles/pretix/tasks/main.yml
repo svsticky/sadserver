@@ -65,7 +65,7 @@
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.8"
+    virtualenv_python: "python3.9"
     state: "present"
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail

@@ -65,7 +65,7 @@
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.8"
+    virtualenv_python: "python3.10"
     state: "present"
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail
@@ -97,7 +97,7 @@
     version: "{{ item.version }}"
     state: "present"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.9"
+    virtualenv_python: "python3.10"
 
   with_items:
     - name: "gunicorn"

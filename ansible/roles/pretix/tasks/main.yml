@@ -71,7 +71,7 @@
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail
     - name: pip
-      version: "24.0"
+      version: "25.0.1"
     - name: "setuptools"
       version: "latest"
     - name: "wheel"

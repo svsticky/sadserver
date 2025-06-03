@@ -103,7 +103,7 @@
     - name: "gunicorn"
       version: "20.1.0"
     - name: "pretix"
-      version: "4.8.0"
+      version: "4.9.0"
     - name: "pretix-pages"
       version: "1.4.1"
     - name: "pretix-mollie"

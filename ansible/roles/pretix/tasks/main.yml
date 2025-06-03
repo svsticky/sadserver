@@ -10,11 +10,11 @@
     name:
       - "git"
       - "build-essential"
-      - "python3.12-dev"
-      - "python3.12-venv"
-      - "python3.12"
+      - "python3.9-dev"
+      - "python3.9-venv"
+      - "python3.9"
       - "python3-pip"
-      # - "python3.12-dev"
+      # - "python3.9-dev"
       - "libxml2-dev"
       - "libxslt1-dev"
       - "libffi-dev"
@@ -66,7 +66,7 @@
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.12"
+    virtualenv_python: "python3.9"
     state: "present"
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail
@@ -98,7 +98,7 @@
     version: "{{ item.version }}"
     state: "present"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.12"
+    virtualenv_python: "python3.9"
 
   with_items:
     - name: "gunicorn"

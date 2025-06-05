@@ -11,10 +11,10 @@
       - "git"
       - "build-essential"
       - "python-dev"
-      - "python3-virtualenv"
-      - "python3"
+      - "python3.9-venv"
+      - "python3.9"
       - "python3-pip"
-      - "python3-dev"
+      - "python3.9-dev"
       - "libxml2-dev"
       - "libxslt1-dev"
       - "libffi-dev"
@@ -60,12 +60,28 @@
     mode: "0600"
   notify: "restart pretix"
 
+- name: Get Python version from virtualenv
+  ansible.builtin.command: /var/www/pretix/venv/bin/python --version
+  register: venv_python_version
+  failed_when: false
+  changed_when: false
+
+- name: Extract major.minor version
+  ansible.builtin.set_fact:
+    venv_python_major_minor: "{{ venv_python_version.stdout.split()[1].split('.')[:2] | join('.') }}"
+
+- name: Remove virtualenv if not using correct Python version
+  ansible.builtin.file:
+    state: absent
+    path: /var/www/pretix/venv
+  when: venv_python_major_minor != '3.9'
+
 - name: "create virtualenv if not exists, update pip and tools"
   ansible.builtin.pip:
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.8"
+    virtualenv_python: "python3.9"
     state: "present"
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail
@@ -103,13 +119,13 @@
     - name: "gunicorn"
       version: "20.1.0"
     - name: "pretix"
-      version: "4.8.0"
+      version: "2025.5.0"
     - name: "pretix-pages"
-      version: "1.4.1"
+      version: "1.6.3"
     - name: "pretix-mollie"
-      version: "1.3.2"
+      version: "2.4.0"
     - name: "pretix-fontpack-free"
-      version: "1.7.0"
+      version: "1.11.0"
     - name: "psycopg2"
       version: "2.9.3"
     - name: "django-mysql"

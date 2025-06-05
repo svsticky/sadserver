@@ -48,6 +48,8 @@ users:
         state: "present"
       - username: "spookyboy99"
         state: "present"
+      - username: "dreesolivier"
+        state: "present"
 
   - name: "sem"
     admin: true
@@ -111,6 +113,14 @@ users:
     state: "present"
     github_accounts:
       - username: "jackrosenberg"
+        state: "present"
+
+  - name: "olivier"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "dreesolivier"
         state: "present"
 
 

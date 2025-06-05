@@ -61,13 +61,13 @@
   notify: "restart pretix"
 
 - name: Get Python version from virtualenv
-  command: /var/www/pretix/venv/bin/python --version
+  ansible.builtin.command: /var/www/pretix/venv/bin/python --version
   register: venv_python_version
   failed_when: false
   changed_when: false
 
 - name: Extract major.minor version
-  set_fact:
+  ansible.builtin.set_fact:
     venv_python_major_minor: "{{ venv_python_version.stdout.split()[1].split('.')[:2] | join('.') }}"
 
 - name: Remove virtualenv if not using correct Python version

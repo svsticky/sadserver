@@ -126,7 +126,7 @@
       version: "2.4.0"
     - name: "pretix-fontpack-free"
       version: "1.11.0"
-    - name: "psycopg2"
+    - name: "psycopg2-binary"
       version: "2.9.3"
     - name: "django-mysql"
       version: "4.5.0"

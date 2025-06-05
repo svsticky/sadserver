@@ -59,7 +59,7 @@
     group: "pretix"
     mode: "0600"
   notify: "restart pretix"
-  
+
 - name: Get Python version from virtualenv
   command: /var/www/pretix/venv/bin/python --version
   register: venv_python_version

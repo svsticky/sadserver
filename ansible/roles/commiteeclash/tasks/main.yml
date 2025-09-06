@@ -1,0 +1,48 @@
+---
+- name: "create user for committeeclash"
+  ansible.builtin.user:
+    name: "committeeclash"
+    home: "/home/committeeclash"
+
+- name: "set up committeeclash"
+  become_user: "committeeclash"
+  become: true
+  block:
+  - name: "clone committeeclash repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/CommitteeClash.git"
+      dest: "/home/committeeclash/"
+      depth: 1
+      force: true
+      version: "master"
+    diff: false
+
+  - name: "template environment file for committeeclash"
+    ansible.builtin.template:
+      src: ".env.j2"
+      dest: "/home/committeeclash/.env"
+    diff: false
+
+  - name: "set up secret files"
+    ansible.builtin.template:
+      src: "oauth_client_secret.secret.j2"
+      dest: "/home/committeeclash/oauth_client_secret.secret"
+    diff: false
+
+  - name: "set up secret files"
+    ansible.builtin.template:
+      src: "postgres_password.secret.j2"
+      dest: "/home/committeeclash/postgres_password.secret"
+    diff: false
+
+  - name: "run docker compose down"
+    community.docker.docker_compose_v2:
+      project_src: /home/committeeclash
+      state: absent
+      files: docker-compose.prod.yml
+
+  - name: "run docker compose up"
+    community.docker.docker_compose_v2:
+      project_src: /home/committeeclash
+      state: present
+      files: docker-compose.prod.yml

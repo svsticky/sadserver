@@ -3,6 +3,11 @@
   ansible.builtin.user:
     name: "committeeclash"
     home: "/home/committeeclash"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+    append: true
 
 - name: "set up committeeclash"
   become_user: "committeeclash"
@@ -11,10 +16,9 @@
   - name: "clone committeeclash repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/CommitteeClash.git"
-      dest: "/home/committeeclash/"
+      dest: "/home/committeeclash"
       depth: 1
-      force: true
-      version: "master"
+      version: "main"
     diff: false
 
   - name: "template environment file for committeeclash"

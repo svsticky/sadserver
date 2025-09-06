@@ -76,8 +76,8 @@
       tags: "rooster"
     - role: "intro_website"
       tags: "intro_website"
-    - role: "commiteeclash"
-      tags: "commiteeclash"
+    - role: "committeeclash"
+      tags: "committeeclash"
     # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
       tags: ["never", "crazy88bot"]

@@ -52,6 +52,10 @@ users:
         state: "present"
       - username: "KoenDR06"
         state: "present"
+      - username: "ASkater1"
+        state: "present"
+      - username: "Rensvm"
+        state: "present"
 
   - name: "sem"
     admin: true
@@ -131,6 +135,22 @@ users:
     state: "present"
     github_accounts:
       - username: "KoenDR06"
+        state: "present"
+
+  - name: "jari"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "ASkater1"
+        state: "present"
+
+  - name: "rens"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "Rensvm"
         state: "present"
 
   - name: "bestuur"

@@ -144,6 +144,13 @@ def run_bitwarden_json_command(args: List[str]) -> Dict[str, Any]:
 
     return data
 
+def get_bitwarden_item(name: str) -> Dict[str, Any]:
+    """
+    Run `bw get item ${name}` and return as JSON
+    """
+
+    return run_bitwarden_json_command(["get", "item", f"{name}"])
+
 
 if __name__ == "__main__":
     unlock()

@@ -10,23 +10,8 @@ import yaml
 
 from git.repo import Repo
 from typing import Optional, List
-from dotenv import load_dotenv
 
 import scripts.bitwarden as bitwarden
-
-# Import .env file
-load_dotenv()
-discord_webhook_staging_deployments = os.getenv("DISCORD_WEBHOOK_STAGING_DEPLOYMENTS")
-discord_webhook_production_deployments = os.getenv(
-    "DISCORD_WEBHOOK_PRODUCTION_DEPLOYMENTS"
-)
-
-if (
-    discord_webhook_production_deployments is None
-    or discord_webhook_staging_deployments is None
-):
-    print("At least one Discord webhook is missing. Please fill in the .env file")
-
 
 @click.command()
 @click.option(
@@ -143,10 +128,16 @@ def deploy(
 
     arguments.append(playbook)
 
+    # If the program chrashes here, you should check the bitwarden because something's changed
+    bw_response = bitwarden.get_bitwarden_item("Discord (slack) webhooks for sadserver deploy")["fields"]
+
+    # makes the list of dicts one big dict
+    discord_webhooks = {k: v for d in map(lambda it: {it["name"]: it["value"]}, bw_response) for k, v in d.items()}
+
     if host == "production":
-        discord_deployment_webhook = str(discord_webhook_production_deployments)
+        discord_deployment_webhook = discord_webhooks['DISCORD_WEBHOOK_PRODUCTION_DEPLOYMENTS']
     else:
-        discord_deployment_webhook = str(discord_webhook_staging_deployments)
+        discord_deployment_webhook = discord_webhooks['DISCORD_WEBHOOK_STAGING_DEPLOYMENTS']
 
     if not check:
         notify_deploy_start(

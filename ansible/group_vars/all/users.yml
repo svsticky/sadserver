@@ -50,6 +50,8 @@ users:
         state: "present"
       - username: "dreesolivier"
         state: "present"
+      - username: "KoenDR06"
+        state: "present"
 
   - name: "sem"
     admin: true
@@ -123,6 +125,13 @@ users:
       - username: "dreesolivier"
         state: "present"
 
+  - name: "koen"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "KoenDR06"
+        state: "present"
 
   - name: "bestuur"
     admin: false

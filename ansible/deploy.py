@@ -13,6 +13,7 @@ from typing import Optional, List
 
 import scripts.bitwarden as bitwarden
 
+
 @click.command()
 @click.option(
     "--host",
@@ -129,15 +130,25 @@ def deploy(
     arguments.append(playbook)
 
     # If the program chrashes here, you should check the bitwarden because something's changed
-    bw_response = bitwarden.get_bitwarden_item("Discord (slack) webhooks for sadserver deploy")["fields"]
+    bw_response = bitwarden.get_bitwarden_item(
+        "Discord (slack) webhooks for sadserver deploy"
+    )["fields"]
 
     # makes the list of dicts one big dict
-    discord_webhooks = {k: v for d in map(lambda it: {it["name"]: it["value"]}, bw_response) for k, v in d.items()}
+    discord_webhooks = {
+        k: v
+        for d in map(lambda it: {it["name"]: it["value"]}, bw_response)
+        for k, v in d.items()
+    }
 
     if host == "production":
-        discord_deployment_webhook = discord_webhooks['DISCORD_WEBHOOK_PRODUCTION_DEPLOYMENTS']
+        discord_deployment_webhook = discord_webhooks[
+            "DISCORD_WEBHOOK_PRODUCTION_DEPLOYMENTS"
+        ]
     else:
-        discord_deployment_webhook = discord_webhooks['DISCORD_WEBHOOK_STAGING_DEPLOYMENTS']
+        discord_deployment_webhook = discord_webhooks[
+            "DISCORD_WEBHOOK_STAGING_DEPLOYMENTS"
+        ]
 
     if not check:
         notify_deploy_start(

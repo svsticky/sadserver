@@ -18,7 +18,7 @@
       repo: "https://github.com/svsticky/CommitteeClash.git"
       dest: "/home/committeeclash"
       depth: 1
-      version: "main"
+      version: "{% if 'staging' in group_names %}development{% else %}main{% endif %}" # Pull main when deploying to prod
     diff: false
 
   - name: "template environment file for committeeclash"
@@ -50,3 +50,4 @@
       project_src: /home/committeeclash
       state: present
       files: docker-compose.prod.yml
+      build: always

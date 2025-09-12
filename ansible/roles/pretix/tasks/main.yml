@@ -23,6 +23,7 @@
       - "gettext"
       - "libpq-dev"
       - "libjpeg-dev"
+      - "nodejs"
     state: "present"
 
 - name: "setup Pretix database"
@@ -87,7 +88,7 @@
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.12"
+    virtualenv_command: "python3.12 -m venv /var/www/pretix/venv"
     state: "present"
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail

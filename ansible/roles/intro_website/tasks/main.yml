@@ -1,4 +1,10 @@
 ---
+- name: "Install dependencies"
+  ansible.builtin.apt:
+    name:
+      - "unzip"
+    state: "present"
+
 - name: "create user for intro-website"
   ansible.builtin.user:
     name: "intro-website"

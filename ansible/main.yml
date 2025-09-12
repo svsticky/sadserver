@@ -32,7 +32,7 @@
       tags: "nvm"
     - role: "uv"
       tags: "uv"
-    - role: "backups"
+    - role: "backups" # TODO Relies on AWS
       tags: "backups"
     - role: "nginx"
       tags: "nginx"
@@ -48,11 +48,11 @@
       tags: "digidecs"
     - role: "aas"
       tags: "aas"
-    - role: "static_sticky"
+    - role: "static_sticky" # TODO Relies on AWS
       tags: "static_sticky"
     - role: "pretix"
       tags: "pretix"
-    - role: "koala"
+    - role: "koala" # TODO Relies on AWS
       tags: "koala"
     - role: "logrotate"
       tags: "logrotate"
@@ -60,7 +60,7 @@
       tags: "monitoring"
     - role: "oauth2_proxy"
       tags: "oauth"
-    - role: "outline"
+    - role: "outline" # TODO Relies on AWS
       tags: "outline"
     - role: "radio"
       tags: "radio"

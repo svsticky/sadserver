@@ -10,11 +10,11 @@
     name:
       - "git"
       - "build-essential"
-      - "python-dev"
-      - "python3.9-venv"
-      - "python3.9"
+      - "python-dev-is-python3"
+      - "python3"
+      - "python3-venv"
       - "python3-pip"
-      - "python3.9-dev"
+      - "python3-dev"
       - "libxml2-dev"
       - "libxslt1-dev"
       - "libffi-dev"
@@ -60,28 +60,34 @@
     mode: "0600"
   notify: "restart pretix"
 
-- name: Get Python version from virtualenv
+- name: "Check if venv exists"
+  ansible.builtin.stat:
+    path: "/var/www/pretix/venv"
+  register: venv_exists
+
+- name: "Get Python version from virtualenv"
   ansible.builtin.command: /var/www/pretix/venv/bin/python --version
   register: venv_python_version
   failed_when: false
   changed_when: false
 
-- name: Extract major.minor version
+- name: "Extract major.minor version"
   ansible.builtin.set_fact:
     venv_python_major_minor: "{{ venv_python_version.stdout.split()[1].split('.')[:2] | join('.') }}"
+  when: venv_exists.stat.exists
 
 - name: Remove virtualenv if not using correct Python version
   ansible.builtin.file:
     state: absent
     path: /var/www/pretix/venv
-  when: venv_python_major_minor != '3.9'
+  when: venv_exists.stat.exists and venv_python_major_minor != '3.12'
 
 - name: "create virtualenv if not exists, update pip and tools"
   ansible.builtin.pip:
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     virtualenv: "/var/www/pretix/venv"
-    virtualenv_python: "python3.9"
+    virtualenv_python: "python3.12"
     state: "present"
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail

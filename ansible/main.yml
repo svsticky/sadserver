@@ -60,7 +60,7 @@
       tags: "monitoring"
     - role: "oauth2_proxy"
       tags: "oauth"
-    - role: "outline" # TODO Relies on AWS
+    - role: "outline" # TODO Relies on AWS # TODO Deployment of oauth2-proxy(-admin)?.service crashes
       tags: "outline"
     - role: "radio"
       tags: "radio"

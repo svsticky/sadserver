@@ -1,4 +1,0 @@
----
-
-static_sticky_config:
-  home: "/var/www/static-sticky"

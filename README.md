@@ -46,7 +46,6 @@ server to become Sticky's production server.
 The code in this repository depends on the following software:
 
 - [nix]
-- Two Discord webhooks, which should be put in `ansible/.env`
 
 Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 20.04 host** to be
 deployed on.
@@ -148,7 +147,7 @@ performed, which are explained in detail in [this guide][deployment-new-producti
     - for production: 4GB RAM on 2CPUs is the standard. Make sure IPv6 in enabled.
     - Server should be run on AMS whenever possible.
     - Make sure your SSH key is sent to the server as it is needed in a later step.
-1. Assign a floating IP to the new droplet. Floating IP's are already in DNS, which avoids DNS cache problems.
+2. Assign a floating IP to the new droplet. Floating IP's are already in DNS, which avoids DNS cache problems.
     - In the side bar click Networking
     - Click on Floating IPs
     - Next to the Floating ip click assign a droplet (if you didn't delete the droplet: click More > Reassign)
@@ -161,30 +160,25 @@ performed, which are explained in detail in [this guide][deployment-new-producti
 `$ git clone https://github.com/svsticky/sadserver`
 `$ cd sadserver/ansible`
 
-3. Copy `sample.env` to `.env` and fill in the missing discord webhooks.
-You will need to login to bitwarden as `itcrowd@svsticky.nl` to read this secret.
-(If you find the `slack_notifications_webhook_url`, do _not_ change the name of
-the secret for legacy reasons. Ansible's code is dependent on the name.)
-
 To install all required dependencies, run the following command to enter a nix shell.
 `$ nix-shell`
 Only the first time, will these dependencies be installed.
 
-1. To run the deploy script, an active session with bitwarden is required. To do this, run `$ bw login` and follow the instructions. The account required is managed by the IT Crowd. You will have these credentials if you are a member of the IT Crowd.
+3. To run the deploy script, an active session with bitwarden is required. To do this, run `$ bw login` and follow the instructions. The account required is managed by the IT Crowd. You will have these credentials if you are a member of the IT Crowd.
 
-1. Bootstrap the host for either production or staging.
+4. Bootstrap the host for either production or staging.
 `$ ./deploy.py --host=(production|staging) --playbook playbooks/bootstrap-new-host.yml`
 You do not need to enter a SUDO password, but you do need to enter the correct Vault password. (Can usually be found in bitwarden).
 On staging, if the playbook fails immediately, you might have an old ssh key. To solve this type:
 `$ ssh root@dev.svsticky.nl`
 SSH will guide you the rest of the way.
 
-1. Run the main playbook for either production or staging.
+5. Run the main playbook for either production or staging.
 `$ ./deploy.py --host=(production|staging)`
 Enter the password from the previous step when prompted for.
 
 
-1. To create a new database and start Koala, you will also need to run these two playbooks.
+6. To create a new database and start Koala, you will also need to run these two playbooks.
 `$ ./deploy.py --host=(production|staging) --playbook playbooks/koala/db-setup.yml`
 `$ ./deploy.py --host=(production|staging) --playbook playbooks/koala/start.yml`
 

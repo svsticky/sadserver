@@ -1,5 +1,7 @@
 ---
 
 outline_config:
+  home: "/var/www/outline"
+  version: "0.79.0"
   project_source: "/var/www/outline/outline"
-  version: "0.79.0" # Git tag
+

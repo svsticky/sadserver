@@ -3,10 +3,19 @@
 - name: "create user for undead mongoose"
   ansible.builtin.user:
     name: "mongoose"
-    home: "/var/www/mongoose"
+    home: "{{ config_mongoose.home }}"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ mongoose_config.home }}"
+    owner: "mongoose"
+    group: "mongoose"
+    mode: "2775"
+    state: "directory"
 
 - name: "copy nginx configuration"
   ansible.builtin.template:
@@ -62,13 +71,13 @@
   - name: "copy deploy key for private projects on GitHub"
     ansible.builtin.copy:
       content: "{{ secret_deploy_key }}"
-      dest: "/var/www/mongoose/.ssh/id_ed25519"
+      dest: "{{ config_mongoose.home }}/.ssh/id_ed25519"
       mode: "0600"
 
   - name: "clone mongoose repository"
     ansible.builtin.git:
       repo: "git@github.com:svsticky/undead-mongoose"
-      dest: "/var/www/mongoose/undead-mongoose"
+      dest: "{{ config_mongoose.home }}/undead-mongoose"
       depth: 1
       force: true
       version: "master"
@@ -77,7 +86,7 @@
   - name: "install dependencies via uv"
     ansible.builtin.command: "{{ uv.install_dir }}/uv sync"
     args:
-      chdir: "/var/www/mongoose/undead-mongoose"
+      chdir: "{{ config_mongoose.home }}/undead-mongoose"
     notify:
       - "restart mongoose"
       - "run migrations"
@@ -85,7 +94,7 @@
   - name: "template environment file for mongoose"
     ansible.builtin.template:
       src: ".env.j2"
-      dest: "/var/www/mongoose/undead-mongoose/.env"
+      dest: "{{ config_mongoose.home }}/undead-mongoose/.env"
     diff: false
     notify: "restart mongoose"
 

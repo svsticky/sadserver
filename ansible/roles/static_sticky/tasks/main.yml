@@ -6,6 +6,15 @@
     shell: "/usr/sbin/nologin"
     system: true
     state: "present"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ static_sticky_config.home }}"
+    owner: "static-sticky"
+    group: "static-sticky"
+    mode: "2775"
+    state: "directory"
 
 - name: "create static-sticky directory"
   ansible.builtin.file:

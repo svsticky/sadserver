@@ -1,0 +1,4 @@
+---
+
+mongoose_config:
+  home: "/var/www/mongoose"

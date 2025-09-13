@@ -32,7 +32,7 @@
       tags: "nvm"
     - role: "uv"
       tags: "uv"
-    - role: "backups" # TODO Relies on AWS
+    - role: "backups"
       tags: "backups"
     - role: "nginx"
       tags: "nginx"
@@ -48,11 +48,11 @@
       tags: "digidecs"
     - role: "aas"
       tags: "aas"
-    - role: "static_sticky" # TODO Relies on AWS
+    - role: "static_sticky"
       tags: "static_sticky"
     - role: "pretix"
       tags: "pretix"
-    - role: "koala" # TODO Relies on AWS
+    - role: "koala"
       tags: "koala"
     - role: "logrotate"
       tags: "logrotate"
@@ -60,7 +60,7 @@
       tags: "monitoring"
     - role: "oauth2_proxy"
       tags: "oauth"
-    - role: "outline" # TODO Relies on AWS # TODO Deployment of oauth2-proxy(-admin)?.service crashes
+    - role: "outline"
       tags: "outline"
     - role: "radio"
       tags: "radio"

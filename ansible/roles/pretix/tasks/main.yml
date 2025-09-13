@@ -76,7 +76,7 @@
   register: venv_exists
 
 - name: "Get Python version from virtualenv"
-  ansible.builtin.command: {{ config_pretix.home }}/venv/bin/python --version
+  ansible.builtin.command: "{{ config_pretix.home }}/venv/bin/python --version"
   register: venv_python_version
   failed_when: false
   changed_when: false
@@ -89,7 +89,7 @@
 - name: Remove virtualenv if not using correct Python version
   ansible.builtin.file:
     state: absent
-    path: {{ config_pretix.home }}/venv
+    path: "{{ config_pretix.home }}/venv"
   when: venv_exists.stat.exists and venv_python_major_minor != '3.12'
 
 - name: "create virtualenv if not exists, update pip and tools"

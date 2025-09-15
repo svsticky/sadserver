@@ -8,7 +8,7 @@
 
 - name: "Create home directory"
   ansible.builtin.file:
-    path: "{{ pretix_config.home }}"
+    path: "{{ config_pretix.home }}"
     owner: "pretix"
     group: "pretix"
     mode: "2775"

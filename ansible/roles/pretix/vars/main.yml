@@ -1,4 +1,4 @@
 ---
 
-config_pretix:
+pretix_config:
   home: "/var/www/pretix"

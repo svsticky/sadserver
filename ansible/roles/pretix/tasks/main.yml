@@ -2,13 +2,13 @@
 - name: "ensure pretix user is present"
   ansible.builtin.user:
     name: "pretix"
-    home: "{{ config_pretix.home }}"
+    home: "{{ pretix_config.home }}"
     system: true
     create_home: false
 
 - name: "Create home directory"
   ansible.builtin.file:
-    path: "{{ config_pretix.home }}"
+    path: "{{ pretix_config.home }}"
     owner: "pretix"
     group: "pretix"
     mode: "2775"
@@ -59,7 +59,7 @@
     group: "pretix"
   with_items:
     - "/etc/pretix"
-    - "{{ config_pretix.home }}/data/media"
+    - "{{ pretix_config.home }}/data/media"
 
 - name: "place pretix config file"
   ansible.builtin.template:
@@ -72,11 +72,11 @@
 
 - name: "Check if venv exists"
   ansible.builtin.stat:
-    path: "{{ config_pretix.home }}/venv"
+    path: "{{ pretix_config.home }}/venv"
   register: venv_exists
 
 - name: "Get Python version from virtualenv"
-  ansible.builtin.command: "{{ config_pretix.home }}/venv/bin/python --version"
+  ansible.builtin.command: "{{ pretix_config.home }}/venv/bin/python --version"
   register: venv_python_version
   failed_when: false
   changed_when: false
@@ -89,15 +89,15 @@
 - name: Remove virtualenv if not using correct Python version
   ansible.builtin.file:
     state: absent
-    path: "{{ config_pretix.home }}/venv"
+    path: "{{ pretix_config.home }}/venv"
   when: venv_exists.stat.exists and venv_python_major_minor != '3.12'
 
 - name: "create virtualenv if not exists, update pip and tools"
   ansible.builtin.pip:
     name: "{{ item.name }}"
     version: "{{ item.version }}"
-    virtualenv: "{{ config_pretix.home }}/venv"
-    virtualenv_command: "python3.12 -m venv {{ config_pretix.home }}/venv"
+    virtualenv: "{{ pretix_config.home }}/venv"
+    virtualenv_command: "python3.12 -m venv {{ pretix_config.home }}/venv"
     state: "present"
   with_items:
     # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail
@@ -128,7 +128,7 @@
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     state: "present"
-    virtualenv: "{{ config_pretix.home }}/venv"
+    virtualenv: "{{ pretix_config.home }}/venv"
     virtualenv_python: "python3.9"
 
   with_items:
@@ -174,7 +174,7 @@
       owner: "pretix"
       group: "pretix"
       src: "pretix_maintenance.html.j2"
-      dest: "{{ config_pretix.home }}/pretix-maintenance.html"
+      dest: "{{ pretix_config.home }}/pretix-maintenance.html"
     become: true
     become_user: "pretix"
 

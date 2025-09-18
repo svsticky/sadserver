@@ -54,7 +54,7 @@ users:
         state: "present"
       - username: "ASkater1"
         state: "present"
-      - username: "Rensvm"
+      - username: "rensvmoorsel"
         state: "present"
 
   - name: "sem"
@@ -150,7 +150,7 @@ users:
     home_prefix: "/home"
     state: "present"
     github_accounts:
-      - username: "Rensvm"
+      - username: "rensvmoorsel"
         state: "present"
 
   - name: "bestuur"

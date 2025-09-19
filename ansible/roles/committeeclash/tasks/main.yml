@@ -1,5 +1,5 @@
 ---
-- name: "create user for committeeclash"
+- name: "create user"
   ansible.builtin.user:
     name: "committeeclash"
     home: "/home/committeeclash"
@@ -13,7 +13,7 @@
   become_user: "committeeclash"
   become: true
   block:
-  - name: "clone committeeclash repository"
+  - name: "clone repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/CommitteeClash.git"
       dest: "/home/committeeclash"
@@ -21,19 +21,19 @@
       version: "{% if 'staging' in group_names %}development{% else %}main{% endif %}" # Pull main when deploying to prod
     diff: false
 
-  - name: "template environment file for committeeclash"
+  - name: "Copy .env file"
     ansible.builtin.template:
       src: ".env.j2"
       dest: "/home/committeeclash/.env"
     diff: false
 
-  - name: "set up secret files"
+  - name: "set up OAuth secret file"
     ansible.builtin.template:
       src: "oauth_client_secret.secret.j2"
       dest: "/home/committeeclash/oauth_client_secret.secret"
     diff: false
 
-  - name: "set up secret files"
+  - name: "set up Postgres secret files"
     ansible.builtin.template:
       src: "postgres_password.secret.j2"
       dest: "/home/committeeclash/postgres_password.secret"
@@ -51,3 +51,16 @@
       state: present
       files: docker-compose.prod.yml
       build: always
+
+- name: "Copy nginx configuration"
+  ansible.builtin.template:
+    src: "committeeclash.conf.j2"
+    dest: "/etc/nginx/sites-available/committeeclash.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "Enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/committeeclash.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/committeeclash.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

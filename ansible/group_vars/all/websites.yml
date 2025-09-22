@@ -247,4 +247,6 @@ websites:
   - name: "committeeclash.{{ canonical_hostname }}"
     user: "committeeclash"
     custom_config: true
+    alternative_names:
+      - "commissiestrijd.{{ canonical_hostname }}"
     state: "present"

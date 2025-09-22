@@ -225,6 +225,10 @@ users:
         state: "present"
       - username: "olafboekholt"
         state: "present"
+      - username: "rensvmoorsel"
+        state: "present"
+      - username: "ASkater1"
+        state: "present"
 
   - name: "hacc"
     admin: false

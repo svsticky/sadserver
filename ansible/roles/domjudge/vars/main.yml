@@ -1,0 +1,4 @@
+---
+
+domjudge_config:
+  project_source: "/var/www/domjudge"

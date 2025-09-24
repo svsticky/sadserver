@@ -1,0 +1,30 @@
+# Ansible managed
+
+services:
+  mariadb:
+    image: mariadb
+    ports:
+      - 13306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpw
+      - MYSQL_USER=domjudge
+      - MYSQL_PASSWORD=djpw
+      - MYSQL_DATABASE=domjudge
+    command: --max-connections=1000
+  domserver:
+    image: domjudge/domserver:latest
+    environment:
+      - MYSQL_HOST=mariadb
+      - MYSQL_USER=domjudge
+      - MYSQL_DATABASE=domjudge
+      - MYSQL_PASSWORD=djpw
+      - MYSQL_ROOT_PASSWORD=rootpw
+    ports:
+      - 4570:80
+  judgehost:
+    image: domjudge/judgehost:latest
+    privileged: true
+    environment:
+      - DAEMON_ID=0
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup

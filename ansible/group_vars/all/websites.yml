@@ -243,3 +243,9 @@ websites:
     custom_config: true
     alternative_names: []
     state: "present"
+
+  - name: "domjudge.{{ canonical_hostname }}"
+    user: "domjudge"
+    custom_config: true
+    alternative_names: []
+    state: "present"

@@ -1,0 +1,36 @@
+---
+- name: "Create domjudge user"
+  ansible.builtin.user:
+    name: "domjudge"
+    home: "/var/www/domjudge"
+    move_home: true
+    system: true
+    shell: "/sbin/nologin"
+    password: "!"
+
+- name: "Create domjudge directory"
+  ansible.builtin.file:
+    path: "{{ domjudge_config.project_source }}"
+    state: "directory"
+    owner: "outline"
+    group: "outline"
+
+- name: "Create domjudge 'docker-compose.yml' file"
+  ansible.builtin.template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ domjudge_config.project_source }}/docker-compose.yml"
+    owner: "domjudge"
+    group: "domjudge"
+    mode: "0600"
+  # notify: "trigger outline migration"
+
+- name: "Docker compose"
+  ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+  vars:
+    project_source: "{{ domjudge_config.project_source }}"
+
+- name: "Install nginx config"
+  ansible.builtin.template:
+    src: "domjudge.conf.j2"
+    dest: "/etc/nginx/sites-enabled/domjudge.conf"
+  notify: "reload nginx"

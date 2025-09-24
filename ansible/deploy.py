@@ -1,6 +1,3 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i python ./shell.nix
-
 import click
 import os
 import subprocess

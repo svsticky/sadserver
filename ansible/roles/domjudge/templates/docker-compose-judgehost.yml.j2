@@ -1,0 +1,11 @@
+# Ansible managed
+
+services:
+  judgehost:
+    image: domjudge/judgehost:latest
+    privileged: true
+    environment:
+      - DAEMON_ID=0
+      - JUDGEDAEMON_PASSWORD={{ judgehost_password.stdout }}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup

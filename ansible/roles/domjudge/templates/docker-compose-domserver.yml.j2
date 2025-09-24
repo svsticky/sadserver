@@ -26,5 +26,9 @@ services:
     privileged: true
     environment:
       - DAEMON_ID=0
+      - JUDGEDAEMON_PASSWORD_FILE=/opt/domjudge/domserver/etc/judgehost_password
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
+    depends_on:
+      domserver:
+        condition: service_healthy

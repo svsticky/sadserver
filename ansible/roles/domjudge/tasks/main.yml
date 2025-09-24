@@ -15,19 +15,43 @@
     owner: "outline"
     group: "outline"
 
-- name: "Create domjudge 'docker-compose.yml' file"
+- name: "Create 'docker-compose-domserver.yml' file"
   ansible.builtin.template:
-    src: "docker-compose.yml.j2"
-    dest: "{{ domjudge_config.project_source }}/docker-compose.yml"
+    src: "docker-compose-domserver.yml.j2"
+    dest: "{{ domjudge_config.project_source }}/docker-compose-domserver.yml"
     owner: "domjudge"
     group: "domjudge"
     mode: "0600"
-  # notify: "trigger outline migration"
 
-- name: "Docker compose"
-  ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
-  vars:
-    project_source: "{{ domjudge_config.project_source }}"
+- name: "Create and start services"
+  community.docker.docker_compose_v2:
+    project_src: "{{ domjudge_config.project_source }}"
+    files:
+    - docker-compose-domserver.yml
+
+- name: "Wait for domserver to start"
+  wait_for:
+    port: 4570
+
+- name: "Get judgehost password"
+  community.docker.docker_container_exec:
+    container: domjudge-domserver-1
+    command: /bin/bash -c 'cat /opt/domjudge/domserver/etc/restapi.secret | tail -n1 | rev | cut -f1 | rev'
+  register: judgehost_password
+
+- name: "Create 'docker-compose-judgehost.yml' file"
+  ansible.builtin.template:
+    src: "docker-compose-judgehost.yml.j2"
+    dest: "{{ domjudge_config.project_source }}/docker-compose-judgehost.yml"
+    owner: "domjudge"
+    group: "domjudge"
+    mode: "0600"
+
+- name: "Create and start services"
+  community.docker.docker_compose_v2:
+    project_src: "{{ domjudge_config.project_source }}"
+    files:
+    - docker-compose-judgehost.yml
 
 - name: "Install nginx config"
   ansible.builtin.template:

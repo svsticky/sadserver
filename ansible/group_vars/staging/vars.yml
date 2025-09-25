@@ -103,8 +103,6 @@ secret_intro_bot:
   uithof_app_id: "{{ vault_secret_intro_bot.uithof_app_id }}"
   uithof_app_password: "{{ vault_secret_intro_bot.uithof_app_password }}"
   admin_app_id: "{{ vault_secret_intro_bot.admin_app_id }}"
-
-static_sticky_env:
   admin_app_password: "{{ vault_secret_intro_bot.admin_app_password }}"
   intro_password: "{{ vault_secret_intro_bot.intro_password }}"
   mentor_password: "{{ vault_secret_intro_bot.mentor_password }}"

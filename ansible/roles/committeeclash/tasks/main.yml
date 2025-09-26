@@ -1,0 +1,66 @@
+---
+- name: "create user"
+  ansible.builtin.user:
+    name: "committeeclash"
+    home: "/home/committeeclash"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+    append: true
+
+- name: "set up committeeclash"
+  become_user: "committeeclash"
+  become: true
+  block:
+  - name: "clone repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/CommitteeClash.git"
+      dest: "/home/committeeclash"
+      depth: 1
+      version: "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
+    diff: false
+
+  - name: "Copy .env file"
+    ansible.builtin.template:
+      src: ".env.j2"
+      dest: "/home/committeeclash/.env"
+    diff: false
+
+  - name: "set up OAuth secret file"
+    ansible.builtin.template:
+      src: "oauth_client_secret.secret.j2"
+      dest: "/home/committeeclash/oauth_client_secret.secret"
+    diff: false
+
+  - name: "set up Postgres secret files"
+    ansible.builtin.template:
+      src: "postgres_password.secret.j2"
+      dest: "/home/committeeclash/postgres_password.secret"
+    diff: false
+
+  - name: "run docker compose down"
+    community.docker.docker_compose_v2:
+      project_src: /home/committeeclash
+      state: absent
+      files: docker-compose.prod.yml
+
+  - name: "run docker compose up"
+    community.docker.docker_compose_v2:
+      project_src: /home/committeeclash
+      state: present
+      files: docker-compose.prod.yml
+      build: always
+
+- name: "Copy nginx configuration"
+  ansible.builtin.template:
+    src: "committeeclash.conf.j2"
+    dest: "/etc/nginx/sites-available/committeeclash.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "Enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/committeeclash.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/committeeclash.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

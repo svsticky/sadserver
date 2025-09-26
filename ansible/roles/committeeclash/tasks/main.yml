@@ -18,7 +18,7 @@
       repo: "https://github.com/svsticky/CommitteeClash.git"
       dest: "/home/committeeclash"
       depth: 1
-      version: "{% if 'staging' in group_names %}development{% else %}main{% endif %}" # Pull main when deploying to prod
+      version: "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
     diff: false
 
   - name: "Copy .env file"

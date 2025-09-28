@@ -55,12 +55,32 @@
 - name: "Copy nginx configuration"
   ansible.builtin.template:
     src: "committeeclash.conf.j2"
-    dest: "/etc/nginx/sites-available/committeeclash.{{ canonical_hostname }}.conf"
+    dest: "/etc/nginx/sites-available/{{ item.cert_name }}.conf"
+  loop:
+    - server_names:
+        - "committeeclash.{{ canonical_hostname }}"
+        - "commissiestrijd.{{ canonical_hostname }}"
+      cert_name: "committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_port }}"
+    - server_names:
+        - "docs.committeeclash.{{ canonical_hostname }}"
+      cert_name: "docs.committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_docs_port }}"
   notify: "reload nginx"
 
-- name: "Enable nginx configuration"
+- name: "Enable nginx configurations for committeeclash (main + docs)"
   ansible.builtin.file:
-    src: "/etc/nginx/sites-available/committeeclash.{{ canonical_hostname }}.conf"
-    path: "/etc/nginx/sites-enabled/committeeclash.{{ canonical_hostname }}.conf"
-    state: "link"
+    src: "/etc/nginx/sites-available/{{ item.cert_name }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item.cert_name }}.conf"
+    state: link
+  loop:
+    - server_names:
+        - "committeeclash.{{ canonical_hostname }}"
+        - "commissiestrijd.{{ canonical_hostname }}"
+      cert_name: "committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_port }}"
+    - server_names:
+        - "docs.committeeclash.{{ canonical_hostname }}"
+      cert_name: "docs.committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_docs_port }}"
   notify: "reload nginx"

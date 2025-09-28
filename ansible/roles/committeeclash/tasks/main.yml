@@ -39,6 +39,14 @@
       dest: "/home/committeeclash/postgres_password.secret"
     diff: false
 
+  - name: "run docker compose down"
+    community.docker.docker_compose_v2:
+      project_src: /home/committeeclash
+      state: absent
+      remove_orphans: true
+      remove_images: all
+      files: docker-compose.prod.yml
+
   - name: "Docker compose"
     ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
     vars:

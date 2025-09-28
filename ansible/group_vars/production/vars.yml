@@ -30,7 +30,7 @@ secret_oauth2_proxy:
 koala_env:
   environment: "production"
   oidc_signing_key_location: "/var/www/koala/signing-key.pem"
-  git_ref: "v2.39.0"
+  git_ref: "v2.41.0"
 
 secret_koala:
   # To change, generate new token using 'rake secret', and recompile + deploy
@@ -158,10 +158,10 @@ secret_chroma:
   service_tokens: "{{ vault_secret_chroma.service_tokens }}"
 
 fallacious_rooster:
-  git_tag: "0.1.5"
+  git_tag: "0.1.6"
 
 digidecs:
-  git_tag: "0.2.4"
+  git_tag: "0.2.5"
   server_port: 65437
 
 secret_intro_website:

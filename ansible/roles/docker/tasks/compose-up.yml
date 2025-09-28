@@ -3,6 +3,7 @@
 # - project_source (required): the path to the directory the compose file is in
 # - remove_images: whether to remove and rebuild all used images while composing up.
 #                  Leave unset to keep the images, otherwise use "local" or "all"
+# - compose_file: the name of the compose file to use, if not "docker-compose.yml"
 
 - name: "Check if 'project_source' is defined"
   ansible.builtin.fail:
@@ -25,7 +26,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     files:
-      - "{{ compose_file | default('docker-compose.yml') }}"
+      - "{{ compose_file | default(omit)) }}"
     state: "absent"
     remove_images: "{{ remove_images | default(omit) }}" # NOTE: can give the warning that nothing is to be removed, if nothing exists yet (and thus expected)
 
@@ -33,7 +34,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     files:
-      - "{{ compose_file | default('docker-compose.yml') }}"
+      - "{{ compose_file | default(omit) }}"
   register: "output"
 
 # - name: Show results
@@ -44,7 +45,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     files:
-      - "{{ compose_file | default('docker-compose.yml') }}"
+      - "{{ compose_file | default(omit)) }}"
   register: "output"
 
 - name: "Assert that all services properly started, and that the docker compose file is idempotent"
@@ -68,7 +69,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     files:
-      - "{{ compose_file | default('docker-compose.yml') }}"
+      - "{{ compose_file | default(omit)) }}"
     state: "stopped"
   register: "output"
 
@@ -86,7 +87,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     files:
-      - "{{ compose_file | default('docker-compose.yml') }}"
+      - "{{ compose_file | default(omit)) }}"
     state: "restarted"
     wait: true
     wait_timeout: 300

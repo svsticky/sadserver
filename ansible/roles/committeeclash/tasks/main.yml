@@ -43,6 +43,8 @@
     community.docker.docker_compose_v2:
       project_src: /home/committeeclash
       state: absent
+      remove_orphans: true
+      remove_images: all
       files: docker-compose.prod.yml
 
   - name: "run docker compose up"
@@ -50,7 +52,7 @@
       project_src: /home/committeeclash
       state: present
       files: docker-compose.prod.yml
-      build: always
+      build: policy
 
 - name: "Copy nginx configuration"
   ansible.builtin.template:

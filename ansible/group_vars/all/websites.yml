@@ -243,3 +243,17 @@ websites:
     custom_config: true
     alternative_names: []
     state: "present"
+
+  - name: "committeeclash.{{ canonical_hostname }}"
+    user: "committeeclash"
+    custom_config: true
+    alternative_names:
+      - "commissiestrijd.{{ canonical_hostname }}"
+    state: "present"
+
+  - name: "docs.committeeclash.{{ canonical_hostname }}"
+    user: "committeeclash"
+    custom_config: true
+    alternative_names:
+      - "docs.commissiestrijd.{{ canonical_hostname }}"
+    state: "present"

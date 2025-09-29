@@ -168,3 +168,10 @@ secret_harbor:
   harbor_port: 6969
   harbor_version: "v2.14.0"
   harbor_install_dir: "/var/www/harbor"
+
+secret_committeeclash:
+  oauth_client_id: "{{ vault_secret_committeeclash.oauth_client_id }}"
+  oauth_client_secret: "{{ vault_secret_committeeclash.oauth_client_secret }}"
+  postgres_password: "{{ vault_secret_committeeclash.postgres_password }}"
+  host_url: "https://committeeclash.dev.svsticky.nl"
+  oauth_provider_url: "https://koala.dev.svsticky.nl"

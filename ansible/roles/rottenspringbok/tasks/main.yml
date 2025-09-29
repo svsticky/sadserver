@@ -43,4 +43,3 @@
     path: "/etc/nginx/sites-enabled/rottenspringbok.{{ canonical_hostname }}.conf"
     state: link
   notify: "reload nginx"
-  

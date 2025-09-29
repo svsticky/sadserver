@@ -2,12 +2,10 @@
 - name: "create user"
   ansible.builtin.user:
     name: "committeeclash"
-    home: "/home/committeeclash"
+    home: "{{ committeeclash_project_source }}"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
-    groups: "docker"
-    append: true
 
 - name: "set up committeeclash"
   become_user: "committeeclash"
@@ -16,7 +14,7 @@
   - name: "clone repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/CommitteeClash.git"
-      dest: "/home/committeeclash"
+      dest: "{{ committeeclash_project_source }}"
       depth: 1
       version: "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
     diff: false
@@ -24,33 +22,26 @@
   - name: "Copy .env file"
     ansible.builtin.template:
       src: ".env.j2"
-      dest: "/home/committeeclash/.env"
+      dest: "{{ committeeclash_project_source }}/.env"
     diff: false
 
   - name: "set up OAuth secret file"
     ansible.builtin.template:
       src: "oauth_client_secret.secret.j2"
-      dest: "/home/committeeclash/oauth_client_secret.secret"
+      dest: "{{ committeeclash_project_source }}/oauth_client_secret.secret"
     diff: false
 
   - name: "set up Postgres secret files"
     ansible.builtin.template:
       src: "postgres_password.secret.j2"
-      dest: "/home/committeeclash/postgres_password.secret"
+      dest: "{{ committeeclash_project_source }}/postgres_password.secret"
     diff: false
-
-  - name: "run docker compose down"
-    community.docker.docker_compose_v2:
-      project_src: /home/committeeclash
-      state: absent
-      remove_orphans: true
-      remove_images: all
-      files: docker-compose.prod.yml
 
   - name: "Docker compose"
     ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
     vars:
       project_source: "{{ committeeclash_project_source }}"
+      remove_images: all
       compose_file: "docker-compose.prod.yml"
 
 - name: "Copy nginx configuration"

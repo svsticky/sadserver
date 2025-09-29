@@ -24,6 +24,8 @@
       tags: "firewall"
     - role: "docker"
       tags: "docker"
+    - role: "harbor"
+      tags: "harbor"
     - role: "databases"
       tags: "databases"
     - role: "nvm"

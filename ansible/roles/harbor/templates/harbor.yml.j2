@@ -1,0 +1,58 @@
+# Harbor configuration template for S3 and secrets
+hostname: {{ harbor_domain }}
+http:
+  port: {{ harbor_port }}
+
+harbor_admin_password: {{ harbor_admin_password }}
+
+database:
+  # The password for the user('postgres' by default) of Harbor DB.
+  password: {{harbor_database_password}}
+  max_idle_conns: 100
+  max_open_conns: 900
+  conn_max_lifetime: 5m
+  conn_max_idle_time: 0
+  
+data_volume: /data
+
+storage_service:
+  s3:
+    accesskey: {{ harbor_s3_access_key }}
+    secretkey: {{ harbor_s3_secret_key }}
+    region: {{ harbor_s3_region }}
+    bucket: {{ harbor_s3_bucket }}
+    regionendpoint: https://s3.{{ harbor_s3_region }}.amazonaws.com
+    secure: true
+    v4auth: true
+    rootdirectory: /
+
+trivy:
+  enabled: true
+  ignore_unfixed: false
+  skip_update: false
+  skip_java_db_update: false
+  offline_scan: false
+  security_check: vuln,config,secret
+  insecure: false
+  timeout: 5m0s
+
+jobservice:
+  max_job_workers: 10
+  max_job_duration_hours: 24
+  job_loggers:
+    - STD_OUTPUT
+    - FILE
+  logger_sweeper_duration: 1 #days
+
+
+notification:
+  webhook_job_max_retry: 3
+  webhook_job_http_client_timeout: 3 #seconds
+
+# Log configurations
+log:
+  level: info
+  local:
+    rotate_count: 50
+    rotate_size: 200M
+    location: /var/log/harbor

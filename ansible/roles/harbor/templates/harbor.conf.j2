@@ -1,0 +1,13 @@
+server {
+    listen 443 ssl;
+    server_name harbor.{{ canonical_hostname }}.nl;
+
+    ssl_certificate /etc/letsencrypt/live/harbor.{{ canonical_hostname }}.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/harbor.{{ canonical_hostname }}.com/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:{{ harbor_port }};
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+}

@@ -243,3 +243,10 @@ websites:
     custom_config: true
     alternative_names: []
     state: "present"
+
+  - name: "harbor.{{ canonical_hostname }}"
+    user: "harbor"
+    custom_config: true
+    alternative_names: []
+    state: "present"
+    

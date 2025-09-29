@@ -13,7 +13,7 @@
   ansible.builtin.get_url:
     url: "https://github.com/goharbor/harbor/releases/download/{{ secret_harbor.harbor_version }}/harbor-online-installer-{{ secret_harbor.harbor_version }}.tgz"
     dest: "{{ secret_harbor.harbor_install_dir }}/harbor-online-installer.tgz"
-    mode: '0644'
+    mode: "0644"
     owner: "harbor"
     group: "harbor"
 
@@ -21,7 +21,7 @@
   ansible.builtin.unarchive:
     src: "{{ secret_harbor.harbor_install_dir }}/harbor-online-installer.tgz"
     dest: "{{ secret_harbor.harbor_install_dir }}/.."
-    remote_src: yes
+    remote_src: true
     owner: "harbor"
     group: "harbor"
 
@@ -29,7 +29,7 @@
   ansible.builtin.template:
     src: "harbor.yml.j2"
     dest: "{{ secret_harbor.harbor_install_dir }}/harbor.yml"
-    mode: '0600'
+    mode: "0600"
     owner: "harbor"
     group: "harbor"
 
@@ -49,4 +49,3 @@
     path: "/etc/nginx/sites-enabled/harbor.{{ canonical_hostname }}.conf"
     state: "link"
   notify: "reload nginx"
-

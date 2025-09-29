@@ -164,4 +164,7 @@ secret_harbor:
   harbor_s3_bucket: "{{ vault_secret_harbor.harbor_s3_bucket }}"
   harbor_s3_region: "{{ vault_secret_harbor.harbor_s3_region }}"
   harbor_admin_password: "{{ vault_secret_harbor.harbor_admin_password }}"
+  harbor_database_password: "{{ vault_secret_harbor.harbor_database_password }}"
   harbor_port: 6969
+  harbor_version: "v2.14.0"
+  harbor_install_dir: "/var/www/harbor"

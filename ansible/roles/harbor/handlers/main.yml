@@ -3,5 +3,5 @@
 # Add any handlers needed for Harbor (e.g., restart services)
 - name: restart harbor
   ansible.builtin.shell:
-    cmd: "docker compose {{ harbor_install_dir }}/docker-compose.yml restart"
+    cmd: "docker compose {{ secret_harbor.harbor_install_dir }}/docker-compose.yml restart"
   listen: "restart harbor"

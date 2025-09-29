@@ -11,31 +11,31 @@
 # Main tasks for Harbor role
 - name: Download Harbor online installer
   ansible.builtin.get_url:
-    url: "https://github.com/goharbor/harbor/releases/download/{{ harbor_version }}/harbor-online-installer-{{ harbor_version }}.tgz"
-    dest: "{{ harbor_install_dir }}/harbor-online-installer.tgz"
+    url: "https://github.com/goharbor/harbor/releases/download/{{ secret_harbor.harbor_version }}/harbor-online-installer-{{ secret_harbor.harbor_version }}.tgz"
+    dest: "{{ secret_harbor.harbor_install_dir }}/harbor-online-installer.tgz"
     mode: '0644'
-  owner: "harbor"
-  group: "harbor"
+    owner: "harbor"
+    group: "harbor"
 
 - name: Extract Harbor installer
   ansible.builtin.unarchive:
-    src: "{{ harbor_install_dir }}/harbor-online-installer.tgz"
-    dest: "{{ harbor_install_dir }}"
+    src: "{{ secret_harbor.harbor_install_dir }}/harbor-online-installer.tgz"
+    dest: "{{ secret_harbor.harbor_install_dir }}/.."
     remote_src: yes
-  owner: "harbor"
-  group: "harbor"
+    owner: "harbor"
+    group: "harbor"
 
 - name: Template Harbor config with S3 and secrets
   ansible.builtin.template:
     src: "harbor.yml.j2"
-    dest: "{{ harbor_install_dir }}/harbor.yml"
+    dest: "{{ secret_harbor.harbor_install_dir }}/harbor.yml"
     mode: '0600'
-  owner: "harbor"
-  group: "harbor"
+    owner: "harbor"
+    group: "harbor"
 
 - name: Run Harbor installer
   ansible.builtin.shell:
-    cmd: "cd {{ harbor_install_dir }} && ./install.sh --with-trivy"
+    cmd: "cd {{ secret_harbor.harbor_install_dir }} && ./install.sh --with-trivy"
 
 - name: "copy nginx configuration"
   ansible.builtin.template:

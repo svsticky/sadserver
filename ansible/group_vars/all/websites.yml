@@ -257,3 +257,8 @@ websites:
     alternative_names:
       - "docs.commissiestrijd.{{ canonical_hostname }}"
     state: "present"
+
+  - name: "rottenspringbok.{{ canonical_hostname }}"
+    user: "rotten_springbok"
+    custom_config: true
+    state: "present"

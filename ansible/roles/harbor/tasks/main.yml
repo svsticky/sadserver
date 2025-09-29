@@ -34,8 +34,9 @@
     group: "harbor"
 
 - name: Run Harbor installer
-  ansible.builtin.shell:
-    cmd: "cd {{ secret_harbor.harbor_install_dir }} && ./install.sh --with-trivy"
+  ansible.builtin.command:
+    cmd: "./install.sh --with-trivy"
+    chdir: "{{ secret_harbor.harbor_install_dir }}"
 
 - name: "copy nginx configuration"
   ansible.builtin.template:

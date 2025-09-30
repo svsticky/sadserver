@@ -6,6 +6,8 @@
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
+    groups: "docker"
+    append: true
 
 - name: "set up committeeclash"
   become_user: "committeeclash"

@@ -2,7 +2,7 @@
 - name: "create user for static-sticky"
   ansible.builtin.user:
     name: "static-sticky"
-    home: "/var/www/static-sticky"
+    home: "/home/static-sticky"
     shell: "/usr/sbin/nologin"
     system: true
     state: "present"
@@ -28,12 +28,16 @@
 
 - name:
     "install systemd-journal-remote for accessing static-sticky's deploy logs
-    remotely and awscli to fetch the builds from s3"
+    remotely"
   ansible.builtin.apt:
     name:
       - "systemd-journal-remote"
-      - "awscli"
     state: "present"
+
+- name: "install awscli to fetch the builds from s3"
+  community.general.snap:
+    name: aws-cli
+    classic: true
 
 - name: "start and enable systemd-journal-gatewayd"
   ansible.builtin.systemd:

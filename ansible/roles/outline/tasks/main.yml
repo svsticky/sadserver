@@ -2,11 +2,21 @@
 - name: "Create outline user"
   ansible.builtin.user:
     name: "outline"
-    home: "/var/www/outline"
+    home: "{{ outline_config.home }}"
     move_home: true
     system: true
     shell: "/sbin/nologin"
     password: "!"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ outline_config.home }}"
+    owner: "outline"
+    group: "outline"
+    mode: "2775"
+    state: "directory"
+
 
 - name: "Create outline directory"
   ansible.builtin.file:

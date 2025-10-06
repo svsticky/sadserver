@@ -66,8 +66,6 @@
       tags: "sodi"
     - role: "public_files"
       tags: "public"
-    - role: "files_website"
-      tags: "files"
     - role: "mongoose"
       tags: "mongoose"
     - role: "chroma"

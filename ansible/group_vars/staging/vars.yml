@@ -159,8 +159,6 @@ secret_intro_website:
   aas_pre_shared_key: "{{ vault_secret_intro_website.aas_pre_shared_key }}"
 
 secret_committeeclash:
-  oauth_client_id: "{{ vault_secret_committeeclash.oauth_client_id }}"
-  oauth_client_secret: "{{ vault_secret_committeeclash.oauth_client_secret }}"
   postgres_password: "{{ vault_secret_committeeclash.postgres_password }}"
   host_url: "https://committeeclash.dev.svsticky.nl"
   oauth_provider_url: "https://koala.dev.svsticky.nl"

@@ -1,0 +1,78 @@
+---
+- name: "create user"
+  ansible.builtin.user:
+    name: "committeeclash"
+    home: "{{ committeeclash_project_source }}"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+
+- name: "set up committeeclash"
+  become_user: "committeeclash"
+  become: true
+  block:
+  - name: "clone repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/CommitteeClash.git"
+      dest: "{{ committeeclash_project_source }}"
+      depth: 1
+      version: "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
+    diff: false
+
+  - name: "Copy .env file"
+    ansible.builtin.template:
+      src: ".env.j2"
+      dest: "{{ committeeclash_project_source }}/.env"
+    diff: false
+
+  - name: "set up OAuth secret file"
+    ansible.builtin.template:
+      src: "oauth_client_secret.secret.j2"
+      dest: "{{ committeeclash_project_source }}/oauth_client_secret.secret"
+    diff: false
+
+  - name: "set up Postgres secret files"
+    ansible.builtin.template:
+      src: "postgres_password.secret.j2"
+      dest: "{{ committeeclash_project_source }}/postgres_password.secret"
+    diff: false
+
+  - name: "Docker compose"
+    ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+    vars:
+      project_source: "{{ committeeclash_project_source }}"
+      remove_images: all
+      compose_file: "docker-compose.prod.yml"
+
+- name: "Copy nginx configuration"
+  ansible.builtin.template:
+    src: "committeeclash.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ item.cert_name }}.conf"
+  loop:
+    - server_names:
+        - "committeeclash.{{ canonical_hostname }}"
+        - "commissiestrijd.{{ canonical_hostname }}"
+      cert_name: "committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_port }}"
+    - server_names:
+        - "docs.committeeclash.{{ canonical_hostname }}"
+      cert_name: "docs.committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_docs_port }}"
+  notify: "reload nginx"
+
+- name: "Enable nginx configurations for committeeclash (main + docs)"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ item.cert_name }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item.cert_name }}.conf"
+    state: link
+  loop:
+    - server_names:
+        - "committeeclash.{{ canonical_hostname }}"
+        - "commissiestrijd.{{ canonical_hostname }}"
+      cert_name: "committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_port }}"
+    - server_names:
+        - "docs.committeeclash.{{ canonical_hostname }}"
+      cert_name: "docs.committeeclash.{{ canonical_hostname }}"
+      port: "{{ committeeclash_docs_port }}"
+  notify: "reload nginx"

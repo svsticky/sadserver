@@ -22,7 +22,7 @@
   - name: Extract Harbor installer
     ansible.builtin.unarchive:
       src: "{{ secret_harbor.harbor_install_dir }}/harbor-online-installer.tgz"
-      dest: "{{ secret_harbor.harbor_install_dir }}/.."
+      dest: "{{ secret_harbor.harbor_install_dir }}/.." # make sure to extract to parent dir so it is in /var/www/harbor
       remote_src: true
 
   - name: Template Harbor config with S3 and secrets

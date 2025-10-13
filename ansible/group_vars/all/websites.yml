@@ -256,6 +256,8 @@ websites:
     alternative_names:
       - "commissiestrijd.{{ canonical_hostname }}"
     state: "present"
+    authenticated: true
+    oauth2_callback_url: "/api/auth/callback/Koala"
 
   - name: "docs.committeeclash.{{ canonical_hostname }}"
     user: "committeeclash"

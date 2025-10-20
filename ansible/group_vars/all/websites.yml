@@ -269,4 +269,5 @@ websites:
   - name: "rottenspringbok.{{ canonical_hostname }}"
     user: "rotten_springbok"
     custom_config: true
+    alternative_names: []
     state: "present"

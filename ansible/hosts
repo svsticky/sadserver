@@ -2,4 +2,4 @@
 svsticky.nl ansible_python_interpreter=/usr/bin/python3
 
 [staging]
-dev.svsticky.nl ansible_python_interpreter=/usr/bin/python3
+migration.svsticky.nl ansible_python_interpreter=/usr/bin/python3

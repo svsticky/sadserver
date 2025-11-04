@@ -8,7 +8,7 @@ let
     black
     click
     mypy
-    GitPython
+    gitpython
     requests
     types-requests
     pyaml

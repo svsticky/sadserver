@@ -12,6 +12,8 @@ skip_list:
   - risky-file-permissions
   # We always use lower case, and its too late now to turn back
   - name[casing]
+  # This rule enforces local variables to be named role_variable_name, which is not desirable
+  - var-naming[no-role-prefix]
 
 exclude_paths:
   - playbooks/

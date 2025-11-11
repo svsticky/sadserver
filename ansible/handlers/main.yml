@@ -26,8 +26,7 @@
   listen: "reboot server"
 
 - name: "Prune docker images"
-  docker_prune:
-    images: yes
-    builder_cache: yes
+  community.docker.docker_prune:
+    images: true
+    builder_cache: true
   listen: "prune docker"
-

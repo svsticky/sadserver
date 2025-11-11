@@ -87,6 +87,7 @@
     wait: true
     wait_timeout: 300
   register: "output"
+  notify: "prune docker"
 
 # - name: Show results
 #   ansible.builtin.debug:

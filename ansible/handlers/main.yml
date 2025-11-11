@@ -24,3 +24,10 @@
   ansible.builtin.wait_for_connection:
     delay: 20
   listen: "reboot server"
+
+- name: "Prune docker images"
+  docker_prune:
+    images: yes
+    builder_cache: yes
+  listen: "prune docker"
+

@@ -271,3 +271,5 @@ websites:
     custom_config: true
     alternative_names: []
     state: "present"
+    authenticated: true
+    oauth2_callback_url: "/auth/callback"

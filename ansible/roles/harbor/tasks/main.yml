@@ -1,0 +1,50 @@
+---
+
+- name: "create user"
+  ansible.builtin.user:
+    name: "harbor"
+    home: "/var/www/harbor"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+
+# Main tasks for Harbor role
+- name: Create Harbor installation directory
+  become_user: "harbor"
+  become: true
+  block:
+  - name: Download Harbor online installer
+    ansible.builtin.get_url:
+      url: "https://github.com/goharbor/harbor/releases/download/{{ secret_harbor.harbor_version }}/harbor-online-installer-{{ secret_harbor.harbor_version }}.tgz"
+      dest: "{{ secret_harbor.harbor_install_dir }}/harbor-online-installer.tgz"
+      mode: "0644"
+
+  - name: Extract Harbor installer
+    ansible.builtin.unarchive:
+      src: "{{ secret_harbor.harbor_install_dir }}/harbor-online-installer.tgz"
+      dest: "{{ secret_harbor.harbor_install_dir }}/.." # make sure to extract to parent dir so it is in /var/www/harbor
+      remote_src: true
+
+  - name: Template Harbor config with S3 and secrets
+    ansible.builtin.template:
+      src: "harbor.yml.j2"
+      dest: "{{ secret_harbor.harbor_install_dir }}/harbor.yml"
+      mode: "0600"
+
+- name: Run Harbor installer
+  ansible.builtin.command:
+    cmd: "./install.sh --with-trivy"
+    chdir: "{{ secret_harbor.harbor_install_dir }}"
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "harbor.conf.j2"
+    dest: "/etc/nginx/sites-available/harbor.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/harbor.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/harbor.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

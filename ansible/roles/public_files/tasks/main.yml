@@ -1,22 +1,20 @@
 ---
-- name: "clone fancy-index and copy theme files"
-  block:
-  - name: "clone repo"
-    ansible.builtin.git:
-      repo: "https://github.com/svsticky/fancy-index.git"
-      dest: "/var/www/fancy-index"
-    diff: false
+- name: "clone fancy-index repo"
+  ansible.builtin.git:
+    repo: "https://github.com/svsticky/fancy-index.git"
+    dest: "/tmp/fancy-index"
+  diff: false
 
-  - name: "install and compile fancy-index"
-    ansible.builtin.shell: |
-      source {{ nvm.script }}
-      nvm use
-      ./build.sh
-    args:
-      chdir: "/var/www/fancy-index"
-      executable: "/bin/bash"
+- name: "install and compile fancy-index"
+  ansible.builtin.shell: |
+    source {{ nvm.script }}
+    nvm use
+    ./build.sh
+  args:
+    chdir: "/tmp/fancy-index"
+    executable: "/bin/bash"
 
-- name: "create site root Fancy Index & theme dir"
+- name: "create site root"
   ansible.builtin.file:
     path: "/var/www/{{ item }}.{{ canonical_hostname }}"
     owner: "www-data"
@@ -27,7 +25,7 @@
     - files
     - public
 
-- name: "create site root Fancy Index & theme dir"
+- name: "create theme dir"
   ansible.builtin.file:
     path: "/var/www/{{ item }}.{{ canonical_hostname }}/theme"
     owner: "www-data"
@@ -39,8 +37,9 @@
 
 - name: "copy Fancy Index theme"
   ansible.builtin.copy:
-    src: "/var/www/fancy-index/theme"
-    dest: "/var/www/{{ item }}.{{ canonical_hostname }}/theme"
+    src: "/tmp/fancy-index/theme"
+    remote_src: true
+    dest: "/var/www/{{ item }}.{{ canonical_hostname }}"
     owner: "www-data"
     group: "www-data"
   loop:

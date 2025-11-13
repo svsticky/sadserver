@@ -1,0 +1,45 @@
+---
+- name: "create user"
+  ansible.builtin.user:
+    name: "rottenspringbok"
+    home: "{{ rottenspringbok_project_source }}"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+
+- name: "set up rottenspringbok"
+  become_user: "rottenspringbok"
+  become: true
+  block:
+  - name: "clone repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/RotteN-Springbok.git"
+      dest: "{{ rottenspringbok_project_source }}"
+      depth: 1
+      version: "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
+    diff: false
+
+  - name: "Copy .env file"
+    ansible.builtin.template:
+      src: ".env.j2"
+      dest: "{{ rottenspringbok_project_source }}/.env"
+    diff: false
+
+  - name: "Docker compose"
+    ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+    vars:
+      project_source: "{{ rottenspringbok_project_source }}"
+      remove_images: all
+
+- name: "Copy nginx configuration"
+  ansible.builtin.template:
+    src: "rottenspringbok.conf.j2"
+    dest: "/etc/nginx/sites-available/rottenspringbok.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "Enable nginx configuration for rottenspringbok"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/rottenspringbok.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/rottenspringbok.{{ canonical_hostname }}.conf"
+    state: link
+  notify: "reload nginx"

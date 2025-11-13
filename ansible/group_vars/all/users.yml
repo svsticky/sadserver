@@ -50,6 +50,12 @@ users:
         state: "present"
       - username: "dreesolivier"
         state: "present"
+      - username: "KoenDR06"
+        state: "present"
+      - username: "ASkater1"
+        state: "present"
+      - username: "rensvmoorsel"
+        state: "present"
 
   - name: "sem"
     admin: true
@@ -123,6 +129,29 @@ users:
       - username: "dreesolivier"
         state: "present"
 
+  - name: "koen"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "KoenDR06"
+        state: "present"
+
+  - name: "jari"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "ASkater1"
+        state: "present"
+
+  - name: "rens"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "rensvmoorsel"
+        state: "present"
 
   - name: "bestuur"
     admin: false
@@ -195,6 +224,10 @@ users:
       - username: "SilasPeters"
         state: "present"
       - username: "olafboekholt"
+        state: "present"
+      - username: "rensvmoorsel"
+        state: "present"
+      - username: "ASkater1"
         state: "present"
 
   - name: "hacc"

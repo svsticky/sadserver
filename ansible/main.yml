@@ -24,6 +24,8 @@
       tags: "firewall"
     - role: "docker"
       tags: "docker"
+    - role: "harbor"
+      tags: "harbor"
     - role: "databases"
       tags: "databases"
     - role: "nvm"
@@ -74,6 +76,10 @@
       tags: "rooster"
     - role: "intro_website"
       tags: "intro_website"
+    - role: "committeeclash"
+      tags: "committeeclash"
+    - role: "rottenspringbok"
+      tags: "rottenspringbok"
     # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
       tags: ["never", "crazy88bot"]

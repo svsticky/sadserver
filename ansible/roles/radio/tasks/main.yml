@@ -2,12 +2,22 @@
 - name: "create user for radio"
   ansible.builtin.user:
     name: "radio"
-    home: "/var/www/radio"
+    home: "{{ radio_config.home }}"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
     groups: "nvm"
     append: true
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ radio_config.home }}"
+    owner: "radio"
+    group: "radio"
+    mode: "2775"
+    state: "directory"
+
 
 - name: "copy nginx configuration"
   ansible.builtin.template:
@@ -24,7 +34,7 @@
 
 - name: "create radio webroot"
   ansible.builtin.file:
-    path: "/var/www/radio/radio.{{ canonical_hostname }}"
+    path: "{{ radio_config.home }}/radio.{{ canonical_hostname }}"
     owner: "radio"
     group: "radio"
     mode: "2775"
@@ -37,7 +47,7 @@
   - name: "clone radio repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/radio.git"
-      dest: "/var/www/radio/radio"
+      dest: "{{ radio_config.home }}/radio"
       depth: 1
       force: true
       version: "master"
@@ -47,7 +57,7 @@
   - name: "template environment file for radio"
     ansible.builtin.template:
       src: ".env.j2"
-      dest: "/var/www/radio/radio/.env"
+      dest: "{{ radio_config.home }}/radio/.env"
     diff: false
 
   - name: "ensure packages, node and nvm are up to date"
@@ -59,7 +69,7 @@
       nvm use
       npm install
     args:
-      chdir: "/var/www/radio/radio"
+      chdir: "{{ radio_config.home }}/radio"
       executable: "/bin/bash"
 
   - name: "try building website"
@@ -70,7 +80,7 @@
           nvm use
           npm run build
         args:
-          chdir: "/var/www/radio/radio"
+          chdir: "{{ radio_config.home }}/radio"
           executable: "/bin/bash"
 
   # NOTE: The trailing slashes are significant!
@@ -78,8 +88,8 @@
   # See `man rsync`, section USAGE.
   - name: "copy website contents to webroot"
     ansible.posix.synchronize:
-      src: "/var/www/radio/radio/dist/"
-      dest: "/var/www/radio/radio.{{ canonical_hostname }}/"
+      src: "{{ radio_config.home }}/radio/dist/"
+      dest: "{{ radio_config.home }}/radio.{{ canonical_hostname }}/"
       delete: true
       recursive: true
       perms: false

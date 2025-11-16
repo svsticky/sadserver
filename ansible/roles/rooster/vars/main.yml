@@ -1,0 +1,4 @@
+---
+
+rooster_config:
+  home: "/var/www/fallacious-rooster"

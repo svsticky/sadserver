@@ -10,6 +10,7 @@
     source {{ nvm.script }}
     nvm use
     ./build.sh
+  changed_when: false
   args:
     chdir: "{{ public_files_config.fancy_index_directory }}"
     executable: "/bin/bash"

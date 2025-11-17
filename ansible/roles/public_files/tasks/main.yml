@@ -2,7 +2,7 @@
 - name: "clone fancy-index repo"
   ansible.builtin.git:
     repo: "https://github.com/svsticky/fancy-index.git"
-    dest: "/tmp/fancy-index"
+    dest: "{{ public_files_config.fancy_index_directory }}"
   diff: false
 
 - name: "install and compile fancy-index"
@@ -11,7 +11,7 @@
     nvm use
     ./build.sh
   args:
-    chdir: "/tmp/fancy-index"
+    chdir: "{{ public_files_config.fancy_index_directory }}"
     executable: "/bin/bash"
 
 - name: "create site root"
@@ -37,7 +37,7 @@
 
 - name: "copy Fancy Index theme"
   ansible.builtin.copy:
-    src: "/tmp/fancy-index/theme"
+    src: "{{ public_files_config.fancy_index_directory }}/theme"
     remote_src: true
     dest: "/var/www/{{ item }}.{{ canonical_hostname }}"
     owner: "www-data"

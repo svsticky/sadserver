@@ -1,37 +1,60 @@
 ---
-- name: "create site root Fancy Index & theme dir"
+- name: "clone fancy-index repo"
+  ansible.builtin.git:
+    repo: "https://github.com/svsticky/fancy-index.git"
+    dest: "{{ public_files_config.fancy_index_directory }}"
+  diff: false
+
+- name: "install and compile fancy-index"
+  ansible.builtin.shell: |
+    source {{ nvm.script }}
+    nvm use
+    ./build.sh
+  changed_when: false
+  args:
+    chdir: "{{ public_files_config.fancy_index_directory }}"
+    executable: "/bin/bash"
+
+- name: "create site root"
   ansible.builtin.file:
-    path: "/var/www/public.{{ canonical_hostname }}"
+    path: "/var/www/{{ item }}.{{ canonical_hostname }}"
     owner: "www-data"
     group: "adm"
     mode: "2775"
     state: "directory"
+  loop:
+    - files
+    - public
 
-- name: "create site root Fancy Index & theme dir"
+- name: "create theme dir"
   ansible.builtin.file:
-    path: "/var/www/public.{{ canonical_hostname }}/theme"
+    path: "/var/www/{{ item }}.{{ canonical_hostname }}/theme"
     owner: "www-data"
     group: "www-data"
     state: "directory"
+  loop:
+    - files
+    - public
 
-# The theming generation can be found at https://github.com/svsticky/fancy-index
 - name: "copy Fancy Index theme"
   ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "/var/www/public.{{ canonical_hostname }}/theme/{{ item }}"
+    src: "{{ public_files_config.fancy_index_directory }}/theme"
+    remote_src: true
+    dest: "/var/www/{{ item }}.{{ canonical_hostname }}"
     owner: "www-data"
     group: "www-data"
   loop:
-    - "footer.html"
-    - "header.html"
-    - "style.css"
-    - "fa-brands-400.ttf"
+    - files
+    - public
 
 - name: "copy NGiNX site config Fancy Index"
   ansible.builtin.template:
-    src: "public.conf.j2"
-    dest: "/etc/nginx/sites-available/public.{{ canonical_hostname }}.conf"
+    src: "{{ item }}.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ item }}.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
+  loop:
+    - files
+    - public
 
 - name: "enable NGiNX site config Fancy Index"
   ansible.builtin.file:
@@ -39,5 +62,8 @@
     path: "/etc/nginx/sites-enabled/{{ filename }}"
     state: "link"
   vars:
-    filename: "public.{{ canonical_hostname }}.conf"
+    filename: "{{ item }}.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
+  loop:
+    - files
+    - public

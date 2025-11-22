@@ -29,7 +29,7 @@
   - name: "clone studytrip repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/Studytrip.git"
-      dest: "/var/www/studytrip"
+      dest: "/var/www/studytrip/studytrip"
       depth: 1
       force: true
       version: "wip"
@@ -38,7 +38,7 @@
   - name: "Build docker image"
     community.docker.docker_image:
       build:
-        path: "/var/www/studytrip"
+        path: "/var/www/studytrip/studytrip"
       source: "build"
       name: "svsticky/studytrip:latest"
 
@@ -47,4 +47,4 @@
       name: "studytrip"
       image: "svsticky/studytrip:latest"
       published_ports:
-        - "3000:{{ studytrip_port }}"
+        - "{{ studytrip_port }}:3000"

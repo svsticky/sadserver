@@ -32,7 +32,7 @@
       dest: "/var/www/studytrip/studytrip"
       depth: 1
       force: true
-      version: "wip"
+      version: "master"
     diff: false
 
   - name: "Build docker image"

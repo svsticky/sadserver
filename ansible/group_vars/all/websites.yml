@@ -272,3 +272,11 @@ websites:
     state: "present"
     authenticated: true
     oauth2_callback_url: "/auth/callback"
+
+  - name: "plakplaats.{{ canonical_hostname }}"
+    custom_config: true
+    user: "plakplaats"
+    alternative_names: []
+    authenticated: true
+    oauth2_callback_url: "/authorize"
+    state: "present"

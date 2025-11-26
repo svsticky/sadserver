@@ -1,0 +1,89 @@
+---
+
+- name: "create user for plakplaats"
+  ansible.builtin.user:
+    name: "plakplaats"
+    home: "/var/www/plakplaats"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "plakplaats.conf.j2"
+    dest: "/etc/nginx/sites-available/plakplaats.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/plakplaats.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/plakplaats.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- name: "set up postgres for plakplaats"
+  become_user: "postgres"
+  become: true
+  block:
+
+  - name: "ensure plakplaats user exists"
+    community.postgresql.postgresql_user:
+      name: "mongoose"
+
+  - name: "ensure plakplaats database exists"
+    community.postgresql.postgresql_db:
+      name: "plakplaats"
+      owner: "plakplaats"
+
+  - name: "ensure plakplaats role exists"
+    community.postgresql.postgresql_user:
+      db: "plakplaats"
+      name: "plakplaats"
+      role_attr_flags: "CREATEDB,LOGIN"
+
+  - name: "ensure plakplaats database privileges are set properly"
+    ignore_errors: "{{ ansible_check_mode }}"
+    community.postgresql.postgresql_privs:
+      db: "plakplaats"
+      role: "plakplaats"
+      type: "database"
+      privs: "ALL"
+
+  - name: "ensure postgis extension is enabled in the plakplaats database"
+    community.postgresql.postgresql_ext:
+      name: "postgis"
+      login_db: "plakplaats"
+
+- name: "set up plakplaats repo"
+  become_user: "plakplaats"
+  become: true
+  block:
+  - name: "clone plakplaats repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/plakplaats.git"
+      dest: "/var/www/plakplaats/plakplaats"
+      depth: 1
+      force: true
+      version: "feat/16-add-koala-authentication"
+    diff: false
+
+  - name: "install dependencies via uv"
+    ansible.builtin.command: "{{ uv.install_dir }}/uv sync"
+    args:
+      chdir: "/var/www/plakplaats/plakplaats"
+
+  - name: "template environment file for plakplaats"
+    ansible.builtin.template:
+      src: ".env.j2"
+      dest: "/var/www/plakplaats/plakplaats/.env"
+    diff: false
+
+  - name: "apply migrations"
+    ansible.builtin.command: "{{ uv.install_dir }}/uv run alembic upgrade head"
+    args:
+      chdir: "/var/www/plakplaats/plakplaats"
+
+  - name: "run server"
+    ansible.builtin.command: "{{ uv.install_dir }}/uv run server.py"
+    args:
+      chdir: "/var/www/plakplaats/plakplaats/server"

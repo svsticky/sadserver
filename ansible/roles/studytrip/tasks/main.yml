@@ -1,0 +1,50 @@
+---
+- name: "create user for studytrip"
+  ansible.builtin.user:
+    name: "studytrip"
+    home: "/var/www/studytrip"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+    append: true
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "studytrip.conf.j2"
+    dest: "/etc/nginx/sites-available/studytrip.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/studytrip.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/studytrip.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- name: "set up studytrip"
+  become_user: "studytrip"
+  become: true
+  block:
+  - name: "clone studytrip repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/Studytrip.git"
+      dest: "/var/www/studytrip/studytrip"
+      depth: 1
+      force: true
+      version: "master"
+    diff: false
+
+  - name: "Build docker image"
+    community.docker.docker_image:
+      build:
+        path: "/var/www/studytrip/studytrip"
+      source: "build"
+      name: "svsticky/studytrip:latest"
+
+  - name: "Start docker container"
+    community.docker.docker_container:
+      name: "studytrip"
+      image: "svsticky/studytrip:latest"
+      published_ports:
+        - "{{ studytrip_port }}:3000"

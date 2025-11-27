@@ -2,14 +2,23 @@
 - name: "Create user for fallacious-rooster"
   ansible.builtin.user:
     name: fallacious-rooster
-    home: "/var/www/fallacious-rooster"
+    home: "{{ rooster_config.home }}"
     shell: "/usr/sbin/nologin"
     system: true
     state: "present"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ rooster_config.home }}"
+    owner: "fallacious-rooster"
+    group: "fallacious-rooster"
+    mode: "2775"
+    state: "directory"
 
 - name: "Create fallacious-rooster frontend directory"
   ansible.builtin.file:
-    name: "/var/www/fallacious-rooster/frontend"
+    name: "{{ rooster_config.home }}/frontend"
     owner: "fallacious-rooster"
     group: "fallacious-rooster"
     mode: "2775"
@@ -17,7 +26,7 @@
 
 - name: "Create fallacious-rooster server directory"
   ansible.builtin.file:
-    name: "/var/www/fallacious-rooster/server"
+    name: "{{ rooster_config.home }}/server"
     owner: "fallacious-rooster"
     group: "fallacious-rooster"
     mode: "2775"
@@ -36,7 +45,7 @@
 - name: "Download and extract fallacious-rooster frontend"
   ansible.builtin.unarchive:
     src: "{{ artifact_base_url }}/frontend.tar.gz"
-    dest: "/var/www/fallacious-rooster/frontend"
+    dest: "{{ rooster_config.home }}/frontend"
     remote_src: true
     owner: "fallacious-rooster"
     group: "fallacious-rooster"
@@ -47,7 +56,7 @@
 - name: "Download and extract fallacious-rooster server"
   ansible.builtin.get_url:
     url: "{{ artifact_base_url }}/server-x86_64-unknown-linux-musl"
-    dest: "/var/www/fallacious-rooster/server"
+    dest: "{{ rooster_config.home }}/server"
     owner: "fallacious-rooster"
     group: "fallacious-rooster"
     mode: "775"
@@ -62,14 +71,14 @@
 - name: "Template environment file for fallacious-rooster"
   ansible.builtin.template:
     src: "env.j2"
-    dest: "/var/www/fallacious-rooster/server/.env"
+    dest: "{{ rooster_config.home }}/server/.env"
   diff: false
   notify: "restart fallacious-rooster"
 
 - name: "Template config file for fallacious-rooster"
   ansible.builtin.template:
     src: "fallacious-rooster.json.j2"
-    dest: "/var/www/fallacious-rooster/server/config.json"
+    dest: "{{ rooster_config.home }}/server/config.json"
   diff: false
   notify: "restart fallacious-rooster"
 

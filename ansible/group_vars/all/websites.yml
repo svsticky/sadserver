@@ -278,5 +278,5 @@ websites:
     user: "plakplaats"
     alternative_names: []
     authenticated: true
-    oauth2_callback_url: "/authorize"
+    oauth2_callback_url: "/login"
     state: "present"

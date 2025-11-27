@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=plakplaats web service
+After=network.target
+OnFailure=failure-notificator@%n.service
+
+[Service]
+User=plakplaats
+Group=plakplaats
+WorkingDirectory=/var/www/plakplaats/plakplaats/server
+ExecStart={{ uv.install_dir}}/uv run server.py
+Restart=on-failure
+EnvironmentFile=/var/www/plakplaats/plakplaats/.env
+
+[Install]
+WantedBy=multi-user.target

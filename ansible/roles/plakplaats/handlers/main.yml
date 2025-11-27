@@ -1,0 +1,5 @@
+---
+- name: "restart plakplaats"
+  ansible.builtin.service:
+    name: "plakplaats"
+    state: "restarted"

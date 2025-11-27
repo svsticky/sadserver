@@ -28,7 +28,7 @@
 
   - name: "ensure plakplaats user exists"
     community.postgresql.postgresql_user:
-      name: "mongoose"
+      name: "plakplaats"
 
   - name: "ensure plakplaats database exists"
     community.postgresql.postgresql_db:
@@ -58,14 +58,14 @@
   become_user: "plakplaats"
   become: true
   block:
-  - name: "clone plakplaats repository"
-    ansible.builtin.git:
-      repo: "https://github.com/svsticky/plakplaats.git"
-      dest: "/var/www/plakplaats/plakplaats"
-      depth: 1
-      force: true
-      version: "feat/16-add-koala-authentication"
-    diff: false
+  # - name: "clone plakplaats repository"
+  #   ansible.builtin.git:
+  #     repo: "https://github.com/svsticky/plakplaats.git"
+  #     dest: "/var/www/plakplaats/plakplaats"
+  #     depth: 1
+  #     force: true
+  #     version: "feat/16-add-koala-authentication"
+  #   diff: false
 
   - name: "install dependencies via uv"
     ansible.builtin.command: "{{ uv.install_dir }}/uv sync"
@@ -77,13 +77,24 @@
       src: ".env.j2"
       dest: "/var/www/plakplaats/plakplaats/.env"
     diff: false
+    notify: "restart plakplaats"
 
   - name: "apply migrations"
     ansible.builtin.command: "{{ uv.install_dir }}/uv run alembic upgrade head"
     args:
       chdir: "/var/www/plakplaats/plakplaats"
 
-  - name: "run server"
-    ansible.builtin.command: "{{ uv.install_dir }}/uv run server.py"
-    args:
-      chdir: "/var/www/plakplaats/plakplaats/server"
+- name: "template systemd service file for mongoose"
+  ansible.builtin.template:
+    src: "plakplaats.service.j2"
+    dest: "/etc/systemd/system/plakplaats.service"
+  notify: "restart plakplaats"
+
+- name: "flush_handlers"
+  ansible.builtin.meta: "flush_handlers"
+
+- name: "ensure plakplaats service is running"
+  ansible.builtin.systemd:
+    name: "plakplaats.service"
+    state: "started"
+    enabled: true

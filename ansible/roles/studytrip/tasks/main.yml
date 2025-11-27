@@ -49,3 +49,4 @@
       image: "svsticky/studytrip:latest"
       published_ports:
         - "{{ studytrip_port }}:3000"
+    notify: "prune docker"

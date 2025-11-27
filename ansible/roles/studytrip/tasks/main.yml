@@ -40,6 +40,7 @@
       build:
         path: "/var/www/studytrip/studytrip"
       source: "build"
+      force_source: true
       name: "svsticky/studytrip:latest"
 
   - name: "Start docker container"

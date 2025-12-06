@@ -216,7 +216,6 @@ websites:
 
   - name: "hacc.{{ canonical_hostname }}"
     user: "hacc"
-    custom_config: false
     alternative_names: []
     state: "present"
 

@@ -22,8 +22,8 @@
     state: "link"
   notify: "reload nginx"
 
-- name: "set up studytrip"
-  become_user: "studytrip"
+- name: "set up hacc-ctf"
+  become_user: "hacc"
   become: true
   block:
   - name: "clone hacc-ctf repository"
@@ -41,7 +41,7 @@
         path: "/var/www/hacc/hacc-ctf"
       source: "build"
       force_source: true
-      name: "svsticky/studytrip:latest"
+      name: "svsticky/hacc-ctf:latest"
 
   - name: "Start docker container"
     community.docker.docker_container:

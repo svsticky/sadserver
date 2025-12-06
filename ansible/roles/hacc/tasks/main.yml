@@ -1,0 +1,52 @@
+---
+- name: "create user for hacc"
+  ansible.builtin.user:
+    name: "hacc"
+    home: "/var/www/hacc"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+    append: true
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "hacc.conf.j2"
+    dest: "/etc/nginx/sites-available/hacc.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/hacc.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/hacc.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- name: "set up hacc-ctf"
+  become_user: "hacc"
+  become: true
+  block:
+  - name: "clone hacc-ctf repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/hacc-ctf.git"
+      dest: "/var/www/hacc/hacc-ctf"
+      depth: 1
+      force: true
+      version: "main"
+    diff: false
+
+  - name: "Build docker image"
+    community.docker.docker_image:
+      build:
+        path: "/var/www/hacc/hacc-ctf"
+      source: "build"
+      force_source: true
+      name: "svsticky/hacc-ctf:latest"
+
+  - name: "Start docker container"
+    community.docker.docker_container:
+      name: "hacc-ctf"
+      image: "svsticky/hacc-ctf:latest"
+      published_ports:
+        - "{{ hacc_port }}:3000"
+    notify: "prune docker"

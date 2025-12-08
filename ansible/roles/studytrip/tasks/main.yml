@@ -49,4 +49,6 @@
       image: "svsticky/studytrip:latest"
       published_ports:
         - "{{ studytrip_port }}:3000"
+      restart: true
+      restart_policy: "unless-stopped"
     notify: "prune docker"

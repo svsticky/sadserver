@@ -1,7 +1,0 @@
-# Harbor role handler file
----
-# Add any handlers needed for Harbor (e.g., restart services)
-- name: restart harbor
-  ansible.builtin.command:
-    cmd: "docker compose -f {{ secret_harbor.harbor_install_dir }}/docker-compose.yml restart"
-  listen: "restart harbor"

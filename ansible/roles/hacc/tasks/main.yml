@@ -9,6 +9,14 @@
     groups: "docker"
     append: true
 
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "/var/www/hacc"
+    owner: "hacc"
+    group: "hacc"
+    mode: "2775"
+    state: "directory"
+
 - name: "copy nginx configuration"
   ansible.builtin.template:
     src: "hacc.conf.j2"

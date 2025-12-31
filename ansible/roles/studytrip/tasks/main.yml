@@ -2,12 +2,20 @@
 - name: "create user for studytrip"
   ansible.builtin.user:
     name: "studytrip"
-    home: "/var/www/studytrip"
+    home: "/home/studytrip"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
     groups: "docker"
     append: true
+
+- name: "create repo dir"
+  ansible.builtin.file:
+    path: "/var/www/studytrip"
+    owner: "studytrip"
+    group: "studytrip"
+    mode: "2775"
+    state: "directory"
 
 - name: "copy nginx configuration"
   ansible.builtin.template:

@@ -2,14 +2,23 @@
 - name: "Create user for digidecs"
   ansible.builtin.user:
     name: digidecs
-    home: "/var/www/digidecs"
+    home: "{{ digidecs_config.home }}"
     shell: "/usr/sbin/nologin"
     system: true
     state: "present"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ digidecs_config.home }}"
+    owner: "digidecs"
+    group: "digidecs"
+    mode: "2775"
+    state: "directory"
 
 - name: "Create digidecs frontend directory"
   ansible.builtin.file:
-    name: "/var/www/digidecs/frontend"
+    name: "{{ digidecs_config.home }}/frontend"
     owner: "digidecs"
     group: "digidecs"
     mode: "2775"
@@ -17,7 +26,7 @@
 
 - name: "Create digidecs server directory"
   ansible.builtin.file:
-    name: "/var/www/digidecs/server"
+    name: "{{ digidecs_config.home }}/server"
     owner: "digidecs"
     group: "digidecs"
     mode: "2775"
@@ -36,7 +45,7 @@
 - name: "Download and extract digidecs frontend"
   ansible.builtin.unarchive:
     src: "{{ artifact_base_url }}/frontend.tar.gz"
-    dest: "/var/www/digidecs/frontend"
+    dest: "{{ digidecs_config.home }}/frontend"
     remote_src: true
     owner: "digidecs"
     group: "digidecs"
@@ -47,7 +56,7 @@
 - name: "Download and extract digidecs server"
   ansible.builtin.get_url:
     url: "{{ artifact_base_url }}/server-x86_64-unknown-linux-musl"
-    dest: "/var/www/digidecs/server"
+    dest: "{{ digidecs_config.home }}/server"
     owner: "digidecs"
     group: "digidecs"
     mode: "775"
@@ -62,14 +71,14 @@
 - name: "Template environment file for digidecs"
   ansible.builtin.template:
     src: "env.j2"
-    dest: "/var/www/digidecs/server/.env"
+    dest: "{{ digidecs_config.home }}/server/.env"
   diff: false
   notify: "restart digidecs"
 
 - name: "Template config file for digidecs"
   ansible.builtin.template:
     src: "digidecs.json.j2"
-    dest: "/var/www/digidecs/server/config.json"
+    dest: "{{ digidecs_config.home }}/server/config.json"
   diff: false
   notify: "restart digidecs"
 

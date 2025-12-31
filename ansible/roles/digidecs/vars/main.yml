@@ -1,0 +1,4 @@
+---
+
+digidecs_config:
+  home: "/var/www/digidecs"

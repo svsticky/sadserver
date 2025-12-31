@@ -174,17 +174,6 @@ secret_committeeclash:
   host_url: "https://commissiestrijd.svsticky.nl"
   oauth_provider_url: "https://koala.svsticky.nl"
 
-secret_harbor:
-  harbor_s3_access_key: "{{ vault_secret_harbor.harbor_s3_acces_key }}"
-  harbor_s3_secret_key: "{{ vault_secret_harbor.harbor_s3_secret_key }}"
-  harbor_s3_bucket: "{{ vault_secret_harbor.harbor_s3_bucket }}"
-  harbor_s3_region: "{{ vault_secret_harbor.harbor_s3_region }}"
-  harbor_admin_password: "{{ vault_secret_harbor.harbor_admin_password }}"
-  harbor_database_password: "{{ vault_secret_harbor.harbor_database_password }}"
-  harbor_port: 6969
-  harbor_version: "v2.14.0"
-  harbor_install_dir: "/var/www/harbor"
-
 secret_rottenspringbok:
   oauth_client_id: "{{ vault_secret_rottenspringbok.oauth_client_id }}"
   oauth_client_secret: "{{ vault_secret_rottenspringbok.oauth_client_secret }}"

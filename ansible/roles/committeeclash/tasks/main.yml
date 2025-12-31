@@ -2,10 +2,18 @@
 - name: "create user"
   ansible.builtin.user:
     name: "committeeclash"
-    home: "{{ committeeclash_project_source }}"
+    home: "/home/committeeclash"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
+
+- name: "create repo dir"
+  ansible.builtin.file:
+    path: "{{ committeeclash_project_source }}"
+    owner: "committeeclash"
+    group: "committeeclash"
+    mode: "2775"
+    state: "directory"
 
 - name: "set up committeeclash"
   become_user: "committeeclash"
@@ -37,12 +45,12 @@
       dest: "{{ committeeclash_project_source }}/postgres_password.secret"
     diff: false
 
-  - name: "Docker compose"
-    ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
-    vars:
-      project_source: "{{ committeeclash_project_source }}"
-      remove_images: all
-      compose_file: "docker-compose.prod.yml"
+- name: "Docker compose"
+  ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+  vars:
+    project_source: "{{ committeeclash_project_source }}"
+    remove_images: all
+    compose_file: "docker-compose.prod.yml"
 
 - name: "Copy nginx configuration"
   ansible.builtin.template:

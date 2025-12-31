@@ -1,10 +1,26 @@
 ---
+
 - name: "create user for intro-website"
   ansible.builtin.user:
     name: "intro-website"
     home: "/var/www/intro-website"
     shell: "/usr/sbin/nologin"
     system: true
+    state: "present"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ intro_website_config.home }}"
+    owner: "intro-website"
+    group: "intro-website"
+    mode: "2775"
+    state: "directory"
+
+- name: "Install dependencies"
+  ansible.builtin.apt:
+    name:
+      - "unzip"
     state: "present"
 
 - name: "ensure all files in intro-website folder will belong to intro-website"

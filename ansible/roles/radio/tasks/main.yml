@@ -15,7 +15,7 @@
     path: "{{ radio_config.home }}"
     owner: "radio"
     group: "radio"
-    mode: "2775"
+    mode: "2775" # Must be more permissive than by default so that nginx can read this and such
     state: "directory"
 
 

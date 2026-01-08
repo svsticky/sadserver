@@ -1,4 +1,5 @@
 ---
 committeeclash_port: 4569
 committeeclash_docs_port: 4571
-committeeclash_project_source: /home/committeeclash
+committeeclash_home_dir: "/var/www/committeeclash"
+committeeclash_project_source: "{{ committeeclash_home_dir }}/committeeclash"

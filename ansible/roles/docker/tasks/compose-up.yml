@@ -33,6 +33,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_source }}"
     files: "{{ [compose_file] if compose_file is defined else omit }}"
+    remove_orphans: true # Remove orphans to ensure deleted containers won't later be checked to be running
   register: "output"
 
 # - name: Show results

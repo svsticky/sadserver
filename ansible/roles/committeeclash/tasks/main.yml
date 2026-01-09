@@ -2,10 +2,11 @@
 - name: "create user"
   ansible.builtin.user:
     name: "committeeclash"
-    home: "{{ committeeclash_project_source }}"
+    home: "/var/www/committeeclash"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
+    groups: "docker"
 
 - name: "set up committeeclash"
   become_user: "committeeclash"

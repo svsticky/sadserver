@@ -96,6 +96,8 @@ secret_radio:
   github_api_token: "{{ vault_secret_radio.github_api_token }}"
   weather_api_token: "{{ vault_secret_radio.weather_api_token }}"
   committee_clash_url: "{{ vault_secret_radio.committee_clash_url }}"
+  gala_date: "{{ vault_secret_radio.gala_date }}"
+  gala_qr_url: "{{ vault_secret_radio.gala_qr_url }}"
 
 secret_intro_bot:
   alfas_app_id: "{{ vault_secret_intro_bot.alfas_app_id }}"

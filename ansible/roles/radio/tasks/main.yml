@@ -44,10 +44,13 @@
     diff: false
     notify: "radio repo updated"
 
-  - name: "template environment file for radio"
+  - name: "template production environment file for radio"
     ansible.builtin.template:
       src: ".env.j2"
-      dest: "/var/www/radio/radio/.env"
+      dest: "/var/www/radio/radio/.env.production"
+      owner: "radio"
+      group: "radio"
+      mode: "0644"
     diff: false
 
   - name: "ensure packages, node and nvm are up to date"

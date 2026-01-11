@@ -64,8 +64,6 @@
       tags: "outline"
     - role: "radio"
       tags: "radio"
-    - role: "sodi"
-      tags: "sodi"
     - role: "public_files"
       tags: "public_files"
     - role: "mongoose"

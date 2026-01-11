@@ -120,13 +120,6 @@ websites:
       - "www.savadaba.nl"
     state: "present"
 
-  - name: "sodi.{{ canonical_hostname }}"
-    alternative_names:
-      - "sodi.nl"
-      - "www.sodi.nl"
-    # You have to remove the task include of sodi.yml to remove this completely
-    state: "present"
-
   - name: "static.{{ canonical_hostname }}"
     user: "static-sticky"
     alternative_names: []
@@ -247,7 +240,7 @@ websites:
     custom_config: true
     alternative_names: []
     state: "present"
-    
+
   - name: "committeeclash.{{ canonical_hostname }}"
     user: "committeeclash"
     custom_config: true

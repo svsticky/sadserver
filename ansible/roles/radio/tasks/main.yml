@@ -53,11 +53,11 @@
   - name: "ensure packages, node and nvm are up to date"
     ansible.builtin.meta: flush_handlers
 
-  - name: "run npm install"
+  - name: "run npm ci --ignore-scripts"
     ansible.builtin.shell: |
       source {{ nvm.script }}
       nvm use
-      npm install
+      npm ci --ignore-scripts
     args:
       chdir: "/var/www/radio/radio"
       executable: "/bin/bash"

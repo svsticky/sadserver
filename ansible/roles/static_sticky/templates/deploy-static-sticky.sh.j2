@@ -84,6 +84,7 @@ rm --force --recursive /var/www/static-sticky/build/*
 tar --extract --file /tmp/static-sticky/$BUILD.tar.gz --directory /var/www/static-sticky/build
 
 # Copy website contents to webroot, replacing already existing target contents
+rm -rf /var/www/static-sticky/static.{{ canonical_hostname }}
 rsync --delete --recursive \
   /var/www/static-sticky/build/public/ \
   /var/www/static-sticky/static.{{ canonical_hostname }}/

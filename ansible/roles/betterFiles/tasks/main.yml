@@ -1,0 +1,35 @@
+---
+- name: "Ensure paperless system user exists"
+  ansible.builtin.user:
+    name: "{{ paperless_user }}"
+    home: "{{ paperless_home }}"
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: present
+    groups: "docker"
+
+- name: "Create paperless home directory"
+  ansible.builtin.file:
+    path: "{{ paperless_home }}"
+    state: directory
+    owner: "{{ paperless_user }}"
+    group: "{{ paperless_user }}"
+    mode: "0755"
+
+- name: "Deploy Paperless Docker Compose"
+  become_user: "{{ paperless_user }}"
+  become: true
+  include_tasks: "compose_task.yml"
+
+- name: "Copy nginx configuration"
+  ansible.builtin.template:
+    src: "paperless.conf.j2"
+    dest: "/etc/nginx/sites-available/paperless.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "Enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/paperless.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/paperless.{{ canonical_hostname }}.conf"
+    state: link
+  notify: "reload nginx"

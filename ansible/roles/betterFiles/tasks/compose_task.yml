@@ -1,0 +1,17 @@
+---
+- name: "Copy docker-compose file"
+  ansible.builtin.template:
+    src: "paperless.yml.j2"
+    dest: "{{ paperless_compose_file }}"
+  notify: "restart paperless"
+
+- name: "Ensure Docker volumes directories exist"
+  ansible.builtin.file:
+    path: "{{ paperless_home }}/{{ item }}"
+    state: directory
+    owner: "{{ paperless_user }}"
+    group: "{{ paperless_user }}"
+    mode: "0755"
+  loop:
+    - consume
+    - export

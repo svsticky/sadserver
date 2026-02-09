@@ -1,0 +1,5 @@
+---
+- name: restart paperless
+  ansible.builtin.command:
+    cmd: "docker compose -f {{ paperless_compose_file }} restart"
+  listen: "restart paperless"

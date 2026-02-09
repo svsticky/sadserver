@@ -18,6 +18,8 @@
       tags: "users"
     - role: "auth"
       tags: "auth"
+    - role: "betterFiles"
+      tags: "betterFiles"
     - role: "packages"
       tags: "packages"
     - role: "firewall"

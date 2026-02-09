@@ -1,0 +1,5 @@
+# Specific vars
+pipaport: 1903
+POSTGRES_DB: paperless
+POSTGRES_USER: paperless
+POSTGRES_PASSWORD: paperless

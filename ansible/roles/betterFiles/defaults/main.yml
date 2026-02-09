@@ -1,0 +1,5 @@
+# Default variables for Paperless
+paperless_user: paperless
+paperless_home: /var/www/paperless
+paperless_compose_file: "{{ paperless_home }}/docker-compose.yml"
+paperless_env_file: "{{ paperless_home }}/docker-compose.env"

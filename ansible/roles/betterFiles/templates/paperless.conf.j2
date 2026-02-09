@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+server {
+    listen 443 ssl;
+    server_name betterFiles.{{ canonical_hostname }};
+
+    ssl_certificate /etc/letsencrypt/live/betterFiles.{{ canonical_hostname }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/betterFiles.{{ canonical_hostname }}/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:{{ pipaport }};
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+}

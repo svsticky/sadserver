@@ -79,11 +79,13 @@ aws s3 cp s3://static-sticky-builds/$BUILD.sha256 /tmp/static-sticky/$BUILD.sha2
 # Verify download consistency
 (cd /tmp/static-sticky && sha256sum --check $BUILD.sha256)
 # Remove previous build
-rm --force --recursive /var/www/static-sticky/build/*
+rm -rf /var/www/static-sticky/build
+mkdir /var/www/static-sticky/build
 # Extract new build
 tar --extract --file /tmp/static-sticky/$BUILD.tar.gz --directory /var/www/static-sticky/build
 
 # Copy website contents to webroot, replacing already existing target contents
+rm -rf /var/www/static-sticky/static.{{ canonical_hostname }}
 rsync --delete --recursive \
   /var/www/static-sticky/build/public/ \
   /var/www/static-sticky/static.{{ canonical_hostname }}/

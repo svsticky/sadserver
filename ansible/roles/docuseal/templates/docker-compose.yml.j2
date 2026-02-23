@@ -1,0 +1,12 @@
+services:
+  app:
+    image: docuseal/docuseal:latest
+    ports:
+      - 3020:3000
+    volumes:
+      - ./docuseal:/data/docuseal
+    env:
+      - SMTP_ADDRESS=smtp-relay.gmail.com
+      - SMTP_PORT=587
+      - SMTP_FROM=docuseal@svsticky.nl
+      - SMTP_AUTHENTICATION=plain

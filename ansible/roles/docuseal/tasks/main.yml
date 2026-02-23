@@ -1,0 +1,39 @@
+---
+- name: "create user for docuseal"
+  ansible.builtin.user:
+    name: "docuseal"
+    home: "/var/www/docuseal"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+    append: true
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "docuseal.conf.j2"
+    dest: "/etc/nginx/sites-available/docuseal.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/docuseal.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/docuseal.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- name: "set up docuseal"
+  become_user: "docuseal"
+  become: true
+  block:
+  - name: "copy docker compose file"
+    ansible.builtin.template:
+      src: "docker-compose.yml.j2"
+      dest: "/var/www/docuseal/docker-compose.yml"
+
+  - name: "Docker compose"
+    ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+    vars:
+      project_source: "/var/www/docuseal"
+      remove_images: all
+      compose_file: "docker-compose.yml"

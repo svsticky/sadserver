@@ -161,7 +161,7 @@ secret_chroma:
   service_tokens: "{{ vault_secret_chroma.service_tokens }}"
 
 fallacious_rooster:
-  git_tag: "0.1.6"
+  git_tag: "0.1.8"
 
 digidecs:
   git_tag: "0.2.7"

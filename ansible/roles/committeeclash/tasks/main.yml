@@ -33,11 +33,12 @@
       backup_file: "{{ postgres.pg_hba_path }}.old"
 
       # TYPE  DATABASE       USER            ADDR  METHOD
-      # local committeeclash committeeclash        peer,scram-sha-256
+      # local committeeclash committeeclash        scram-sha-256
       contype: 'local'
       databases: 'committeeclash'
       users: 'committeeclash'
       method: 'scram-sha-256'
+  notify: "restart postgres" # Apply changes
 
 - name: "set up committeeclash"
   become_user: "committeeclash"

@@ -16,6 +16,23 @@
       - "postgresql-13"
       - "python3-psycopg2"
 
+- name: "Explicitly specify peer auth as default over local communication"
+  become_user: "postgres"
+  become: true
+  community.postgresql.postgresql_pg_hba:
+    dest: "{{ postgres.pg_hba_path }}"
+    backup: true
+    backup_file: "{{ postgres.pg_hba_path }}.old"
+
+    # TYPE  DATABASE USER ADDR METHOD
+    # local all      all       peer
+    contype: 'local'
+    databases: 'all'
+    users: 'all'
+    method: 'peer'
+  notify: "restart postgres" # Apply changes
+
+
 - name: "set up koala databases"
   become_user: "postgres"
   become: true

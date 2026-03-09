@@ -8,6 +8,37 @@
     system: true
     groups: "docker"
 
+- name: "Do database setup"
+  become_user: "postgres"
+  become: true
+  block:
+  - name: "Ensure role exists"
+    community.postgresql.postgresql_user:
+      name: "committeeclash"
+      password: "{{ secret_committeeclash.postgres_password }}"
+      state: "present"
+
+  - name: "Ensure database exists"
+    community.postgresql.postgresql_db:
+      name: "committeeclash"
+      owner: "committeeclash"
+      state: "present" # TODO migration marker?
+
+  - name: "Specify password authentication method over sockets for this container"
+    become_user: "postgres"
+    become: true
+    community.postgresql.postgresql_pg_hba:
+      dest: "{{ postgres.pg_hba_path }}"
+      backup: true
+      backup_file: "{{ postgres.pg_hba_path }}.old"
+
+      # TYPE  DATABASE       USER            ADDR  METHOD
+      # local committeeclash committeeclash        peer,scram-sha-256
+      contype: 'local'
+      databases: 'committeeclash'
+      users: 'committeeclash'
+      method: 'scram-sha-256'
+
 - name: "set up committeeclash"
   become_user: "committeeclash"
   become: true

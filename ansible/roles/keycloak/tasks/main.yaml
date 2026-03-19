@@ -14,7 +14,7 @@
   - name: "clone repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/improved-adventure.git"
-      dest: "{{ keycloak_project_source }}"
+      dest: "{{ keycloak_project_source }}/app"
       depth: 1
       version: main #"{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
     diff: false

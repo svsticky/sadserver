@@ -76,6 +76,8 @@
       tags: "intro_website"
     - role: "committeeclash"
       tags: "committeeclash"
+    - role: "keycloak"
+      tags: "keycloak"
     - role: "rottenspringbok"
       tags: "rottenspringbok"
     - role: "studytrip"

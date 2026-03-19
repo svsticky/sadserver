@@ -22,13 +22,13 @@
   - name: "Copy .env file"
     ansible.builtin.template:
       src: ".env.j2"
-      dest: "{{ keycloak_project_source }}/.env"
+      dest: "{{ keycloak_project_source }}/app/.env"
     diff: false
 
   - name: "Docker compose"
     ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
     vars:
-      project_source: "{{ keycloak_project_source }}"
+      project_source: "{{ keycloak_project_source }}/app"
       remove_images: all
 
 - name: "Copy nginx configuration"

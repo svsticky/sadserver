@@ -26,10 +26,10 @@
 
     # TYPE  DATABASE USER ADDR METHOD
     # local all      all       peer
-    contype: 'local'
-    databases: 'all'
-    users: 'all'
-    method: 'peer'
+    contype: "local"
+    databases: "all"
+    users: "all"
+    method: "peer"
   notify: "restart postgres" # Apply changes
 
 

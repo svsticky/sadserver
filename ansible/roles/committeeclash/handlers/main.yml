@@ -16,7 +16,7 @@
 - name: "Ensure committeeclash is offline"
   community.docker.docker_compose_v2:
     project_src: "{{ committeeclash_project_source }}"
-    files: [ "docker-compose.prod.yml" ]
+    files: ["docker-compose.prod.yml"]
 
     state: "absent"
   listen: "backup committeeclash"

@@ -11,6 +11,7 @@
 - name: "Do database setup"
   become_user: "postgres"
   become: true
+  notify: "restart postgres" # Apply changes
   block:
   - name: "Ensure role exists"
     community.postgresql.postgresql_user:
@@ -29,16 +30,15 @@
     become: true
     community.postgresql.postgresql_pg_hba:
       dest: "{{ postgres.pg_hba_path }}"
-      backup: true
+      backup: "true"
       backup_file: "{{ postgres.pg_hba_path }}.old"
 
       # TYPE  DATABASE       USER            ADDR  METHOD
       # local committeeclash committeeclash        md5
-      contype: 'local'
-      databases: 'committeeclash'
-      users: 'committeeclash'
-      method: 'md5' # TODO use scram-sha-256 which is way safer
-  notify: "restart postgres" # Apply changes
+      contype: "local"
+      databases: "committeeclash"
+      users: "committeeclash"
+      method: "md5" # TODO use scram-sha-256 which is way safer
 
 - name: "set up committeeclash"
   become_user: "committeeclash"

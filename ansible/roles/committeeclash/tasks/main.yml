@@ -33,11 +33,11 @@
       backup_file: "{{ postgres.pg_hba_path }}.old"
 
       # TYPE  DATABASE       USER            ADDR  METHOD
-      # local committeeclash committeeclash        scram-sha-256
+      # local committeeclash committeeclash        md5
       contype: 'local'
       databases: 'committeeclash'
       users: 'committeeclash'
-      method: 'scram-sha-256'
+      method: 'md5' # TODO use scram-sha-256 which is way safer
   notify: "restart postgres" # Apply changes
 
 - name: "set up committeeclash"

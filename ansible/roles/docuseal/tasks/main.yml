@@ -16,7 +16,7 @@
   - name: "Ensure role exists"
     community.postgresql.postgresql_user:
       name: "docuseal"
-      password: "{{ secret_committeeclash.postgres_password }}"
+      password: "{{ secret_docuseal.postgres_password }}"
       state: "present"
 
   - name: "Ensure database exists"

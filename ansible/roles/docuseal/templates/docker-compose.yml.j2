@@ -8,9 +8,13 @@ services:
     volumes:
       - ./docuseal:/data/docuseal
       - /run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432
-    env:
+    environment:
       - SMTP_ADDRESS=smtp-relay.gmail.com
       - SMTP_PORT=587
       - SMTP_FROM=docuseal@svsticky.nl
       - SMTP_AUTHENTICATION=plain
-      - DATABASE_URL=postgresql://docuseal:{{ secret_docuseal.postgres_password }}@/docuseal
+      - DATABASE_URL=postgresql://docuseal:{{ secret_docuseal.postgres_password }}@%2Frun%2Fpostgresql/docuseal
+      - AWS_ACCESS_KEY_ID={{ secret_docuseal.aws_access_key_id }}
+      - AWS_SECRET_ACCESS_KEY={{ secret_docuseal.aws_secret_access_key }}
+      - AWS_REGION={{ secret_docuseal.aws_region }}
+      - S3_ATTACHMENTS_BUCKET={{ secret_docuseal.s3_attachments_bucket }}

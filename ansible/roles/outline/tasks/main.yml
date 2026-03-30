@@ -22,7 +22,7 @@
   - name: "Ensure Postgres role exists"
     community.postgresql.postgresql_user:
       name: "outline"
-      password: "{{ secret_outline.postgresql_password }}" # TODO Sadly seems required to make authentication over localhost work, for peer authentication fails somehow. Perhaps docker networks can make this easier.
+      password: "{{ secret_outline.postgresql_password }}" # TODO Sadly seems required to make authentication over localhost work, for peer authentication fails somehow. Perhaps docker networks can make this easier. Use socket
       state: "present"
 
   - name: "Ensure database exists"

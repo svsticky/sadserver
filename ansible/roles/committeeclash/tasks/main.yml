@@ -11,7 +11,6 @@
 - name: "Do database setup"
   become_user: "postgres"
   become: true
-  notify: "restart postgres" # Apply changes
   block:
   - name: "Ensure role exists"
     community.postgresql.postgresql_user:
@@ -26,6 +25,7 @@
       state: "present"
 
   - name: "Specify password authentication method over sockets for this container"
+    notify: "restart postgres" # Apply changes
     become_user: "postgres"
     become: true
     community.postgresql.postgresql_pg_hba:

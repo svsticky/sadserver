@@ -43,3 +43,6 @@ uv:
 # All secrets globally used and defined/related to the svsticky-deploy github account
 secret_svsticky_deploy:
   github_pat_download_artifact: "{{ vault_secret_svsticky_deploy.github_pat_download_artifact }}"
+
+postgres:
+  pg_hba_path: '/etc/postgresql/13/main/pg_hba.conf'

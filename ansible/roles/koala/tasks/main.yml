@@ -155,7 +155,7 @@
         become: true
         ansible.builtin.systemd:
           name: "backup-postgres.service"
-          state: "started"
+          state: "started" # Given the systemd service type, this awaits untill finished
 
       - name: "check whether the database exists"
         ansible.builtin.shell: nix-shell --run 'dotenv rails db:version'

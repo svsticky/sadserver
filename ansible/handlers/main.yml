@@ -30,3 +30,9 @@
     images: true
     builder_cache: true
   listen: "prune docker"
+
+- name: "restarting postgres"
+  ansible.builtin.systemd_service:
+    name: "postgresql"
+    state: "restarted"
+  listen: "restart postgres"

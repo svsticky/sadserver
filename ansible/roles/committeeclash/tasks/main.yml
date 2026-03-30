@@ -8,6 +8,38 @@
     system: true
     groups: "docker"
 
+- name: "Do database setup"
+  become_user: "postgres"
+  become: true
+  block:
+  - name: "Ensure role exists"
+    community.postgresql.postgresql_user:
+      name: "committeeclash"
+      password: "{{ secret_committeeclash.postgres_password }}"
+      state: "present"
+
+  - name: "Ensure database exists"
+    community.postgresql.postgresql_db:
+      name: "committeeclash"
+      owner: "committeeclash"
+      state: "present"
+
+  - name: "Specify password authentication method over sockets for this container"
+    notify: "restart postgres" # Apply changes
+    become_user: "postgres"
+    become: true
+    community.postgresql.postgresql_pg_hba:
+      dest: "{{ postgres.pg_hba_path }}"
+      backup: "true"
+      backup_file: "{{ postgres.pg_hba_path }}.old"
+
+      # TYPE  DATABASE       USER            ADDR  METHOD
+      # local committeeclash committeeclash        md5
+      contype: "local"
+      databases: "committeeclash"
+      users: "committeeclash"
+      method: "md5" # TODO use scram-sha-256 which is way safer
+
 - name: "set up committeeclash"
   become_user: "committeeclash"
   become: true
@@ -19,12 +51,14 @@
       depth: 1
       version: "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
     diff: false
+    notify: "trigger committeeclash migration"
 
   - name: "Copy .env file"
     ansible.builtin.template:
       src: ".env.j2"
       dest: "{{ committeeclash_project_source }}/.env"
     diff: false
+    notify: "trigger committeeclash migration"
 
   - name: "set up OAuth secret file"
     ansible.builtin.template:
@@ -37,6 +71,27 @@
       src: "postgres_password.secret.j2"
       dest: "{{ committeeclash_project_source }}/postgres_password.secret"
     diff: false
+
+  - name: "Check if migration must be triggered"
+    ansible.builtin.meta: "flush_handlers"
+
+  - name: "Check if migration has been triggered"
+    ansible.builtin.stat:
+      path: "{{ committeeclash_home_dir }}/.MIGRATION_PENDING"
+      get_checksum: "no"
+      get_attributes: "no"
+      get_mime: "no"
+    register: "committeeclash_update_marker"
+    changed_when: "committeeclash_update_marker.stat.exists"
+    notify: "backup committeeclash"
+
+  - name: "Start handeling migration if needed"
+    ansible.builtin.meta: "flush_handlers"
+
+  - name: "Remove migration marker"
+    ansible.builtin.file:
+      path: "{{ committeeclash_home_dir }}/.MIGRATION_PENDING"
+      state: "absent"
 
   - name: "Docker compose"
     ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"

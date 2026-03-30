@@ -1,3 +1,5 @@
+# ansible_managed
+
 services:
   app:
     image: docuseal/docuseal:latest
@@ -5,8 +7,10 @@ services:
       - 3020:3000
     volumes:
       - ./docuseal:/data/docuseal
+      - /run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432
     env:
       - SMTP_ADDRESS=smtp-relay.gmail.com
       - SMTP_PORT=587
       - SMTP_FROM=docuseal@svsticky.nl
       - SMTP_AUTHENTICATION=plain
+      - DATABASE_URL=postgresql://docuseal:{{ secret_docuseal.postgres_password }}@/docuseal

@@ -9,6 +9,35 @@
     groups: "docker"
     append: true
 
+- name: "Do database setup"
+  become_user: "postgres"
+  become: true
+  block:
+  - name: "Ensure role exists"
+    community.postgresql.postgresql_user:
+      name: "docuseal"
+      password: "{{ secret_committeeclash.postgres_password }}"
+      state: "present"
+
+  - name: "Ensure database exists"
+    community.postgresql.postgresql_db:
+      name: "docuseal"
+      owner: "docuseal"
+      state: "present"
+
+  - name: "Specify password authentication method over sockets for this container"
+    notify: "restart postgres" # Apply changes
+    become_user: "postgres"
+    become: true
+    community.postgresql.postgresql_pg_hba:
+      dest: "{{ postgres.pg_hba_path }}"
+      backup: "true"
+      backup_file: "{{ postgres.pg_hba_path }}.old"
+      contype: "local"
+      databases: "docuseal"
+      users: "docuseal"
+      method: "md5" # TODO use scram-sha-256 which is way safer
+
 - name: "copy nginx configuration"
   ansible.builtin.template:
     src: "docuseal.conf.j2"

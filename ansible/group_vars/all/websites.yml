@@ -269,3 +269,4 @@ websites:
     user: "docuseal"
     state: "present"
     custom_config: true
+    alternative_names: []

@@ -196,3 +196,10 @@ secret_rottenspringbok:
   oauth_token_url: "https://koala.svsticky.nl/api/oauth/token"
   oauth_api_base_url: "https://koala.svsticky.nl"
   host_url: "https://rottenspringbok.svsticky.nl"
+
+secret_docuseal:
+  postgres_password: "{{ vault_secret_docuseal.postgres_password }}"
+  aws_access_key_id: "{{ vault_secret_docuseal.aws_access_key_id }}"
+  aws_secret_access_key: "{{ vault_secret_docuseal.aws_secret_access_key }}"
+  aws_region: "{{ vault_secret_docuseal.aws_region }}"
+  s3_attachments_bucket: "{{ vault_secret_docuseal.s3_attachments_bucket }}"

@@ -38,7 +38,7 @@
         dest: "{{ postgres.pg_hba_path }}"
         backup: "true"
         backup_file: "{{ postgres.pg_hba_path }}.old"
-        contype: "host"
+        contype: "local"
         databases: "tavern"
         users: "tavern"
         address: "172.16.0.0/12"
@@ -52,6 +52,14 @@
     dest: "{{ tavern_home_dir }}/.env"
     mode: "0600"
   diff: false
+
+- name: "copy docker compose configuration"
+  become_user: "tavern"
+  become: true
+  ansible.builtin.template:
+    src: "compose.yaml.j2"
+    dest: "{{ tavern_home_dir }}/compose.yaml"
+    mode: "0644"
 
 - name: "copy deploy script"
   ansible.builtin.template:

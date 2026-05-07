@@ -2,20 +2,19 @@
 # {{ ansible_managed }}
 
 set -efuo pipefail
-IFS=$'\n\t'
 
-REPO_URL="https://github.com/svsticky/Tavern.git"
-BRANCH="{{ tavern_env.git_ref }}"
-PROJECT_DIR="{{ tavern_home_dir }}/tavern"
+PROJECT_DIR="{{ tavern_home_dir }}"
+cd "$PROJECT_DIR"
 
-if [ ! -d "$PROJECT_DIR/.git" ]; then
-  git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$PROJECT_DIR"
-else
-  git -C "$PROJECT_DIR" fetch origin "$BRANCH"
-  git -C "$PROJECT_DIR" checkout "$BRANCH"
-  git -C "$PROJECT_DIR" reset --hard "origin/$BRANCH"
-fi
+echo "Pulling latest images..."
+docker compose pull
 
-cp "{{ tavern_home_dir }}/.env" "$PROJECT_DIR/.env"
+export $(grep -v '^#' .env | xargs)
 
-docker compose -f "$PROJECT_DIR/compose.yaml" up --build -d
+echo "Starting containers (application will run migrations on startup)..."
+docker compose up -d
+
+# 5. Schoonmaak
+docker image prune -f
+
+echo "Deployment finished! Check logs with: docker logs -f tavern-backend"

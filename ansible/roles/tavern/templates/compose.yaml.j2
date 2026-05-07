@@ -1,0 +1,32 @@
+services:
+  tavern-backend:
+    container_name: tavern-backend
+    image: ghcr.io/svsticky/tavern-backend:dev
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "{{ tavern_backend_port }}:8080" 
+    volumes:
+      - /run/postgresql:/run/postgresql
+    extra_hosts:
+      - "koala.dev.svsticky.nl:49.13.151.68"
+
+  tavern-frontend:
+    container_name: tavern-frontend
+    image: ghcr.io/svsticky/tavern-frontend:dev
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "{{ tavern_frontend_port }}:3000" 
+    extra_hosts:
+      - "koala.dev.svsticky.nl:49.13.151.68"
+    environment:
+      - VITE_KeycloakUrl=${KeycloakUrl}
+      - VITE_KeycloakRealm=${KeycloakRealm}
+      - VITE_KeycloakClientId=${KeycloakClientId}
+      - VITE_HostUrl=${HostUrl}
+      - VITE_ApiUrl=${ApiUrl}
+      - VITE_LOGO_RUL=${LOGO_URL}
+      - VITE_BOARD_PRIMARY_LIGHT=${BOARD_PRIMARY_LIGHT}
+      - VITE_BOARD_PRIMARY=${BOARD_PRIMARY}
+      - VITE_BOARD_PRIMARY_DARK=${BOARD_PRIMARY_DARK}

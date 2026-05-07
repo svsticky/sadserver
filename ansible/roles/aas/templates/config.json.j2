@@ -10,6 +10,11 @@
 				"serviceName": "deploy-intro-website.service",
 				"endpoint": "/webhook/intro-website-deploy",
 				"pre-sharedKey": "{{ secret_intro_website.aas_pre_shared_key }}"
+			},
+			{
+				"serviceName": "deploy-tavern.service",
+				"endpoint": "/webhook/tavern-deploy",
+				"pre-sharedKey": "{{ secret_tavern.aas_pre_shared_key }}"
 			}
 		]
 	}

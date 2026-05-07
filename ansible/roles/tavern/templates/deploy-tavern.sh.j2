@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+set -efuo pipefail
+IFS=$'\n\t'
+
+REPO_URL="https://github.com/svsticky/Tavern.git"
+BRANCH="{{ tavern_env.git_ref }}"
+PROJECT_DIR="{{ tavern_home_dir }}/tavern"
+
+if [ ! -d "$PROJECT_DIR/.git" ]; then
+  git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$PROJECT_DIR"
+else
+  git -C "$PROJECT_DIR" fetch origin "$BRANCH"
+  git -C "$PROJECT_DIR" checkout "$BRANCH"
+  git -C "$PROJECT_DIR" reset --hard "origin/$BRANCH"
+fi
+
+cp "{{ tavern_home_dir }}/.env" "$PROJECT_DIR/.env"
+
+docker compose -f "$PROJECT_DIR/compose.yaml" up --build -d

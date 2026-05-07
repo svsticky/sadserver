@@ -1,0 +1,8 @@
+[Unit]
+Description=Deploy Tavern
+
+[Service]
+Type=oneshot
+User=tavern
+Group=tavern
+ExecStart=/usr/local/bin/deploy-tavern.sh

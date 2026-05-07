@@ -1,0 +1,84 @@
+---
+- name: "create user"
+  ansible.builtin.user:
+    name: "tavern"
+    home: "{{ tavern_home_dir }}"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+
+- name: "ensure home directory exists with correct permissions"
+  ansible.builtin.file:
+    path: "{{ tavern_home_dir }}"
+    state: "directory"
+    owner: "tavern"
+    group: "tavern"
+    mode: "0750"
+
+- name: "Do database setup"
+  become_user: "postgres"
+  become: true
+  block:
+    - name: "Ensure role exists"
+      community.postgresql.postgresql_user:
+        name: "tavern"
+        password: "{{ secret_tavern.postgres_password }}"
+        state: "present"
+
+    - name: "Ensure database exists"
+      community.postgresql.postgresql_db:
+        name: "tavern"
+        owner: "tavern"
+        state: "present"
+
+    - name: "Allow password auth over TCP from Docker bridge network"
+      notify: "restart postgres"
+      community.postgresql.postgresql_pg_hba:
+        dest: "{{ postgres.pg_hba_path }}"
+        backup: "true"
+        backup_file: "{{ postgres.pg_hba_path }}.old"
+        contype: "host"
+        databases: "tavern"
+        users: "tavern"
+        address: "172.16.0.0/12"
+        method: "md5"
+
+- name: "copy .env file"
+  become_user: "tavern"
+  become: true
+  ansible.builtin.template:
+    src: ".env.j2"
+    dest: "{{ tavern_home_dir }}/.env"
+    mode: "0600"
+  diff: false
+
+- name: "copy deploy script"
+  ansible.builtin.template:
+    src: "deploy-tavern.sh.j2"
+    dest: "/usr/local/bin/deploy-tavern.sh"
+    mode: "0755"
+
+- name: "copy systemd deploy service"
+  ansible.builtin.template:
+    src: "deploy-tavern.service.j2"
+    dest: "/etc/systemd/system/deploy-tavern.service"
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "tavern.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ item }}.conf"
+  loop:
+    - "tavern.{{ canonical_hostname }}"
+    - "api.tavern.{{ canonical_hostname }}"
+  notify: "reload nginx"
+
+- name: "enable nginx configurations"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ item }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ item }}.conf"
+    state: link
+  loop:
+    - "tavern.{{ canonical_hostname }}"
+    - "api.tavern.{{ canonical_hostname }}"
+  notify: "reload nginx"

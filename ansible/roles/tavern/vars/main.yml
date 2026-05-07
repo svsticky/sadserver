@@ -1,0 +1,5 @@
+---
+tavern_frontend_port: 4573
+tavern_backend_port: 4574
+tavern_home_dir: "/var/www/tavern"
+tavern_project_source: "{{ tavern_home_dir }}/tavern"

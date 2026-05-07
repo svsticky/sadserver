@@ -192,3 +192,25 @@ secret_docuseal:
   aws_secret_access_key: "{{ vault_secret_docuseal.aws_secret_access_key }}"
   aws_region: "{{ vault_secret_docuseal.aws_region }}"
   s3_attachments_bucket: "{{ vault_secret_docuseal.s3_attachments_bucket }}"
+
+tavern_env:
+  git_ref: "development"
+
+secret_tavern:
+  aas_pre_shared_key: "{{ vault_secret_tavern.aas_pre_shared_key }}"
+  postgres_password: "{{ vault_secret_tavern.postgres_password }}"
+  keycloak_url: "{{ vault_secret_tavern.keycloak_url }}"
+  keycloak_realm: "{{ vault_secret_tavern.keycloak_realm }}"
+  keycloak_client_id: "{{ vault_secret_tavern.keycloak_client_id }}"
+  keycloak_backend_client_id: "{{ vault_secret_tavern.keycloak_backend_client_id }}"
+  keycloak_client_secret: "{{ vault_secret_tavern.keycloak_client_secret }}"
+  keycloak_webhook_secret: "{{ vault_secret_tavern.keycloak_webhook_secret }}"
+  mollie_api_key: "{{ vault_secret_tavern.mollie_api_key }}"
+  backup_account_email: "{{ vault_secret_tavern.backup_account_email }}"
+  logo_url: "{{ vault_secret_tavern.logo_url }}"
+  aws_access_key_id: "{{ vault_secret_tavern.aws_access_key_id }}"
+  aws_secret_access_key: "{{ vault_secret_tavern.aws_secret_access_key }}"
+  s3_service_url: "{{ vault_secret_tavern.s3_service_url }}"
+  smtp_host: "{{ vault_secret_tavern.smtp_host }}"
+  smtp_user: "{{ vault_secret_tavern.smtp_user }}"
+  smtp_pass: "{{ vault_secret_tavern.smtp_pass }}"

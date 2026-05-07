@@ -270,3 +270,15 @@ websites:
     state: "present"
     custom_config: true
     alternative_names: []
+
+  - name: "tavern.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "api.tavern.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []

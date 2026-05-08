@@ -32,6 +32,7 @@
       - "libpq-dev"
       - "libjpeg-dev"
       - "libopenjp2-7-dev"
+      - "nodejs"
     state: "present"
 
 - name: "setup Pretix database"
@@ -99,11 +100,10 @@
     virtualenv_command: "python3.12 -m venv {{ pretix_config.home }}/venv"
     state: "present"
   with_items:
-    # Change in pip's dependency resolver after 24.0 causes installation of pretix to fail
     - name: pip
       version: "24.0"
     - name: "setuptools"
-      version: "latest"
+      version: "80.10.2" # Latest version that still has pkg_resources, which pretix needs
     - name: "wheel"
       version: "latest"
   become: true

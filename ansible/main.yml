@@ -81,12 +81,11 @@
     - role: "studytrip"
       tags: "studytrip"
     - role: "hacc"
-      tags: "hacc"
+      tags: ["hacc", "never"]
     - role: "docuseal"
       tags: "docuseal"
-    # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
-      tags: ["never", "crazy88bot"]
+      tags: ["crazy88bot", "never"]
     - role: "doorgeefluik"
       tags: "doorgeefluik"
     # Included the last, so any service that fail2ban is applied to, already

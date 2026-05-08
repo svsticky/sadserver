@@ -28,7 +28,8 @@ import scripts.bitwarden as bitwarden
     type=click.Path(exists=True),
     help="Ansible playbook to run",
 )
-@click.option("--tags", "--roles", help="Roles to execute")
+@click.option("--roles", help="Roles to execute")
+@click.option("--skip", help="Roles to skip")
 @click.option("--check", is_flag=True, default=False, help="Perform a dry run")
 @click.option("--force", is_flag=True, default=False, help="Override checks")
 @click.option(
@@ -42,7 +43,8 @@ import scripts.bitwarden as bitwarden
 def deploy(
     host: str,
     playbook: str,
-    tags: Optional[str],
+    roles: Optional[str],
+    skip: Optional[str],
     check: bool,
     force: bool,
     from_playbook: Optional[str],
@@ -90,42 +92,69 @@ def deploy(
     if check:
         arguments.append("--check")
 
-    # First determine all roles defined by from-until logic
     with open("main.yml", "r") as yaml_file:
         data = yaml.safe_load(yaml_file)
 
-    roles = [
-        role["role"]
+    ### Get the roles list from main.yml
+    # This one is to look up things we might remove, ...
+    all_role_data = [
+        role
         for item in data
         if isinstance(item, dict) and "roles" in item
         for role in item["roles"]
-        if role["role"] != "crazy88bot"
     ]
-    from_until = False
-    if from_playbook is not None and from_playbook in roles:
-        roles = roles[roles.index(from_playbook) :]
-        from_until = True
+    # ... we will filter this
+    role_data = [it for it in all_role_data]
+    all_roles = [it["role"] for it in all_role_data]
 
-    if until_playbook is not None and until_playbook in roles:
-        roles = roles[: roles.index(until_playbook) + 1]
-        from_until = True
+    ### Filter out all roles that fall outside specified range
+    i = 0
+    if from_playbook is not None and from_playbook in all_roles:
+        i = all_roles.index(from_playbook)
+        role_data = role_data[i:]
+    if until_playbook is not None and until_playbook in all_roles:
+        # We have to subtract i to correct for offset
+        i = all_roles.index(until_playbook) - i
+        if i < 0:
+            raise IndexError("`--until` role must be after the `--from` role")
+        role_data = role_data[: i + 1]
 
-    if from_until:
-        from_until_roles = roles  # Filtered by the from_until logic
-    else:
-        from_until_roles = []
+    ### If we didn't specify from or until, clear data
+    if from_playbook is None and until_playbook is None:
+        role_data = []
 
-    # Then add all roles specified manually
-    if tags is not None:
-        manual_roles = [role.strip() for role in tags.split(",")]
-    else:
-        manual_roles = []
+    ### Remove roles tagged with never
+    # NOTE We don't need to include the "always" roles,
+    #      those are built into Ansible
+    role_data = list(filter(lambda it: "never" not in it["tags"], role_data))
 
-    # Finally, pass down all roles specified, if any
-    specified_roles = from_until_roles + manual_roles
-    if specified_roles:
+    ### Include roles from --tags.
+    # NOTE We do this after removing the "never" roles,
+    #      so if they are specified they do run
+    if roles is not None:
+        for role in roles.split(","):
+            role = role.strip()
+            role = next(filter(lambda x: x["role"] == role, all_role_data))
+            role_data.append(role)
+
+    ### Exclude roles from --skip
+    if skip is not None:
+        for role in skip.split(","):
+            role = role.strip()
+            role_data = list(filter(lambda x: x["role"] != role, role_data))
+
+    ### Map roles array to tags string for ansible
+    if len(role_data) > 0:
+        final_tags = []
+        for role in role_data:
+            role = role["tags"]
+            if isinstance(role, list):
+                role = role[0]
+            role = role.strip()
+            final_tags.append(role)
+
         arguments.append("--tags")
-        arguments.append(",".join(specified_roles))
+        arguments.append(",".join(final_tags))
 
     arguments.append(playbook)
 
@@ -210,6 +239,8 @@ def notify_deploy_start(
     discord_webhook: str,
 ) -> None:
     roles_str = ", ".join(roles)
+    if roles == []:
+        roles_str = "All"
     discord_notify(
         f"**Deployment of playbook {playbook} to {host} started by {user}**\n"
         + f'Branch: {git_branch} - revision "{git_revision}"\n'
@@ -230,6 +261,8 @@ def notify_deploy_succes(
     discord_webhook: str,
 ) -> None:
     roles_str = ", ".join(roles)
+    if roles == []:
+        roles_str = "All"
     discord_notify(
         f"**Deployment of playbook {playbook} to {host}, started by {user}, succesfully completed**\n"
         + f'Branch: {git_branch} - revision "{git_revision}"\n'
@@ -250,6 +283,8 @@ def notify_deploy_failure(
     discord_webhook: str,
 ) -> None:
     roles_str = ", ".join(roles)
+    if roles == []:
+        roles_str = "All"
     discord_notify(
         f"**Deployment of playbook {playbook} to {host}, started by {user}, FAILED!**\n"
         + f'Branch: {git_branch} - revision "{git_revision}"\n'

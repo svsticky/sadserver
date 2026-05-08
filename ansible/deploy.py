@@ -116,8 +116,8 @@ def deploy(
         # We have to subtract i to correct for offset
         i = all_roles.index(until_playbook) - i
         if i < 0:
-            raise IndexError('`--until` role must be after the `--from` role')
-        role_data = role_data[:i+1]
+            raise IndexError("`--until` role must be after the `--from` role")
+        role_data = role_data[: i + 1]
 
     ### If we didn't specify from or until, clear data
     if from_playbook is None and until_playbook is None:
@@ -132,14 +132,14 @@ def deploy(
     # NOTE We do this after removing the "never" roles,
     #      so if they are specified they do run
     if roles is not None:
-        for role in roles.split(','):
+        for role in roles.split(","):
             role = role.strip()
             role = next(filter(lambda x: x["role"] == role, all_role_data))
             role_data.append(role)
 
     ### Exclude roles from --skip
     if skip is not None:
-        for role in skip.split(','):
+        for role in skip.split(","):
             role = role.strip()
             role_data = list(filter(lambda x: x["role"] != role, role_data))
 
@@ -154,7 +154,7 @@ def deploy(
             final_tags.append(role)
 
         arguments.append("--tags")
-        arguments.append(','.join(final_tags))
+        arguments.append(",".join(final_tags))
 
     arguments.append(playbook)
 

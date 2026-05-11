@@ -18,7 +18,7 @@
     - name: "assert that input has been entered"
       assert:
         that: "backup_sources != 'NONE'"
-
     - name: "start backup of requested source(s)"
-      command: "/usr/local/bin/backup-to-s3.sh {{ item | quote }}"
+      # Pipe to a file to be able to read stdout during ansible run
+      command: "/usr/local/bin/backup-to-s3.sh {{ item | quote }} >> /var/manual_{{ now(utc=true,fmt='%Y-%m-%d-%H:%M:%S' }}_backup.log"
       with_items: "{{ backup_sources.split(',') }}"

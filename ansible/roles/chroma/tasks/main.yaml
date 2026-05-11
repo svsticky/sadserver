@@ -2,14 +2,23 @@
 - name: "Create user for chroma"
   ansible.builtin.user:
     name: chroma
-    home: "/var/www/chroma"
+    home: "{{ chroma_config.home }}"
     shell: "/usr/sbin/nologin"
     system: true
     state: "present"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ chroma_config.home }}"
+    owner: "chroma"
+    group: "chroma"
+    mode: "2775"
+    state: "directory"
 
 - name: "Create chroma frontend directory"
   ansible.builtin.file:
-    name: "/var/www/chroma/frontend"
+    name: "{{ chroma_config.home }}/frontend"
     owner: "chroma"
     group: "chroma"
     mode: "2775"
@@ -17,7 +26,7 @@
 
 - name: "Create chroma docs directory"
   ansible.builtin.file:
-    name: "/var/www/chroma/docs"
+    name: "{{ chroma_config.home }}/docs"
     owner: "chroma"
     group: "chroma"
     mode: "2775"
@@ -25,7 +34,7 @@
 
 - name: "Create chroma server directory"
   ansible.builtin.file:
-    name: "/var/www/chroma/server"
+    name: "{{ chroma_config.home }}/server"
     owner: "chroma"
     group: "chroma"
     mode: "2775"
@@ -44,7 +53,7 @@
 - name: "Download and extract chroma frontend"
   ansible.builtin.unarchive:
     src: "{{ artifact_base_url }}/frontend.tar.gz"
-    dest: "/var/www/chroma/frontend"
+    dest: "{{ chroma_config.home }}/frontend"
     remote_src: true
     owner: "chroma"
     group: "chroma"
@@ -55,7 +64,7 @@
 - name: "Download and extract chroma docs"
   ansible.builtin.unarchive:
     src: "{{ artifact_base_url }}/docs.tar.gz"
-    dest: "/var/www/chroma/docs"
+    dest: "{{ chroma_config.home }}/docs"
     remote_src: true
     owner: "chroma"
     group: "chroma"
@@ -66,7 +75,7 @@
 - name: "Download and extract chroma server"
   ansible.builtin.get_url:
     url: "{{ artifact_base_url }}/server-x86_64-unknown-linux-musl"
-    dest: "/var/www/chroma/server"
+    dest: "{{ chroma_config.home }}/server"
     owner: "chroma"
     group: "chroma"
     mode: "775"
@@ -105,7 +114,7 @@
 - name: "Template environment file for Chroma"
   ansible.builtin.template:
     src: "env.j2"
-    dest: "/var/www/chroma/server/.env"
+    dest: "{{ chroma_config.home }}/server/.env"
   diff: false
   notify: "restart chroma"
 

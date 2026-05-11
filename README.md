@@ -47,7 +47,7 @@ The code in this repository depends on the following software:
 
 - [nix]
 
-Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 20.04 host** to be
+Furthermore, the Ansible playbooks assume a **vanilla Ubuntu 24.04 host** to be
 deployed on.
 
 ### Ansible playbooks
@@ -142,6 +142,10 @@ If you want to migrate from an existing server, a few additional tasks should be
 performed, which are explained in detail in [this guide][deployment-new-production].
 
 ##### On Digital Ocean:
+
+> [!IMPORTANT]
+> Out-of-date: We no longer host on Digital Ocean
+
 1. Create a droplet (ansible assumes Ubuntu 18.04) named either `dev.svsticky.nl` (staging) or `svsticky.nl` (production).
     - for staging: 2GB RAM on 1CPU should suffice.
     - for production: 4GB RAM on 2CPUs is the standard. Make sure IPv6 in enabled.

@@ -9,9 +9,9 @@
     append: true
 
 - name: "install awscli"
-  ansible.builtin.apt:
-    name: "awscli"
-    state: "present"
+  community.general.snap:
+    name: aws-cli
+    classic: true
 
 - name: "ensure aws cli configuration folders are present"
   ansible.builtin.file:

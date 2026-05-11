@@ -4,8 +4,18 @@
   ansible.builtin.user:
     name: "aas"
     shell: "/usr/sbin/nologin"
-    home: "/var/www/aas"
+    home: "{{ aas_config.home }}"
     system: true
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ aas_config.home }}"
+    owner: "aas"
+    group: "aas"
+    mode: "2775"
+    state: "directory"
+
 
 - name: "permit aas user to start systemd services"
   ansible.builtin.template:

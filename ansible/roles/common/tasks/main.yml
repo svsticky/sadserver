@@ -41,7 +41,6 @@
     path: "etc/default/locale"
 
 - name: "gather facts about machine for further use"
-  hosts: localhost
   gather_facts: true
 
 - name: "copy failure handler for systemd units"

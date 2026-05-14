@@ -270,3 +270,11 @@ websites:
     state: "present"
     custom_config: true
     alternative_names: []
+
+  - name: "kbg.{{ canonical_hostname }}"
+    user: "kbg"
+    state: "present"
+    custom_config: true
+    authenticated: true
+    oauth2_callback_url: "/callback"
+    alternative_names: []

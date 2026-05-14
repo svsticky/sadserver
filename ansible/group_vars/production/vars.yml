@@ -203,3 +203,6 @@ secret_docuseal:
   aws_secret_access_key: "{{ vault_secret_docuseal.aws_secret_access_key }}"
   aws_region: "{{ vault_secret_docuseal.aws_region }}"
   s3_attachments_bucket: "{{ vault_secret_docuseal.s3_attachments_bucket }}"
+
+secret_kbg:
+  postgres_password: "{{ vault_secret_kbg.postgres_password }}"

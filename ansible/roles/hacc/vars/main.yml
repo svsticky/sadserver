@@ -1,2 +1,3 @@
 ---
-hacc_port: 3011
+ctf_port: 3011
+prairielearn_port: 3012

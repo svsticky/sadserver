@@ -9,44 +9,81 @@
     groups: "docker"
     append: true
 
-- name: "copy nginx configuration"
+- name: "copy ctf nginx configuration"
   ansible.builtin.template:
-    src: "hacc.conf.j2"
-    dest: "/etc/nginx/sites-available/hacc.{{ canonical_hostname }}.conf"
+    src: "ctf.conf.j2"
+    dest: "/etc/nginx/sites-available/ctf.hacc.{{ canonical_hostname }}.conf"
   notify: "reload nginx"
 
-- name: "enable nginx configuration"
+- name: "enable ctf nginx configuration"
   ansible.builtin.file:
-    src: "/etc/nginx/sites-available/hacc.{{ canonical_hostname }}.conf"
-    path: "/etc/nginx/sites-enabled/hacc.{{ canonical_hostname }}.conf"
+    src: "/etc/nginx/sites-available/ctf.hacc.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/ctf.hacc.{{ canonical_hostname }}.conf"
     state: "link"
   notify: "reload nginx"
 
-- name: "set up hacc-ctf"
+- name: "copy prairielearn nginx configuration"
+  ansible.builtin.template:
+    src: "pl.conf.j2"
+    dest: "/etc/nginx/sites-available/pl.hacc.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable prairielearn nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/pl.hacc.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/pl.hacc.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+# - name: "set up hacc-ctf"
+#   become_user: "hacc"
+#   become: true
+#   block:
+#   - name: "clone hacc-ctf repository"
+#     ansible.builtin.git:
+#       repo: "https://github.com/svsticky/hacc-ctf.git"
+#       dest: "/var/www/hacc/hacc-ctf"
+#       depth: 1
+#       force: true
+#       version: "main"
+#     diff: false
+
+#   - name: "Build docker image"
+#     community.docker.docker_image:
+#       build:
+#         path: "/var/www/hacc/hacc-ctf"
+#       source: "build"
+#       force_source: true
+#       name: "svsticky/hacc-ctf:latest"
+
+#   - name: "Start docker container"
+#     community.docker.docker_container:
+#       name: "hacc-ctf"
+#       image: "svsticky/hacc-ctf:latest"
+#       published_ports:
+#         - "{{ ctf_port }}:3000"
+#     notify: "prune docker"
+
+- name: "set up PrairieLearn"
   become_user: "hacc"
   become: true
   block:
-  - name: "clone hacc-ctf repository"
-    ansible.builtin.git:
-      repo: "https://github.com/svsticky/hacc-ctf.git"
-      dest: "/var/www/hacc/hacc-ctf"
-      depth: 1
-      force: true
-      version: "main"
-    diff: false
+  - name: "Pull docker PrairieLearn image"
+    community.docker.docker_image_pull:
+      pull: "not_present"
+      name: "prairielearn/prairielearn:latest"
+    notify: "prune docker"
 
-  - name: "Build docker image"
-    community.docker.docker_image:
-      build:
-        path: "/var/www/hacc/hacc-ctf"
-      source: "build"
-      force_source: true
-      name: "svsticky/hacc-ctf:latest"
+  - name: "copy PrairieLearn configuration"
+    ansible.builtin.template:
+      src: "config.json.j2"
+      dest: "/var/www/hacc/config.json"
 
   - name: "Start docker container"
     community.docker.docker_container:
-      name: "hacc-ctf"
-      image: "svsticky/hacc-ctf:latest"
+      name: "prairielearn"
+      image: "prairielearn/prairielearn:latest"
       published_ports:
-        - "{{ hacc_port }}:3000"
-    notify: "prune docker"
+        - "{{ prairielearn_port }}:3000"
+      volumes:
+        - "/var/www/hacc/config.json:/PrairieLearn/config.json"

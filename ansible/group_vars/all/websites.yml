@@ -207,7 +207,12 @@ websites:
       - "intro-cs.nl"
     state: "present"
 
-  - name: "hacc.{{ canonical_hostname }}"
+  - name: "pl.hacc.{{ canonical_hostname }}"
+    user: "hacc"
+    alternative_names: []
+    state: "present"
+
+  - name: "ctf.hacc.{{ canonical_hostname }}"
     user: "hacc"
     alternative_names: []
     state: "present"

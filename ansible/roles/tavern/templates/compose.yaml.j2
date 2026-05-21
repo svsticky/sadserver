@@ -1,7 +1,7 @@
 services:
   tavern-backend:
     container_name: tavern-backend
-    image: ghcr.io/svsticky/tavern-backend:dev
+    image: ghcr.io/svsticky/tavern-backend:{{ 'dev' if 'staging' in group_names else 'latest' }}
     restart: unless-stopped
     env_file: .env
     ports:
@@ -11,7 +11,7 @@ services:
 
   tavern-frontend:
     container_name: tavern-frontend
-    image: ghcr.io/svsticky/tavern-frontend:dev
+    image: ghcr.io/svsticky/tavern-frontend:{{ 'dev' if 'staging' in group_names else 'latest' }}
     restart: unless-stopped
     env_file: .env
     ports:
@@ -26,3 +26,10 @@ services:
       - VITE_BOARD_PRIMARY_LIGHT=${BOARD_PRIMARY_LIGHT}
       - VITE_BOARD_PRIMARY=${BOARD_PRIMARY}
       - VITE_BOARD_PRIMARY_DARK=${BOARD_PRIMARY_DARK}
+
+  tavern-docs:
+    container_name: tavern-docs
+    image: ghcr.io/svsticky/tavern-docs:{{ 'dev' if 'staging' in group_names else 'latest' }}
+    restart: unless-stopped
+    ports:
+      - "{{ tavern_docs_port }}:3001" 

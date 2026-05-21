@@ -7,7 +7,9 @@ PROJECT_DIR="{{ tavern_home_dir }}"
 cd "$PROJECT_DIR"
 
 echo "Pulling latest images..."
-docker compose pull
+docker pull ghcr.io/svsticky/tavern-frontend:{{ 'dev' if 'staging' in group_names else 'latest' }}
+docker pull ghcr.io/svsticky/tavern-backend:{{ 'dev' if 'staging' in group_names else 'latest' }}
+docker pull ghcr.io/svsticky/tavern-docs:{{ 'dev' if 'staging' in group_names else 'latest' }}
 
 export $(grep -v '^#' .env | xargs)
 

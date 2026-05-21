@@ -282,3 +282,9 @@ websites:
     state: "present"
     custom_config: true
     alternative_names: []
+
+  - name: "docs.tavern.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []

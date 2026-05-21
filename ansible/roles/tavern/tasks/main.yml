@@ -79,6 +79,7 @@
   loop:
     - "tavern.{{ canonical_hostname }}"
     - "api.tavern.{{ canonical_hostname }}"
+    - "docs.tavern.{{ canonical_hostname }}"
   notify: "reload nginx"
 
 - name: "enable nginx configurations"
@@ -89,4 +90,5 @@
   loop:
     - "tavern.{{ canonical_hostname }}"
     - "api.tavern.{{ canonical_hostname }}"
+    - "docs.tavern.{{ canonical_hostname }}"
   notify: "reload nginx"

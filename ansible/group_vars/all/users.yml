@@ -56,6 +56,8 @@ users:
         state: "present"
       - username: "rensvmoorsel"
         state: "present"
+      - username: "Quintus3"
+        state: "present"
 
   - name: "sem"
     admin: true
@@ -151,6 +153,14 @@ users:
     state: "present"
     github_accounts:
       - username: "rensvmoorsel"
+        state: "present"
+
+  - name: "julius"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "Quintus3"
         state: "present"
 
   - name: "bestuur"

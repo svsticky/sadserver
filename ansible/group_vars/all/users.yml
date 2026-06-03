@@ -58,6 +58,8 @@ users:
         state: "present"
       - username: "Quintus3"
         state: "present"
+      - username: "RubenBroere"
+        state: "present"
 
   - name: "sem"
     admin: true
@@ -249,3 +251,11 @@ users:
         state: "absent"
       - username: "Siem2l"
         state: "absent"
+
+  - name: "ruben"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "RubenBroere"
+        state: "present"

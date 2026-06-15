@@ -85,7 +85,11 @@ case "${SOURCE}" in
 
 	  echo "Zipping ${SOURCE}..."
           upload_backup_to_s3 < <(tar \
-            --exclude='var/www/pretix/venv' \
+            --exclude='cache' \
+            --exclude='.cache' \
+            --exclude='venv' \
+            --exclude='.venv' \
+            --exclude='node_modules'
             -c -f - -C / var/www \
             var/lib/crazy88bot/crazy88bot/data \
             var/lib/crazy88bot/crazy88bot/submissions \

@@ -8,6 +8,15 @@
     system: true
     groups: "docker"
     append: true
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "/home/kbg"
+    owner: "kbg"
+    group: "kbg"
+    mode: "2775"
+    state: "directory"
 
 - name: "Do database setup"
   become_user: "postgres"

@@ -1,0 +1,4 @@
+---
+
+intro_website_config:
+  home: "/var/www/intro-website"

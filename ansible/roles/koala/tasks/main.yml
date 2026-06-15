@@ -144,6 +144,12 @@
       mode: "0775"
     notify: "restart koala"
 
+  - name: "Install awscli"
+    community.general.snap:
+      name: aws-cli
+      classic: true
+
+
   - name: "set up database and precompile assets"
     become_user: "koala"
     become: true

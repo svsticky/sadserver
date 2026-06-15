@@ -5,4 +5,4 @@
 
   tasks:
     - name: "unlock and redetermine maintenance mode"
-      include_tasks: "$playbook_dir/../../../roles/pretix/tasks/unlock-maintenance.yml"
+      include_tasks: "$playbook_dir/../../../roles/pretix/tasks/maintenance-off.yml"

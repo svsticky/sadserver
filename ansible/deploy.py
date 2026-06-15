@@ -210,6 +210,8 @@ def notify_deploy_start(
     discord_webhook: str,
 ) -> None:
     roles_str = ", ".join(roles)
+    if roles == []:
+        roles_str = "All"
     discord_notify(
         f"**Deployment of playbook {playbook} to {host} started by {user}**\n"
         + f'Branch: {git_branch} - revision "{git_revision}"\n'
@@ -230,6 +232,8 @@ def notify_deploy_succes(
     discord_webhook: str,
 ) -> None:
     roles_str = ", ".join(roles)
+    if roles == []:
+        roles_str = "All"
     discord_notify(
         f"**Deployment of playbook {playbook} to {host}, started by {user}, succesfully completed**\n"
         + f'Branch: {git_branch} - revision "{git_revision}"\n'
@@ -250,6 +254,8 @@ def notify_deploy_failure(
     discord_webhook: str,
 ) -> None:
     roles_str = ", ".join(roles)
+    if roles == []:
+        roles_str = "All"
     discord_notify(
         f"**Deployment of playbook {playbook} to {host}, started by {user}, FAILED!**\n"
         + f'Branch: {git_branch} - revision "{git_revision}"\n'

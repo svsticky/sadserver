@@ -2,10 +2,18 @@
 - name: "create user"
   ansible.builtin.user:
     name: "rottenspringbok"
-    home: "{{ rottenspringbok_project_source }}"
+    home: "/home/rotten_springbok"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
+
+- name: "create repo dir"
+  ansible.builtin.file:
+    path: "{{ rottenspringbok_project_source }}"
+    owner: "rottenspringbok"
+    group: "rottenspringbok"
+    mode: "2775"
+    state: "directory"
 
 - name: "set up rottenspringbok"
   become_user: "rottenspringbok"
@@ -25,11 +33,11 @@
       dest: "{{ rottenspringbok_project_source }}/.env"
     diff: false
 
-  - name: "Docker compose"
-    ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
-    vars:
-      project_source: "{{ rottenspringbok_project_source }}"
-      remove_images: all
+- name: "Docker compose"
+  ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+  vars:
+    project_source: "{{ rottenspringbok_project_source }}"
+    remove_images: all
 
 - name: "Copy nginx configuration"
   ansible.builtin.template:

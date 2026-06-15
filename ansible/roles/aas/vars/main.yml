@@ -1,0 +1,4 @@
+---
+
+aas_config:
+  home: "/var/www/aas"

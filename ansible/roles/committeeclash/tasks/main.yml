@@ -2,7 +2,7 @@
 - name: "create user"
   ansible.builtin.user:
     name: "committeeclash"
-    home: "/var/www/committeeclash"
+    home: "{{ committeeclash_home_dir }}"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
@@ -39,6 +39,14 @@
       databases: "committeeclash"
       users: "committeeclash"
       method: "md5" # TODO use scram-sha-256 which is way safer
+
+- name: "create repo dir"
+  ansible.builtin.file:
+    path: "{{ committeeclash_project_source }}"
+    owner: "committeeclash"
+    group: "committeeclash"
+    mode: "2775"
+    state: "directory"
 
 - name: "set up committeeclash"
   become_user: "committeeclash"

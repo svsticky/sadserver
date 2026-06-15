@@ -56,6 +56,10 @@ users:
         state: "present"
       - username: "rensvmoorsel"
         state: "present"
+      - username: "Quintus3"
+        state: "present"
+      - username: "RubenBroere"
+        state: "present"
 
   - name: "sem"
     admin: true
@@ -153,6 +157,14 @@ users:
       - username: "rensvmoorsel"
         state: "present"
 
+  - name: "julius"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "Quintus3"
+        state: "present"
+
   - name: "bestuur"
     admin: false
     sudoless_ssh: true
@@ -239,3 +251,11 @@ users:
         state: "absent"
       - username: "Siem2l"
         state: "absent"
+
+  - name: "ruben"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "RubenBroere"
+        state: "present"

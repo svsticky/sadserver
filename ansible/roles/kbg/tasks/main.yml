@@ -1,0 +1,91 @@
+---
+- name: "create user for kbg"
+  ansible.builtin.user:
+    name: "kbg"
+    home: "/home/kbg"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+    append: true
+
+- name: "Do database setup"
+  become_user: "postgres"
+  become: true
+  block:
+  - name: "Ensure role exists"
+    community.postgresql.postgresql_user:
+      name: "kbg"
+      password: "{{ secret_kbg.postgres_password }}"
+      state: "present"
+
+  - name: "Ensure database exists"
+    community.postgresql.postgresql_db:
+      name: "kbg"
+      owner: "kbg"
+      state: "present"
+
+  - name: "Specify password authentication method over sockets for this container"
+    notify: "restart postgres" # Apply changes
+    become_user: "postgres"
+    become: true
+    community.postgresql.postgresql_pg_hba:
+      dest: "{{ postgres.pg_hba_path }}"
+      backup: "true"
+      backup_file: "{{ postgres.pg_hba_path }}.old"
+      contype: "local"
+      databases: "kbg"
+      users: "kbg"
+      method: "md5" # TODO use scram-sha-256 which is way safer
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "kbg.conf.j2"
+    dest: "/etc/nginx/sites-available/kbg.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/kbg.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/kbg.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"
+
+- name: "set up kbg"
+  become_user: "kbg"
+  become: true
+  block:
+  - name: "clone svsticky/fuzzy-waffle repository"
+    ansible.builtin.git:
+      repo: "https://github.com/svsticky/fuzzy-waffle.git"
+      dest: "/home/kbg/fuzzy-waffle"
+      depth: 1
+      force: true
+      version: "main"
+    diff: false
+
+  - name: "Build docker image"
+    community.docker.docker_image:
+      build:
+        path: "/home/kbg/fuzzy-waffle"
+      source: "build"
+      force_source: true
+      name: "svsticky/kbg:latest"
+
+  - name: "Copy .env"
+    ansible.builtin.template:
+      src: ".env.j2"
+      dest: "/home/kbg/fuzzy-waffle/.env"
+
+  - name: "Start docker container"
+    community.docker.docker_container:
+      name: "payload"
+      image: "svsticky/kbg:latest"
+      published_ports:
+        - "{{ kbg_port }}:3000"
+      restart: true
+      restart_policy: "unless-stopped"
+      volumes:
+      - "/run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432"
+      - "/home/kbg/fuzzy-waffle/.env:/opt/kbg/.env"
+    notify: "prune docker"

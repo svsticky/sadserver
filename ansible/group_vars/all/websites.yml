@@ -30,7 +30,8 @@ websites:
     authenticated: true
     custom_config: true
     state: "present"
-    alternative_names: []
+    alternative_names: 
+      - "feelsafe.{{ canonical_hostname }}"
     oauth2_callback_url: "/api/oauth/callback"
 
   - name: "doorgeefluik.{{ canonical_hostname }}"

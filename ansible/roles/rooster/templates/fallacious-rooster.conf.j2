@@ -1,14 +1,15 @@
 # {{ ansible_managed }}
 
+{% set website = websites | selectattr('name', 'equalto', 'voeljeveilig.' ~ canonical_hostname) | first %}
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
 
-  server_name voeljeveilig.{{ canonical_hostname }};
+  server_name {{ website.name }}{% for hostname in website.alternative_names %} {{ hostname }}{% endfor %};
 
-  ssl_certificate /etc/letsencrypt/live/voeljeveilig.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/voeljeveilig.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/voeljeveilig.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate /etc/letsencrypt/live/{{ website.name }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ website.name }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ website.name }}/chain.pem;
 
   include includes/security-headers.conf;
 

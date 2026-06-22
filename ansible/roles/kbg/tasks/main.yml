@@ -74,12 +74,8 @@
     diff: false
 
   - name: "Build docker image"
-    community.docker.docker_image:
-      build:
-        path: "/home/kbg/fuzzy-waffle"
-      source: "build"
-      force_source: true
-      name: "svsticky/kbg:latest"
+    community.docker.docker_image_pull:
+      name: "ghcr.io/svsticky/kbg"
 
   - name: "Copy .env"
     ansible.builtin.template:
@@ -89,12 +85,12 @@
   - name: "Start docker container"
     community.docker.docker_container:
       name: "payload"
-      image: "svsticky/kbg:latest"
+      image: "ghcr.io/svsticky/kbg:latest"
       published_ports:
         - "{{ kbg_port }}:3000"
       restart: true
       restart_policy: "unless-stopped"
       volumes:
       - "/run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432"
-      - "/home/kbg/fuzzy-waffle/.env:/opt/kbg/.env"
+      - "/home/kbg/fuzzy-waffle/.env:/.env"
     notify: "prune docker"

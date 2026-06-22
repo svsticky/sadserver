@@ -34,6 +34,10 @@
     project_src: "{{ project_source }}"
     files: "{{ [compose_file] if compose_file is defined else omit }}"
     remove_orphans: true # Remove orphans to ensure deleted containers won't later be checked to be running
+
+    # build: always will still use cached layers, but will also consistently
+    # build new images if the source files or configuration has changed.
+    build: "{{ build | default('always') }}"
   register: "output"
 
 # - name: Show results

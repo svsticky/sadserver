@@ -12,7 +12,7 @@
       private: false
       prompt:
         "Enter the comma-delimited source(s) you want to back up
-        (possibilities: admins/websites/postgres/contentful)"
+        (possibilities: admins,websites,postgres)"
 
   tasks:
     - name: "assert that input has been entered"

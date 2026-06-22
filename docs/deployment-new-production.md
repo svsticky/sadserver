@@ -3,6 +3,10 @@
 This guide details the steps needed to get a new production environment up and
 running.
 
+Before following this guide to migrate, make sure that a test vps has been
+fully deployed to with your latest changes, to ensure the latest deploy works
+on a new vps.
+
 **Create a new droplet** on [DigitalOcean]. Select the desired OS and region.
 Be sure to enable IPv6, and add the keys of all IT Crowd members. Name the
 droplet `svsticky.nl`. The name is important: it ensures [reverse DNS] lookups
@@ -11,12 +15,24 @@ records that point `(*.)new-prod.svsticky.nl` to the new IP.
 
 Then, do `cd ansible`.
 
-**Stop Koala** on the old production environment:
+**Stop important services** on the old production environment:
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
 $ ./deploy.py --host=production --playbook playbooks/koala/maintenance-on.yml
+$ ./deploy.py --host=production --playbook playbooks/pretix/maintenance-on.yml
 ```
+
+Also mongoose somehow.
+
+This is to prevent changes to the state of the server after we made our
+backup (see next step). We migrate te data from device A to device B by making
+a backup on device A and restoring it on device B, so we do not want to lose
+changes made after backing up.
+
+Other services are not stopped and theoretically any changes made after backing
+up can be lost after migration. Though, we found this is never a problem since
+not many services allow persistent non-admin user input.
 
 **Run backups** of the data that should be migrated to the new server:
 
@@ -45,13 +61,17 @@ location /.well-known/acme-challenge {
 }
 ```
 
+Reload nginx! With `systemctl restart nginx.service`
+
 **Temporarily update your inventory** with the IP of the new production server,
 because this is not changed in DNS yet (replace the IP by the actual new IP):
 
 ```bash
 # On your local machine, whilst in sadserver/ansible
-$ sed -i '/^svsticky\.nl / s/$/ ansible_host=192.0.2.0/' hosts
+$ sed -i '/^svsticky\.nl / s/$/ ansible_host=new-prod.svsticky.nl/' hosts
 ```
+
+(Just append `ansible_host=...` to your host.)
 
 **Bootstrap** the new production server:
 
@@ -87,6 +107,7 @@ $ ./deploy.py --host=production
 ```bash
 # On your local machine, whilst in sadserver/ansible
 $ ./deploy.py --host=production --playbook playbooks/koala/maintenance-off.yml
+$ ./deploy.py --host=production --playbook playbooks/pretix/maintenance-off.yml
 ```
 
 **Update the DNS zones** at DigitalOcean of all of Sticky's domains with the IP
@@ -102,6 +123,8 @@ addresses of the new droplet. These are the following:
  - stickyutrecht.nl
  - studieverenigingsticky.nl
  - svsticky.nl
+
+**Update the mailing whitelist** in Google Admin > Gmail.
 
 **Wait for the DNS propagation**
 

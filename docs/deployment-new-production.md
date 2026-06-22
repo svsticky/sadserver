@@ -124,6 +124,8 @@ addresses of the new droplet. These are the following:
  - studieverenigingsticky.nl
  - svsticky.nl
 
+**Update the mailing whitelist** in Google Admin > Gmail.
+
 **Wait for the DNS propagation**
 
 After these steps, everything is migrated, and the services should be available

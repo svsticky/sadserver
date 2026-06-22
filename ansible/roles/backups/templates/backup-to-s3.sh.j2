@@ -9,7 +9,6 @@
 ## - the admins' home directories
 ## - the data of our websites (and also the home directories of its users)
 ## - the databases of our websites
-## - Contentful stuff
 ##
 ## A new backup source can be added by adding a new "elif" block in the if
 ## statement down below, and updating this block and $USAGE.
@@ -20,7 +19,7 @@
 set -eEfuo pipefail
 IFS=$'\n\t'
 
-USAGE="Usage: ${0} <admins | websites | postgres | contentful>"
+USAGE="Usage: ${0} <admins | websites | postgres>"
 
 print_to_stderr() {
   echo >&2 "${1}"
@@ -63,69 +62,50 @@ upload_backup_to_s3() {
 BACKUP_DATE=$(TZ='Europe/Amsterdam' date +'%F %R %:z')
 
 case "${SOURCE}" in
-        admins)
-          S3PATH="${SOURCE}"
-          FILE_NAME="${FILE_TITLE}.tar.gz"
+    admins)
+        S3PATH="${SOURCE}"
+        FILE_NAME="${FILE_TITLE}.tar.gz"
+        # Some directories excluded to save space, since they only contain
+        # binaries/cache anyway. The awscli config directory is excluded so
+        # we can never restore production credentials to staging.
+        echo "Zipping ${SOURCE}..."
+        upload_backup_to_s3 < <(tar \
+          --exclude='home/koala/.rbenv' \
+          --exclude='home/koala/.bundle' \
+          --exclude='home/koala/.cache' \
+          --exclude='/home/ansible/.aws' \
+          -c -f - -C / home \
+          | gzip -9)
+        ;;
 
-          # Some directories excluded to save space, since they only contain
-          # binaries/cache anyway. The awscli config directory is excluded so
-          # we can never restore production credentials to staging.
-	  echo "Zipping ${SOURCE}..."
-          upload_backup_to_s3 < <(tar \
-            --exclude='home/koala/.rbenv' \
-            --exclude='home/koala/.bundle' \
-            --exclude='home/koala/.cache' \
-            --exclude='/home/ansible/.aws' \
-            -c -f - -C / home \
-            | gzip -9)
-          ;;
-        websites)
-          S3PATH="${SOURCE}"
-          FILE_NAME="${FILE_TITLE}.tar.gz"
+    websites)
+        S3PATH="${SOURCE}"
+        FILE_NAME="${FILE_TITLE}.tar.gz"
+        echo "Zipping ${SOURCE}..."
+        upload_backup_to_s3 < <(tar \
+          --exclude='cache' \
+          --exclude='.cache' \
+          --exclude='venv' \
+          --exclude='.venv' \
+          --exclude='node_modules' \
+          -c -f - -C / var/www \
+          var/lib/crazy88bot/crazy88bot/data \
+          var/lib/crazy88bot/crazy88bot/submissions \
+          | gzip -9)
+        ;;
 
-	  echo "Zipping ${SOURCE}..."
-          upload_backup_to_s3 < <(tar \
-            --exclude='cache' \
-            --exclude='.cache' \
-            --exclude='venv' \
-            --exclude='.venv' \
-            --exclude='node_modules' \
-            -c -f - -C / var/www \
-            var/lib/crazy88bot/crazy88bot/data \
-            var/lib/crazy88bot/crazy88bot/submissions \
-            | gzip -9)
-          ;;
-        postgres)
-          S3PATH="postgres/${SOURCE}"
-          FILE_NAME="${FILE_TITLE}.sql.gz"
+    postgres)
+        S3PATH="postgres/${SOURCE}"
+        FILE_NAME="${FILE_TITLE}.sql.gz"
+        # Uses root's unix socket for authentication
+        echo "PG_Dumping ${SOURCE}..."
+        upload_backup_to_s3 < <(sudo -u postgres pg_dumpall \
+          | gzip -9)
+        ;;
 
-          # Uses root's unix socket for authentication
-	  echo "PG_Dumping ${SOURCE}..."
-          upload_backup_to_s3 < <(sudo -u postgres pg_dumpall \
-            | gzip -9)
-          ;;
-        contentful)
-          S3PATH="${SOURCE}"
-          FILE_NAME="${FILE_TITLE}.tar.gz"
-
-          sudo -u backup mkdir -p /tmp/contentful-export
-          sudo -Hu backup bash -c `
-          `'source {{ nvm.script }} && nvm install {{ backups_node_version }} &&'`
-          `' nvm exec {{ backups_node_version }} npx contentful-cli space export'`
-          `' --management-token {{ secret_contentful_export.token }}'`
-          `' --space-id {{ secret_contentful_export.space_id }}'`
-          `' --download-assets'`
-          `' --export-dir /tmp/contentful-export'
-
-	  echo "Zipping ${SOURCE}..."
-          upload_backup_to_s3 < <(tar \
-            -c -f - -C /tmp contentful-export \
-            | gzip -9)
-          rm -r /tmp/contentful-export
-          ;;
-        *)
-          print_to_stderr "${USAGE}"
-          exit 1
+    *)
+        print_to_stderr "${USAGE}"
+        exit 1
 esac
 
 echo "Backup of ${SOURCE} successful!"

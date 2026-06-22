@@ -51,8 +51,6 @@
   loop:
     - "backup-admins.service"
     - "backup-admins.timer"
-    - "backup-contentful.service"
-    - "backup-contentful.timer"
     - "backup-postgres.service"
     - "backup-postgres.timer"
     - "backup-websites.service"
@@ -68,6 +66,5 @@
       "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
   loop:
     - "backup-admins.timer"
-    - "backup-contentful.timer"
     - "backup-postgres.timer"
     - "backup-websites.timer"

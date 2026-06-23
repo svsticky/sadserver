@@ -16,7 +16,7 @@ export $(grep -v '^#' .env | xargs)
 echo "Starting containers (application will run migrations on startup)..."
 docker compose up -d
 
-# 5. Schoonmaak
+# Cleaning
 docker image prune -f
 
 echo "Deployment finished! Check logs with: docker logs -f tavern-backend"

@@ -1,0 +1,4 @@
+---
+
+main_website_config:
+  home: "/var/www/main-website"

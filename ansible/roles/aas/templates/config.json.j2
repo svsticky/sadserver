@@ -10,6 +10,11 @@
 				"serviceName": "deploy-intro-website.service",
 				"endpoint": "/webhook/intro-website-deploy",
 				"pre-sharedKey": "{{ secret_intro_website.aas_pre_shared_key }}"
+			},
+			{
+				"serviceName": "deploy-main-website.service",
+				"endpoint": "/webhook/main-website-deploy",
+				"pre-sharedKey": "{{ secret_main_website.aas_pre_shared_key }}"
 			}
 		]
 	}

@@ -1,0 +1,61 @@
+---
+
+- name: "create user for main-website"
+  ansible.builtin.user:
+    name: "main-website"
+    home: "/var/www/main-website"
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: "present"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ main_website_config.home }}"
+    owner: "main-website"
+    group: "main-website"
+    mode: "2775"
+    state: "directory"
+
+- name: "Install dependencies"
+  ansible.builtin.apt:
+    name:
+      - "unzip"
+    state: "present"
+
+- name: "ensure all files in main-website folder will belong to main-website"
+  become_user: "main-website"
+  become: true
+  ansible.builtin.file:
+    path: "/var/www/main-website/"
+    state: "directory"
+    mode: "2775"
+
+- name: "copy systemd service for deploying main-website"
+  ansible.builtin.template:
+    src: "deploy-main-website.service.j2"
+    dest: "/etc/systemd/system/deploy-main-website.service"
+
+- name: "copy deploy script"
+  ansible.builtin.template:
+    src: "deploy-main-website.sh.j2"
+    dest: "/usr/local/bin/deploy-main-website.sh"
+    mode: "0755"
+
+# - name: "run deploy"
+#   ansible.builtin.systemd:
+#     name: "deploy-main-website.service"
+#     state: "started"
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "main-website.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

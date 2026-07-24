@@ -1,5 +1,6 @@
 # {{ ansible_managed }}
 
+# Redirect other domains or www.svsticky.nl to svsticky.nl
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
@@ -17,38 +18,36 @@ server {
 }
 
 server {
-  listen 443 ssl http2 default_server;
-  listen [::]:443 ssl http2 default_server;
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
 
   server_name {{ canonical_hostname }};
+
+  root /var/www/main-website/;
+  index index.html;
 
   ssl_certificate      /etc/letsencrypt/live/{{ canonical_hostname }}/fullchain.pem;
   ssl_certificate_key  /etc/letsencrypt/live/{{ canonical_hostname }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/{{ canonical_hostname }}/chain.pem;
 
-  root /var/www/main-website/; #static-sticky/static.{{ canonical_hostname }};
-  index index.html;
-  error_page 404 /404.html;
-
   include includes/security-headers.conf;
 
-  location ~* /.git/ {
-    deny all;
-  }
-
-  location /logs/ {
-    # Construct correct request URI for systemd-journald-gateway, while only
-    # allowing alphanumerics (to prevent exposing the other endpoints and
-    # parameters that systemd-journald-gateway supports
-    rewrite "^/logs/([\d\w]{32})$" /entries?_SYSTEMD_INVOCATION_ID=$1 break;
-    return 403;
-    proxy_pass http://localhost:19531;
+  # Proxy /_action requests to the astro actions server, this is needed for the mail handler
+  # for the collaboration contact form.
+  location /_action {
+    proxy_pass http://127.0.0.1:{{ main_website_config.mail_port }};
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
   }
 
   location /wp-content/uploads/huishoudelijk-reglement-sticky.pdf {
     return 301 https://files.{{canonical_hostname}}/Algemene%20Stukken%20en%20Beleid/Huishoudelijk%20reglement/Huishoudelijk_Reglement_Sticky___Nederlands.pdf;
   }
 
+  # Proxy a request to doorgeefluik or if doorgeefluik can't doing anything with, return the 404 page
   location @doorgeefluik {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto https;
@@ -58,6 +57,7 @@ server {
     proxy_pass http://localhost:1515/visit$request_uri;
   }
 
+  # Serve a static file, or if a static file does not exist, proxy the request to doorgeefluik
   location / {
     try_files $uri $uri/ @doorgeefluik;
   }

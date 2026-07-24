@@ -2,3 +2,4 @@
 
 main_website_config:
   home: "/var/www/main-website"
+  mail_port: 8025

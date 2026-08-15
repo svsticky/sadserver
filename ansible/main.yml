@@ -46,8 +46,10 @@
       tags: "digidecs"
     - role: "aas"
       tags: "aas"
-    - role: "static_sticky"
-      tags: "static_sticky"
+    # - role: "static_sticky"
+    #   tags: "static_sticky"
+    - role: "main_website"
+      tags: "main_website"
     - role: "pretix"
       tags: "pretix"
     - role: "koala"
@@ -84,8 +86,6 @@
       tags: "docuseal"
     - role: "kbg"
       tags: "kbg"
-    - role: "main_website"
-      tags: "main_website"
     # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
       tags: ["never", "crazy88bot"]

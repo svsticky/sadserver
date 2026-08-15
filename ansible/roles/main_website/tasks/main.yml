@@ -17,11 +17,16 @@
     mode: "2775"
     state: "directory"
 
-- name: "Install dependencies"
+- name: "Install unzip"
   ansible.builtin.apt:
     name:
       - "unzip"
     state: "present"
+
+- name: "install awscli to fetch the builds from s3"
+  community.general.snap:
+    name: aws-cli
+    classic: true
 
 - name: "ensure all files in main-website folder will belong to main-website"
   become_user: "main-website"
@@ -42,10 +47,18 @@
     dest: "/usr/local/bin/deploy-main-website.sh"
     mode: "0755"
 
-# - name: "run deploy"
-#   ansible.builtin.systemd:
-#     name: "deploy-main-website.service"
-#     state: "started"
+# The deploy-main-website service will copy the latest artifact from
+# GitHub. However, artifacts can expire, so we ignore errors if the
+# systemd service fails to run at this moment.
+#
+# If it does fail and you want to rebuild the website, then go to Github's
+# actions tab and trigger a build workflow, which will trigger a deploy on
+# the server with an actual new artifact.
+- name: "run deploy"
+  ansible.builtin.systemd:
+    name: "deploy-main-website.service"
+    state: "started"
+  ignore_errors: true
 
 - name: "copy nginx configuration"
   ansible.builtin.template:

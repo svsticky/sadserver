@@ -1,0 +1,9 @@
+[Unit]
+OnFailure=failure-notificator@%n.service
+Description=Deploy main website
+
+[Service]
+Type=oneshot
+User=main-website
+Group=main-website
+ExecStart=/usr/local/bin/deploy-main-website.sh

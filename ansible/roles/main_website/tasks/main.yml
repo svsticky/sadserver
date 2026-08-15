@@ -47,8 +47,9 @@
   ansible.builtin.systemd:
     name: "deploy-main-website.service"
     state: "started"
-    daemon-reload: true
   ignore_errors: true
+  notify:
+    - "systemctl daemon-reload"
 
 - name: "copy nginx configuration"
   ansible.builtin.template:

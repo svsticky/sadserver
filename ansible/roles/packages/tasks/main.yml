@@ -20,6 +20,7 @@
       - "git"
       - "toilet"
       - "neovim"
+      - "unzip"
     state: "present"
 
 - name: "update all packages"
@@ -42,6 +43,11 @@
     - "unattended-upgrades-output.timer"
   notify:
     - "systemctl daemon-reload"
+
+- name: "install awscli to fetch the builds from s3"
+  community.general.snap:
+    name: aws-cli
+    classic: true
 
 # slacktee is the tool we use to let the server send notifications to Slack.
 # Replaces email.

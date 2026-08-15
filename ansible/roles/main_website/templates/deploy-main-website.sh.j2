@@ -63,4 +63,5 @@ rm build.zip
 rsync --delete --recursive . /var/www/main-website/
 
 docker pull ghcr.io/svsticky/main-website-new:main
-docker run -p 4321:{{ main_website_config.mail_port }} ghcr.io/svsticky/main-website-new:main
+docker stop main-website-mail || true # true so that no non-zero exit code is raised
+docker run --rm -d --name main-website-mail -e HOST=0.0.0.0 -e PORT 4321 -p {{ main_website_config.mail_port }}:4321 ghcr.io/svsticky/main-website-new:main

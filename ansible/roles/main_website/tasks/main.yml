@@ -17,17 +17,6 @@
     mode: "2775"
     state: "directory"
 
-- name: "Install unzip"
-  ansible.builtin.apt:
-    name:
-      - "unzip"
-    state: "present"
-
-- name: "install awscli to fetch the builds from s3"
-  community.general.snap:
-    name: aws-cli
-    classic: true
-
 - name: "ensure all files in main-website folder will belong to main-website"
   become_user: "main-website"
   become: true

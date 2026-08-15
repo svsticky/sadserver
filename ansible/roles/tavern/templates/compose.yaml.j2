@@ -17,16 +17,17 @@ services:
     ports:
       - "{{ tavern_frontend_port }}:3000" 
     environment:
+      - VITE_AUTH_SYSTEM=${AuthSystem}
       - VITE_KeycloakUrl=${KeycloakUrl}
       - VITE_KeycloakRealm=${KeycloakRealm}
       - VITE_KeycloakClientId=${KeycloakClientId}
       - VITE_HostUrl=${HostUrl}
       - VITE_ApiUrl=${ApiUrl}
       - VITE_LOGO_URL=${LOGO_URL}
-      - VITE_BOARD_PRIMARY_LIGHT=${BOARD_PRIMARY_LIGHT}
-      - VITE_BOARD_PRIMARY=${BOARD_PRIMARY}
-      - VITE_BOARD_PRIMARY_DARK=${BOARD_PRIMARY_DARK}
-
+      - VITE_PAYMENT_PROVIDER=${PAYMENT_PROVIDER}
+      - VITE_MAIL_SERVICE=${MAIL_SERVICE}
+      - VITE_ACCOUNTING_ENABLED=${ACCOUNTING_ENABLED}
+      
   tavern-docs:
     container_name: tavern-docs
     image: ghcr.io/svsticky/tavern-docs:{{ 'dev' if 'staging' in group_names else 'latest' }}

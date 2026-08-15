@@ -17,6 +17,25 @@ server {
     proxy_set_header Connection "upgrade";
   }
 }
+{% elif item == "wordlid." + canonical_hostname or item == "signup." + canonical_hostname %}
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name {{ item }};
+
+  ssl_certificate /etc/letsencrypt/live/{{ item }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ item }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ item }}/chain.pem;
+
+  location / {
+    proxy_pass http://localhost:{{ tavern_frontend_port }}/register;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+}
 {% elif item == "api.tavern." + canonical_hostname %}
 server {
   listen 443 ssl http2;

@@ -195,3 +195,6 @@ secret_docuseal:
 
 secret_kbg:
   postgres_password: "{{ vault_secret_kbg.postgres_password }}"
+
+secret_main_website:
+  aas_pre_shared_key: "{{ vault_secret_main_website.aas_pre_shared_key }}"

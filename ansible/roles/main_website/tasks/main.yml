@@ -3,7 +3,7 @@
 - name: "create user for main-website"
   ansible.builtin.user:
     name: "main-website"
-    home: "/var/www/main-website"
+    home: "{{ main_website_config.home }}"
     shell: "/usr/sbin/nologin"
     system: true
     state: "present"

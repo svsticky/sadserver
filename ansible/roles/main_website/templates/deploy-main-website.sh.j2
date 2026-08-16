@@ -66,8 +66,9 @@ rsync --delete --recursive . /var/www/main-website/
 # Github workflow pushes a docker container that needs to be deployed. So we pull the
 # latest image from Github, stop the currently running container (if there is one), and
 # start a new one.
-docker pull ghcr.io/svsticky/main-website-new:main
+docker pull ghcr.io/svsticky/main-website-new:$BRANCH_NAME
 docker stop main-website-mail || true # true so that no non-zero exit code is raised
 docker run --rm -d --name main-website-mail \
-  -e HOST=0.0.0.0 -e PORT=4321 {{ ('production' in group_names) | ternary("-e SMTP_HOST=\"smtp-relay.gmail.com\" -e SMTP_PORT=587", "") }} \
-  -p {{ main_website_config.mail_port }}:4321 ghcr.io/svsticky/main-website-new:main
+  -e HOST=0.0.0.0 -e PORT=4321 \
+  {% if ('production' in group_names) %} -e SMTP_HOST="smtp-relay.gmail.com" -e SMTP_PORT=587 \ {% endif %}
+  -p {{ main_website_config.mail_port }}:4321 ghcr.io/svsticky/main-website-new:$BRANCH_NAME

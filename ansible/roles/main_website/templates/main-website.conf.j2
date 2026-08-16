@@ -32,10 +32,10 @@ server {
 
   include includes/security-headers.conf;
 
-  # Proxy /_action requests to the astro actions server, this is needed for the mail handler
+  # Proxy /_actions requests to the astro actions server, this is needed for the mail handler
   # for the collaboration contact form.
-  location /_action {
-    proxy_pass http://127.0.0.1:{{ main_website_config.mail_port }};
+  location /_actions {
+    proxy_pass http://localhost:{{ main_website_config.mail_port }};
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;

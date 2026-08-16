@@ -1,0 +1,3 @@
+---
+keycloak_port: 6666
+keycloak_project_source: /var/www/keycloak

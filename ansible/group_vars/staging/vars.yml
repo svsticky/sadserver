@@ -212,3 +212,9 @@ secret_tavern:
   aws_secret_access_key: "{{ vault_secret_tavern.aws_secret_access_key }}"
   s3_service_url: "{{ vault_secret_tavern.s3_service_url }}"
   smtp_host: "{{ vault_secret_tavern.smtp_host }}"
+
+secret_keycloak:
+  db_url: "{{ vault_secret_keycloak.db_url }}"
+  db_username: "{{ vault_secret_keycloak.db_username }}"
+  db_password: "{{ vault_secret_keycloak.db_password }}"
+  admin_password: "{{ vault_secret_keycloak.admin_password }}"

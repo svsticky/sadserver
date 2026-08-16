@@ -70,5 +70,6 @@ docker pull ghcr.io/svsticky/main-website-new:$BRANCH_NAME
 docker stop main-website-mail || true # true so that no non-zero exit code is raised
 docker run --rm -d --name main-website-mail \
   -e HOST=0.0.0.0 -e PORT=4321 \
-  {% if ('production' in group_names) %} -e SMTP_HOST="smtp-relay.gmail.com" -e SMTP_PORT=587 \ {% endif %}
+  # Don't need a \ at the end because jinja inlines the if statement for some reason
+  {% if ('production' in group_names) %} -e SMTP_HOST="smtp-relay.gmail.com" -e SMTP_PORT=587 {% endif %}
   -p {{ main_website_config.mail_port }}:4321 ghcr.io/svsticky/main-website-new:$BRANCH_NAME

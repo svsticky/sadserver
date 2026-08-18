@@ -52,10 +52,6 @@
       tags: "static_sticky"
     - role: "pretix"
       tags: "pretix"
-    - role: "koala"
-      tags: "koala"
-    - role: "logrotate"
-      tags: "logrotate"
     - role: "monitoring"
       tags: "monitoring"
     - role: "oauth2_proxy"
@@ -106,3 +102,7 @@
 # - freight: #477
 # - php: #474
 # - node: #467
+# - koala, logrotate: replaced by tavern
+# - The koala.{{ canonical_hostname }} website entry is now "absent"; the
+#   koala-specific database provisioning was removed from the "databases"
+#   role; the koala fail2ban jail/filters were removed.

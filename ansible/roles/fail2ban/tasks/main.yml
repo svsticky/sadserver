@@ -25,8 +25,6 @@
   loop:
     - "fail2ban.local"
     - "jail.local"
-    - "filter.d/koala.conf"
-    - "filter.d/koala404.conf"
   notify: "restart fail2ban"
 
 - name: "start and enable fail2ban"

@@ -7,8 +7,18 @@
   ansible.builtin.user:
     name: "crazy88bot"
     shell: "/usr/sbin/nologin"
-    home: "/var/www/crazy88bot"
+    home: "{{ crazy88bot_config.home }}"
     system: true
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ crazy88bot_config.home }}"
+    owner: "crazy88bot"
+    group: "crazy88bot"
+    mode: "2775"
+    state: "directory"
+
 
 - name: "set up crazy88bot"
   become_user: "crazy88bot"

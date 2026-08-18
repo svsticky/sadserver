@@ -30,7 +30,8 @@ websites:
     authenticated: true
     custom_config: true
     state: "present"
-    alternative_names: []
+    alternative_names: 
+      - "feelsafe.{{ canonical_hostname }}"
     oauth2_callback_url: "/api/oauth/callback"
 
   - name: "doorgeefluik.{{ canonical_hostname }}"
@@ -233,12 +234,6 @@ websites:
     alternative_names: []
     state: "present"
 
-  - name: "harbor.{{ canonical_hostname }}"
-    user: "harbor"
-    custom_config: true
-    alternative_names: []
-    state: "present"
-
   - name: "committeeclash.{{ canonical_hostname }}"
     user: "committeeclash"
     custom_config: true
@@ -285,4 +280,12 @@ websites:
     user: "tavern"
     state: "present"
     custom_config: true
+    alternative_names: []
+
+  - name: "kbg.{{ canonical_hostname }}"
+    user: "kbg"
+    state: "present"
+    custom_config: true
+    authenticated: true
+    oauth2_callback_url: "/callback"
     alternative_names: []

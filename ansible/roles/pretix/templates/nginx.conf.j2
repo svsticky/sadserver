@@ -51,7 +51,7 @@ server {
   }
 
   location /static/ {
-    alias /var/www/pretix/venv/lib/python3.9/site-packages/pretix/static.dist/;
+    alias /var/www/pretix/venv/lib/python3.12/site-packages/pretix/static.dist/; # TODO When we switch to uv this should be unhardcoded
     access_log off;
     expires 365d;
     add_header Cache-Control "public";

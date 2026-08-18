@@ -218,3 +218,5 @@ secret_keycloak:
   db_username: "{{ vault_secret_keycloak.db_username }}"
   db_password: "{{ vault_secret_keycloak.db_password }}"
   admin_password: "{{ vault_secret_keycloak.admin_password }}"
+  webhookSecret: "{{ vault_secret_keycloak.webhookSecret }}"
+  webhookUrl: "{{ vault_secret_keycloak.webhookUrl }}"

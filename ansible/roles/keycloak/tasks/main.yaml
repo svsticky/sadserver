@@ -17,7 +17,7 @@
       dest: "{{ keycloak_project_source }}/app"
       depth: 1
       force: true
-      version: main #"{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
+      version: main # "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
     diff: false
 
   - name: "Copy .env file"

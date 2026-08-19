@@ -80,6 +80,8 @@
     - "tavern.{{ canonical_hostname }}"
     - "api.tavern.{{ canonical_hostname }}"
     - "docs.tavern.{{ canonical_hostname }}"
+    - "wordlid.{{ canonical_hostname }}"
+    - "signup.{{ canonical_hostname }}"
   notify: "reload nginx"
 
 - name: "enable nginx configurations"
@@ -91,4 +93,6 @@
     - "tavern.{{ canonical_hostname }}"
     - "api.tavern.{{ canonical_hostname }}"
     - "docs.tavern.{{ canonical_hostname }}"
+    - "wordlid.{{ canonical_hostname }}"
+    - "signup.{{ canonical_hostname }}"
   notify: "reload nginx"

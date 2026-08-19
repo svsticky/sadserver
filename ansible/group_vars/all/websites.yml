@@ -72,12 +72,12 @@ websites:
 
   - name: "koala.{{ canonical_hostname }}"
     # Replaced by tavern; the koala role has been removed.
+    # wordlid/signup moved to their own present entries below, proxied to
+    # tavern's /register by the tavern role.
     alternative_names:
-      - "wordlid.{{ canonical_hostname }}"
       - "leden.{{ canonical_hostname }}"
       - "members.{{ canonical_hostname }}"
       - "inschrijven.{{ canonical_hostname }}"
-      - "signup.{{ canonical_hostname }}"
       - "join.{{ canonical_hostname }}"
     state: "absent"
 
@@ -277,6 +277,18 @@ websites:
     alternative_names: []
 
   - name: "docs.tavern.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "wordlid.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "signup.{{ canonical_hostname }}"
     user: "tavern"
     state: "present"
     custom_config: true

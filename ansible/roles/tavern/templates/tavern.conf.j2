@@ -27,13 +27,14 @@ server {
   ssl_certificate_key /etc/letsencrypt/live/{{ item }}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/{{ item }}/chain.pem;
 
+  # tavern-frontend is client-hydrated (React Router v7, ssr: true): every
+  # route's SSR output is just a static "loading" placeholder until client JS
+  # hydrates and picks a route from the real browser URL. Reverse-proxying to
+  # /register can't make that happen (the browser's address bar would still
+  # say "/", so hydration would pick a different route) -- only an actual
+  # navigation can, hence the redirect rather than a proxy_pass here.
   location / {
-    proxy_pass http://localhost:{{ tavern_frontend_port }}/register;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    proxy_set_header Host $http_host;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
+    return 301 https://tavern.{{ canonical_hostname }}/register;
   }
 }
 {% elif item == "api.tavern." + canonical_hostname %}

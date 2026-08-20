@@ -71,9 +71,6 @@ websites:
       - "www.indievelopment.nl"
 
   - name: "koala.{{ canonical_hostname }}"
-    # Replaced by tavern; the koala role has been removed.
-    # wordlid/signup moved to their own present entries below, proxied to
-    # tavern's /register by the tavern role.
     alternative_names:
       - "leden.{{ canonical_hostname }}"
       - "members.{{ canonical_hostname }}"

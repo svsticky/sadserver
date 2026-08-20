@@ -11,3 +11,16 @@ fail2ban_config:
       port: "ssh"
       filter: "sshd"
       logpath: "/var/log/auth.log"
+    - name: "koala"
+      port: "https"
+      filter: "koala"
+      logpath:
+        "/var/www/koala.{{ canonical_hostname }}/log/\
+        {{ koala_env.environment }}.log"
+      maxretry: 10
+    - name: "koala404"
+      port: "https"
+      filter: "koala404"
+      logpath: "/var/www/koala.{{ canonical_hostname }}/log/access.log"
+      findtime: 60
+      maxretry: 5

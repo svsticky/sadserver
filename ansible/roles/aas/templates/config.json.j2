@@ -15,6 +15,11 @@
 				"serviceName": "deploy-tavern.service",
 				"endpoint": "/webhook/tavern-deploy",
 				"pre-sharedKey": "{{ secret_tavern.aas_pre_shared_key }}"
+			},
+			{
+				"serviceName": "deploy-main-website.service",
+				"endpoint": "/webhook/main-website-deploy",
+				"pre-sharedKey": "{{ secret_main_website.aas_pre_shared_key }}"
 			}
 		]
 	}

@@ -2,6 +2,6 @@
 
 aas ALL=(root) NOPASSWD: /usr/bin/systemd-run --no-block --property After=deploy-static-sticky.service -- systemctl start deploy-static-sticky.service, \
                          /usr/bin/systemd-run --no-block --property After=deploy-intro-website.service -- systemctl start deploy-intro-website.service, \
-                         /usr/bin/systemd-run --no-block --property After=deploy-tavern.service -- systemctl start deploy-tavern.service
-
+                         /usr/bin/systemd-run --no-block --property After=deploy-tavern.service -- systemctl start deploy-tavern.service, \
+                         /usr/bin/systemd-run --no-block --property After=deploy-main-website.service -- systemctl start deploy-main-website.service
 

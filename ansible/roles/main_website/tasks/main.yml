@@ -1,0 +1,66 @@
+---
+
+- name: "create user for main-website"
+  ansible.builtin.user:
+    name: "main-website"
+    home: "{{ main_website_config.home }}"
+    shell: "/usr/sbin/nologin"
+    system: true
+    state: "present"
+    groups: "docker"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ main_website_config.home }}"
+    owner: "main-website"
+    group: "main-website"
+    mode: "2775"
+    state: "directory"
+
+- name: "ensure all files in main-website folder will belong to main-website"
+  become_user: "main-website"
+  become: true
+  ansible.builtin.file:
+    path: "/var/www/main-website/"
+    state: "directory"
+    mode: "2775"
+
+- name: "copy systemd service for deploying main-website"
+  ansible.builtin.template:
+    src: "deploy-main-website.service.j2"
+    dest: "/etc/systemd/system/deploy-main-website.service"
+
+- name: "copy deploy script"
+  ansible.builtin.template:
+    src: "deploy-main-website.sh.j2"
+    dest: "/usr/local/bin/deploy-main-website.sh"
+    mode: "0755"
+
+# The deploy-main-website service will copy the latest artifact from
+# GitHub. However, artifacts can expire, so we ignore errors if the
+# systemd service fails to run at this moment.
+#
+# If it does fail and you want to rebuild the website, then go to Github's
+# actions tab and trigger a build workflow, which will trigger a deploy on
+# the server with an actual new artifact.
+- name: "run deploy"
+  ansible.builtin.systemd:
+    name: "deploy-main-website.service"
+    state: "started"
+  ignore_errors: true
+  notify:
+    - "systemctl daemon-reload"
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "main-website.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

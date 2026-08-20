@@ -16,34 +16,6 @@
     group: "tavern"
     mode: "0750"
 
-- name: "Do database setup"
-  become_user: "postgres"
-  become: true
-  block:
-    - name: "Ensure role exists"
-      community.postgresql.postgresql_user:
-        name: "tavern"
-        password: "{{ secret_tavern.postgres_password }}"
-        state: "present"
-
-    - name: "Ensure database exists"
-      community.postgresql.postgresql_db:
-        name: "tavern"
-        owner: "tavern"
-        state: "present"
-
-    - name: "Allow password auth over TCP from Docker bridge network"
-      notify: "restart postgres"
-      community.postgresql.postgresql_pg_hba:
-        dest: "{{ postgres.pg_hba_path }}"
-        backup: "true"
-        backup_file: "{{ postgres.pg_hba_path }}.old"
-        contype: "local"
-        databases: "tavern"
-        users: "tavern"
-        address: "172.16.0.0/12"
-        method: "md5"
-
 - name: "copy .env file"
   become_user: "tavern"
   become: true

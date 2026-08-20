@@ -27,25 +27,6 @@ secret_oauth2_proxy:
     onderwijs@svsticky.nl
     superman@maartenberg.nl
 
-koala_env:
-  environment: "production"
-  oidc_signing_key_location: "/var/www/koala/signing-key.pem"
-  git_ref: "v2.48.2"
-
-secret_koala:
-  # To change, generate new token using 'rake secret', and recompile + deploy
-  # Checkout client with the embedded token updated.
-  checkout_token: "{{ vault_secret_koala.checkout_token }}"
-
-  # To change, generate new token using 'rake secret'
-  devise_secret: "{{ vault_secret_koala.devise_secret }}"
-
-  # To change, generate new token using 'rake secret'
-  rails_secret: "{{ vault_secret_koala.rails_secret }}"
-
-  # To change, use the web interface at https://sentry.io/
-  sentry_dsn: "{{ vault_secret_koala.sentry_dsn }}"
-
 secret_payconiq:
   domain: "{{ vault_secret_payconiq.domain }}"
   online_token: "{{ vault_secret_payconiq.online_token }}"
@@ -138,9 +119,6 @@ secret_outline:
   s3_bucket: "outline-wiki-prod"
   mailgun_password: "{{ vault_secret_outline.mailgun_password }}"
   postgresql_password: "{{ vault_secret_outline.postgresql_password }}"
-
-secret_koala_manual:
-  password: "{{ vault_secret_koala_manual.password }}"
 
 secret_healthchecks_io:
   ping_key: "{{ vault_secret_healthchecks_io.ping_key }}"

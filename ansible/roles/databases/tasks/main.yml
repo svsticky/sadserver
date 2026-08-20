@@ -31,3 +31,60 @@
     users: "all"
     method: "peer"
   notify: "restart postgres" # Apply changes
+
+
+
+- name: "set up tavern databases"
+  become_user: "postgres"
+  become: true
+  block:
+
+  - name: "ensure tavern user exists"
+    community.postgresql.postgresql_user:
+      name: "tavern"
+
+  - name: "ensure tavern database exists"
+    community.postgresql.postgresql_db:
+      name: "tavern"
+      owner: "tavern"
+
+  - name: "ensure tavern user exists"
+    community.postgresql.postgresql_user:
+      db: "tavern"
+      name: "tavern"
+      role_attr_flags: "CREATEDB,LOGIN"
+
+  - name: "ensure tavern user has the right privs"
+    community.postgresql.postgresql_privs:
+      db: "tavern"
+      role: "tavern"
+      objs: "ALL_IN_SCHEMA"
+      privs: "ALL"
+
+
+- name: "set up keycloak databases"
+  become_user: "postgres"
+  become: true
+  block:
+
+  - name: "ensure keycloak user exists"
+    community.postgresql.postgresql_user:
+      name: "keycloak"
+
+  - name: "ensure keycloak database exists"
+    community.postgresql.postgresql_db:
+      name: "keycloak"
+      owner: "keycloak"
+
+  - name: "ensure keycloak user exists"
+    community.postgresql.postgresql_user:
+      db: "keycloak"
+      name: "keycloak"
+      role_attr_flags: "CREATEDB,LOGIN"
+
+  - name: "ensure keycloak user has the right privs"
+    community.postgresql.postgresql_privs:
+      db: "keycloak"
+      role: "keycloak"
+      objs: "ALL_IN_SCHEMA"
+      privs: "ALL"

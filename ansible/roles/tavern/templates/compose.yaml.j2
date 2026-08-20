@@ -8,6 +8,11 @@ services:
       - "{{ tavern_backend_port }}:8080" 
     volumes:
       - /run/postgresql:/run/postgresql
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   tavern-frontend:
     container_name: tavern-frontend
@@ -27,6 +32,11 @@ services:
       - VITE_PAYMENT_PROVIDER=${PAYMENT_PROVIDER}
       - VITE_MAIL_SERVICE=${MAIL_SERVICE}
       - VITE_ACCOUNTING_ENABLED=${ACCOUNTING_ENABLED}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
       
   tavern-docs:
     container_name: tavern-docs
@@ -34,3 +44,8 @@ services:
     restart: unless-stopped
     ports:
       - "{{ tavern_docs_port }}:3001" 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

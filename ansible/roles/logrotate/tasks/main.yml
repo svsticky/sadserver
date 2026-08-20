@@ -1,0 +1,7 @@
+---
+- name: "copy tavern logrotate config"
+  ansible.builtin.template:
+    src: "tavern.conf.j2"
+    dest: "/etc/logrotate.d/tavern"
+    owner: "root"
+    mode: "0644"

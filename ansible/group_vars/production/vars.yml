@@ -78,7 +78,7 @@ secret_static_sticky:
   github_deployments_token: "{{ vault_secret_static_sticky.github_deployments_token }}"
   aws_access_key_id: "{{ vault_secret_static_sticky.aws_access_key_id }}"
   aws_secret_access_key: "{{ vault_secret_static_sticky.aws_secret_access_key }}"
-  aws_default_region: "eu-central-1"
+  aws_default_region: "{{ vault_secret_static_sticky.aws_default_region }}"
   aas_pre_shared_key: "{{ vault_secret_static_sticky.aas_pre_shared_key }}"
 
 aas_env:

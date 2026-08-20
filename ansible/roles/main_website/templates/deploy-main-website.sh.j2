@@ -44,7 +44,7 @@ echo "Run id: $RUN_ID"
 # Get artifact id
 ARTIFACT_NAME="website-build-static-files"
 ARTIFACT_ID=$(curl -sH "Authorization: token $GH_TOKEN" "$REPO_URL/actions/runs/$RUN_ID/artifacts" | \
-  jq -r --arg name "$ARTIFACT_NAME" '.artifacts[] | select(.name == $name) | .id')
+  jq -r --arg name "$ARTIFACT_NAME" '[.artifacts[] | select(.name == $name)] | max_by(.id) | .id') # If multiple artifacts with the same name exist, we take the one with the highest id (latest)
 echo "Artifact id: $ARTIFACT_ID"
 
 ### Download artifact containing build to deploy

@@ -16,7 +16,7 @@ fail2ban_config:
       filter: "koala"
       logpath:
         "/var/www/koala.{{ canonical_hostname }}/log/\
-        {{ koala_env.environment }}.log"
+        {{ tavern_env.environment }}.log"
       maxretry: 10
     - name: "koala404"
       port: "https"

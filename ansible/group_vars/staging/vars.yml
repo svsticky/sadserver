@@ -21,6 +21,9 @@ secret_oauth2_proxy:
   authorized_users: |
     dev@svsticky.nl
 
+tavern_env:
+  environment: "staging"
+
 secret_payconiq:
   domain: "{{ vault_secret_payconiq.domain }}"
   online_token: "{{ vault_secret_payconiq.online_token }}"

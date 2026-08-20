@@ -27,6 +27,9 @@ secret_oauth2_proxy:
     onderwijs@svsticky.nl
     superman@maartenberg.nl
 
+tavern_env:
+  environment: "production"
+
 secret_payconiq:
   domain: "{{ vault_secret_payconiq.domain }}"
   online_token: "{{ vault_secret_payconiq.online_token }}"

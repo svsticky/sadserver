@@ -32,8 +32,6 @@
     method: "peer"
   notify: "restart postgres" # Apply changes
 
-
-
 - name: "set up tavern databases"
   become_user: "postgres"
   become: true

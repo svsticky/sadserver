@@ -3,6 +3,7 @@
 services:
   app:
     image: docuseal/docuseal:latest
+    restart: unless-stopped
     ports:
       - 3020:3000
     volumes:

@@ -187,8 +187,8 @@ secret_keycloak:
   db_username: "{{ vault_secret_keycloak.db_username }}"
   db_password: "{{ vault_secret_keycloak.db_password }}"
   admin_password: "{{ vault_secret_keycloak.admin_password }}"
-  webhookSecret: "{{ vault_secret_keycloak.webhookSecret }}"
-  webhookUrl: "{{ vault_secret_keycloak.webhookUrl }}"
+  webhook_secret: "{{ vault_secret_keycloak.webhook_secret }}"
+  webhook_url: "{{ vault_secret_keycloak.webhook_url }}"
 
 secret_kbg:
   postgres_password: "{{ vault_secret_kbg.postgres_password }}"

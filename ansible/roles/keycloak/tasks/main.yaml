@@ -7,6 +7,15 @@
     state: "present"
     system: true
 
+- name: "Ensure project directory exists and has correct ownership"
+  ansible.builtin.file:
+    path: "{{ keycloak_project_source }}"
+    state: directory
+    owner: "keycloak"
+    group: "keycloak"
+    recurse: true
+  become: true
+
 - name: "set up keycloak"
   become_user: "keycloak"
   become: true
@@ -17,7 +26,7 @@
       dest: "{{ keycloak_project_source }}/app"
       depth: 1
       force: true
-      version: main # "{% if 'production' in group_names %}main{% else %}development{% endif %}" # Pull main when deploying to prod
+      version: main
     diff: false
 
   - name: "Copy .env file"

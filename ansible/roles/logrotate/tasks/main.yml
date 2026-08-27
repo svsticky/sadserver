@@ -1,7 +1,7 @@
 ---
-- name: "copy tavern logrotate config"
+- name: "copy docker containers logrotate config"
   ansible.builtin.template:
-    src: "tavern.conf.j2"
-    dest: "/etc/logrotate.d/tavern"
+    src: "docker-containers.conf.j2"
+    dest: "/etc/logrotate.d/docker-containers"
     owner: "root"
     mode: "0644"

@@ -1,5 +1,8 @@
 [Unit]
+OnFailure=failure-notificator@%n.service
 Description=Deploy Tavern
+Requires=backup-postgres.service
+After=backup-postgres.service
 
 [Service]
 Type=oneshot

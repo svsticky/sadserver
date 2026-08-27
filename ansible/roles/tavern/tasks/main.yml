@@ -14,7 +14,7 @@
     state: "directory"
     owner: "tavern"
     group: "tavern"
-    mode: "0750"
+    mode: "2750"
 
 - name: "copy .env file"
   become_user: "tavern"
@@ -37,12 +37,13 @@
   ansible.builtin.template:
     src: "deploy-tavern.sh.j2"
     dest: "/usr/local/bin/deploy-tavern.sh"
-    mode: "0755"
+    mode: "0750"
 
 - name: "copy systemd deploy service"
   ansible.builtin.template:
     src: "deploy-tavern.service.j2"
     dest: "/etc/systemd/system/deploy-tavern.service"
+    mode: "0750"
 
 - name: "copy nginx configuration"
   ansible.builtin.template:

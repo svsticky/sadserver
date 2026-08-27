@@ -11,10 +11,41 @@ docker pull ghcr.io/svsticky/tavern-frontend:{{ 'dev' if 'staging' in group_name
 docker pull ghcr.io/svsticky/tavern-backend:{{ 'dev' if 'staging' in group_names else 'latest' }}
 docker pull ghcr.io/svsticky/tavern-docs:{{ 'dev' if 'staging' in group_names else 'latest' }}
 
-export $(grep -v '^#' .env | xargs)
+set -a
+source .env
+set +a
+
+MIGRATION_MARKER="$PROJECT_DIR/.MIGRATION_PENDING"
+
+# Mark migration as started, so an interrupted deploy is visible/retried next run
+touch "$MIGRATION_MARKER"
+
+# The Postgres backup already ran to completion before this script started,
+# see Requires=/After=backup-postgres.service in deploy-tavern.service
 
 echo "Starting containers (application will run migrations on startup)..."
 docker compose up -d
+
+# tavern-backend only starts listening once its startup migration has
+# completed (see Program.cs: app.Run() is called after MigrateDatabaseAsync()
+# and a failed migration crashes the process before it ever listens), so
+# waiting for the port to accept connections is a reliable migration-done signal.
+echo "Waiting for tavern-backend to finish migrating and start serving..."
+READY="false"
+for _ in $(seq 1 30); do
+  if timeout 2 bash -c "cat < /dev/null > /dev/tcp/127.0.0.1/{{ tavern_backend_port }}" 2>/dev/null; then
+    READY="true"
+    break
+  fi
+  sleep 2
+done
+
+if [[ "$READY" != "true" ]]; then
+  echo "ERROR: tavern-backend did not start serving in time - the migration likely failed." >&2
+  exit 1
+fi
+
+rm -f "$MIGRATION_MARKER"
 
 # Cleaning
 docker image prune -f

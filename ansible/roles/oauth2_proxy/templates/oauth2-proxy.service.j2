@@ -1,5 +1,7 @@
 [Unit]
 Description=The oauth2-proxy authentication daemon
+Wants=redis-server.service
+After=redis-server.service
 OnFailure=failure-notificator@%n.service
 
 [Service]

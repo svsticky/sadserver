@@ -14,18 +14,16 @@
     owner: "keycloak"
     group: "keycloak"
     recurse: true
-  become: true
 
 - name: "set up keycloak"
-  become_user: "keycloak"
   become: true
+  become_user: "keycloak"
   block:
   - name: "clone repository"
     ansible.builtin.git:
       repo: "https://github.com/svsticky/improved-adventure.git"
       dest: "{{ keycloak_project_source }}/app"
       depth: 1
-      force: true
       version: main
     diff: false
 

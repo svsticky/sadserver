@@ -71,11 +71,6 @@ websites:
       - "www.indievelopment.nl"
 
   - name: "koala.{{ canonical_hostname }}"
-    alternative_names:
-      - "leden.{{ canonical_hostname }}"
-      - "members.{{ canonical_hostname }}"
-      - "inschrijven.{{ canonical_hostname }}"
-      - "join.{{ canonical_hostname }}"
     state: "absent"
 
   - name: "metrics.{{ canonical_hostname }}"

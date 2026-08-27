@@ -37,6 +37,7 @@
   ansible.builtin.template:
     src: "deploy-tavern.sh.j2"
     dest: "/usr/local/bin/deploy-tavern.sh"
+    group: "tavern"
     mode: "0750"
 
 - name: "copy systemd deploy service"

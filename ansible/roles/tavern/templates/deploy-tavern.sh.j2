@@ -15,11 +15,6 @@ set -a
 source .env
 set +a
 
-MIGRATION_MARKER="$PROJECT_DIR/.MIGRATION_PENDING"
-
-# Mark migration as started, so an interrupted deploy is visible/retried next run
-touch "$MIGRATION_MARKER"
-
 # The Postgres backup already ran to completion before this script started,
 # see Requires=/After=backup-postgres.service in deploy-tavern.service
 
@@ -30,6 +25,8 @@ docker compose up -d
 # completed (see Program.cs: app.Run() is called after MigrateDatabaseAsync()
 # and a failed migration crashes the process before it ever listens), so
 # waiting for the port to accept connections is a reliable migration-done signal.
+# The image defines no HEALTHCHECK, so "container still running" plus its exit
+# code is the most direct failure signal docker can give us here.
 echo "Waiting for tavern-backend to finish migrating and start serving..."
 READY="false"
 for _ in $(seq 1 30); do
@@ -37,15 +34,17 @@ for _ in $(seq 1 30); do
     READY="true"
     break
   fi
+  if [[ "$(docker inspect -f '{{ '{{' }}.State.Running{{ '}}' }}' tavern-backend)" != "true" ]]; then
+    break
+  fi
   sleep 2
 done
 
 if [[ "$READY" != "true" ]]; then
-  echo "ERROR: tavern-backend did not start serving in time - the migration likely failed." >&2
+  EXIT_CODE="$(docker inspect -f '{{ '{{' }}.State.ExitCode{{ '}}' }}' tavern-backend)"
+  echo "ERROR: tavern-backend did not start serving in time (container exit code: $EXIT_CODE) - the migration likely failed." >&2
   exit 1
 fi
-
-rm -f "$MIGRATION_MARKER"
 
 # Cleaning
 docker image prune -f

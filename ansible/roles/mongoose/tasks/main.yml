@@ -80,7 +80,7 @@
       dest: "{{ mongoose_config.home }}/undead-mongoose"
       depth: 1
       force: true
-      version: "master"
+      version: "feat/tavern"
     diff: false
 
   - name: "install dependencies via uv"

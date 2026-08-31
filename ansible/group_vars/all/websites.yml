@@ -290,3 +290,10 @@ websites:
     authenticated: true
     oauth2_callback_url: "/callback"
     alternative_names: []
+
+  - name: "keycloak.{{ canonical_hostname }}"
+    user: "keycloak"
+    state: "present"
+    custom_config: true
+    oauth2_callback_url: "/callback"
+    alternative_names: []

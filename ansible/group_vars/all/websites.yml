@@ -70,19 +70,6 @@ websites:
       - "indievelopment.nl"
       - "www.indievelopment.nl"
 
-  - name: "koala.{{ canonical_hostname }}"
-    custom_config: true
-    # Hostnames have to be set in custom nginx config as well!
-    alternative_names:
-      - "wordlid.{{ canonical_hostname }}"
-      - "leden.{{ canonical_hostname }}"
-      - "members.{{ canonical_hostname }}"
-      - "inschrijven.{{ canonical_hostname }}"
-      - "signup.{{ canonical_hostname }}"
-      - "join.{{ canonical_hostname }}"
-    # You have to remove the task include of koala.yml to remove this completely
-    state: "present"
-
   - name: "metrics.{{ canonical_hostname }}"
     custom_config: true
     # Hostnames have to be set in custom nginx config as well!
@@ -262,6 +249,36 @@ websites:
 
   - name: "docuseal.{{ canonical_hostname }}"
     user: "docuseal"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "koala.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "api.koala.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "docs.koala.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "wordlid.{{ canonical_hostname }}"
+    user: "tavern"
+    state: "present"
+    custom_config: true
+    alternative_names: []
+
+  - name: "signup.{{ canonical_hostname }}"
+    user: "tavern"
     state: "present"
     custom_config: true
     alternative_names: []

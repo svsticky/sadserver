@@ -1,9 +1,11 @@
-provider = "oidc"
+provider = "keycloak-oidc"
 http_address = "http://127.0.0.1:4180"
-oidc_issuer_url = "https://koala.{{ canonical_hostname }}"
+oidc_issuer_url = "https://keycloak.{{ canonical_hostname }}/realms/{{ secret_tavern.keycloak_realm }}"
 client_id = "{{ secret_oauth2_proxy.client_id }}"
 client_secret = "{{ secret_oauth2_proxy.client_secret }}"
 cookie_secret = "{{ secret_oauth2_proxy.cookie_secret }}"
 email_domains = [ "*" ]
-scope =  "openid member-read email profile"
+scope =  "openid email profile"
 ssl_insecure_skip_verify = {{ ('staging' in group_names) | ternary('true', 'false') }}
+session_store_type = "redis"
+redis_connection_url = "redis://127.0.0.1:6379"

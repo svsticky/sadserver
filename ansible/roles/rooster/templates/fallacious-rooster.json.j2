@@ -6,7 +6,7 @@
     "domain": "voeljeveilig.{{ canonical_hostname }}"
   },
   "koala": {
-    "koala_host": "https://koala.{{ canonical_hostname }}",
+    "koala_host": "https://keycloak.{{ canonical_hostname }}/realms/{{ secret_tavern.keycloak_realm }}",
     "client_id": "{{ secret_oauth2_proxy.client_id }}",
     "client_secret": "{{ secret_oauth2_proxy.client_secret }}",
     "redirect_uri": "https://voeljeveilig.{{ canonical_hostname }}/api/oauth/callback"

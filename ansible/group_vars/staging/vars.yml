@@ -21,22 +21,8 @@ secret_oauth2_proxy:
   authorized_users: |
     dev@svsticky.nl
 
-koala_env:
+tavern_env:
   environment: "staging"
-
-  # Deploy latest master by default
-  git_ref: "master"
-
-secret_koala:
-  # To change, generate new token using 'rake secret', and recompile + deploy
-  # Checkout client with the embedded token updated.
-  checkout_token: "{{ vault_secret_koala.checkout_token }}"
-
-  # To change, generate new token using 'rake secret'
-  devise_secret: "{{ vault_secret_koala.devise_secret }}"
-
-  # To change, generate new token using 'rake secret'
-  rails_secret: "{{ vault_secret_koala.rails_secret }}"
 
 secret_payconiq:
   domain: "{{ vault_secret_payconiq.domain }}"
@@ -130,9 +116,6 @@ secret_outline:
   mailgun_password: "{{ vault_secret_outline.mailgun_password }}"
   postgresql_password: "{{ vault_secret_outline.postgresql_password }}"
 
-secret_koala_manual:
-  password: "{{ vault_secret_koala_manual.password }}"
-
 secret_healthchecks_io:
   ping_key: "{{ vault_secret_healthchecks_io.ping_key }}"
 
@@ -164,15 +147,15 @@ secret_intro_website:
 secret_committeeclash:
   postgres_password: "{{ vault_secret_committeeclash.postgres_password }}"
   host_url: "https://committeeclash.dev.svsticky.nl"
-  oauth_provider_url: "https://koala.dev.svsticky.nl"
+  oauth_provider_url: "https://keycloak.dev.svsticky.nl/realms/{{ secret_tavern.keycloak_realm }}/"
 
 secret_rottenspringbok:
   oauth_client_id: "{{ vault_secret_rottenspringbok.oauth_client_id }}"
   oauth_client_secret: "{{ vault_secret_rottenspringbok.oauth_client_secret }}"
   app_secret: "{{ vault_secret_rottenspringbok.app_secret }}"
-  oauth_authorize_url: "https://koala.dev.svsticky.nl/api/oauth/authorize"
-  oauth_token_url: "https://koala.dev.svsticky.nl/api/oauth/token"
-  oauth_api_base_url: "https://koala.dev.svsticky.nl"
+  oauth_authorize_url: "https://keycloak.dev.svsticky.nl/realms/{{ secret_tavern.keycloak_realm }}/protocol/openid-connect/auth"
+  oauth_token_url: "https://keycloak.dev.svsticky.nl/realms/{{ secret_tavern.keycloak_realm }}/protocol/openid-connect/token"
+  oauth_api_base_url: "https://keycloak.dev.svsticky.nl/realms/{{ secret_tavern.keycloak_realm }}/protocol/openid-connect/"
   host_url: "https://rottenspringbok.dev.svsticky.nl"
 
 secret_docuseal:
@@ -181,6 +164,31 @@ secret_docuseal:
   aws_secret_access_key: "{{ vault_secret_docuseal.aws_secret_access_key }}"
   aws_region: "{{ vault_secret_docuseal.aws_region }}"
   s3_attachments_bucket: "{{ vault_secret_docuseal.s3_attachments_bucket }}"
+
+secret_tavern:
+  aas_pre_shared_key: "{{ vault_secret_tavern.aas_pre_shared_key }}"
+  postgres_password: "{{ vault_secret_tavern.postgres_password }}"
+  keycloak_url: "{{ vault_secret_tavern.keycloak_url }}"
+  keycloak_realm: "{{ vault_secret_tavern.keycloak_realm }}"
+  keycloak_client_id: "{{ vault_secret_tavern.keycloak_client_id }}"
+  keycloak_backend_client_id: "{{ vault_secret_tavern.keycloak_backend_client_id }}"
+  keycloak_client_secret: "{{ vault_secret_tavern.keycloak_client_secret }}"
+  keycloak_webhook_secret: "{{ vault_secret_tavern.keycloak_webhook_secret }}"
+  mollie_api_key: "{{ vault_secret_tavern.mollie_api_key }}"
+  backup_account_email: "{{ vault_secret_tavern.backup_account_email }}"
+  logo_url: "{{ vault_secret_tavern.logo_url }}"
+  aws_access_key_id: "{{ vault_secret_tavern.aws_access_key_id }}"
+  aws_secret_access_key: "{{ vault_secret_tavern.aws_secret_access_key }}"
+  s3_service_url: "{{ vault_secret_tavern.s3_service_url }}"
+  smtp_host: "{{ vault_secret_tavern.smtp_host }}"
+
+secret_keycloak:
+  db_url: "{{ vault_secret_keycloak.db_url }}"
+  db_username: "{{ vault_secret_keycloak.db_username }}"
+  db_password: "{{ vault_secret_keycloak.db_password }}"
+  admin_password: "{{ vault_secret_keycloak.admin_password }}"
+  webhook_secret: "{{ vault_secret_keycloak.webhook_secret }}"
+  webhook_url: "{{ vault_secret_keycloak.webhook_url }}"
 
 secret_kbg:
   postgres_password: "{{ vault_secret_kbg.postgres_password }}"

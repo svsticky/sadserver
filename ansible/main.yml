@@ -52,12 +52,12 @@
       tags: "main_website"
     - role: "pretix"
       tags: "pretix"
-    - role: "koala"
-      tags: "koala"
     - role: "logrotate"
       tags: "logrotate"
     - role: "monitoring"
       tags: "monitoring"
+    - role: "keycloak"
+      tags: "keycloak"
     - role: "oauth2_proxy"
       tags: "oauth"
     - role: "outline"
@@ -91,6 +91,8 @@
       tags: ["never", "crazy88bot"]
     - role: "doorgeefluik"
       tags: "doorgeefluik"
+    - role: "tavern"
+      tags: "tavern"
     # Included the last, so any service that fail2ban is applied to, already
     # exists. Otherwise fail2ban would miss the log files it has to monitor.
     - role: "fail2ban"
@@ -104,3 +106,4 @@
 # - freight: #477
 # - php: #474
 # - node: #467
+# - constipated-koala: #570

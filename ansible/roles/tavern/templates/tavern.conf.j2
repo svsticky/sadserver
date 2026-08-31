@@ -1,0 +1,74 @@
+{% if item == "koala." + canonical_hostname %}
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name koala.{{ canonical_hostname }};
+
+  ssl_certificate /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/koala.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/koala.{{ canonical_hostname }}/chain.pem;
+
+  location / {
+    proxy_pass http://localhost:{{ tavern_frontend_port }}/;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+}
+{% elif item == "wordlid." + canonical_hostname or item == "signup." + canonical_hostname %}
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name {{ item }};
+
+  ssl_certificate /etc/letsencrypt/live/{{ item }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ item }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ item }}/chain.pem;
+
+  # tavern-frontend is client-hydrated (React Router v7, ssr: true): every
+  # route's SSR output is just a static "loading" placeholder until client JS
+  # hydrates and picks a route from the real browser URL. Reverse-proxying to
+  # /register can't make that happen (the browser's address bar would still
+  # say "/", so hydration would pick a different route) -- only an actual
+  # navigation can, hence the redirect rather than a proxy_pass here.
+  location / {
+    return 301 https://koala.{{ canonical_hostname }}/register;
+  }
+}
+{% elif item == "api.koala." + canonical_hostname %}
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name api.koala.{{ canonical_hostname }};
+
+  ssl_certificate /etc/letsencrypt/live/api.koala.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/api.koala.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/api.koala.{{ canonical_hostname }}/chain.pem;
+
+  location / {
+    proxy_pass http://localhost:{{ tavern_backend_port }}/;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+  }
+}
+{% elif item == "docs.koala." + canonical_hostname %}
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name docs.koala.{{ canonical_hostname }};
+
+  ssl_certificate /etc/letsencrypt/live/docs.koala.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/docs.koala.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/docs.koala.{{ canonical_hostname }}/chain.pem;
+
+  location / {
+    proxy_pass http://localhost:{{ tavern_docs_port }}/;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+  }
+}
+{% endif %}

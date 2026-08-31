@@ -32,51 +32,57 @@
     method: "peer"
   notify: "restart postgres" # Apply changes
 
-
-- name: "set up koala databases"
+- name: "set up tavern databases"
   become_user: "postgres"
   become: true
   block:
 
-  - name: "ensure koala user exists"
+  - name: "ensure tavern user exists"
     community.postgresql.postgresql_user:
-      name: "koala"
+      name: "tavern"
 
-  - name: "ensure koala database exists"
+  - name: "ensure tavern database exists"
     community.postgresql.postgresql_db:
-      name: "koala"
-      owner: "koala"
+      name: "tavern"
+      owner: "tavern"
 
-  - name: "ensure koala user exists"
+  - name: "ensure tavern user exists"
     community.postgresql.postgresql_user:
-      db: "koala"
-      name: "koala"
+      db: "tavern"
+      name: "tavern"
       role_attr_flags: "CREATEDB,LOGIN"
 
-  - name: "ensure koala user has the right privs"
+  - name: "ensure tavern user has the right privs"
     community.postgresql.postgresql_privs:
-      db: "koala"
-      role: "koala"
+      db: "tavern"
+      role: "tavern"
       objs: "ALL_IN_SCHEMA"
       privs: "ALL"
 
-  - name: "ensure dbeaver koala user exists"
+
+- name: "set up keycloak databases"
+  become_user: "postgres"
+  become: true
+  block:
+
+  - name: "ensure keycloak user exists"
     community.postgresql.postgresql_user:
-      db: "koala"
-      name: "koala_manual"
-      password: "{{ secret_koala_manual.password }}"
-      role_attr_flags: "NOSUPERUSER"
+      name: "keycloak"
 
-  - name: "ensure dbeaver koala user has the right privs"
+  - name: "ensure keycloak database exists"
+    community.postgresql.postgresql_db:
+      name: "keycloak"
+      owner: "keycloak"
+
+  - name: "ensure keycloak user exists"
+    community.postgresql.postgresql_user:
+      db: "keycloak"
+      name: "keycloak"
+      role_attr_flags: "CREATEDB,LOGIN"
+
+  - name: "ensure keycloak user has the right privs"
     community.postgresql.postgresql_privs:
-      db: "koala"
-      role: "koala_manual"
+      db: "keycloak"
+      role: "keycloak"
       objs: "ALL_IN_SCHEMA"
-      privs: "SELECT"
-
-  - name: "ensure dbeaver koala user has the right privs"
-    community.postgresql.postgresql_privs:
-      db: "koala"
-      role: "koala_manual"
-      type: "database"
-      privs: "CONNECT"
+      privs: "ALL"

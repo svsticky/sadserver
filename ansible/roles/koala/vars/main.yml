@@ -1,7 +1,0 @@
----
-
-# Koala's environment-specific vars are defined in their respective file with
-# group_vars, in the dict "koala_env"
-koala_config:
-  server: "unicorn" # or webrick
-  threads: 6

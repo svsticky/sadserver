@@ -1,0 +1,42 @@
+services:
+  tavern-backend:
+    container_name: tavern-backend
+    image: ghcr.io/svsticky/tavern-backend:{{ 'dev' if 'staging' in group_names else 'latest' }}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "{{ tavern_backend_port }}:8080" 
+    volumes:
+      - /run/postgresql:/run/postgresql
+    security_opt:
+      - no-new-privileges:true
+
+  tavern-frontend:
+    container_name: tavern-frontend
+    image: ghcr.io/svsticky/tavern-frontend:{{ 'dev' if 'staging' in group_names else 'latest' }}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "{{ tavern_frontend_port }}:3000" 
+    environment:
+      - VITE_AUTH_SYSTEM=${AuthSystem}
+      - VITE_KeycloakUrl=${KeycloakUrl}
+      - VITE_KeycloakRealm=${KeycloakRealm}
+      - VITE_KeycloakClientId=${KeycloakClientId}
+      - VITE_HostUrl=${HostUrl}
+      - VITE_ApiUrl=${ApiUrl}
+      - VITE_LOGO_URL=${LOGO_URL}
+      - VITE_PAYMENT_PROVIDER=${PAYMENT_PROVIDER}
+      - VITE_MAIL_SERVICE=${MAIL_SERVICE}
+      - VITE_ACCOUNTING_ENABLED=${ACCOUNTING_ENABLED}
+    security_opt:
+      - no-new-privileges:true
+
+  tavern-docs:
+    container_name: tavern-docs
+    image: ghcr.io/svsticky/tavern-docs:{{ 'dev' if 'staging' in group_names else 'latest' }}
+    restart: unless-stopped
+    ports:
+      - "{{ tavern_docs_port }}:3001"
+    security_opt:
+      - no-new-privileges:true

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+set -efuo pipefail
+
+PROJECT_DIR="{{ tavern_home_dir }}"
+cd "$PROJECT_DIR"
+
+echo "Pulling latest images..."
+docker pull ghcr.io/svsticky/tavern-frontend:{{ 'dev' if 'staging' in group_names else 'latest' }}
+docker pull ghcr.io/svsticky/tavern-backend:{{ 'dev' if 'staging' in group_names else 'latest' }}
+docker pull ghcr.io/svsticky/tavern-docs:{{ 'dev' if 'staging' in group_names else 'latest' }}
+
+set -a
+source .env
+set +a
+
+# The Postgres backup already ran to completion before this script started,
+# see Requires=/After=backup-postgres.service in deploy-tavern.service
+
+echo "Starting containers (application will run migrations on startup)..."
+docker compose up -d
+
+# tavern-backend only starts listening once its startup migration has
+# completed (see Program.cs: app.Run() is called after MigrateDatabaseAsync()
+# and a failed migration crashes the process before it ever listens), so
+# waiting for the port to accept connections is a reliable migration-done signal.
+# The image defines no HEALTHCHECK, so "container still running" plus its exit
+# code is the most direct failure signal docker can give us here.
+echo "Waiting for tavern-backend to finish migrating and start serving..."
+READY="false"
+for _ in $(seq 1 30); do
+  if timeout 2 bash -c "cat < /dev/null > /dev/tcp/127.0.0.1/{{ tavern_backend_port }}" 2>/dev/null; then
+    READY="true"
+    break
+  fi
+  if [[ "$(docker inspect -f '{{ '{{' }}.State.Running{{ '}}' }}' tavern-backend)" != "true" ]]; then
+    break
+  fi
+  sleep 2
+done
+
+if [[ "$READY" != "true" ]]; then
+  EXIT_CODE="$(docker inspect -f '{{ '{{' }}.State.ExitCode{{ '}}' }}' tavern-backend)"
+  echo "ERROR: tavern-backend did not start serving in time (container exit code: $EXIT_CODE) - the migration likely failed." >&2
+  exit 1
+fi
+
+# Cleaning
+docker image prune -f
+
+echo "Deployment finished! Check logs with: docker logs -f tavern-backend"

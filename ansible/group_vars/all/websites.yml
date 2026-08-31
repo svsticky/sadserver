@@ -256,19 +256,19 @@ websites:
     custom_config: true
     alternative_names: []
 
-  - name: "tavern.{{ canonical_hostname }}"
+  - name: "koala.{{ canonical_hostname }}"
     user: "tavern"
     state: "present"
     custom_config: true
     alternative_names: []
 
-  - name: "api.tavern.{{ canonical_hostname }}"
+  - name: "api.koala.{{ canonical_hostname }}"
     user: "tavern"
     state: "present"
     custom_config: true
     alternative_names: []
 
-  - name: "docs.tavern.{{ canonical_hostname }}"
+  - name: "docs.koala.{{ canonical_hostname }}"
     user: "tavern"
     state: "present"
     custom_config: true

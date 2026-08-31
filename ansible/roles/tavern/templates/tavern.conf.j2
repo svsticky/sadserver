@@ -2,11 +2,11 @@
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
-  server_name tavern.{{ canonical_hostname }};
+  server_name koala.{{ canonical_hostname }};
 
-  ssl_certificate /etc/letsencrypt/live/tavern.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/tavern.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/tavern.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate /etc/letsencrypt/live/koala.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/koala.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/koala.{{ canonical_hostname }}/chain.pem;
 
   location / {
     proxy_pass http://localhost:{{ tavern_frontend_port }}/;
@@ -34,18 +34,18 @@ server {
   # say "/", so hydration would pick a different route) -- only an actual
   # navigation can, hence the redirect rather than a proxy_pass here.
   location / {
-    return 301 https://tavern.{{ canonical_hostname }}/register;
+    return 301 https://koala.{{ canonical_hostname }}/register;
   }
 }
 {% elif item == "api.tavern." + canonical_hostname %}
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
-  server_name api.tavern.{{ canonical_hostname }};
+  server_name api.koala.{{ canonical_hostname }};
 
-  ssl_certificate /etc/letsencrypt/live/api.tavern.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/api.tavern.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/api.tavern.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate /etc/letsencrypt/live/api.koala.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/api.koala.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/api.koala.{{ canonical_hostname }}/chain.pem;
 
   location / {
     proxy_pass http://localhost:{{ tavern_backend_port }}/;
@@ -58,11 +58,11 @@ server {
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
-  server_name docs.tavern.{{ canonical_hostname }};
+  server_name docs.koala.{{ canonical_hostname }};
 
-  ssl_certificate /etc/letsencrypt/live/docs.tavern.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/docs.tavern.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/docs.tavern.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate /etc/letsencrypt/live/docs.koala.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/docs.koala.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/docs.koala.{{ canonical_hostname }}/chain.pem;
 
   location / {
     proxy_pass http://localhost:{{ tavern_docs_port }}/;

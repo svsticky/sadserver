@@ -51,9 +51,9 @@
     src: "tavern.conf.j2"
     dest: "/etc/nginx/sites-available/{{ item }}.conf"
   loop:
-    - "tavern.{{ canonical_hostname }}"
-    - "api.tavern.{{ canonical_hostname }}"
-    - "docs.tavern.{{ canonical_hostname }}"
+    - "koala.{{ canonical_hostname }}"
+    - "api.koala.{{ canonical_hostname }}"
+    - "docs.koala.{{ canonical_hostname }}"
     - "wordlid.{{ canonical_hostname }}"
     - "signup.{{ canonical_hostname }}"
   notify: "reload nginx"
@@ -64,9 +64,9 @@
     path: "/etc/nginx/sites-enabled/{{ item }}.conf"
     state: link
   loop:
-    - "tavern.{{ canonical_hostname }}"
-    - "api.tavern.{{ canonical_hostname }}"
-    - "docs.tavern.{{ canonical_hostname }}"
+    - "koala.{{ canonical_hostname }}"
+    - "api.koala.{{ canonical_hostname }}"
+    - "docs.koala.{{ canonical_hostname }}"
     - "wordlid.{{ canonical_hostname }}"
     - "signup.{{ canonical_hostname }}"
   notify: "reload nginx"

@@ -6,6 +6,8 @@
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
+    groups: "docker"
+    append: true
 
 - name: "Ensure project directory exists and has correct ownership"
   ansible.builtin.file:

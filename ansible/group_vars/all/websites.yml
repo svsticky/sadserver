@@ -70,9 +70,6 @@ websites:
       - "indievelopment.nl"
       - "www.indievelopment.nl"
 
-  - name: "koala.{{ canonical_hostname }}"
-    state: "absent"
-
   - name: "metrics.{{ canonical_hostname }}"
     custom_config: true
     # Hostnames have to be set in custom nginx config as well!

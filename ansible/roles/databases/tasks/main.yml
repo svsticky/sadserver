@@ -42,6 +42,35 @@
       name: "tavern"
       password: "{{ secret_tavern.postgres_password }}"
 
+  - name: "Specify password authentication method over sockets for tavern"
+    notify: "restart postgres" # Apply changes
+    community.postgresql.postgresql_pg_hba:
+      dest: "{{ postgres.pg_hba_path }}"
+      backup: "true"
+      backup_file: "{{ postgres.pg_hba_path }}.old"
+
+      # TYPE  DATABASE USER    ADDR  METHOD
+      # local tavern   tavern        md5
+      contype: "local"
+      databases: "tavern"
+      users: "tavern"
+      method: "md5" # TODO use scram-sha-256 which is way safer
+
+  - name: "Allow tavern to authenticate from the docker bridge network"
+    notify: "restart postgres" # Apply changes
+    community.postgresql.postgresql_pg_hba:
+      dest: "{{ postgres.pg_hba_path }}"
+      backup: "true"
+      backup_file: "{{ postgres.pg_hba_path }}.old"
+
+      # TYPE  DATABASE USER    ADDR            METHOD
+      # host  tavern   tavern  172.16.0.0/12   md5
+      contype: "host"
+      databases: "tavern"
+      users: "tavern"
+      address: "172.16.0.0/12"
+      method: "md5" # TODO use scram-sha-256 which is way safer
+
   - name: "ensure tavern database exists"
     community.postgresql.postgresql_db:
       name: "tavern"

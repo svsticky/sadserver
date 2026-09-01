@@ -13,7 +13,7 @@
 - name: "ensure postgresql is installed and manageable"
   ansible.builtin.apt:
     name:
-      - "postgresql-13"
+      - "postgresql-14" # Installs postgres 14 if not installed yet
       - "python3-psycopg2"
 
 - name: "Explicitly specify peer auth as default over local communication"
@@ -40,6 +40,7 @@
   - name: "ensure tavern user exists"
     community.postgresql.postgresql_user:
       name: "tavern"
+      password: "{{ secret_tavern.postgres_password }}"
 
   - name: "ensure tavern database exists"
     community.postgresql.postgresql_db:
@@ -68,6 +69,7 @@
   - name: "ensure keycloak user exists"
     community.postgresql.postgresql_user:
       name: "keycloak"
+      password: "{{ secret_keycloak.db_password }}"
 
   - name: "ensure keycloak database exists"
     community.postgresql.postgresql_db:

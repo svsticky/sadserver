@@ -91,11 +91,11 @@
         label: "{{ item.stdout }}"
 
     - name: "remove all existing databases on target server"
-      command: "pg_dropcluster --stop 13 main"
+      command: "pg_dropcluster --stop 14 main"
       ignore_errors: true
 
     - name: "create pg cluster"
-      command: "pg_createcluster --start 13 main"
+      command: "pg_createcluster --start 14 main"
 
     - name: "restore production databases - postgres" # noqa risky-shell-pipe
       shell: "zcat {{ backup_restore_tmp_dir.path }}/{{ item.stdout }} | sudo -u postgres psql"

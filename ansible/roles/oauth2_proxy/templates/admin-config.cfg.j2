@@ -6,6 +6,10 @@ client_secret = "{{ secret_oauth2_proxy.client_secret }}"
 cookie_secret = "{{ secret_oauth2_proxy.cookie_secret_admin }}"
 scope =  "openid email profile"
 ssl_insecure_skip_verify = {{ ('staging' in group_names) | ternary('true', 'false') }}
-authenticated_emails_file = "/etc/oauth2_proxy/authorized-users"
+# oauth2-proxy has no native way to check a boolean claim, so we reuse its
+# groups mechanism: the "is_admin" claim (true/false) is treated as the
+# groups claim, and only sessions where it serializes to "true" pass.
+oidc_groups_claim = "is_admin"
+allowed_groups = [ "true" ]
 session_store_type = "redis"
 redis_connection_url = "redis://127.0.0.1:6379"

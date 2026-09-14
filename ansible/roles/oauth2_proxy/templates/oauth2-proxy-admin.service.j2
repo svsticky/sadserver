@@ -1,11 +1,16 @@
 [Unit]
-Description=The Koala authentication daemon, admin-only version
-Wants=koala.service
-After=koala.service
+Description=The oauth2-proxy authentication daemon, admin-only version
+Wants=redis-server.service docker.service
+After=redis-server.service docker.service
 OnFailure=failure-notificator@%n.service
+# Keycloak (a Docker container) can take much longer than this to become
+# reachable after a reboot, so never give up retrying due to the restart
+# rate limiter - only RestartSec below paces the retries.
+StartLimitIntervalSec=0
 
 [Service]
 Restart=always
+RestartSec=5
 ExecStart=/usr/local/bin/oauth2-proxy --config /etc/oauth2_proxy/admin-config.cfg
 
 [Install]

@@ -204,3 +204,8 @@ secret_kbg:
 
 secret_main_website:
   aas_pre_shared_key: "{{ vault_secret_main_website.aas_pre_shared_key }}"
+
+secret_listmonk:
+  postgres_password: "{{ vault_secret_listmonk.postgres_password }}"
+  admin_user: "{{ vault_secret_listmonk.postgres_password }}"
+  admin_password: "{{ vault_secret_listmonk.postgres_password }}"

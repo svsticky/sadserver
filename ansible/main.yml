@@ -86,6 +86,8 @@
       tags: "docuseal"
     - role: "kbg"
       tags: "kbg"
+    - role: "listmonk"
+      tags: "listmonk"
     # We only want to deploy the crazy88 role when specifically requested
     - role: "crazy88bot"
       tags: ["never", "crazy88bot"]

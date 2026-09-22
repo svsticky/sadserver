@@ -55,6 +55,10 @@
   become_user: "listmonk"
   become: true
   block:
+  - name: "copy config.toml file"
+    ansible.builtin.template:
+      src: "config.toml.j2"
+      dest: "/var/www/listmonk/config.toml"
   - name: "copy docker compose file"
     ansible.builtin.template:
       src: "docker-compose.yml.j2"

@@ -7,21 +7,13 @@ services:
       - "{{ listmonk_port }}:9000"
     command: [sh, -c, "./listmonk --install --idempotent --yes --config '' && ./listmonk --upgrade --yes --config '' && ./listmonk --config ''"]
     environment:
-      LISTMONK_app__address: 0.0.0.0:9000
-      LISTMONK_db__user: listmonk
-      LISTMONK_db__password: {{ secret_listmonk.postgres_password }}
-      LISTMONK_db__database: listmonk
-      LISTMONK_db__host: /run/postgresql
-      LISTMONK_db__port: 5432
-      LISTMONK_db__ssl_mode: disable
-      LISTMONK_db__max_open: 25
-      LISTMONK_db__max_idle: 25
-      LISTMONK_db__max_lifetime: 300s
-      TZ: Etc/UTC
+      TZ: Europe/Amsterdam
       LISTMONK_ADMIN_USER: {{ secret_listmonk.admin_user }}
       LISTMONK_ADMIN_PASSWORD: {{ secret_listmonk.admin_password }}
     volumes:
       - listmonk-data:/listmonk/uploads
+      - /var/www/listmonk/config.toml:/listmonk/config.toml
+      - /run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432
 
 volumes:
   listmonk-data:

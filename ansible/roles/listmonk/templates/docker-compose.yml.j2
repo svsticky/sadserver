@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "{{ listmonk_port }}:9000"
-    command: [sh, -c, "./listmonk --install --idempotent --yes --config '' && ./listmonk --upgrade --yes --config '' && ./listmonk --config ''"]
+    command: [sh, -c, "./listmonk --install --idempotent --yes --config /listmonk/config.toml && ./listmonk --upgrade --yes --config /listmonk/config.toml && ./listmonk --config /listmonk/config.toml"]
     environment:
       TZ: Europe/Amsterdam
       LISTMONK_ADMIN_USER: {{ secret_listmonk.admin_user }}

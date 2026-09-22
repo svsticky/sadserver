@@ -40,6 +40,9 @@
   vars:
     path: "etc/default/locale"
 
+- name: "gather facts about machine for further use"
+  gather_facts: true
+
 - name: "copy failure handler for systemd units"
   ansible.builtin.template:
     src: "failure-notificator@.service.j2"

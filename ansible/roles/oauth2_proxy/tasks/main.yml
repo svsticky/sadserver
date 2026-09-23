@@ -46,11 +46,6 @@
 
 # Same thing but now for admin only oauth access
 
-- name: "create authorized users file"
-  ansible.builtin.copy:
-    dest: "/etc/oauth2_proxy/authorized-users"
-    content: "{{ secret_oauth2_proxy.authorized_users }}"
-
 - name: "copy oauth2_proxy admin config"
   ansible.builtin.template:
     src: "admin-config.cfg.j2"

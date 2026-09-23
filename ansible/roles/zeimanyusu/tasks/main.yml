@@ -1,0 +1,65 @@
+---
+- name: "create user"
+  ansible.builtin.user:
+    name: "zeimanyusu"
+    home: "{{ zeimanyusu_home_dir }}"
+    shell: "/usr/sbin/nologin"
+    state: "present"
+    system: true
+    groups: "docker"
+    append: true
+
+- name: "ensure home directory exists with correct permissions"
+  ansible.builtin.file:
+    path: "{{ zeimanyusu_home_dir }}"
+    state: "directory"
+    owner: "zeimanyusu"
+    group: "zeimanyusu"
+    mode: "2750"
+
+- name: "copy docker compose configuration"
+  become_user: "zeimanyusu"
+  become: true
+  ansible.builtin.template:
+    src: "compose.yaml.j2"
+    dest: "{{ zeimanyusu_home_dir }}/compose.yaml"
+    mode: "0644"
+
+- name: "copy deploy script"
+  ansible.builtin.template:
+    src: "deploy-zeimanyusu.sh.j2"
+    dest: "/usr/local/bin/deploy-zeimanyusu.sh"
+    group: "zeimanyusu"
+    mode: "0750"
+
+- name: "copy systemd deploy service"
+  ansible.builtin.template:
+    src: "deploy-zeimanyusu.service.j2"
+    dest: "/etc/systemd/system/deploy-zeimanyusu.service"
+    mode: "0644"
+  notify: "systemctl daemon-reload"
+
+- name: "make sure systemd knows about the deploy service"
+  ansible.builtin.meta: "flush_handlers"
+
+# The image is built by GitHub Actions in svsticky/sloppy-clanker. If it doesn't
+# exist yet for this environment, the deploy fails; push to the right branch
+# (main for production, development for staging) and the webhook will deploy it.
+- name: "run deploy"
+  ansible.builtin.systemd:
+    name: "deploy-zeimanyusu.service"
+    state: "started"
+  ignore_errors: true
+
+- name: "copy nginx configuration"
+  ansible.builtin.template:
+    src: "zeimanyusu.conf.j2"
+    dest: "/etc/nginx/sites-available/zeimanyusu.{{ canonical_hostname }}.conf"
+  notify: "reload nginx"
+
+- name: "enable nginx configuration"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/zeimanyusu.{{ canonical_hostname }}.conf"
+    path: "/etc/nginx/sites-enabled/zeimanyusu.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

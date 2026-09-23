@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+services:
+  zeimanyusu:
+    container_name: zeimanyusu
+    image: {{ zeimanyusu_image }}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ zeimanyusu_port }}:3000"
+    volumes:
+      # The counter's state (counts.json) lives here
+      - data:/data
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  data:

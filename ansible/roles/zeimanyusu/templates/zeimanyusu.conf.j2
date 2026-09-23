@@ -1,0 +1,39 @@
+# {{ ansible_managed }}
+
+{% if 'production' in group_names %}
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+
+  server_name www.{{ zeimanyusu_domain }};
+
+  ssl_certificate      /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/chain.pem;
+
+  include includes/security-headers.conf;
+
+  return 301 https://{{ zeimanyusu_domain }}$request_uri;
+}
+{% endif %}
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+
+  server_name {{ zeimanyusu_domain }} zeimanyusu.{{ canonical_hostname }};
+
+  ssl_certificate      /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/chain.pem;
+
+  include includes/security-headers.conf;
+
+  location / {
+    proxy_pass http://127.0.0.1:{{ zeimanyusu_port }};
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+  }
+}

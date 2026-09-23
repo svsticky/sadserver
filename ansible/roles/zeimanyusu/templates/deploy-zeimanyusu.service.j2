@@ -1,0 +1,9 @@
+[Unit]
+OnFailure=failure-notificator@%n.service
+Description=Deploy zeimanyusu
+
+[Service]
+Type=oneshot
+User=zeimanyusu
+Group=zeimanyusu
+ExecStart=/usr/local/bin/deploy-zeimanyusu.sh

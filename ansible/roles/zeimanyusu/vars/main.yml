@@ -1,0 +1,4 @@
+---
+zeimanyusu_port: 4576
+zeimanyusu_home_dir: "/var/www/zeimanyusu"
+zeimanyusu_image: "ghcr.io/svsticky/sloppy-clanker:{{ 'development' if 'staging' in group_names else 'main' }}"

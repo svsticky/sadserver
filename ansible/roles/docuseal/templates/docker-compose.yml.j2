@@ -5,10 +5,10 @@ services:
     image: docuseal/docuseal:latest
     restart: unless-stopped
     ports:
-      - 3020:3000
+      - "{{ docuseal_port }}:3000"
     volumes:
       - ./docuseal:/data/docuseal
-      - /run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432
+      - /run/postgresql:/run/postgresql
     environment:
       - SMTP_ADDRESS=smtp-relay.gmail.com
       - SMTP_PORT=587

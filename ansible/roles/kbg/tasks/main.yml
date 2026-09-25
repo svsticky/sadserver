@@ -91,6 +91,6 @@
       restart: true
       restart_policy: "unless-stopped"
       volumes:
-      - "/run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432"
+      - "/run/postgresql:/run/postgresql"
       - "/home/kbg/fuzzy-waffle/.env:/.env"
     notify: "prune docker"

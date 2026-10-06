@@ -70,3 +70,26 @@
       project_source: "/var/www/listmonk"
       remove_images: all
       compose_file: "docker-compose.yml"
+
+- name: "ensure MMM timer is present"
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  loop:
+    - "mmm-activities.timer"
+    - "mmm-activities.service"
+  notify:
+    - "systemctl daemon-reload"
+
+# The secrets that the mmm bot needs are inserted on deploy.
+- name: "ensure mmm_activities.py is templated to /usr/local/bin"
+  ansible.builtin.template:
+    src: "mmm_activities.py.j2"
+    dest: "/usr/local/bin/mmm_activities.py"
+
+- name: "start and enable MMM timer in production"
+  ansible.builtin.service:
+    name: "mmm-activities.timer"
+    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
+    state:
+      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"

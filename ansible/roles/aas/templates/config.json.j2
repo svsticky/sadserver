@@ -20,6 +20,11 @@
 				"serviceName": "deploy-main-website.service",
 				"endpoint": "/webhook/main-website-deploy",
 				"pre-sharedKey": "{{ secret_main_website.aas_pre_shared_key }}"
+			},
+			{
+				"serviceName": "deploy-zeimanyusu.service",
+				"endpoint": "/webhook/zeimanyusu-deploy",
+				"pre-sharedKey": "{{ secret_zeimanyusu.aas_pre_shared_key }}"
 			}
 		]
 	}

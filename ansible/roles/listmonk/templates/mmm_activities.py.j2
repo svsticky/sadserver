@@ -64,8 +64,8 @@ def selecteer(activiteiten, start):
 class Listmonk:
     def __init__(self):
         self.url = "https://listmonk.{{ canonical_hostname }}"
-        user = {{ secret_listmonk.mmm_user }}
-        token = {{ secret_listmonk.mmm_token }}
+        user = "{{ secret_listmonk.mmm_user }}"
+        token = "{{ secret_listmonk.mmm_token }}"
         self.auth = f"token {user}:{token}"
 
     def call(self, method, path, body=None):

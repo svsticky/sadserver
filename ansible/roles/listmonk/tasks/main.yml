@@ -73,7 +73,7 @@
 
 - name: "ensure MMM timer is present"
   ansible.builtin.template:
-    src: "{{ item }}.j2"
+    src: "{{ item }}"
     dest: "/etc/systemd/system/{{ item }}"
   loop:
     - "mmm-activities.timer"

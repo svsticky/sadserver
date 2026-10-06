@@ -297,3 +297,13 @@ websites:
     custom_config: true
     oauth2_callback_url: "/callback"
     alternative_names: []
+
+  # zeimanyusu_domain differs per environment, so it is used as the certificate
+  # name: certbot ignores alternative_names on staging.
+  - name: "{{ zeimanyusu_domain }}"
+    user: "zeimanyusu"
+    state: "present"
+    custom_config: true
+    alternative_names:
+      - "www.{{ zeimanyusu_domain }}"
+      - "zeimanyusu.{{ canonical_hostname }}"

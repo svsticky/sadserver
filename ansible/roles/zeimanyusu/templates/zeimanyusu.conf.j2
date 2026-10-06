@@ -7,9 +7,9 @@ server {
 
   server_name www.{{ zeimanyusu_domain }};
 
-  ssl_certificate      /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate      /etc/letsencrypt/live/{{ zeimanyusu_domain }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{ zeimanyusu_domain }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ zeimanyusu_domain }}/chain.pem;
 
   include includes/security-headers.conf;
 
@@ -23,9 +23,9 @@ server {
 
   server_name {{ zeimanyusu_domain }} zeimanyusu.{{ canonical_hostname }};
 
-  ssl_certificate      /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/fullchain.pem;
-  ssl_certificate_key  /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/zeimanyusu.{{ canonical_hostname }}/chain.pem;
+  ssl_certificate      /etc/letsencrypt/live/{{ zeimanyusu_domain }}/fullchain.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{ zeimanyusu_domain }}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{ zeimanyusu_domain }}/chain.pem;
 
   include includes/security-headers.conf;
 

@@ -204,3 +204,5 @@ secret_kbg:
 
 secret_main_website:
   aas_pre_shared_key: "{{ vault_secret_main_website.aas_pre_shared_key }}"
+
+zeimanyusu_domain: "zeimanyusu.today"

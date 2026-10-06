@@ -93,6 +93,8 @@
       tags: "doorgeefluik"
     - role: "tavern"
       tags: "tavern"
+    - role: "zeimanyusu"
+      tags: "zeimanyusu"
     # Included the last, so any service that fail2ban is applied to, already
     # exists. Otherwise fail2ban would miss the log files it has to monitor.
     - role: "fail2ban"

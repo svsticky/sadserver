@@ -2,18 +2,24 @@
 # {{ ansible_managed }}
 
 """
-MMM activiteiten-sync: Koala -> listmonk
+This script retrieves the public activities starting coming Monday from
+Koala and puts their IDs in the attributes of the latest MMM campaign in
+Listmonk (max 6 activities, sorted on time).  The MMM template uses these
+IDs to build the links to the activities and their posters.
 
-Haalt de eerstvolgende activiteiten vanaf maandag uit de Koala API (ook als ze
-later dan die week vallen, maar max. 3 weken vooruit) en zet de ID's (max. 6, gesorteerd op starttijd) in de attributen van de
-MMM-campagne in listmonk. Het template bouwt daar de posters en links mee op.
+Usage:
+    python3 mmm_activities.py
+    Update latest compaign with the mmm tag (either concept or planned)
 
-Gebruik:
-    python3 mmm_activiteiten.py                  # nieuwste campagne met tag mmm (concept of ingepland) bijwerken
-    python3 mmm_activiteiten.py --dry-run        # alleen tonen wat er zou gebeuren
-    python3 mmm_activiteiten.py --print          # alleen de JSON printen (geen listmonk nodig)
-    python3 mmm_activiteiten.py --campaign 42    # specifieke campagne bijwerken
-    python3 mmm_activiteiten.py --week 2026-10-05
+    python3 mmm_activities.py --dry-run
+    Show the updates to Listmonk without sending requests to Listmonk
+
+    python3 mmm_activities.py --print
+    Print the JSON that can be pasted into the Listmonk campaign (doesn't require Listmonk to run)
+
+    python3 mmm_activities.py --campaign 42
+    python3 mmm_activities.py --week 2026-10-05
+    Update specific campaign
 """
 import argparse
 import base64
@@ -26,9 +32,9 @@ from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 KOALA_URL = "https://api.koala.{{ canonical_hostname }}/activities/"
-MAX_ACTIVITEITEN = 6
-MAX_WEKEN_VOORUIT = 3
-CAMPAGNE_TAG = "mmm"
+MAX_ACTIVITIES = 6
+MAX_WEEKS_AHEAD = 3
+CAMPAIGN_TAG = "mmm"
 TZ = ZoneInfo("Europe/Amsterdam")
 
 # ---------- Koala ----------
@@ -36,28 +42,29 @@ TZ = ZoneInfo("Europe/Amsterdam")
 def week_start(arg=None):
     if arg:
         return date.fromisoformat(arg)
-    vandaag = datetime.now(TZ).date()
-    # Op maandag zelf: deze week. Anders: de eerstvolgende maandag.
-    return vandaag + timedelta(days=(7 - vandaag.weekday()) % 7)
+    today = datetime.now(TZ).date()
+    return today + timedelta(days=(7 - today.weekday()) % 7)
 
-def haal_activiteiten():
+def retrieve_activities():
     req = urllib.request.Request(KOALA_URL, headers={"Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.load(resp)
 
-def selecteer(activiteiten, start):
-    # De eerstvolgende activiteiten vanaf maandag, ook als ze na die week vallen,
-    # maar niet verder dan MAX_WEKEN_VOORUIT (dus geen 'save the dates' van maanden later).
-    eind = start + timedelta(weeks=MAX_WEKEN_VOORUIT)
-    gekozen = []
-    for a in activiteiten:
+def select(activities, start):
+    # The upcoming activities starting Monday, even if they are planned in later weeks,
+    # but no later than MAX_WEEKS_AHEAD (to prevent 'save the dates' activities from showing up). 
+    end = start + timedelta(weeks=MAX_WEEKS_AHEAD)
+    chosen = []
+    for a in activities:
+        if len(chosen) >= MAX_ACTIVITIES:
+            break
         if not a.get("showInKoala", True):
             continue
-        begin = datetime.fromisoformat(a["dateTimeStart"]).astimezone(TZ)
-        if start <= begin.date() < eind:
-            gekozen.append((begin, a["id"]))
-    gekozen.sort()
-    return [activiteit_id for _, activiteit_id in gekozen[:MAX_ACTIVITEITEN]]
+        activity_start = datetime.fromisoformat(a["dateTimeStart"]).astimezone(TZ)
+        if start <= activity_start.date() < end:
+            chosen.append((activity_start, a["id"]))
+    chosen.sort()
+    return [activity_id for _, activity_id in chosen]
 
 # ---------- listmonk ----------
 
@@ -78,43 +85,41 @@ class Listmonk:
             with urllib.request.urlopen(req, timeout=30) as resp:
                 return json.load(resp)["data"]
         except urllib.error.HTTPError as e:
-            sys.exit(f"listmonk gaf een fout ({e.code}) op {method} {path}: {e.read().decode()}")
+            sys.exit(f"Listmonk error ({e.code}): {method} {path}: {e.read().decode()}")
 
-    def nieuwste_concept(self):
+    def latest_concept(self):
         params = urllib.parse.urlencode([
-            # Ook 'scheduled': de campagne wordt vooraf ingepland voor maandag 9:00.
-            # 'tag' (enkelvoud): listmonk v6.2 negeert 'tags' en geeft dan alles terug.
-            ("tag", CAMPAGNE_TAG), ("status", "draft"), ("status", "scheduled"),
+            ("tag", CAMPAIGN_TAG), ("status", "draft"), ("status", "scheduled"),
             ("order_by", "created_at"), ("order", "DESC"),
             ("per_page", "1"), ("no_body", "true"),
         ])
         results = self.call("GET", f"/api/campaigns?{params}")["results"]
         if not results:
-            sys.exit(f"Geen campagne met tag {CAMPAGNE_TAG} gevonden (draft of scheduled)")
+            sys.exit(f"No campaign found with tag {CAMPAIGN_TAG}")
         return results[0]["id"]
 
-    def zet_activiteiten(self, campagne_id, ids, dry_run=False):
-        camp = self.call("GET", f"/api/campaigns/{campagne_id}")
-        attribs = dict(camp.get("attribs") or {})  # andere attributen blijven behouden
+    def update_activities(self, campaign_id, ids, dry_run=False):
+        camp = self.call("GET", f"/api/campaigns/{campaign_id}")
+        attribs = dict(camp.get("attribs") or {}) # other attributes will remain
         attribs["activities"] = ids
         body = {"lists": [l["id"] for l in camp["lists"]], "attribs": attribs}
-        print(f"Campagne {campagne_id}: '{camp['name']}' ({camp['status']})", file=sys.stderr)
+        print(f"Campaign {campaign_id}: '{camp['name']}' ({camp['status']})", file=sys.stderr)
         if dry_run:
-            print("Dry run, niets aangepast. Zou versturen:", json.dumps(body), file=sys.stderr)
+            print("Dry run, nothing updated. Would send:", json.dumps(body), file=sys.stderr)
             return
-        self.call("PUT", f"/api/campaigns/{campagne_id}", body)
-        print("Bijgewerkt.", file=sys.stderr)
+        self.call("PUT", f"/api/campaigns/{campaign_id}", body)
+        print("Updated.", file=sys.stderr)
 
 def main():
-    p = argparse.ArgumentParser(description="Zet de eerstvolgende activiteiten in de MMM-campagne.")
-    p.add_argument("--week", help="maandag vanaf wanneer activiteiten meetellen (JJJJ-MM-DD)")
-    p.add_argument("--campaign", type=int, help="campagne-ID (standaard: nieuwste MMM-concept)")
-    p.add_argument("--dry-run", action="store_true", help="niets aanpassen, alleen tonen")
-    p.add_argument("--print", action="store_true", help="alleen de JSON printen")
+    p = argparse.ArgumentParser(description="Update the latest MMM campaign with next weeks' activities")
+    p.add_argument("--week", help="Monday from when activities should be included (YYYY-MM-DD)")
+    p.add_argument("--campaign", type=int, help="Campaign ID, default: the latest campaign")
+    p.add_argument("--dry-run", action="store_true", help="Do not send the update request to Listmonk")
+    p.add_argument("--print", action="store_true", help="Just print the attributes JSON")
     args = p.parse_args()
 
     start = week_start(args.week)
-    ids = selecteer(haal_activiteiten(), start)
+    ids = select(retrieve_activities(), start)
     print(f"{len(ids)} activiteit(en) vanaf {start:%d-%m-%Y}: {ids}", file=sys.stderr)
 
     if args.print:
@@ -122,7 +127,7 @@ def main():
         return
 
     lm = Listmonk()
-    lm.zet_activiteiten(args.campaign or lm.nieuwste_concept(), ids, args.dry_run)
+    lm.update_activities(args.campaign or lm.latest_concept(), ids, args.dry_run)
 
 if __name__ == "__main__":
     main()

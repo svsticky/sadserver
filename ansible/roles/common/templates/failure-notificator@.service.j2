@@ -8,7 +8,7 @@ Type=oneshot
 User=root
 Group=root
 {% if 'staging' in group_names %}
-ExecStart=/bin/sh -c "echo \"*_FROM STAGING:_ Unit \`%i\` FAILED!*\
+ExecStart=/bin/sh -c "echo \"*_FROM STAGING MACHINE {{ ansible_hostname }}:_ Unit \`%i\` FAILED!*\
 _($(date +'%%F %%T %%:z'))_\" | \
   /usr/local/bin/slacktee \
   --plain-text \
@@ -16,7 +16,7 @@ _($(date +'%%F %%T %%:z'))_\" | \
   --icon ':exclamation:' \
   --attachment 'danger'"
 {% else %}
-ExecStart=/bin/sh -c "echo \"@it-crowd-commissie *Unit \`%i\` FAILED!*\
+ExecStart=/bin/sh -c "echo \"FROM PRODUCTION MACHINE {{ ansible_hostname }}: @it-crowd-commissie *Unit \`%i\` FAILED!*\
 _($(date +'%%F %%T %%:z'))_\" | \
   /usr/local/bin/slacktee \
   --plain-text \

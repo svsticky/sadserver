@@ -253,6 +253,13 @@ websites:
     custom_config: true
     alternative_names: []
 
+  - name: "listmonk.{{ canonical_hostname }}"
+    user: "listmonk"
+    state: "present"
+    custom_config: true
+    alternative_names:
+      - "mailing.{{ canonical_hostname }}"
+
   - name: "koala.{{ canonical_hostname }}"
     user: "tavern"
     state: "present"

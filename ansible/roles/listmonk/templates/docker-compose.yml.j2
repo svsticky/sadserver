@@ -1,0 +1,19 @@
+services:
+  app:
+    image: listmonk/listmonk:latest
+    container_name: listmonk_app
+    restart: unless-stopped
+    ports:
+      - "{{ listmonk_port }}:9000"
+    command: [sh, -c, "./listmonk --install --idempotent --yes --config /listmonk/config.toml && ./listmonk --upgrade --yes --config /listmonk/config.toml && ./listmonk --config /listmonk/config.toml"]
+    environment:
+      TZ: Europe/Amsterdam
+      LISTMONK_ADMIN_USER: {{ secret_listmonk.admin_user }}
+      LISTMONK_ADMIN_PASSWORD: {{ secret_listmonk.admin_password }}
+    volumes:
+      - listmonk-data:/listmonk/uploads
+      - /var/www/listmonk/config.toml:/listmonk/config.toml
+      - /run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432
+
+volumes:
+  listmonk-data:

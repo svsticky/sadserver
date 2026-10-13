@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+# {{ ansible_managed }}
+
+"""
+This script retrieves the public activities starting coming Monday from
+Koala and puts their IDs in the attributes of the latest MMM campaign in
+Listmonk (max 6 activities, sorted on time).  The MMM template uses these
+IDs to build the links to the activities and their posters.
+
+Usage:
+    python3 mmm_activities.py
+    Update latest compaign with the mmm tag (either concept or planned)
+
+    python3 mmm_activities.py --dry-run
+    Show the updates to Listmonk without sending requests to Listmonk
+
+    python3 mmm_activities.py --print
+    Print the JSON that can be pasted into the Listmonk campaign (doesn't require Listmonk to run)
+
+    python3 mmm_activities.py --campaign 42
+    python3 mmm_activities.py --week 2026-10-05
+    Update specific campaign
+"""
+import argparse
+import base64
+import json
+import os
+import sys
+import urllib.parse
+import urllib.request
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
+
+KOALA_URL = "https://api.koala.{{ canonical_hostname }}/activities/"
+MAX_ACTIVITIES = 6
+MAX_WEEKS_AHEAD = 3
+CAMPAIGN_TAG = "mmm"
+TZ = ZoneInfo("Europe/Amsterdam")
+
+# ---------- Koala ----------
+
+def week_start(arg=None):
+    if arg:
+        return date.fromisoformat(arg)
+    today = datetime.now(TZ).date()
+    return today + timedelta(days=(7 - today.weekday()) % 7)
+
+def retrieve_activities():
+    req = urllib.request.Request(KOALA_URL, headers={"Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return json.load(resp)
+
+def select(activities, start):
+    # The upcoming activities starting Monday, even if they are planned in later weeks,
+    # but no later than MAX_WEEKS_AHEAD (to prevent 'save the dates' activities from showing up). 
+    end = start + timedelta(weeks=MAX_WEEKS_AHEAD)
+    chosen = []
+    for a in activities:
+        if len(chosen) >= MAX_ACTIVITIES:
+            break
+        if not a.get("showInKoala", True):
+            continue
+        activity_start = datetime.fromisoformat(a["dateTimeStart"]).astimezone(TZ)
+        if start <= activity_start.date() < end:
+            chosen.append((activity_start, a["id"]))
+    chosen.sort()
+    return [activity_id for _, activity_id in chosen]
+
+# ---------- listmonk ----------
+
+class Listmonk:
+    def __init__(self):
+        self.url = "https://listmonk.{{ canonical_hostname }}"
+        user = "{{ secret_listmonk.mmm_user }}"
+        token = "{{ secret_listmonk.mmm_token }}"
+        self.auth = f"token {user}:{token}"
+
+    def call(self, method, path, body=None):
+        data = json.dumps(body).encode() if body is not None else None
+        req = urllib.request.Request(
+            self.url + path, data=data, method=method,
+            headers={"Authorization": self.auth, "Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return json.load(resp)["data"]
+        except urllib.error.HTTPError as e:
+            sys.exit(f"Listmonk error ({e.code}): {method} {path}: {e.read().decode()}")
+
+    def latest_concept(self):
+        params = urllib.parse.urlencode([
+            ("tag", CAMPAIGN_TAG), ("status", "draft"), ("status", "scheduled"),
+            ("order_by", "created_at"), ("order", "DESC"),
+            ("per_page", "1"), ("no_body", "true"),
+        ])
+        results = self.call("GET", f"/api/campaigns?{params}")["results"]
+        if not results:
+            sys.exit(f"No campaign found with tag {CAMPAIGN_TAG}")
+        return results[0]["id"]
+
+    def update_activities(self, campaign_id, ids, dry_run=False):
+        camp = self.call("GET", f"/api/campaigns/{campaign_id}")
+        attribs = dict(camp.get("attribs") or {}) # other attributes will remain
+        attribs["activities"] = ids
+        body = {"lists": [l["id"] for l in camp["lists"]], "attribs": attribs}
+        print(f"Campaign {campaign_id}: '{camp['name']}' ({camp['status']})", file=sys.stderr)
+        if dry_run:
+            print("Dry run, nothing updated. Would send:", json.dumps(body), file=sys.stderr)
+            return
+        self.call("PUT", f"/api/campaigns/{campaign_id}", body)
+        print("Updated.", file=sys.stderr)
+
+def main():
+    p = argparse.ArgumentParser(description="Update the latest MMM campaign with next weeks' activities")
+    p.add_argument("--week", help="Monday from when activities should be included (YYYY-MM-DD)")
+    p.add_argument("--campaign", type=int, help="Campaign ID, default: the latest campaign")
+    p.add_argument("--dry-run", action="store_true", help="Do not send the update request to Listmonk")
+    p.add_argument("--print", action="store_true", help="Just print the attributes JSON")
+    args = p.parse_args()
+
+    start = week_start(args.week)
+    ids = select(retrieve_activities(), start)
+    print(f"{len(ids)} activiteit(en) vanaf {start:%d-%m-%Y}: {ids}", file=sys.stderr)
+
+    if args.print:
+        print(json.dumps({"activities": ids}))
+        return
+
+    lm = Listmonk()
+    lm.update_activities(args.campaign or lm.latest_concept(), ids, args.dry_run)
+
+if __name__ == "__main__":
+    main()

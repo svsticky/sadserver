@@ -1,0 +1,2 @@
+---
+home: "{{ service_home_dir }}/branding"

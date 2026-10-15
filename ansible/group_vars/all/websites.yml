@@ -304,3 +304,9 @@ websites:
     custom_config: true
     oauth2_callback_url: "/callback"
     alternative_names: []
+
+  - name: "branding.{{ canonical_hostname }}"
+    user: "branding"
+    state: "present"
+    custom_config: true
+    alternative_names: []

@@ -42,6 +42,8 @@
       tags: "nix"
     - role: "websites"
       tags: "websites"
+    - role: "branding"
+      tags: "branding"
     - role: "digidecs"
       tags: "digidecs"
     - role: "aas"

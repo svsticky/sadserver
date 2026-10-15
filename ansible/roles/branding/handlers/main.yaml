@@ -1,0 +1,29 @@
+---
+- name: "restart branding"
+  ansible.builtin.service:
+    name: "branding"
+    state: "restarted"
+
+- name: "branding repo updated"
+  block:
+    - name: "Stop branding service"
+      ansible.builtin.service:
+        name: "branding"
+        state: "stopped"
+    
+    - name: "build project"
+      ansible.builtin.shell: |
+        cargo-1.91 build --release
+        cp target/release/branding-website ../server
+      notify: "restart branding"
+      args:
+        chdir: "{{ home }}/repo"
+        executable: "/bin/bash"
+
+    - name: "place config file"
+      ansible.builtin.copy:
+        src: "{{ home }}/repo/config.toml"
+        remote_src: true
+        dest: "{{ home }}/config.toml"
+      diff: false
+

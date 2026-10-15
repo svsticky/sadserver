@@ -45,3 +45,11 @@
     src: "failure-notificator@.service.j2"
     dest: "/etc/systemd/system/failure-notificator@.service"
   notify: "systemctl daemon-reload"
+
+- name: "Ensure /var/data exists"
+  ansible.builtin.file:
+    path: "/var/data"
+    owner: "root"
+    group: "root"
+    mode: "0775"
+    state: "directory"

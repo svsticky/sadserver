@@ -7,7 +7,9 @@
 server_hostname: "sadserver"
 canonical_hostname: "{{ inventory_hostname }}"
 
-tmp_dir: "/tmp"
+service_home_dir: "/srv"
+backup_data_dir: "/var/data"
+static_host_dir: "/var/www"
 
 # the upload limit for nginx in megabytes
 upload_limit: 30

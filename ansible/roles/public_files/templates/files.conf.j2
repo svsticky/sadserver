@@ -12,7 +12,7 @@ server {
 
   include includes/security-headers.conf;
 
-  root /var/www/files.{{ canonical_hostname }};
+  root {{ static_host_dir }}/files.{{ canonical_hostname }};
 
   location /oauth2/ {
     proxy_pass       http://127.0.0.1:4180;

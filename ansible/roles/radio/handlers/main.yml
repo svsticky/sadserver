@@ -6,9 +6,9 @@
   become: true
   ansible.builtin.shell: |
     source {{ nvm.script }}
-    nvm install $(cat /var/www/radio/radio/.nvmrc)
+    nvm install $(cat {{ home }}/repo/.nvmrc)
   args:
-    chdir: "/var/www/radio/radio"
+    chdir: "{{ home }}/repo"
     executable: "/bin/bash"
   notify: "radio node version changed"
 
@@ -21,5 +21,5 @@
     nvm use
     npm rebuild
   args:
-    chdir: "/var/www/radio/radio"
+    chdir: "{{ home }}/repo"
     executable: "/bin/bash"

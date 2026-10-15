@@ -1,4 +1,3 @@
 ---
 
-radio_config:
-  home: "/var/www/radio"
+home: "{{ service_home_dir }}/radio"

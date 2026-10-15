@@ -17,7 +17,7 @@ server {
   # Security header file not included because frames
 
   location /images {
-    alias /var/www/mongoose/undead-mongoose/images;
+    alias {{ backup_data_dir }}/mongoose;
     access_log off;
   }
 
@@ -29,7 +29,7 @@ server {
   }
 
   location /static/ {
-    alias /var/www/mongoose/undead-mongoose/static/;
+    alias {{ home }}/repo/static/;
     access_log off;
     expires 365d;
     add_header Cache-Control "public";

@@ -3,7 +3,7 @@
 - name: "create user for undead mongoose"
   ansible.builtin.user:
     name: "mongoose"
-    home: "{{ mongoose_config.home }}"
+    home: "{{ home }}"
     shell: "/usr/sbin/nologin"
     state: "present"
     system: true
@@ -11,7 +11,7 @@
 
 - name: "Create home directory"
   ansible.builtin.file:
-    path: "{{ mongoose_config.home }}"
+    path: "{{ home }}"
     owner: "mongoose"
     group: "mongoose"
     mode: "2775"
@@ -58,35 +58,39 @@
       type: "database"
       privs: "ALL"
 
+- name: "create images directory in backup directory"
+  ansible.builtin.file:
+    path: "{{ backup_data_dir }}/mongoose"
+    owner: "mongoose"
+    group: "mongoose"
+    mode: "2775"
+    state: "directory"
+
 - name: "set up mongoose repo"
   become_user: "mongoose"
   become: true
   block:
-
-  - name: "ensure mongoose has a ssh directory"
-    ansible.builtin.file:
-      path: "~/.ssh"
-      state: "directory"
-
-  - name: "copy deploy key for private projects on GitHub"
-    ansible.builtin.copy:
-      content: "{{ secret_deploy_key }}"
-      dest: "{{ mongoose_config.home }}/.ssh/id_ed25519"
-      mode: "0600"
-
   - name: "clone mongoose repository"
     ansible.builtin.git:
-      repo: "git@github.com:svsticky/undead-mongoose"
-      dest: "{{ mongoose_config.home }}/undead-mongoose"
+      repo: "https://github.com/svsticky/undead-mongoose"
+      dest: "{{ home }}/repo"
       depth: 1
       force: true
       version: "master"
     diff: false
 
+  # The files in mongoose/repo/images are local state (photos of products) and need to be preserved.
+  # Link them to backup_data_dir so they are included in the backups
+  - name: "link images directory to backup directory"
+    ansible.builtin.file:
+      src: "{{ backup_data_dir }}/mongoose"
+      path: "{{ home }}/repo/images"
+      state: "link"
+
   - name: "install dependencies via uv"
     ansible.builtin.command: "{{ uv.install_dir }}/uv sync"
     args:
-      chdir: "{{ mongoose_config.home }}/undead-mongoose"
+      chdir: "{{ home }}/repo"
     notify:
       - "restart mongoose"
       - "run migrations"
@@ -94,7 +98,7 @@
   - name: "template environment file for mongoose"
     ansible.builtin.template:
       src: ".env.j2"
-      dest: "{{ mongoose_config.home }}/undead-mongoose/.env"
+      dest: "{{ home }}/repo/.env"
     diff: false
     notify: "restart mongoose"
 

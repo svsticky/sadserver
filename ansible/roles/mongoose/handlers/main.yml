@@ -9,6 +9,6 @@
   become: true
   ansible.builtin.command: "{{ uv.install_dir }}/uv run --env-file .env manage.py migrate"
   args:
-    chdir: "/var/www/mongoose/undead-mongoose"
+    chdir: "{{ home }}/repo"
   listen: "run migrations"
   notify: "restart mongoose"

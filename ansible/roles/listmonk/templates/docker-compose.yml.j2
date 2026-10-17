@@ -13,7 +13,7 @@ services:
     volumes:
       - listmonk-data:/listmonk/uploads
       - /var/www/listmonk/config.toml:/listmonk/config.toml
-      - /run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432
+      - /run/postgresql:/run/postgresql
 
 volumes:
   listmonk-data:

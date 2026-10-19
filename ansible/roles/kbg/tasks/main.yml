@@ -84,7 +84,7 @@
 
   - name: "Start docker container"
     community.docker.docker_container:
-      name: "payload"
+      name: "kbg"
       image: "ghcr.io/svsticky/kbg:latest"
       published_ports:
         - "{{ kbg_port }}:3000"

@@ -296,7 +296,8 @@ websites:
     custom_config: true
     authenticated: true
     oauth2_callback_url: "/callback"
-    alternative_names: []
+    alternative_names:
+      - "cbg.{{ canonical_hostname }}"
 
   - name: "keycloak.{{ canonical_hostname }}"
     user: "keycloak"

@@ -1,0 +1,9 @@
+[Unit]
+OnFailure=failure-notificator@%n.service
+Description=Deploy main website
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/local/bin/deploy-branding.sh

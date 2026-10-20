@@ -20,6 +20,11 @@
 				"serviceName": "deploy-main-website.service",
 				"endpoint": "/webhook/main-website-deploy",
 				"pre-sharedKey": "{{ secret_main_website.aas_pre_shared_key }}"
+			},
+			{
+				"serviceName": "deploy-branding.service",
+				"endpoint": "/webhook/branding-deploy",
+				"pre-sharedKey": "{{ secret_branding.aas_pre_shared_key }}"
 			}
 		]
 	}

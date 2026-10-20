@@ -1,72 +1,21 @@
 ---
-- name: "Create user for branding"
-  ansible.builtin.user:
-    name: "branding"
-    home: "{{ home }}"
-    shell: "/usr/sbin/nologin"
-    system: true
-    state: "present"
-    create_home: false
 
-- name: "Create home directory"
-  ansible.builtin.file:
-    path: "{{ home }}"
-    owner: "branding"
-    group: "branding"
-    mode: "2775"
-    state: "directory"
-
-- name: "Install dependencies"
-  ansible.builtin.apt:
-    name:
-      - "cargo-1.91"
-    state: "present"
-
-- name: "set up branding"
-  become_user: "branding"
-  become: true
-  block:
-  - name: "clone branding repository"
-    ansible.builtin.git:
-      repo: "https://github.com/svsticky/branding.git"
-      dest: "{{ home }}/repo"
-      depth: 1
-      force: true
-      version: "main"
-    diff: false
-    notify: "branding repo updated"
-
-  - name: "place environment file"
-    ansible.builtin.template:
-      src: ".env.j2"
-      dest: "{{ home }}/.env"
-    diff: false
-
-- name: "place service file"
+- name: "copy systemd service for deploying branding"
   ansible.builtin.template:
-    src: "branding.service.j2"
-    dest: "/etc/systemd/system/branding.service"
-  notify: "restart branding"
+    src: "deploy-branding.service.j2"
+    dest: "/etc/systemd/system/deploy-branding.service"
 
-- name: "run branding service"
+- name: "copy deploy script"
+  ansible.builtin.template:
+    src: "deploy-branding.sh.j2"
+    dest: "/usr/local/bin/deploy-branding.sh"
+    mode: "0755"
+
+- name: "run deploy"
   ansible.builtin.systemd:
-    unit: "branding.service"
+    name: "deploy-branding.service"
     state: "started"
-    enabled: true
-    daemon-reload: true
+  ignore_errors: true
+  notify:
+    - "systemctl daemon-reload"
 
-- name: "copy nginx configuration"
-  ansible.builtin.template:
-    src: "branding.conf.j2"
-    dest: "/etc/nginx/sites-available/branding.{{ canonical_hostname }}.conf"
-  notify: "reload nginx"
-
-- name: "enable nginx configuration"
-  ansible.builtin.file:
-    src: "/etc/nginx/sites-available/branding.{{ canonical_hostname }}.conf"
-    path: "/etc/nginx/sites-enabled/branding.{{ canonical_hostname }}.conf"
-    state: "link"
-  notify: "reload nginx"
-
-- name: "Flush handlers"
-  ansible.builtin.meta: "flush_handlers"

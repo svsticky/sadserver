@@ -26,6 +26,8 @@ IFS=$'\n\t'
 # seperately.
 sleep 20
 
+cd "$(mktemp -d)"
+
 ### Find latest artifact from GitHub (containing build to deploy)
 
 REPO_URL="https://api.github.com/repos/svsticky/branding"
@@ -49,8 +51,6 @@ echo "Artifact id: $ARTIFACT_ID"
 
 ### Download artifact containing build to deploy
 
-cd "$(mktemp -d)"
-
 # This action requires the 'Actions' scope in the Auth token
 curl -LH "Authorization: token $GH_TOKEN" "$REPO_URL/actions/artifacts/$ARTIFACT_ID/zip" \
 	-o output.zip # GitHub creates zips
@@ -59,4 +59,4 @@ unzip output.zip
 rm output.zip
 
 ### Copy website contents to webroot, replacing already existing target contents
-rsync --delete --recursive * /var/www/public.{{ canonical_hostname }}/logos/
+rsync --delete --recursive . /var/www/public.{{ canonical_hostname }}/logos/

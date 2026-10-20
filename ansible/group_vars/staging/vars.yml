@@ -202,3 +202,6 @@ secret_listmonk:
   admin_password: "{{ vault_secret_listmonk.admin_password }}"
   mmm_user: "{{ vault_secret_listmonk.mmm_user }}"
   mmm_token: "{{ vault_secret_listmonk.mmm_token }}"
+
+secret_branding:
+  aas_pre_shared_key: "{{ vault_secret_branding.aas_pre_shared_key }}"

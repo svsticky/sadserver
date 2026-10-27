@@ -60,6 +60,16 @@ users:
         state: "present"
       - username: "RubenBroere"
         state: "present"
+      - username: "NoahvdAa"
+        state: "present"
+
+  - name: "noah"
+    admin: true
+    home_prefix: "/home"
+    state: "present"
+    github_accounts:
+      - username: "NoahvdAa"
+        state: "present"
 
   - name: "ruben"
     admin: true

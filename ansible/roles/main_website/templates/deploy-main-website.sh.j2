@@ -28,7 +28,7 @@ sleep 20
 
 ### Find latest artifact from GitHub (containing build to deploy)
 
-REPO_URL="https://api.github.com/repos/svsticky/main-website-new"
+REPO_URL="https://api.github.com/repos/svsticky/main-website"
 WORKFLOW_NAME="deploy.yml"
 BRANCH_NAME="{{ ('production' in group_names) | ternary("main", "development") }}" # Let ansible descide staging or production enviroment
 GH_TOKEN="{{ secret_svsticky_deploy.github_pat_download_artifact }}"
@@ -66,11 +66,11 @@ rsync --delete --recursive . /var/www/main-website/
 # Github workflow pushes a docker container that needs to be deployed. So we pull the
 # latest image from Github, stop the currently running container (if there is one), and
 # start a new one.
-docker pull ghcr.io/svsticky/main-website-new:$BRANCH_NAME
+docker pull ghcr.io/svsticky/main-website:$BRANCH_NAME
 docker stop main-website-mail || true # true so that no non-zero exit code is raised
 sleep 12 # Docker waits 10s for the container to gracefully stop, after that it kills it
 docker run --rm -d --name main-website-mail \
   -e HOST=0.0.0.0 -e PORT=4321 \
   {# Don't need a \ at the end because jinja inlines the if statement for some reason #}
   {% if ('production' in group_names) %} -e SMTP_HOST="smtp-relay.gmail.com" -e SMTP_PORT=587 {% endif %}
-  -p {{ main_website_config.mail_port }}:4321 ghcr.io/svsticky/main-website-new:$BRANCH_NAME
+  -p {{ main_website_config.mail_port }}:4321 ghcr.io/svsticky/main-website:$BRANCH_NAME

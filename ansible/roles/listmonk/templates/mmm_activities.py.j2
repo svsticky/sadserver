@@ -33,7 +33,6 @@ from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 KOALA_URL = "https://api.koala.{{ canonical_hostname }}/activities/"
-POSTER_URL = "https://api.koala.{{ canonical_hostname }}/poster/"
 MAX_ACTIVITIES = 6
 MAX_WEEKS_AHEAD = 3
 CAMPAIGN_TAG = "mmm"
@@ -70,7 +69,7 @@ def select(activities, start):
 
 def retrieve_poster(activity_id):
     """Returns (content, content_type) or None if the activity has no poster."""
-    req = urllib.request.Request(POSTER_URL + str(activity_id))
+    req = urllib.request.Request(KOALA_URL + str(activity_id) + "/poster")
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             content_type = resp.headers.get_content_type()
@@ -113,7 +112,7 @@ class Listmonk:
         return results[0]["id"]
 
     def upload_poster(self, activity_id, content, content_type):
-        filename = f"poster-{activity_id}{EXTENSIONS.get(content_type, '.jpg')}"
+        filename = f"poster-{activity_id}.webp"
         resp = requests.post(
             self.url + "/api/media",
             headers={"Authorization": self.auth},  # no Content-Type: requests sets the multipart boundary
@@ -122,7 +121,6 @@ class Listmonk:
         )
         if not resp.ok:
             sys.exit(f"Listmonk error ({resp.status_code}): POST /api/media: {resp.text}")
-        return resp.json()["data"]["uri"]
 
     def update_activities(self, campaign_id, ids, dry_run=False):
         camp = self.call("GET", f"/api/campaigns/{campaign_id}")

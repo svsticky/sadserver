@@ -8,4 +8,4 @@ starting from scratch you could find yourself facing these problems:
    email settings need to be taken from Bitwarden and put into Listmonk via the UI.
 2. This also applies for the mmm bot. You need to create a new API user in the UI called mmm and place the
    generated API key in Bitwarden and redeploy Listmonk to update the mmm-bot timer and service to use the new
-   API key.
+   API key. The mmm bot user needs the `campagin:manage_all` and `media:manage` permissions.

@@ -1,0 +1,4 @@
+---
+oauth2_proxy_oidc_issuer_url: "https://keycloak.{{ canonical_hostname }}/realms/{{ secret_tavern.keycloak_realm }}"
+# How long to wait for Keycloak at startup before failing.
+oauth2_proxy_keycloak_wait_timeout: "10min"

@@ -1,6 +1,6 @@
 provider = "keycloak-oidc"
 http_address = "http://127.0.0.1:13786"
-oidc_issuer_url = "https://keycloak.{{ canonical_hostname }}/realms/{{ secret_tavern.keycloak_realm }}"
+oidc_issuer_url = "{{ oauth2_proxy_oidc_issuer_url }}"
 client_id = "{{ secret_oauth2_proxy.client_id }}"
 client_secret = "{{ secret_oauth2_proxy.client_secret }}"
 cookie_secret = "{{ secret_oauth2_proxy.cookie_secret_admin }}"

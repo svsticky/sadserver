@@ -28,6 +28,7 @@ import os
 import sys
 import urllib.parse
 import urllib.request
+import requests
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -66,6 +67,18 @@ def select(activities, start):
     chosen.sort()
     return [activity_id for _, activity_id in chosen]
 
+def retrieve_poster(activity_id):
+    """Returns (content, content_type) or None if the activity has no poster."""
+    req = urllib.request.Request(KOALA_URL + str(activity_id) + "/poster")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            content_type = resp.headers.get_content_type()
+            return resp.read(), content_type
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return None
+        sys.exit(f"Koala error ({e.code}) while fetching poster {activity_id}")
+
 # ---------- listmonk ----------
 
 class Listmonk:
@@ -98,10 +111,29 @@ class Listmonk:
             sys.exit(f"No campaign found with tag {CAMPAIGN_TAG}")
         return results[0]["id"]
 
+    def upload_poster(self, activity_id, content, content_type):
+        filename = f"poster-{activity_id}.webp"
+        resp = requests.post(
+            self.url + "/api/media",
+            headers={"Authorization": self.auth},  # no Content-Type: requests sets the multipart boundary
+            files={"file": (filename, content, content_type)},
+            timeout=30,
+        )
+        if not resp.ok:
+            sys.exit(f"Listmonk error ({resp.status_code}): POST /api/media: {resp.text}")
+
     def update_activities(self, campaign_id, ids, dry_run=False):
         camp = self.call("GET", f"/api/campaigns/{campaign_id}")
         attribs = dict(camp.get("attribs") or {}) # other attributes will remain
         attribs["activities"] = ids
+
+        for activity_id in ids:
+            poster = retrieve_poster(activity_id)
+            if dry_run:
+                print(f"Dry run, would upload poster for {activity_id}")
+            else:
+                self.upload_poster(activity_id, *poster)
+
         body = {"lists": [l["id"] for l in camp["lists"]], "attribs": attribs}
         print(f"Campaign {campaign_id}: '{camp['name']}' ({camp['status']})", file=sys.stderr)
         if dry_run:

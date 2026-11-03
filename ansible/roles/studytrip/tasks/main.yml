@@ -34,29 +34,13 @@
   become_user: "studytrip"
   become: true
   block:
-  - name: "clone studytrip repository"
-    ansible.builtin.git:
-      repo: "https://github.com/svsticky/Studytrip.git"
-      dest: "/var/www/studytrip/studytrip"
-      depth: 1
-      force: true
-      version: "master"
-    diff: false
-
-  - name: "Build docker image"
-    community.docker.docker_image:
-      build:
-        path: "/var/www/studytrip/studytrip"
-      source: "build"
-      force_source: true
-      name: "svsticky/studytrip:latest"
-
   - name: "Start docker container"
     community.docker.docker_container:
       name: "studytrip"
-      image: "svsticky/studytrip:latest"
+      image: "ghcr.io/svsticky/studytrip:latest"
       published_ports:
         - "{{ studytrip_port }}:3000"
       restart: true
       restart_policy: "unless-stopped"
+      pull: always
     notify: "prune docker"

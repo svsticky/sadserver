@@ -1,16 +1,17 @@
 [Unit]
 Description=The oauth2-proxy authentication daemon, admin-only version
-Wants=redis-server.service docker.service
-After=redis-server.service docker.service
+Wants=redis-server.service docker.service nginx.service network-online.target
+After=redis-server.service docker.service nginx.service network-online.target
 OnFailure=failure-notificator@%n.service
-# Keycloak (a Docker container) can take much longer than this to become
-# reachable after a reboot, so never give up retrying due to the restart
-# rate limiter - only RestartSec below paces the retries.
+# Never stop retrying, only RestartSec paces the restarts.
 StartLimitIntervalSec=0
 
 [Service]
 Restart=always
 RestartSec=5
+# Wait for Keycloak after a reboot, otherwise every failed start triggers OnFailure.
+ExecStartPre=/bin/sh -c 'until /usr/bin/curl --silent --fail --max-time 5 {{ "--insecure " if "staging" in group_names else "" }}--output /dev/null "{{ oauth2_proxy_oidc_issuer_url }}/.well-known/openid-configuration"; do sleep 5; done'
+TimeoutStartSec={{ oauth2_proxy_keycloak_wait_timeout }}
 ExecStart=/usr/local/bin/oauth2-proxy --config /etc/oauth2_proxy/admin-config.cfg
 
 [Install]

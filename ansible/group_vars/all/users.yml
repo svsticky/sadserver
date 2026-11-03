@@ -71,7 +71,7 @@ users:
     state: "present"
     github_accounts:
       - username: "ArondenOuden"
-      - state: "present"
+        state: "present"
 
   - name: "noah"
     admin: true

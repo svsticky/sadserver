@@ -26,7 +26,8 @@ IFS=$'\n\t'
 # seperately.
 sleep 20
 
-cd "$(mktemp -d)"
+DIRECTORY=$(mktemp -d)
+cd $DIRECTORY
 
 ### Find latest artifact from GitHub (containing build to deploy)
 
@@ -60,3 +61,8 @@ rm output.zip
 
 ### Copy website contents to webroot, replacing already existing target contents
 rsync --delete --recursive . /var/www/public.{{ canonical_hostname }}/logos/
+
+chown www-data:adm -R /var/www/public.{{ canonical_hostname }}/logos/
+
+# Don't litter
+rm -r $DIRECTORY

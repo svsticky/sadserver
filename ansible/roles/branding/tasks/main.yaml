@@ -4,6 +4,8 @@
   ansible.builtin.template:
     src: "deploy-branding.service.j2"
     dest: "/etc/systemd/system/deploy-branding.service"
+  notify:
+    - "systemctl daemon-reload"
 
 - name: "copy deploy script"
   ansible.builtin.template:
@@ -11,11 +13,18 @@
     dest: "/usr/local/bin/deploy-branding.sh"
     mode: "0755"
 
+- name: "make sure logos folder is accessible"
+  ansible.builtin.file:
+    path: "/var/www/public.{{ canonical_hostname }}/logos"
+    mode: "755"
+    owner: "www-data"
+    group: "www-data"
+
+- name: "ensure we run the newest version"
+  ansible.builtin.meta: "flush_handlers"
+
 - name: "run deploy"
   ansible.builtin.systemd:
     name: "deploy-branding.service"
     state: "started"
-  ignore_errors: true
-  notify:
-    - "systemctl daemon-reload"
 

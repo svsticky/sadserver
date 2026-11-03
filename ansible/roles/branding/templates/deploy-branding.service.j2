@@ -1,9 +1,9 @@
 [Unit]
 OnFailure=failure-notificator@%n.service
-Description=Deploy main website
+Description=Deploy branding
 
 [Service]
 Type=oneshot
 User=www-data
-Group=www-data
+Group=adm
 ExecStart=/usr/local/bin/deploy-branding.sh

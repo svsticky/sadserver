@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+#
+# Posts a notification when one of Tavern's outbox queues is stuck.
+#
+# Every outbox worker in the Tavern backend always processes the oldest task in
+# its table first and retries it forever on failure, so one task that keeps
+# failing blocks everything queued behind it. If the backend isn't running at
+# all, tasks pile up without ever being attempted. In both cases the oldest task
+# keeps getting older, so a queue counts as stuck once its oldest task is older
+# than the threshold.
+#
+# Per queue, the id of the task we last notified about is stored in the state
+# directory, so we only post once per stuck task (plus a periodic reminder) and
+# post again once the queue is moving.
+
+set -efuo pipefail
+
+THRESHOLD_SECONDS=$(( {{ tavern_outbox_monitor_threshold_minutes }} * 60 ))
+REMINDER_SECONDS=$(( {{ tavern_outbox_monitor_reminder_hours }} * 3600 ))
+STATE_DIR="${STATE_DIRECTORY:?run this through check-tavern-outbox.service}"
+QUEUES=("AuthOutboxTasks" "AccountingToolOutboxTasks" "MailSubscriptionOutboxTasks")
+
+# Same conventions as failure-notificator@.service: staging messages are marked
+# as such and don't ping the committee.
+{% if 'staging' in group_names %}
+MENTION=""
+PREFIX="_FROM STAGING:_ "
+USERNAME="sadserver-dev"
+{% else %}
+MENTION="@it-crowd-commissie "
+PREFIX=""
+USERNAME="sadserver"
+{% endif %}
+
+notify() {
+  local message="$1" icon="$2" attachment="$3"
+  echo "$message _($(date +'%F %T %:z'))_" | /usr/local/bin/slacktee \
+    --plain-text \
+    --username "$USERNAME" \
+    --icon "$icon" \
+    --attachment "$attachment"
+}
+
+human_duration() {
+  local seconds="$1"
+  local days=$(( seconds / 86400 ))
+  local hours=$(( seconds % 86400 / 3600 ))
+  local minutes=$(( seconds % 3600 / 60 ))
+  if (( days > 0 )); then
+    echo "${days}d${hours}h"
+  else
+    echo "${hours}h${minutes}m"
+  fi
+}
+
+oldest_task() {
+  psql -X -A -t -q -v ON_ERROR_STOP=1 -U tavern -d tavern -c \
+    "SELECT \"Id\", \"RetryCount\", EXTRACT(EPOCH FROM now() - \"CreatedAt\")::bigint
+     FROM \"$1\" ORDER BY \"CreatedAt\", \"Id\" LIMIT 1;"
+}
+
+now="$(date +%s)"
+
+for queue in "${QUEUES[@]}"; do
+  row="$(oldest_task "$queue")"
+  state_file="$STATE_DIR/$queue"
+
+  previous_id=""
+  last_notified=0
+  if [[ -f "$state_file" ]]; then
+    read -r previous_id last_notified < "$state_file" || true
+  fi
+
+  task_id=""
+  retries=0
+  age=0
+  if [[ -n "$row" ]]; then
+    IFS='|' read -r task_id retries age <<< "$row"
+  fi
+
+  if [[ -n "$task_id" ]] && (( age >= THRESHOLD_SECONDS )); then
+    if [[ "$task_id" == "$previous_id" ]] && (( now - last_notified < REMINDER_SECONDS )); then
+      continue
+    fi
+
+    if (( retries > 0 )); then
+      reason="it keeps failing (${retries} retries), so it blocks the rest of the queue"
+    else
+      reason="it was never attempted, the backend or its worker is probably not running"
+    fi
+
+    if [[ "$task_id" == "$previous_id" ]]; then
+      headline="Tavern outbox \`$queue\` is still stuck!"
+    else
+      headline="Tavern outbox \`$queue\` is stuck!"
+    fi
+
+    notify "${MENTION}*${PREFIX}${headline}* Oldest task #${task_id} is $(human_duration "$age") old: ${reason}. Check \`docker logs tavern-backend\`." \
+      ":exclamation:" "danger"
+    echo "$task_id $now" > "$state_file"
+
+  elif [[ -f "$state_file" ]]; then
+    notify "*${PREFIX}Tavern outbox \`$queue\` is moving again.* Task #${previous_id} is no longer blocking it." \
+      ":white_check_mark:" "good"
+    rm -f "$state_file"
+  fi
+done

@@ -27,4 +27,3 @@
   ansible.builtin.systemd:
     name: "deploy-branding.service"
     state: "started"
-

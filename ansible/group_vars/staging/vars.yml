@@ -146,6 +146,7 @@ secret_intro_website:
 
 secret_committeeclash:
   postgres_password: "{{ vault_secret_committeeclash.postgres_password }}"
+  host_url: "https://committeeclash.dev.svsticky.nl"
   oauth_provider_url: "https://keycloak.dev.svsticky.nl/realms/{{ secret_tavern.keycloak_realm }}/"
 
 secret_rottenspringbok:

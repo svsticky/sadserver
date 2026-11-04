@@ -210,6 +210,7 @@ secret_listmonk:
   postgres_password: "{{ vault_secret_listmonk.postgres_password }}"
   admin_user: "{{ vault_secret_listmonk.admin_user }}"
   admin_password: "{{ vault_secret_listmonk.admin_password }}"
+  google_sheet_id: "{{ vault_secret_listmonk.google_sheet_id }}"
   mmm_user: "{{ vault_secret_listmonk.mmm_user }}"
   mmm_token: "{{ vault_secret_listmonk.mmm_token }}"
   cred_type: "{{ vault_secret_listmonk.cred_type }}"

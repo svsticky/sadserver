@@ -9,4 +9,6 @@ Type=oneshot
 User=root
 Group=root
 PrivateTmp=true
-ExecStart=/usr/local/bin/mmm_automation.py
+EnvironmentFile=/var/www/listmonk/mmm-bot/.env
+ExecStart=uv run mmm-bot
+WorkingDirectory=/var/www/listmonk/mmm-bot

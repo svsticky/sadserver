@@ -71,31 +71,47 @@
         remove_images: all
         compose_file: "docker-compose.yml"
 
-- name: "ensure MMM timer is present"
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "/etc/systemd/system/{{ item }}"
-  loop:
-    - "mmm-automation.timer"
-    - "mmm-automation.service"
-  notify:
-    - "systemctl daemon-reload"
+- name: "Set up mmm-bot"
+  block:
+  - name: "Clone mmm-bot repository"
+    ansible.builtin.git:
+      repo: "git@github.com:svsticky/mmm-bot"
+      dest: "/var/www/listmonk/mmm-bot"
 
-# The secrets that the mmm bot needs are inserted on deploy.
-- name: "ensure credentials.json is templated to /usr/local/bin"
-  ansible.builtin.template:
-    src: "credentials.json.j2"
-    dest: "/usr/local/bin/credentials.json"
-    mode: "0700"
+  - name: "Fill in the environment variables"
+    ansible.builtin.template:
+      src: ".env.j2"
+      dest: "/var/www/listmonk/mmm-bot/.env"
 
-- name: "ensure mmm_automation.py is templated to /usr/local/bin"
-  ansible.builtin.template:
-    src: "mmm_automation.py.j2"
-    dest: "/usr/local/bin/mmm_automation.py"
-    mode: "0700"
+  - name: "Install correct python version"
+    ansible.builtin.shell:
+      cmd: "uv python install"
+      chdir: "/var/www/listmonk/mmm-bot"
 
-- name: "start and enable MMM timer in production"
-  ansible.builtin.service:
-    name: "mmm-automation.timer"
-    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
-    state: "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
+  - name: "Install correct python and dependencies"
+    ansible.builtin.shell:
+      cmd: "uv sync"
+      chdir: "/var/www/listmonk/mmm-bot"
+
+  - name: "ensure MMM timer is present"
+    ansible.builtin.template:
+      src: "{{ item }}"
+      dest: "/etc/systemd/system/{{ item }}"
+    loop:
+      - "mmm-automation.timer"
+      - "mmm-automation.service"
+    notify:
+      - "systemctl daemon-reload"
+
+  # The secrets that the mmm bot needs are inserted on deploy.
+  - name: "ensure credentials.json is templated to /var/www/listmonk/mmm-bot"
+    ansible.builtin.template:
+      src: "credentials.json.j2"
+      dest: "/var/www/listmonk/mmm-bot/credentials.json"
+      mode: "0700"
+
+  - name: "start and enable MMM timer in production"
+    ansible.builtin.service:
+      name: "mmm-automation.timer"
+      enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
+      state: "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"

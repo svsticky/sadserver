@@ -165,6 +165,8 @@ secret_docuseal:
   aws_secret_access_key: "{{ vault_secret_docuseal.aws_secret_access_key }}"
   aws_region: "{{ vault_secret_docuseal.aws_region }}"
   s3_attachments_bucket: "{{ vault_secret_docuseal.s3_attachments_bucket }}"
+  smtp_username: "{{ vault_secret_docuseal.smtp_username }}"
+  smtp_password: "{{ vault_secret_docuseal.smtp_password }}"
 
 secret_tavern:
   aas_pre_shared_key: "{{ vault_secret_tavern.aas_pre_shared_key }}"

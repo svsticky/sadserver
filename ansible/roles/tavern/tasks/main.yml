@@ -71,3 +71,38 @@
     - "wordlid.{{ canonical_hostname }}"
     - "signup.{{ canonical_hostname }}"
   notify: "reload nginx"
+
+- name: "copy outbox monitor script"
+  ansible.builtin.template:
+    src: "check-tavern-outbox.sh.j2"
+    dest: "/usr/local/bin/check-tavern-outbox.sh"
+    group: "tavern"
+    mode: "0750"
+
+- name: "copy postgres password file for outbox monitor"
+  become_user: "tavern"
+  become: true
+  ansible.builtin.template:
+    src: "pgpass.j2"
+    dest: "{{ tavern_home_dir }}/.pgpass"
+    mode: "0600"
+  diff: false
+
+- name: "copy outbox monitor service and timer"
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  loop:
+    - "check-tavern-outbox.service"
+    - "check-tavern-outbox.timer"
+  notify: "systemctl daemon-reload"
+
+# The units may have only just been created, so reload systemd here instead of
+# waiting for the handler. Skipped in check mode, where the units don't exist.
+- name: "start and enable outbox monitor timer"
+  when: not ansible_check_mode
+  ansible.builtin.systemd:
+    name: "check-tavern-outbox.timer"
+    enabled: true
+    state: "started"
+    daemon_reload: true

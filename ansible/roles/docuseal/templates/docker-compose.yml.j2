@@ -10,10 +10,12 @@ services:
       - ./docuseal:/data/docuseal
       - /run/postgresql:/run/postgresql
     environment:
-      - SMTP_ADDRESS=smtp-relay.gmail.com
+      - SMTP_ADDRESS=smtp.eu.mailgun.org
       - SMTP_PORT=587
       - SMTP_FROM=docuseal@svsticky.nl
-      - SMTP_AUTHENTICATION=plain
+      - SMTP_AUTHENTICATION=login
+      - SMTP_USERNAME={{ secret_docuseal.smtp_username }}
+      - SMTP_PASSWORD={{ secret_docuseal.smtp_password }}
       - DATABASE_URL=postgresql://docuseal:{{ secret_docuseal.postgres_password }}@%2Frun%2Fpostgresql/docuseal
       - AWS_ACCESS_KEY_ID={{ secret_docuseal.aws_access_key_id }}
       - AWS_SECRET_ACCESS_KEY={{ secret_docuseal.aws_secret_access_key }}

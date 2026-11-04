@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Periodically check whether one of Tavern's outbox queues is stuck
+
+[Timer]
+OnCalendar={{ tavern_outbox_monitor_interval }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -84,12 +84,12 @@
       dest: "/var/www/listmonk/mmm-bot/.env"
 
   - name: "Install correct python version"
-    ansible.builtin.shell:
+    ansible.builtin.command:
       cmd: "uv python install"
       chdir: "/var/www/listmonk/mmm-bot"
 
   - name: "Install correct python and dependencies"
-    ansible.builtin.shell:
+    ansible.builtin.command:
       cmd: "uv sync"
       chdir: "/var/www/listmonk/mmm-bot"
 

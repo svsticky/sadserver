@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Fetch next weeks' activities from Koala's public API, and place them in the latest campaign in Listmonk.
+
+[Timer]
+OnCalendar=Sun *-*-* 23:00:00 Europe/Amsterdam
+AccuracySec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+

@@ -13,30 +13,30 @@
   become_user: "postgres"
   become: true
   block:
-  - name: "Ensure role exists"
-    community.postgresql.postgresql_user:
-      name: "listmonk"
-      password: "{{ secret_listmonk.postgres_password }}"
-      state: "present"
+    - name: "Ensure role exists"
+      community.postgresql.postgresql_user:
+        name: "listmonk"
+        password: "{{ secret_listmonk.postgres_password }}"
+        state: "present"
 
-  - name: "Ensure database exists"
-    community.postgresql.postgresql_db:
-      name: "listmonk"
-      owner: "listmonk"
-      state: "present"
+    - name: "Ensure database exists"
+      community.postgresql.postgresql_db:
+        name: "listmonk"
+        owner: "listmonk"
+        state: "present"
 
-  - name: "Specify password authentication method over sockets for this container"
-    notify: "restart postgres" # Apply changes
-    become_user: "postgres"
-    become: true
-    community.postgresql.postgresql_pg_hba:
-      dest: "{{ postgres.pg_hba_path }}"
-      backup: "true"
-      backup_file: "{{ postgres.pg_hba_path }}.old"
-      contype: "local"
-      databases: "listmonk"
-      users: "listmonk"
-      method: "md5" # TODO use scram-sha-256 which is way safer
+    - name: "Specify password authentication method over sockets for this container"
+      notify: "restart postgres" # Apply changes
+      become_user: "postgres"
+      become: true
+      community.postgresql.postgresql_pg_hba:
+        dest: "{{ postgres.pg_hba_path }}"
+        backup: "true"
+        backup_file: "{{ postgres.pg_hba_path }}.old"
+        contype: "local"
+        databases: "listmonk"
+        users: "listmonk"
+        method: "md5" # TODO use scram-sha-256 which is way safer
 
 - name: "copy nginx configuration"
   ansible.builtin.template:
@@ -55,42 +55,63 @@
   become_user: "listmonk"
   become: true
   block:
-  - name: "copy config.toml file"
+    - name: "copy config.toml file"
+      ansible.builtin.template:
+        src: "config.toml.j2"
+        dest: "/var/www/listmonk/config.toml"
+    - name: "copy docker compose file"
+      ansible.builtin.template:
+        src: "docker-compose.yml.j2"
+        dest: "/var/www/listmonk/docker-compose.yml"
+
+    - name: "Docker compose"
+      ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+      vars:
+        project_source: "/var/www/listmonk"
+        remove_images: all
+        compose_file: "docker-compose.yml"
+
+- name: "Set up mmm-bot"
+  block:
+  - name: "Clone mmm-bot repository"
+    ansible.builtin.git:
+      repo: "git@github.com:svsticky/mmm-bot"
+      dest: "/var/www/listmonk/mmm-bot"
+
+  - name: "Fill in the environment variables"
     ansible.builtin.template:
-      src: "config.toml.j2"
-      dest: "/var/www/listmonk/config.toml"
-  - name: "copy docker compose file"
+      src: ".env.j2"
+      dest: "/var/www/listmonk/mmm-bot/.env"
+
+  - name: "Install correct python version"
+    ansible.builtin.command:
+      cmd: "uv python install"
+      chdir: "/var/www/listmonk/mmm-bot"
+
+  - name: "Install correct python and dependencies"
+    ansible.builtin.command:
+      cmd: "uv sync"
+      chdir: "/var/www/listmonk/mmm-bot"
+
+  - name: "ensure MMM timer is present"
     ansible.builtin.template:
-      src: "docker-compose.yml.j2"
-      dest: "/var/www/listmonk/docker-compose.yml"
+      src: "{{ item }}"
+      dest: "/etc/systemd/system/{{ item }}"
+    loop:
+      - "mmm-automation.timer"
+      - "mmm-automation.service"
+    notify:
+      - "systemctl daemon-reload"
 
-  - name: "Docker compose"
-    ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
-    vars:
-      project_source: "/var/www/listmonk"
-      remove_images: all
-      compose_file: "docker-compose.yml"
+  # The secrets that the mmm bot needs are inserted on deploy.
+  - name: "ensure credentials.json is templated to /var/www/listmonk/mmm-bot"
+    ansible.builtin.template:
+      src: "credentials.json.j2"
+      dest: "/var/www/listmonk/mmm-bot/credentials.json"
+      mode: "0700"
 
-- name: "ensure MMM timer is present"
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "/etc/systemd/system/{{ item }}"
-  loop:
-    - "mmm-activities.timer"
-    - "mmm-activities.service"
-  notify:
-    - "systemctl daemon-reload"
-
-# The secrets that the mmm bot needs are inserted on deploy.
-- name: "ensure mmm_activities.py is templated to /usr/local/bin"
-  ansible.builtin.template:
-    src: "mmm_activities.py.j2"
-    dest: "/usr/local/bin/mmm_activities.py"
-    mode: "0700"
-
-- name: "start and enable MMM timer in production"
-  ansible.builtin.service:
-    name: "mmm-activities.timer"
-    enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
-    state:
-      "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"
+  - name: "start and enable MMM timer in production"
+    ansible.builtin.service:
+      name: "mmm-automation.timer"
+      enabled: "{% if 'staging' in group_names %}false{% else %}true{% endif %}"
+      state: "{% if 'staging' in group_names %}stopped{% else %}started{% endif %}"

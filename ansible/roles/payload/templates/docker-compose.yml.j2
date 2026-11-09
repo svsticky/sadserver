@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+services:
+  payload:
+    image: ghcr.io/svsticky/content:latest
+    ports:
+      - '{{ payload_config.port }}:3000'
+    volumes:
+      - /run/postgresql:/run/postgresql
+      - payload-media:/app/media
+    environment:
+      - DATABASE_URL=postgresql://payload:{{ secret_payload.postgres_password }}@%2Frun%2Fpostgresql/sticky-content
+      - PAYLOAD_SECRET={{ secret_payload.secret }}
+
+volumes:
+  payload-media:

@@ -1,0 +1,69 @@
+---
+- name: "Create payload user"
+  ansible.builtin.user:
+    name: "payload"
+    home: "{{ payload_config.home }}"
+    move_home: true
+    system: true
+    shell: "/sbin/nologin"
+    password: "!"
+    create_home: false
+
+- name: "Create home directory"
+  ansible.builtin.file:
+    path: "{{ payload_config.home }}"
+    owner: "payload"
+    group: "payload"
+    mode: "2775"
+    state: "directory"
+
+- name: "Do database setup"
+  become_user: "postgres"
+  become: true
+  block:
+  - name: "Ensure Postgres role exists"
+    community.postgresql.postgresql_user:
+      name: "payload"
+      password: "{{ secret_payload.postgresql_password }}"
+      state: "present"
+
+  - name: "Ensure database exists"
+    community.postgresql.postgresql_db:
+      name: "sticky-content"
+      owner: "payload"
+      state: "present"
+
+  - name: "Specify password authentication method over sockets for this container"
+    notify: "restart postgres" # Apply changes
+    become_user: "postgres"
+    become: true
+    community.postgresql.postgresql_pg_hba:
+      dest: "{{ postgres.pg_hba_path }}"
+      backup: "true"
+      backup_file: "{{ postgres.pg_hba_path }}.old"
+      contype: "local"
+      databases: "sticky-content"
+      users: "payload"
+      method: "md5" # TODO use scram-sha-256 which is way safer
+
+- name: "Create payload 'docker-compose.yml' file"
+  become_user: "payload"
+  become: true
+  ansible.builtin.template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ payload_config.home }}/docker-compose.yml"
+    owner: "payload"
+    group: "payload"
+    mode: "0600"
+
+- name: "Docker compose"
+  ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
+  vars:
+    project_source: "{{ outline_config.project_source }}"
+
+- name: "Install nginx config"
+  ansible.builtin.template:
+    src: "payload.conf.j2"
+    dest: "/etc/nginx/sites-enabled/content.{{ canonical_hostname }}.conf"
+    state: "link"
+  notify: "reload nginx"

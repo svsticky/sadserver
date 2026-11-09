@@ -226,3 +226,7 @@ secret_listmonk:
   cred_auth_provider_x509_cert_url: "{{ vault_secret_listmonk.cred_auth_provider_x509_cert_url }}"
   cred_client_x509_cert_url: "{{ vault_secret_listmonk.cred_client_x509_cert_url }}"
   cred_universe_domain: "{{ vault_secret_listmonk.cred_universe_domain }}"
+
+secret_payload:
+  postgres_password: "{{ vault_secret_payload.postgres_password }}"
+  secret: "{{ vault_secret_payload.secret }}"

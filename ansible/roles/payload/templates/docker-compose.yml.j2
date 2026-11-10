@@ -3,14 +3,16 @@
 services:
   payload:
     image: ghcr.io/svsticky/content:latest
+    pull_policy: always
     ports:
       - '{{ payload_config.port }}:3000'
     volumes:
       - /run/postgresql:/run/postgresql
       - payload-media:/app/media
     environment:
-      - DATABASE_URL=postgresql://payload:{{ secret_payload.postgres_password }}@%2Frun%2Fpostgresql/sticky-content
-      - PAYLOAD_SECRET={{ secret_payload.secret }}
+      DATABASE_URL: postgresql://payload:{{ secret_payload.postgres_password }}@localhost/sticky-content?host=/run/postgresql
+      PAYLOAD_SECRET: {{ secret_payload.secret }}
+      SERVER_URL: https://content.{{ canonical_hostname }}
 
 volumes:
   payload-media:

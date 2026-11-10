@@ -24,7 +24,7 @@
   - name: "Ensure Postgres role exists"
     community.postgresql.postgresql_user:
       name: "payload"
-      password: "{{ secret_payload.postgresql_password }}"
+      password: "{{ secret_payload.postgres_password }}"
       state: "present"
 
   - name: "Ensure database exists"
@@ -59,11 +59,11 @@
 - name: "Docker compose"
   ansible.builtin.include_tasks: "../docker/tasks/compose-up.yml"
   vars:
-    project_source: "{{ outline_config.project_source }}"
+    project_source: "{{ payload_config.home }}"
+    remove_images: "all"
 
 - name: "Install nginx config"
   ansible.builtin.template:
     src: "payload.conf.j2"
     dest: "/etc/nginx/sites-enabled/content.{{ canonical_hostname }}.conf"
-    state: "link"
   notify: "reload nginx"

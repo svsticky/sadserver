@@ -1,0 +1,5 @@
+---
+
+payload_config:
+  home: "/var/www/payload"
+  port: 3040

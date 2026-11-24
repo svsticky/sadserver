@@ -84,13 +84,13 @@
 
   - name: "Start docker container"
     community.docker.docker_container:
-      name: "payload"
+      name: "kbg"
       image: "ghcr.io/svsticky/kbg:latest"
       published_ports:
         - "{{ kbg_port }}:3000"
       restart: true
       restart_policy: "unless-stopped"
       volumes:
-      - "/run/postgresql/.s.PGSQL.5432:/run/postgresql/.s.PGSQL.5432"
+      - "/run/postgresql:/run/postgresql"
       - "/home/kbg/fuzzy-waffle/.env:/.env"
     notify: "prune docker"

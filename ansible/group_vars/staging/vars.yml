@@ -146,6 +146,7 @@ secret_committeeclash:
   postgres_password: "{{ vault_secret_committeeclash.postgres_password }}"
   host_url: "https://committeeclash.dev.svsticky.nl"
   oauth_provider_url: "https://keycloak.dev.svsticky.nl/realms/{{ secret_tavern.keycloak_realm }}/"
+  aas_pre_shared_key: "{{ vault_secret_committeeclash.aas_pre_shared_key }}"
 
 secret_rottenspringbok:
   oauth_client_id: "{{ vault_secret_rottenspringbok.oauth_client_id }}"
@@ -162,6 +163,8 @@ secret_docuseal:
   aws_secret_access_key: "{{ vault_secret_docuseal.aws_secret_access_key }}"
   aws_region: "{{ vault_secret_docuseal.aws_region }}"
   s3_attachments_bucket: "{{ vault_secret_docuseal.s3_attachments_bucket }}"
+  smtp_username: "{{ vault_secret_docuseal.smtp_username }}"
+  smtp_password: "{{ vault_secret_docuseal.smtp_password }}"
 
 secret_tavern:
   aas_pre_shared_key: "{{ vault_secret_tavern.aas_pre_shared_key }}"
@@ -193,3 +196,22 @@ secret_kbg:
 
 secret_main_website:
   aas_pre_shared_key: "{{ vault_secret_main_website.aas_pre_shared_key }}"
+
+secret_listmonk:
+  postgres_password: "{{ vault_secret_listmonk.postgres_password }}"
+  admin_user: "{{ vault_secret_listmonk.admin_user }}"
+  admin_password: "{{ vault_secret_listmonk.admin_password }}"
+  google_sheet_id: "{{ vault_secret_listmonk.google_sheet_id }}"
+  mmm_user: "{{ vault_secret_listmonk.mmm_user }}"
+  mmm_token: "{{ vault_secret_listmonk.mmm_token }}"
+  cred_type: "{{ vault_secret_listmonk.cred_type }}"
+  cred_project_id: "{{ vault_secret_listmonk.cred_project_id }}"
+  cred_private_key_id: "{{ vault_secret_listmonk.cred_private_key_id }}"
+  cred_private_key: "{{ vault_secret_listmonk.cred_private_key }}"
+  cred_client_email: "{{ vault_secret_listmonk.cred_client_email }}"
+  cred_client_id: "{{ vault_secret_listmonk.cred_client_id }}"
+  cred_auth_uri: "{{ vault_secret_listmonk.cred_auth_uri }}"
+  cred_token_uri: "{{ vault_secret_listmonk.cred_token_uri }}"
+  cred_auth_provider_x509_cert_url: "{{ vault_secret_listmonk.cred_auth_provider_x509_cert_url }}"
+  cred_client_x509_cert_url: "{{ vault_secret_listmonk.cred_client_x509_cert_url }}"
+  cred_universe_domain: "{{ vault_secret_listmonk.cred_universe_domain }}"
